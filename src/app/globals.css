@@ -1,0 +1,28 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: #0B101E; /* Deeper dark background from image */
+  --color-foreground: #F8FAFC;
+  --color-card: #151B2B; /* Deep blue-gray for cards */
+  --color-card-foreground: #F8FAFC;
+  --color-border: #1E293B; /* Subtle borders */
+  
+  /* Fonts */
+  --font-sans: var(--font-poppins), ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  
+  /* Accents matching the image */
+  --color-accent-teal: #00E5FF; /* The cyan/teal primary accent */
+  --color-accent-blue: #3B82F6;
+  --color-accent-green: #10B981;
+  --color-accent-orange: #F59E0B;
+  --color-accent-red: #EF4444;
+  --color-accent-purple: #8B5CF6;
+}
+
+@layer base {
+  html, body {
+    @apply bg-background text-foreground antialiased;
+    color-scheme: dark;
+  }
+}
+
