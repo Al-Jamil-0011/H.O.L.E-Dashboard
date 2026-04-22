@@ -30,8 +30,8 @@ export default function PurchaseOrdersPage() {
   });
 
   const columns = [
-    { header: "PO NUMBER (SN)", accessorKey: "id" as const, className: "font-bold text-white tracking-wider" },
-    { header: "DATE", accessorKey: "date" as const, className: "text-gray-400" },
+    { header: "PO NUMBER (SN)", accessorKey: "id" as const, className: "font-bold text-foreground tracking-wider" },
+    { header: "DATE", accessorKey: "date" as const, className: "text-muted-foreground" },
     { 
       header: "ORDER CATEGORY", 
       render: (item: typeof mockPurchaseOrders[0]) => (
@@ -43,18 +43,18 @@ export default function PurchaseOrdersPage() {
         </span>
       )
     },
-    { header: "SURGEON", accessorKey: "surgeon" as const, className: "font-medium text-gray-300" },
-    { header: "FACILITY", accessorKey: "facility" as const, className: "text-gray-400" },
+    { header: "SURGEON", accessorKey: "surgeon" as const, className: "font-medium text-muted-foreground" },
+    { header: "FACILITY", accessorKey: "facility" as const, className: "text-muted-foreground" },
     { 
       header: "TYPE INFO", 
       render: (item: typeof mockPurchaseOrders[0]) => (
         <div className="flex flex-col">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500">{item.type}</span>
-          <span className="text-gray-300 font-medium">{item.fee}</span>
+          <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">{item.type}</span>
+          <span className="text-muted-foreground font-medium">{item.fee}</span>
         </div>
       )
     },
-    { header: "TOTAL VALUE", accessorKey: "total" as const, className: "text-[#00E5FF] font-bold text-sm tracking-wide" },
+    { header: "TOTAL VALUE", accessorKey: "total" as const, className: "text-accent-teal font-bold text-sm tracking-wide" },
     { 
       header: "STATUS", 
       render: (item: typeof mockPurchaseOrders[0]) => {
@@ -68,7 +68,7 @@ export default function PurchaseOrdersPage() {
       header: "ACTIONS",
       render: (item: typeof mockPurchaseOrders[0]) => (
         <div className="flex items-center gap-2">
-          <Link href={`/admin/dashboard/purchase-orders/${item.id}`} className="px-3 py-1.5 text-[10px] font-bold text-gray-300 border border-[#1E293B] rounded-md hover:text-white hover:bg-[#1E293B]/50 transition-colors">
+          <Link href={`/admin/dashboard/purchase-orders/${item.id}`} className="px-3 py-1.5 text-[10px] font-bold text-muted-foreground border border-[var(--border)] rounded-md hover:text-foreground hover:bg-[var(--border)]/50 transition-colors">
             View Details
           </Link>
         </div>
@@ -81,18 +81,18 @@ export default function PurchaseOrdersPage() {
       {/* HEADER SECTION */}
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-xl font-bold tracking-tight text-white mb-1">
+          <h1 className="text-xl font-bold tracking-tight text-foreground mb-1">
             Purchase Orders
           </h1>
-          <p className="text-[11px] text-gray-500 font-medium uppercase tracking-wider">
+          <p className="text-[11px] text-muted-foreground font-medium uppercase tracking-wider">
             Track and manage all facility and surgeon purchase orders
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <button className="flex items-center gap-2 px-4 py-2 text-xs font-semibold text-gray-300 bg-[#151B2B] rounded-lg shadow-sm border border-[#1E293B] transition-colors hover:text-white hover:bg-[#1E293B]">
+          <button className="flex items-center gap-2 px-4 py-2 text-xs font-semibold text-muted-foreground bg-[var(--card)] rounded-lg shadow-sm border border-[var(--border)] transition-colors hover:text-foreground hover:bg-[var(--border)]">
             <Download className="h-4 w-4" /> Export
           </button>
-          <button className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-[#0B101E] bg-[#00E5FF] rounded-lg shadow-sm transition-all hover:bg-cyan-400">
+          <button className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-[var(--background)] bg-accent-teal rounded-lg shadow-sm transition-all hover:bg-cyan-400">
             <Plus className="h-4 w-4" /> Create PO
           </button>
         </div>
@@ -100,19 +100,19 @@ export default function PurchaseOrdersPage() {
 
       {/* STAT CARDS */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard title="TOTAL VOLUME" value="$22,300" trend="+15% this month" topBorderColor="border-t-[#00E5FF]" />
+        <StatCard title="TOTAL VOLUME" value="$22,300" trend="+15% this month" topBorderColor="border-t-[var(--accent-teal)]" />
         <StatCard title="COMPLETED" value="23" trend="4 this week" topBorderColor="border-t-emerald-500" />
         <StatCard title="OPEN POS" value="8" trend="Needs attention" trendColor="text-amber-500" topBorderColor="border-t-amber-500" />
         <StatCard title="LOST / REJECTED" value="2" trend="-1 from last month" trendColor="text-rose-500" topBorderColor="border-t-rose-500" />
       </div>
 
       {/* MAIN CONTAINER */}
-      <div className="rounded-xl border border-[#1E293B] bg-[#151B2B] shadow-lg flex flex-col overflow-hidden min-h-[500px]">
+      <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] shadow-lg flex flex-col overflow-hidden min-h-[500px]">
         
         {/* TOP TABS & SEARCH BAR */}
-        <div className="p-4 border-b border-[#1E293B] bg-[#1A2234] flex flex-col md:flex-row gap-4 items-center justify-between">
+        <div className="p-4 border-b border-[var(--border)] bg-[var(--muted)] flex flex-col md:flex-row gap-4 items-center justify-between">
           
-          <div className="flex items-center gap-1 bg-[#0B101E] p-1 rounded-lg border border-[#1E293B] w-full md:w-auto overflow-x-auto">
+          <div className="flex items-center gap-1 bg-[var(--background)] p-1 rounded-lg border border-[var(--border)] w-full md:w-auto overflow-x-auto">
             {['All', 'Complete', 'Open', 'Lost'].map(tab => (
               <button
                 key={tab}
@@ -120,8 +120,8 @@ export default function PurchaseOrdersPage() {
                 className={cn(
                   "px-6 py-1.5 text-xs font-bold rounded-md transition-all whitespace-nowrap",
                   activeTab === tab 
-                    ? "bg-[#1E293B] text-white shadow-sm" 
-                    : "text-gray-400 hover:text-gray-200 hover:bg-[#1E293B]/50"
+                    ? "bg-[var(--border)] text-foreground shadow-sm" 
+                    : "text-muted-foreground hover:text-gray-200 hover:bg-[var(--border)]/50"
                 )}
               >
                 {tab}
@@ -130,13 +130,13 @@ export default function PurchaseOrdersPage() {
           </div>
 
           <div className="relative w-full md:w-80">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <input 
               type="text" 
               placeholder="Search by PO#, Surgeon, or facility..." 
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full bg-[#0B101E] border border-[#334155] rounded-lg py-2 pl-9 pr-3 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-[#00E5FF] transition-colors"
+              className="w-full bg-[var(--background)] border border-[var(--border)] rounded-lg py-2 pl-9 pr-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-[var(--accent-teal)] transition-colors"
             />
           </div>
 
@@ -155,12 +155,13 @@ export default function PurchaseOrdersPage() {
   );
 }
 
-function StatCard({ title, value, trend, trendColor = "text-[#00E5FF]", topBorderColor }: { title: string, value: string | number, trend: string, trendColor?: string, topBorderColor: string }) {
+function StatCard({ title, value, trend, trendColor = "text-accent-teal", topBorderColor }: { title: string, value: string | number, trend: string, trendColor?: string, topBorderColor: string }) {
   return (
-    <div className={cn("rounded-xl border border-[#1E293B] border-t-[3px] bg-[#151B2B] p-5 shadow-sm transition-all hover:bg-[#1A2234]", topBorderColor)}>
-      <h3 className="text-[10px] font-bold tracking-widest text-gray-500 uppercase">{title}</h3>
-      <div className="mt-2 text-3xl font-black tracking-tight text-white">{value}</div>
+    <div className={cn("rounded-xl border border-[var(--border)] border-t-[3px] bg-[var(--card)] p-5 shadow-sm transition-all hover:bg-[var(--muted)]", topBorderColor)}>
+      <h3 className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase">{title}</h3>
+      <div className="mt-2 text-3xl font-black tracking-tight text-foreground">{value}</div>
       <p className={cn("mt-1 text-xs font-medium", trendColor)}>{trend}</p>
     </div>
   )
 }
+

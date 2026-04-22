@@ -1,17 +1,19 @@
 @import "tailwindcss";
 
 @theme {
-  --color-background: #0B101E; /* Deeper dark background from image */
-  --color-foreground: #F8FAFC;
-  --color-card: #151B2B; /* Deep blue-gray for cards */
-  --color-card-foreground: #F8FAFC;
-  --color-border: #1E293B; /* Subtle borders */
-  
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-border: var(--border);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent-teal: var(--accent-teal);
+
   /* Fonts */
   --font-sans: var(--font-poppins), ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  
-  /* Accents matching the image */
-  --color-accent-teal: #00E5FF; /* The cyan/teal primary accent */
+
+  /* Other colors */
   --color-accent-blue: #3B82F6;
   --color-accent-green: #10B981;
   --color-accent-orange: #F59E0B;
@@ -19,10 +21,48 @@
   --color-accent-purple: #8B5CF6;
 }
 
-@layer base {
-  html, body {
-    @apply bg-background text-foreground antialiased;
-    color-scheme: dark;
+:root {
+  --background: #F8FAFC;
+  --foreground: #0F172A;
+  --card: #FFFFFF;
+  --card-foreground: #0F172A;
+  --border: #E2E8F0;
+  --muted: #F1F5F9;
+  --muted-foreground: #64748B;
+  --accent-teal: #0D9488;
+}
+
+.dark {
+  --background: #0B101E;
+  --foreground: #F8FAFC;
+  --card: #151B2B;
+  --card-foreground: #F8FAFC;
+  --border: #1E293B;
+  --muted: #1E293B;
+  --muted-foreground: #94A3B8;
+  --accent-teal: #00E5FF;
+}
+
+/* Fallback for system preference if no class is set */
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
+    --background: #0B101E;
+    --foreground: #F8FAFC;
+    --card: #151B2B;
+    --card-foreground: #F8FAFC;
+    --border: #1E293B;
+    --muted: #1E293B;
+    --muted-foreground: #94A3B8;
+    --accent-teal: #00E5FF;
   }
 }
 
+@layer base {
+  html {
+    @apply transition-colors duration-300;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased min-h-screen flex flex-col;
+  }
+}

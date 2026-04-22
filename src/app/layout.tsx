@@ -14,6 +14,7 @@ export const metadata: Metadata = {
 };
 
 import { RootLayoutWrapper } from "@/components/layout/RootLayoutWrapper";
+import { ThemeProvider } from "@/components/theme-provider";
 
 export default function RootLayout({
   children,
@@ -21,14 +22,22 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${poppins.variable} font-sans antialiased`}
       >
-        <RootLayoutWrapper>
-          {children}
-        </RootLayoutWrapper>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <RootLayoutWrapper>
+            {children}
+          </RootLayoutWrapper>
+        </ThemeProvider>
       </body>
     </html>
   );
 }
+

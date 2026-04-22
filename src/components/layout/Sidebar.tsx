@@ -96,7 +96,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
       {/* Sidebar */}
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-[#0B101E] border-r border-[#1E293B] transition-transform duration-300 ease-in-out lg:static lg:translate-x-0 h-screen",
+          "fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-card border-r border-border transition-transform duration-300 ease-in-out lg:static lg:translate-x-0 h-screen",
           isOpen ? "translate-x-0 shadow-2xl" : "-translate-x-full"
         )}
       >
@@ -112,18 +112,18 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
               />
             </div>
             <div>
-              <span className="text-base font-bold text-white tracking-wide">H.O.L.E APP</span>
+              <span className="text-base font-bold text-foreground tracking-wide">H.O.L.E APP</span>
             </div>
           </Link>
           <button
             onClick={onClose}
-            className="rounded-md p-1 text-gray-400 hover:text-white lg:hidden transition-colors"
+            className="rounded-md p-1 text-muted-foreground hover:text-foreground lg:hidden transition-colors"
           >
             <X className="h-5 w-5" />
           </button>
         </div>
 
-        <div className="flex flex-1 flex-col overflow-y-auto px-4 py-6 gap-6 scrollbar-thin scrollbar-thumb-[#1E293B]">
+        <div className="flex flex-1 flex-col overflow-y-auto px-4 py-6 gap-6 scrollbar-thin scrollbar-thumb-border">
           <NavSection title="MAIN" items={mainNavItems} pathname={pathname} />
           
           {pathname.startsWith('/admin') ? (
@@ -170,15 +170,15 @@ function NavSection({
               className={cn(
                 "group flex items-center justify-between rounded-md px-2 py-2 text-sm font-medium transition-colors",
                 isActive
-                  ? "bg-[#00E5FF]/10 text-[#00E5FF]"
-                  : "text-gray-400 hover:bg-[#1E293B]/50 hover:text-white"
+                  ? "bg-accent-teal/10 text-accent-teal"
+                  : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
               )}
             >
               <div className="flex items-center gap-3">
                 <item.icon
                   className={cn(
                     "h-[18px] w-[18px] shrink-0",
-                    isActive ? "text-[#00E5FF]" : "text-gray-500 group-hover:text-gray-300"
+                    isActive ? "text-accent-teal" : "text-muted-foreground group-hover:text-foreground"
                   )}
                 />
                 <span className="text-[13px]">{item.name}</span>

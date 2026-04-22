@@ -23,33 +23,33 @@ export default function InvoicesPage() {
   });
 
   const columns = [
-    { header: "INVOICE ID", accessorKey: "id" as const, className: "font-medium text-white" },
-    { header: "SALE ID", accessorKey: "saleId" as const, className: "text-[#00E5FF]" },
+    { header: "INVOICE ID", accessorKey: "id" as const, className: "font-medium text-foreground" },
+    { header: "SALE ID", accessorKey: "saleId" as const, className: "text-accent-teal" },
     { header: "HOSPITAL", accessorKey: "hospital" as const },
-    { header: "AMOUNT", accessorKey: "amount" as const, className: "text-[#00E5FF] font-medium" },
+    { header: "AMOUNT", accessorKey: "amount" as const, className: "text-accent-teal font-medium" },
     { header: "DUE DATE", accessorKey: "due" as const },
-    { 
-      header: "STATUS", 
+    {
+      header: "STATUS",
       render: (item: typeof invoiceData[0]) => {
         let type: "success" | "warning" | "error" = "success";
         if (item.status === 'PENDING') type = 'warning';
         if (item.status === 'OVERDUE') type = 'error';
         return <StatusBadge status={item.status} type={type} />;
-      } 
+      }
     },
     {
       header: "ACTIONS",
       render: (item: typeof invoiceData[0]) => (
         <div className="flex items-center gap-2">
           {item.status !== 'PAID' && (
-            <button className="px-3 py-1 text-[10px] font-bold text-[#0B101E] bg-emerald-500 rounded hover:bg-emerald-400 transition-colors">
+            <button className="px-3 py-1 text-[10px] font-bold text-[var(--background)] bg-emerald-500 rounded hover:bg-emerald-400 transition-colors">
               Mark Paid
             </button>
           )}
-          <button className="px-3 py-1 text-[10px] font-medium text-gray-400 border border-[#1E293B] rounded hover:text-white transition-colors">
+          <button className="px-3 py-1 text-[10px] font-medium text-muted-foreground border border-[var(--border)] rounded hover:text-foreground transition-colors">
             PDF
           </button>
-          <button className="px-3 py-1 text-[10px] font-medium text-gray-400 border border-[#1E293B] rounded hover:text-white transition-colors">
+          <button className="px-3 py-1 text-[10px] font-medium text-muted-foreground border border-[var(--border)] rounded hover:text-foreground transition-colors">
             Email
           </button>
         </div>
@@ -61,31 +61,31 @@ export default function InvoicesPage() {
     <div className="space-y-6 animate-in fade-in zoom-in duration-500">
       <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-xl font-bold tracking-tight text-white mb-1">
+          <h1 className="text-xl font-bold tracking-tight text-foreground mb-1">
             Invoice Management
           </h1>
-          <p className="text-[11px] text-gray-500 font-medium uppercase tracking-wider">
+          <p className="text-[11px] text-muted-foreground font-medium uppercase tracking-wider">
             Hospital invoice generation and tracking
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <button className="px-4 py-1.5 text-xs font-semibold text-gray-400 bg-[#151B2B] rounded shadow-sm border border-[#1E293B] transition-colors hover:text-white">
+          <button className="px-4 py-1.5 text-xs font-semibold text-muted-foreground bg-[var(--card)] rounded shadow-sm border border-[var(--border)] transition-colors hover:text-foreground">
             Export All
           </button>
-          <button className="px-4 py-1.5 text-xs font-bold text-[#0B101E] bg-[#00E5FF] rounded shadow-sm transition-all hover:bg-cyan-400">
+          <button className="px-4 py-1.5 text-xs font-bold text-[var(--background)] bg-accent-teal rounded shadow-sm transition-all hover:bg-cyan-400">
             Generate Invoices
           </button>
         </div>
       </div>
 
-      <div className="rounded-xl border border-[#1E293B] bg-[#151B2B] shadow-sm transition-all overflow-hidden flex flex-col">
+      <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] shadow-sm transition-all overflow-hidden flex flex-col">
         <div className="flex items-center justify-between p-5 pb-5">
-          <h2 className="text-sm font-bold text-white">All Invoices</h2>
+          <h2 className="text-sm font-bold text-foreground">All Invoices</h2>
           <div className="flex gap-2">
-            <FilterPill text="All" active={filter === 'All'} onClick={() => setFilter('All')} />
-            <FilterPill text="Paid" active={filter === 'Paid'} color="bg-[#00E5FF]/20 text-[#00E5FF]" activeColor="bg-[#00E5FF] text-[#0B101E]" onClick={() => setFilter('Paid')} />
-            <FilterPill text="Pending" active={filter === 'Pending'} color="bg-amber-500/20 text-amber-500" activeColor="bg-amber-500 text-[#0B101E]" onClick={() => setFilter('Pending')} />
-            <FilterPill text="Overdue" active={filter === 'Overdue'} color="bg-rose-500/20 text-rose-500" activeColor="bg-rose-500 text-[#0B101E]" onClick={() => setFilter('Overdue')} />
+            <FilterPill text="All" active={filter === 'All'} activeColor="bg-black/80 text-[var(--background)]" onClick={() => setFilter('All')} />
+            <FilterPill text="Paid" active={filter === 'Paid'} color="bg-accent-teal/20 text-accent-teal" activeColor="bg-accent-teal text-[var(--background)]" onClick={() => setFilter('Paid')} />
+            <FilterPill text="Pending" active={filter === 'Pending'} color="bg-amber-500/20 text-amber-500" activeColor="bg-amber-500 text-[var(--background)]" onClick={() => setFilter('Pending')} />
+            <FilterPill text="Overdue" active={filter === 'Overdue'} color="bg-rose-500/20 text-rose-500" activeColor="bg-rose-500 text-[var(--background)]" onClick={() => setFilter('Overdue')} />
           </div>
         </div>
         <div className="flex-1 px-5 pb-5">
@@ -97,16 +97,16 @@ export default function InvoicesPage() {
 }
 
 function FilterPill({ text, active, onClick, color, activeColor }: { text: string, active: boolean, onClick: () => void, color?: string, activeColor?: string }) {
-  const baseClasses = "px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded border border-[#1E293B] transition-all cursor-pointer";
-  
+  const baseClasses = "px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded border border-[var(--border)] transition-all cursor-pointer";
+
   if (active) {
     return (
-      <button onClick={onClick} className={cn(baseClasses, activeColor || "bg-[#334155] text-white border-[#334155]")}>
+      <button onClick={onClick} className={cn(baseClasses, activeColor || "bg-[#334155] text-foreground border-[#334155]")}>
         {text}
       </button>
     );
   }
-  
+
   if (color) {
     return (
       <button onClick={onClick} className={cn(baseClasses, color, "hover:opacity-80")}>
@@ -114,10 +114,11 @@ function FilterPill({ text, active, onClick, color, activeColor }: { text: strin
       </button>
     )
   }
-  
+
   return (
-    <button onClick={onClick} className={cn(baseClasses, "text-gray-400 hover:text-white hover:bg-[#1E293B]/50")}>
+    <button onClick={onClick} className={cn(baseClasses, "text-muted-foreground hover:text-foreground hover:bg-[var(--border)]/50")}>
       {text}
     </button>
   )
 }
+

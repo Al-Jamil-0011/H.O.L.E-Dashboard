@@ -10,12 +10,12 @@ import {
 export default function QuickBooksPage() {
   return (
     <div className="space-y-6 animate-in fade-in zoom-in duration-500 max-w-5xl">
-      <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between border-b border-[#1E293B] pb-6">
+      <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between border-b border-[var(--border)] pb-6">
         <div>
-          <h1 className="text-xl font-bold tracking-tight text-white mb-1">
+          <h1 className="text-xl font-bold tracking-tight text-foreground mb-1">
             QuickBooks Integration
           </h1>
-          <p className="text-[11px] text-gray-500 font-medium uppercase tracking-wider">
+          <p className="text-[11px] text-muted-foreground font-medium uppercase tracking-wider">
             Manage your accounting synchronization with QuickBooks Online
           </p>
         </div>
@@ -28,9 +28,9 @@ export default function QuickBooksPage() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
-        <div className="rounded-xl border border-[#1E293B] bg-[#151B2B] shadow-sm overflow-hidden flex flex-col">
-          <div className="p-5 pb-4 border-b border-[#1E293B]">
-             <h2 className="text-sm font-bold text-white">Manual Sync Actions</h2>
+        <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] shadow-sm overflow-hidden flex flex-col">
+          <div className="p-5 pb-4 border-b border-[var(--border)]">
+             <h2 className="text-sm font-bold text-foreground">Manual Sync Actions</h2>
           </div>
           <div className="p-5 space-y-3">
             <SyncAction title="SYNC INVOICES" description="Push all newly generated invoices to QB" />
@@ -38,17 +38,17 @@ export default function QuickBooksPage() {
             <SyncAction title="SYNC VENDOR BILLS" description="Record vendor charges as expenses" />
           </div>
           <div className="p-5 pt-0 mt-auto">
-            <button className="w-full mt-2 flex items-center justify-center gap-2 rounded bg-emerald-500 px-4 py-2.5 text-xs font-bold text-[#0B101E] shadow-sm transition-all hover:bg-emerald-400 uppercase tracking-widest">
+            <button className="w-full mt-2 flex items-center justify-center gap-2 rounded bg-emerald-500 px-4 py-2.5 text-xs font-bold text-[var(--background)] shadow-sm transition-all hover:bg-emerald-400 uppercase tracking-widest">
               <RefreshCcw className="h-4 w-4" />
               Sync All Now
             </button>
           </div>
         </div>
 
-        <div className="rounded-xl border border-[#1E293B] bg-[#151B2B] shadow-sm overflow-hidden flex flex-col">
-           <div className="p-5 pb-4 border-b border-[#1E293B] flex justify-between items-center">
-             <h2 className="text-sm font-bold text-white">Recent Sync Logs</h2>
-             <button className="text-[10px] uppercase font-bold text-[#00E5FF] hover:text-cyan-300 transition-colors">
+        <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] shadow-sm overflow-hidden flex flex-col">
+           <div className="p-5 pb-4 border-b border-[var(--border)] flex justify-between items-center">
+             <h2 className="text-sm font-bold text-foreground">Recent Sync Logs</h2>
+             <button className="text-[10px] uppercase font-bold text-accent-teal hover:text-cyan-300 transition-colors">
                View All
              </button>
           </div>
@@ -67,12 +67,12 @@ export default function QuickBooksPage() {
 
 function SyncAction({ title, description }: { title: string, description: string }) {
   return (
-    <div className="flex items-center justify-between p-4 rounded-lg border border-[#1E293B] bg-[#0B101E]/50 hover:bg-[#1E293B]/50 transition-colors">
+    <div className="flex items-center justify-between p-4 rounded-lg border border-[var(--border)] bg-[var(--background)]/50 hover:bg-[var(--border)]/50 transition-colors">
       <div>
-        <h3 className="text-[11px] font-bold text-white tracking-widest uppercase mb-1">{title}</h3>
-        <p className="text-[11px] text-gray-500">{description}</p>
+        <h3 className="text-[11px] font-bold text-foreground tracking-widest uppercase mb-1">{title}</h3>
+        <p className="text-[11px] text-muted-foreground">{description}</p>
       </div>
-      <button className="text-[11px] font-bold text-[#00E5FF] hover:text-cyan-300 uppercase tracking-widest bg-[#00E5FF]/10 px-3 py-1.5 rounded transition-colors">Sync</button>
+      <button className="text-[11px] font-bold text-accent-teal hover:text-cyan-300 uppercase tracking-widest bg-accent-teal/10 px-3 py-1.5 rounded transition-colors">Sync</button>
     </div>
   );
 }
@@ -89,8 +89,9 @@ function LogItem({ status, message, time }: { status: 'success' | 'error', messa
       </div>
       <div>
         <p className={cn("text-[13px] font-medium leading-tight", status === 'error' ? 'text-rose-400' : 'text-gray-300')}>{message}</p>
-        <p className="text-[10px] text-gray-500 mt-1 uppercase font-semibold">{time}</p>
+        <p className="text-[10px] text-muted-foreground mt-1 uppercase font-semibold">{time}</p>
       </div>
     </div>
   );
 }
+

@@ -20,13 +20,13 @@ export function DataTable<T>({ data, columns, className, onRowClick }: DataTable
   return (
     <div className={cn("w-full overflow-x-auto rounded-xl bg-card", className)}>
       <table className="w-full text-left text-sm whitespace-nowrap">
-        <thead className="bg-[#151B2B]">
+        <thead className="bg-muted/50">
           <tr>
             {columns.map((col, i) => (
               <th
                 key={i}
                 className={cn(
-                  "px-6 py-4 font-semibold text-gray-500 uppercase tracking-widest text-[10px] border-b border-[#1E293B]",
+                  "px-6 py-4 font-semibold text-muted-foreground uppercase tracking-widest text-[10px] border-b border-border",
                   col.className
                 )}
               >
@@ -35,20 +35,20 @@ export function DataTable<T>({ data, columns, className, onRowClick }: DataTable
             ))}
           </tr>
         </thead>
-        <tbody className="divide-y divide-[#1E293B]">
+        <tbody className="divide-y divide-border">
           {data.map((item, rowIndex) => (
             <tr
               key={rowIndex}
               onClick={() => onRowClick?.(item)}
               className={cn(
-                "hover:bg-white/[0.02] transition-colors duration-150 ease-in-out",
+                "hover:bg-muted/50 transition-colors duration-150 ease-in-out",
                 onRowClick && "cursor-pointer"
               )}
             >
               {columns.map((col, colIndex) => (
                 <td
                   key={colIndex}
-                  className={cn("px-6 py-4 text-gray-300 font-medium text-xs", col.className)}
+                  className={cn("px-6 py-4 text-foreground font-medium text-xs", col.className)}
                 >
                   {col.render
                     ? col.render(item)
@@ -62,7 +62,7 @@ export function DataTable<T>({ data, columns, className, onRowClick }: DataTable
           ))}
           {data.length === 0 && (
             <tr>
-              <td colSpan={columns.length} className="px-6 py-12 text-center text-gray-500">
+              <td colSpan={columns.length} className="px-6 py-12 text-center text-muted-foreground">
                 No data available
               </td>
             </tr>
@@ -78,7 +78,7 @@ export function StatusBadge({ status, type = "default" }: {
   type?: "success" | "warning" | "error" | "default"
 }) {
   const styles = {
-    success: "bg-[#00E5FF]/10 text-[#00E5FF] px-3 py-1 text-[10px] uppercase font-bold tracking-wider rounded-md",
+    success: "bg-accent-teal/10 text-accent-teal px-3 py-1 text-[10px] uppercase font-bold tracking-wider rounded-md",
     warning: "bg-amber-500/10 text-amber-500 px-3 py-1 text-[10px] uppercase font-bold tracking-wider rounded-md",
     error: "bg-rose-500/10 text-rose-500 px-3 py-1 text-[10px] uppercase font-bold tracking-wider rounded-md",
     default: "bg-blue-500/10 text-blue-500 px-3 py-1 text-[10px] uppercase font-bold tracking-wider rounded-md"

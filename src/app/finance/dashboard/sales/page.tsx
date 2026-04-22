@@ -25,12 +25,12 @@ export default function SalesPage() {
   });
 
   const columns = [
-    { header: "SALE ID", accessorKey: "id" as const, className: "font-medium text-[#00E5FF]" },
+    { header: "SALE ID", accessorKey: "id" as const, className: "font-medium text-accent-teal" },
     { header: "REP", accessorKey: "rep" as const },
     { header: "DOCTOR", accessorKey: "doctor" as const },
     { header: "HOSPITAL", accessorKey: "hospital" as const },
     { header: "IMPLANT", accessorKey: "implant" as const },
-    { header: "AMOUNT", accessorKey: "amount" as const, className: "text-[#00E5FF] font-medium" },
+    { header: "AMOUNT", accessorKey: "amount" as const, className: "text-accent-teal font-medium" },
     { header: "COMMISSION", accessorKey: "comm" as const, className: "text-emerald-400" },
     { 
       header: "STATUS", 
@@ -45,7 +45,7 @@ export default function SalesPage() {
       header: "ACTIONS",
       render: () => (
         <div className="flex items-center gap-2">
-          <button className="px-3 py-1 text-[10px] font-medium text-gray-300 border border-[#1E293B] rounded hover:bg-white/5 transition-colors">
+          <button className="px-3 py-1 text-[10px] font-medium text-gray-300 border border-[var(--border)] rounded hover:bg-white/5 transition-colors">
             View
           </button>
           <button className="px-3 py-1 text-[10px] font-medium text-white bg-blue-600 rounded hover:bg-blue-700 transition-colors">
@@ -61,20 +61,20 @@ export default function SalesPage() {
       <CreateSaleModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
       <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-xl font-bold tracking-tight text-white mb-1">
+          <h1 className="text-xl font-bold tracking-tight text-foreground mb-1">
             Sales & Revenue
           </h1>
-          <p className="text-[11px] text-gray-500 font-medium uppercase tracking-wider">
+          <p className="text-[11px] text-muted-foreground font-medium uppercase tracking-wider">
             All US Sales • Q1 2026
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <button className="px-4 py-1.5 text-xs font-semibold text-gray-400 bg-[#151B2B] rounded shadow-sm border border-[#1E293B] transition-colors hover:text-white">
+          <button className="px-4 py-1.5 text-xs font-semibold text-muted-foreground bg-[var(--card)] rounded shadow-sm border border-[var(--border)] transition-colors hover:text-foreground">
             Export CSV
           </button>
           <button 
             onClick={() => setIsModalOpen(true)}
-            className="px-4 py-1.5 text-xs font-bold text-[#0B101E] bg-[#00E5FF] rounded shadow-sm transition-all hover:bg-cyan-400"
+            className="px-4 py-1.5 text-xs font-bold text-[var(--background)] bg-accent-teal rounded shadow-sm transition-all hover:bg-cyan-400"
           >
             + New Sale
           </button>
@@ -88,14 +88,14 @@ export default function SalesPage() {
         <StatCard title="CONVERSION" value="73%" trend="Stable" topBorderColor="border-t-amber-500" />
       </div>
 
-      <div className="rounded-xl border border-[#1E293B] bg-[#151B2B] shadow-sm transition-all overflow-hidden flex flex-col">
+      <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] shadow-sm transition-all overflow-hidden flex flex-col">
         <div className="flex items-center justify-between p-5">
-          <h2 className="text-sm font-bold text-white">All Sales</h2>
+          <h2 className="text-sm font-bold text-foreground">All Sales</h2>
           <div className="flex gap-2">
             <FilterPill text="All" active={filter === 'All'} onClick={() => setFilter('All')} />
-            <FilterPill text="Paid" active={filter === 'Paid'} color="bg-[#00E5FF]/20 text-[#00E5FF]" activeColor="bg-[#00E5FF] text-[#0B101E]" onClick={() => setFilter('Paid')} />
-            <FilterPill text="Pending" active={filter === 'Pending'} color="bg-amber-500/20 text-amber-500" activeColor="bg-amber-500 text-[#0B101E]" onClick={() => setFilter('Pending')} />
-            <FilterPill text="Overdue" active={filter === 'Overdue'} color="bg-rose-500/20 text-rose-500" activeColor="bg-rose-500 text-[#0B101E]" onClick={() => setFilter('Overdue')} />
+            <FilterPill text="Paid" active={filter === 'Paid'} color="bg-accent-teal/20 text-accent-teal" activeColor="bg-accent-teal text-[var(--background)]" onClick={() => setFilter('Paid')} />
+            <FilterPill text="Pending" active={filter === 'Pending'} color="bg-amber-500/20 text-amber-500" activeColor="bg-amber-500 text-[var(--background)]" onClick={() => setFilter('Pending')} />
+            <FilterPill text="Overdue" active={filter === 'Overdue'} color="bg-rose-500/20 text-rose-500" activeColor="bg-rose-500 text-[var(--background)]" onClick={() => setFilter('Overdue')} />
           </div>
         </div>
         <div className="flex-1 px-5 pb-5">
@@ -118,13 +118,13 @@ function StatCard({
   topBorderColor: string;
 }) {
   return (
-    <div className={cn("rounded-xl border border-[#1E293B] border-t-[3px] bg-[#151B2B] p-5 shadow-sm transition-all hover:bg-white/[0.02]", topBorderColor)}>
-      <h3 className="text-[10px] font-bold tracking-widest text-gray-500 uppercase">
+    <div className={cn("rounded-xl border border-[var(--border)] border-t-[3px] bg-[var(--card)] p-5 shadow-sm transition-all hover:bg-white/[0.02]", topBorderColor)}>
+      <h3 className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase">
         {title}
       </h3>
       <div className="mt-3">
-        <div className="text-2xl font-black tracking-tight text-white">{value}</div>
-        <p className="mt-2 text-[11px] font-medium text-[#00E5FF]">
+        <div className="text-2xl font-black tracking-tight text-foreground">{value}</div>
+        <p className="mt-2 text-[11px] font-medium text-accent-teal">
           {trend}
         </p>
       </div>
@@ -133,11 +133,11 @@ function StatCard({
 }
 
 function FilterPill({ text, active, onClick, color, activeColor }: { text: string, active: boolean, onClick: () => void, color?: string, activeColor?: string }) {
-  const baseClasses = "px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded border border-[#1E293B] transition-all cursor-pointer";
+  const baseClasses = "px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded border border-[var(--border)] transition-all cursor-pointer";
   
   if (active) {
     return (
-      <button onClick={onClick} className={cn(baseClasses, activeColor || "bg-[#334155] text-white border-[#334155]")}>
+      <button onClick={onClick} className={cn(baseClasses, activeColor || "bg-[#334155] text-foreground border-[#334155]")}>
         {text}
       </button>
     );
@@ -152,8 +152,9 @@ function FilterPill({ text, active, onClick, color, activeColor }: { text: strin
   }
   
   return (
-    <button onClick={onClick} className={cn(baseClasses, "text-gray-400 hover:text-white hover:bg-[#1E293B]/50")}>
+    <button onClick={onClick} className={cn(baseClasses, "text-muted-foreground hover:text-foreground hover:bg-[var(--border)]/50")}>
       {text}
     </button>
   )
 }
+

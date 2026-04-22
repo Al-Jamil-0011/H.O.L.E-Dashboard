@@ -27,9 +27,9 @@ export default function RepAccountsPage() {
   });
 
   const columns = [
-    { header: "REP NAME", accessorKey: "rep" as const, className: "font-medium text-white" },
+    { header: "REP NAME", accessorKey: "rep" as const, className: "font-medium text-foreground" },
     { header: "TOTAL SALES", accessorKey: "sales" as const },
-    { header: "COMMISSION EARNED", accessorKey: "earned" as const, className: "text-[#00E5FF]" },
+    { header: "COMMISSION EARNED", accessorKey: "earned" as const, className: "text-accent-teal" },
     { header: "COMMISSION PAID", accessorKey: "paid" as const, className: "text-emerald-400" },
     { header: "PENDING BALANCE", accessorKey: "pending" as const, className: "text-rose-400 font-medium" },
   ];
@@ -38,33 +38,33 @@ export default function RepAccountsPage() {
     <div className="space-y-6 animate-in fade-in zoom-in duration-500">
       <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-xl font-bold tracking-tight text-white mb-1">
+          <h1 className="text-xl font-bold tracking-tight text-foreground mb-1">
             Rep Accounts
           </h1>
-          <p className="text-[11px] text-gray-500 font-medium uppercase tracking-wider">
+          <p className="text-[11px] text-muted-foreground font-medium uppercase tracking-wider">
             Financial summary and balances for all sales representatives
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <button className="px-4 py-1.5 text-xs font-semibold text-gray-400 bg-[#151B2B] rounded shadow-sm border border-[#1E293B] transition-colors hover:text-white">
+          <button className="px-4 py-1.5 text-xs font-semibold text-muted-foreground bg-[var(--card)] rounded shadow-sm border border-[var(--border)] transition-colors hover:text-foreground">
             Export Data
           </button>
         </div>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-3 mb-6">
-        <SummaryCard title="TOTAL REP SALES" amount="$429,000" color="text-[#00E5FF]" />
+        <SummaryCard title="TOTAL REP SALES" amount="$429,000" color="text-accent-teal" />
         <SummaryCard title="TOTAL COMMISSIONS" amount="$54,100" color="text-purple-400" />
         <SummaryCard title="TOTAL PENDING PAYABLE" amount="$7,600" color="text-rose-400" />
       </div>
 
-      <div className="rounded-xl border border-[#1E293B] bg-[#151B2B] shadow-sm transition-all overflow-hidden flex flex-col">
+      <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] shadow-sm transition-all overflow-hidden flex flex-col">
         <div className="flex items-center justify-between p-5 pb-5">
-          <h2 className="text-sm font-bold text-white">All Representatives</h2>
+          <h2 className="text-sm font-bold text-foreground">All Representatives</h2>
           <div className="flex gap-2">
             <FilterPill text="All" active={filter === 'All'} onClick={() => setFilter('All')} />
-            <FilterPill text="Top Performers" active={filter === 'Top Performers'} color="bg-emerald-500/20 text-emerald-400" activeColor="bg-emerald-500 text-[#0B101E]" onClick={() => setFilter('Top Performers')} />
-            <FilterPill text="Needs Payment" active={filter === 'Needs Payment'} color="bg-rose-500/20 text-rose-500" activeColor="bg-rose-500 text-[#0B101E]" onClick={() => setFilter('Needs Payment')} />
+            <FilterPill text="Top Performers" active={filter === 'Top Performers'} color="bg-emerald-500/20 text-emerald-400" activeColor="bg-emerald-500 text-[var(--background)]" onClick={() => setFilter('Top Performers')} />
+            <FilterPill text="Needs Payment" active={filter === 'Needs Payment'} color="bg-rose-500/20 text-rose-500" activeColor="bg-rose-500 text-[var(--background)]" onClick={() => setFilter('Needs Payment')} />
           </div>
         </div>
         <div className="flex-1 px-5 pb-5">
@@ -77,19 +77,19 @@ export default function RepAccountsPage() {
 
 function SummaryCard({ title, amount, color }: { title: string, amount: string, color: string }) {
   return (
-    <div className="rounded-xl border border-[#1E293B] border-t-[3px] border-t-[#1E293B] bg-[#151B2B] p-5 shadow-sm transition-all hover:bg-white/[0.02]">
-      <h3 className="text-[10px] font-bold tracking-widest text-gray-500 uppercase">{title}</h3>
+    <div className="rounded-xl border border-[var(--border)] border-t-[3px] border-t-[var(--border)] bg-[var(--card)] p-5 shadow-sm transition-all hover:bg-white/[0.02]">
+      <h3 className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase">{title}</h3>
       <div className={cn("mt-2 text-3xl font-black tracking-tight", color)}>{amount}</div>
     </div>
   )
 }
 
 function FilterPill({ text, active, onClick, color, activeColor }: { text: string, active: boolean, onClick: () => void, color?: string, activeColor?: string }) {
-  const baseClasses = "px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded border border-[#1E293B] transition-all cursor-pointer";
+  const baseClasses = "px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded border border-[var(--border)] transition-all cursor-pointer";
   
   if (active) {
     return (
-      <button onClick={onClick} className={cn(baseClasses, activeColor || "bg-[#334155] text-white border-[#334155]")}>
+      <button onClick={onClick} className={cn(baseClasses, activeColor || "bg-[#334155] text-foreground border-[#334155]")}>
         {text}
       </button>
     );
@@ -104,8 +104,9 @@ function FilterPill({ text, active, onClick, color, activeColor }: { text: strin
   }
   
   return (
-    <button onClick={onClick} className={cn(baseClasses, "text-gray-400 hover:text-white hover:bg-[#1E293B]/50")}>
+    <button onClick={onClick} className={cn(baseClasses, "text-muted-foreground hover:text-foreground hover:bg-[var(--border)]/50")}>
       {text}
     </button>
   )
 }
+
