@@ -91,8 +91,6 @@ export default function UsersManagementPage() {
       )
     },
     { header: "PHONE", accessorKey: "phone" as const },
-    {
-      header: "ROLE",
     { header: "EMAIL", accessorKey: "email" as const },
     {
       header: "ROLE",
@@ -111,8 +109,6 @@ export default function UsersManagementPage() {
         </span>
       )
     },
-    {
-      header: "TERRITORY",
     { header: "PHONE", accessorKey: "phone" as const },
     {
       header: "TERRITORY",
@@ -344,8 +340,8 @@ export default function UsersManagementPage() {
                     <ShieldAlert className="h-4 w-4" />
                     <div className="text-sm font-medium">Account Status ({selectedUser.status})</div>
                   </div>
-                  <button
-                    onClick={handleToggleStatus}
+                  {/* <button
+                    onClick={handleToggleStatus} */}
                   <button
                     onClick={() => { if (selectedUser) handleToggleStatus(selectedUser, selectedUser.status); }}
                     className={cn(
@@ -448,13 +444,110 @@ export default function UsersManagementPage() {
               >
                 Cancel
               </button>
-              <button
-                onClick={() => updateUserStatus('Inactive')}
+              {/* <button
+                onClick={() => updateUserStatus('Inactive')} */}
               <button
                 onClick={() => selectedUser && updateUserStatus('Inactive', selectedUser.id)}
                 className="flex-1 py-2 text-xs font-bold text-white bg-rose-500 rounded-lg shadow-sm transition-all hover:bg-rose-600"
               >
                 Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* REPRESENTATIVE ASSIGNMENT MODAL */}
+      {isRepModalOpen && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsRepModalOpen(false)} />
+          <div className="relative bg-[var(--background)] w-full max-w-md rounded-xl border border-[var(--border)] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="p-5 border-b border-[var(--border)] flex justify-between items-center">
+              <div>
+                <h3 className="font-bold text-foreground">Add Representative</h3>
+                <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold mt-0.5">
+                  Assign representatives to {selectedUser?.name}
+                </p>
+              </div>
+              <button onClick={() => setIsRepModalOpen(false)} className="text-muted-foreground hover:text-foreground transition-colors">
+                <X size={18} />
+              </button>
+            </div>
+            
+            <div className="p-5 space-y-4">
+              {/* Search Box */}
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <input
+                  type="text"
+                  placeholder="Search by name or email..."
+                  className="w-full bg-[var(--card)] border border-[var(--border)] rounded-lg py-2 pl-9 pr-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-accent-teal transition-colors"
+                  value={repSearch}
+                  onChange={(e) => setRepSearch(e.target.value)}
+                />
+              </div>
+
+              {/* Rep List */}
+              <div className="max-h-[300px] overflow-y-auto space-y-2 pr-1 scrollbar-thin scrollbar-thumb-[var(--border)]">
+                {users
+                  .filter(u => 
+                    u.role === 'Rep' && 
+                    (u.name.toLowerCase().includes(repSearch.toLowerCase()) || u.email.toLowerCase().includes(repSearch.toLowerCase()))
+                  )
+                  .map(rep => {
+                    const isSelected = selectedRepIds.includes(rep.id);
+                    return (
+                      <div 
+                        key={rep.id}
+                        onClick={() => {
+                          setSelectedRepIds(prev => 
+                            prev.includes(rep.id) ? prev.filter(id => id !== rep.id) : [...prev, rep.id]
+                          );
+                        }}
+                        className={cn(
+                          "flex items-center justify-between p-3 rounded-lg border cursor-pointer transition-all",
+                          isSelected 
+                            ? "bg-accent-teal/10 border-accent-teal" 
+                            : "bg-[var(--card)] border-[var(--border)] hover:border-gray-500"
+                        )}
+                      >
+                        <div className="flex items-center gap-3">
+                          <img src={rep.avatar} alt="" className="h-8 w-8 rounded-full border border-[var(--border)] object-cover" />
+                          <div>
+                            <div className="text-sm font-bold text-foreground">{rep.name}</div>
+                            <div className="text-[10px] text-muted-foreground">{rep.email}</div>
+                          </div>
+                        </div>
+                        <div className={cn(
+                          "h-5 w-5 rounded-full border flex items-center justify-center transition-colors",
+                          isSelected ? "bg-accent-teal border-accent-teal" : "border-[var(--border)]"
+                        )}>
+                          {isSelected && <Check className="h-3 w-3 text-background" />}
+                        </div>
+                      </div>
+                    );
+                  })}
+                {users.filter(u => u.role === 'Rep' && (u.name.toLowerCase().includes(repSearch.toLowerCase()) || u.email.toLowerCase().includes(repSearch.toLowerCase()))).length === 0 && (
+                  <div className="py-8 text-center text-muted-foreground text-sm">
+                    No representatives found matching your search.
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="p-4 bg-[var(--card)] border-t border-[var(--border)] flex justify-end gap-3">
+              <button onClick={() => setIsRepModalOpen(false)} className="px-4 py-2 text-xs font-bold text-muted-foreground hover:text-foreground transition-colors">
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  // Logic to save assignment would go here
+                  setIsRepModalOpen(false);
+                }}
+                className="px-5 py-2 text-xs font-bold text-[var(--background)] bg-accent-teal rounded-lg shadow-sm transition-all hover:bg-cyan-400 disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={selectedRepIds.length === 0}
+              >
+                Confirm Assignment ({selectedRepIds.length})
               </button>
             </div>
           </div>
