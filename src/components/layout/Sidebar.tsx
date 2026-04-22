@@ -68,9 +68,8 @@ const adminNavItems = [
   { name: 'Inventory', href: '/admin/dashboard/inventory', icon: Package },
   { name: 'Purchase Orders (PO)', href: '/admin/dashboard/purchase-orders', icon: ShoppingCart },
   { name: 'Shipments', href: '/admin/dashboard/shipments', icon: Truck },
-  { name: 'Finance', href: '/admin/dashboard/finance', icon: DollarSign },
+  { name: 'Driver Payments', href: '/admin/dashboard/driver-earnings', icon: Wallet },
   { name: 'Physicians & Surgeries', href: '/admin/dashboard/physicians', icon: Stethoscope },
-  { name: 'Reports & Export', href: '/admin/dashboard/reports', icon: FileDown },
   { name: 'Notifications', href: '/admin/dashboard/notifications', icon: Bell },
   { name: 'Support / Help', href: '/admin/dashboard/support', icon: HelpCircle },
 ];
@@ -125,7 +124,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
 
         <div className="flex flex-1 flex-col overflow-y-auto px-4 py-6 gap-6 scrollbar-thin scrollbar-thumb-[#1E293B]">
           <NavSection title="MAIN" items={mainNavItems} pathname={pathname} />
-          
+
           {pathname.startsWith('/admin') ? (
             <NavSection title="ADMIN" items={adminNavItems} pathname={pathname} />
           ) : (
@@ -162,7 +161,7 @@ function NavSection({
       <nav className="flex flex-col gap-0.5">
         {items.map((item) => {
           const isActive = pathname === item.href;
-          
+
           return (
             <Link
               key={item.name}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { DataTable, StatusBadge } from '@/components/ui/DataTable';
 import { 
@@ -23,8 +24,8 @@ const mockUsers = [
   { id: '2', name: 'Sarah Johnson', email: 'sarah@invictus.com', phone: '(555) 234-5678', role: 'Manager', territory: 'Northeast', regDate: 'Feb 02, 2026', status: 'Active', avatar: 'https://i.pravatar.cc/150?u=2' },
   { id: '3', name: 'Michael Chen', email: 'michael@invictus.com', phone: '(555) 345-6789', role: 'Rep', territory: 'Pending', regDate: 'Mar 10, 2026', status: 'Active', avatar: 'https://i.pravatar.cc/150?u=3' },
   { id: '4', name: 'Amanda Davis', email: 'amanda@invictus.com', phone: '(555) 456-7890', role: 'Finance', territory: 'All Regions', regDate: 'Nov 05, 2025', status: 'Active', avatar: 'https://i.pravatar.cc/150?u=4' },
-  { id: '5', name: 'David Wilson', email: 'david@invictus.com', phone: '(555) 567-8901', role: 'Rep', territory: 'South', regDate: 'Dec 12, 2025', status: 'Inactive', avatar: 'https://i.pravatar.cc/150?u=5' },
-  { id: '6', name: 'Jessica Taylor', email: 'jessica@invictus.com', phone: '(555) 678-9012', role: 'Rep', territory: 'West Coast', regDate: 'Apr 02, 2026', status: 'Active', avatar: 'https://i.pravatar.cc/150?u=6' },
+  { id: '5', name: 'Daniel Carter', email: 'daniel.c@invictus.com', phone: '(555) 789-0123', role: 'Driver', territory: 'Northeast', regDate: 'Dec 12, 2025', status: 'Active', avatar: 'https://i.pravatar.cc/150?u=5' },
+  { id: '6', name: 'Jessica Taylor', email: 'jessica@invictus.com', phone: '(555) 678-9012', role: 'Rep', territory: 'West Coast', regDate: 'Apr 02, 2026', status: 'Inactive', avatar: 'https://i.pravatar.cc/150?u=6' },
 ];
 
 export default function UsersManagementPage() {
@@ -54,19 +55,18 @@ export default function UsersManagementPage() {
   const inactiveCount = users.filter(u => u.status === 'Inactive').length;
   const pendingTerritoryCount = users.filter(u => u.territory === 'Pending').length;
 
-  const handleToggleStatus = () => {
-    if (!selectedUser) return;
-    if (selectedUser.status === 'Active') {
+  const handleToggleStatus = (user: typeof mockUsers[0], currentStatus: string) => {
+    setSelectedUser(user);
+    if (currentStatus === 'Active') {
       setIsDeactivateModalOpen(true);
     } else {
-      // Reactivate directly
-      updateUserStatus('Active');
+      updateUserStatus('Active', user.id);
     }
   };
 
-  const updateUserStatus = (newStatus: string) => {
-    setUsers(users.map(u => u.id === selectedUser?.id ? { ...u, status: newStatus } : u));
-    if (selectedUser) setSelectedUser({ ...selectedUser, status: newStatus });
+  const updateUserStatus = (newStatus: string, userId: string) => {
+    setUsers(users.map(u => u.id === userId ? { ...u, status: newStatus } : u));
+    if (selectedUser?.id === userId) setSelectedUser({ ...selectedUser, status: newStatus });
     setIsDeactivateModalOpen(false);
   };
 
@@ -85,13 +85,25 @@ export default function UsersManagementPage() {
         </div>
       )
     },
-    { header: "PHONE", accessorKey: "phone" as const },
+    { header: "EMAIL", accessorKey: "email" as const },
     { 
       header: "ROLE", 
       render: (item: typeof mockUsers[0]) => (
-        <span className="text-[#00E5FF] font-medium">{item.role}</span>
+        <span className={cn(
+          "px-2.5 py-1 text-[10px] uppercase font-bold tracking-wider rounded-md",
+          item.role === 'Driver' 
+            ? "bg-purple-500/10 text-purple-400 border border-purple-500/20" 
+            : item.role === 'Manager' 
+              ? "bg-amber-500/10 text-amber-500 border border-amber-500/20"
+              : item.role === 'Finance'
+                ? "bg-emerald-500/10 text-emerald-500 border border-emerald-500/20"
+                : "bg-[#00E5FF]/10 text-[#00E5FF] border border-[#00E5FF]/20"
+        )}>
+          {item.role}
+        </span>
       )
     },
+    { header: "PHONE", accessorKey: "phone" as const },
     { 
       header: "TERRITORY", 
       render: (item: typeof mockUsers[0]) => (
@@ -103,23 +115,42 @@ export default function UsersManagementPage() {
         </span>
       )
     },
-    { header: "REG EXP DATE", accessorKey: "regDate" as const, className: "text-gray-400" },
     {
       header: "STATUS",
-      render: (item: typeof mockUsers[0]) => {
-        const type = item.status === 'Active' ? 'success' : 'default';
-        return <StatusBadge status={item.status} type={item.status === 'Active' ? 'success' : 'default'} />;
-      }
+      render: (item: typeof mockUsers[0]) => (
+        <div className="flex items-center gap-2">
+          <button 
+            onClick={(e) => { e.stopPropagation(); handleToggleStatus(item, item.status); }}
+            className={cn(
+              "relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full transition-colors focus:outline-none",
+              item.status === 'Active' ? "bg-[#00E5FF]" : "bg-gray-600"
+            )}
+            title={`Click to ${item.status === 'Active' ? 'deactivate' : 'activate'}`}
+          >
+            <span className={cn(
+              "pointer-events-none block h-4 w-4 rounded-full bg-white shadow-sm ring-0 transition-transform",
+              item.status === 'Active' ? "translate-x-2" : "-translate-x-2"
+            )} />
+          </button>
+          <span className={cn("text-xs font-medium", item.status === 'Active' ? "text-gray-300" : "text-gray-500")}>
+            {item.status}
+          </span>
+        </div>
+      )
     },
     {
       header: "ACTIONS",
       render: (item: typeof mockUsers[0]) => (
-        <button 
-          onClick={(e) => { e.stopPropagation(); setSelectedUser(item); }}
-          className="px-3 py-1 text-[10px] font-bold text-[#00E5FF] bg-[#00E5FF]/10 rounded hover:bg-[#00E5FF]/20 transition-colors"
-        >
-          Details
-        </button>
+        <div className="flex items-center gap-2">
+          <Link href={`/admin/dashboard/users/${item.id}`} onClick={(e) => e.stopPropagation()}>
+            <button className="px-3 py-1 font-bold text-[#00E5FF] bg-[#00E5FF]/10 rounded hover:bg-[#00E5FF]/20 transition-colors">
+              Details
+            </button>
+          </Link>
+          <button onClick={(e) => { e.stopPropagation(); setSelectedUser(item); }} className="p-1 text-gray-400 hover:text-white transition-colors">
+            <Edit2 className="h-4 w-4" />
+          </button>
+        </div>
       )
     }
   ];
@@ -183,6 +214,7 @@ export default function UsersManagementPage() {
               <option value="Rep">Rep</option>
               <option value="Manager">Manager</option>
               <option value="Finance">Finance</option>
+              <option value="Driver">Driver</option>
             </select>
             
             <select 
@@ -286,7 +318,7 @@ export default function UsersManagementPage() {
                     <div className="text-sm font-medium">Account Status ({selectedUser.status})</div>
                   </div>
                   <button 
-                    onClick={handleToggleStatus}
+                    onClick={() => { if(selectedUser) handleToggleStatus(selectedUser, selectedUser.status); }}
                     className={cn(
                       "relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full transition-colors",
                       selectedUser.status === 'Active' ? "bg-emerald-500" : "bg-gray-500"
@@ -388,7 +420,7 @@ export default function UsersManagementPage() {
                 Cancel
               </button>
               <button 
-                onClick={() => updateUserStatus('Inactive')}
+                onClick={() => selectedUser && updateUserStatus('Inactive', selectedUser.id)}
                 className="flex-1 py-2 text-xs font-bold text-white bg-rose-500 rounded-lg shadow-sm transition-all hover:bg-rose-600"
               >
                 Confirm
