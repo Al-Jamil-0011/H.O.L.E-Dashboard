@@ -7,6 +7,11 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { DataTable, StatusBadge } from '@/components/ui/DataTable';
+import dynamic from 'next/dynamic';
+import { useTheme } from 'next-themes';
+import type { ApexOptions } from 'apexcharts';
+
+const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 // Mock Data
 const recentActivityData = [
@@ -16,6 +21,101 @@ const recentActivityData = [
 ];
 
 export default function Home() {
+    const { theme } = useTheme();
+    const isDark = theme === 'dark';
+
+    const lineChartOptions: ApexOptions = {
+        chart: {
+            toolbar: { show: false },
+            background: 'transparent',
+            fontFamily: 'inherit',
+        },
+        theme: {
+            mode: isDark ? 'dark' : 'light',
+        },
+        colors: ['#00E5FF', '#3b82f6'],
+        fill: {
+            type: ['gradient', 'gradient'],
+            gradient: {
+                shadeIntensity: 1,
+                opacityFrom: 0.4,
+                opacityTo: 0.05,
+                stops: [0, 100]
+            }
+        },
+        stroke: { curve: 'smooth', width: 2 },
+        xaxis: {
+            categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+            labels: { style: { colors: isDark ? '#a1a1aa' : '#71717a' } },
+            axisBorder: { show: false },
+            axisTicks: { show: false }
+        },
+        yaxis: {
+            labels: {
+                style: { colors: isDark ? '#a1a1aa' : '#71717a' },
+                formatter: (value) => `$${value / 1000}k`
+            }
+        },
+        dataLabels: { enabled: false },
+        grid: {
+            borderColor: isDark ? '#27272a' : '#e4e4e7',
+            strokeDashArray: 4,
+            xaxis: { lines: { show: false } },
+            yaxis: { lines: { show: true } }
+        },
+        legend: { show: false },
+        tooltip: { theme: isDark ? 'dark' : 'light' }
+    };
+
+    const lineChartSeries = [
+        { name: 'Revenue', data: [31000, 40000, 28000, 51000, 42000, 109000] },
+        { name: 'Expenses', data: [11000, 32000, 45000, 32000, 34000, 52000] }
+    ];
+
+    const barChartOptions: ApexOptions = {
+        chart: {
+            toolbar: { show: false },
+            background: 'transparent',
+            fontFamily: 'inherit',
+        },
+        theme: {
+            mode: isDark ? 'dark' : 'light',
+        },
+        plotOptions: {
+            bar: {
+                borderRadius: 4,
+                horizontal: false,
+                columnWidth: '40%'
+            }
+        },
+        colors: ['#00E5FF'],
+        xaxis: {
+            categories: ['John', 'Mike', 'Alex', 'Sarah', 'David'],
+            labels: { style: { colors: isDark ? '#a1a1aa' : '#71717a' } },
+            axisBorder: { show: false },
+            axisTicks: { show: false }
+        },
+        yaxis: {
+            labels: {
+                style: { colors: isDark ? '#a1a1aa' : '#71717a' },
+                formatter: (value) => `$${value / 1000}k`
+            }
+        },
+        dataLabels: { enabled: false },
+        grid: {
+            borderColor: isDark ? '#27272a' : '#e4e4e7',
+            strokeDashArray: 4,
+            xaxis: { lines: { show: false } },
+            yaxis: { lines: { show: true } }
+        },
+        legend: { show: false },
+        tooltip: { theme: isDark ? 'dark' : 'light' }
+    };
+
+    const barChartSeries = [
+        { name: 'Sales YTD', data: [45000, 38000, 32000, 28000, 21000] }
+    ];
+
     const columns = [
         { header: "SALE ID", accessorKey: "id" as const, className: "font-medium text-accent-teal" },
         { header: "REP", accessorKey: "rep" as const },
@@ -77,7 +177,7 @@ export default function Home() {
 
             <div className="grid gap-4 lg:grid-cols-2">
                 <div className="rounded-xl border border-border bg-card shadow-sm lg:col-span-1 transition-all h-[320px] flex flex-col">
-                    <div className="flex items-center justify-between p-5 pb-0">
+                    <div className="flex items-center justify-between p-5 pb-0 z-10 relative">
                         <div>
                             <h2 className="text-sm font-bold text-foreground">Monthly Revenue</h2>
                             <p className="text-[10px] text-muted-foreground mt-1">Jan-Jun 2026</p>
@@ -87,20 +187,20 @@ export default function Home() {
                             <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-blue-500/50"></span>Expenses</span>
                         </div>
                     </div>
-                    <div className="flex-1 p-5 flex items-center justify-center">
-                        <p className="text-xs text-gray-600 font-mono">[ Line Chart Placeholder ]</p>
+                    <div className="flex-1 min-h-0 w-full pl-2 pb-2">
+                        <Chart options={lineChartOptions} series={lineChartSeries} type="area" height="100%" width="100%" />
                     </div>
                 </div>
 
                 <div className="rounded-xl border border-border bg-card shadow-sm lg:col-span-1 transition-all h-[320px] flex flex-col">
-                    <div className="flex items-center justify-between p-5 pb-0">
+                    <div className="flex items-center justify-between p-5 pb-0 z-10 relative">
                         <div>
                             <h2 className="text-sm font-bold text-foreground">Rep Performance</h2>
                             <p className="text-[10px] text-muted-foreground mt-1">Sales $ vs Rep (YTD 2026)</p>
                         </div>
                     </div>
-                    <div className="flex-1 p-5 flex items-center justify-center">
-                        <p className="text-xs text-gray-600 font-mono">[ Bar Chart Placeholder ]</p>
+                    <div className="flex-1 min-h-0 w-full pl-2 pb-2 pt-2">
+                        <Chart options={barChartOptions} series={barChartSeries} type="bar" height="100%" width="100%" />
                     </div>
                 </div>
             </div>
