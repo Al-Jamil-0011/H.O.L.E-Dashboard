@@ -3,30 +3,158 @@
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { DataTable } from '@/components/ui/DataTable';
+import { ExpenseDetailsDrawer, ExpenseItem } from './components/ExpenseDetailsDrawer';
+import { ApproveExpenseModal, RejectExpenseModal } from './components/ExpenseModals';
 
-const allExpenseData = [
-  { id: 1, expense: 'FedEx — City Hospital', category: 'SHIPMENT', amount: '$450', date: 'Mar 10, 2026', submittedBy: 'John Smith', status: 'APPROVED' },
-  { id: 2, expense: 'Flight — Chicago Conf.', category: 'TRAVEL', amount: '$820', date: 'Mar 8, 2026', submittedBy: 'Sarah Johnson', status: 'APPROVED' },
-  { id: 3, expense: 'UPS — Metro Hospital', category: 'SHIPMENT', amount: '$380', date: 'Mar 12, 2026', submittedBy: 'Mike Chen', status: 'PENDING' },
-  { id: 4, expense: 'Office Supplies Q1', category: 'OFFICE', amount: '$640', date: 'Mar 1, 2026', submittedBy: 'Admin', status: 'APPROVED' },
-  { id: 5, expense: 'LinkedIn Ads — March', category: 'MARKETING', amount: '$600', date: 'Mar 1, 2026', submittedBy: 'Marketing', status: 'PENDING' },
+const initialExpenseData: ExpenseItem[] = [
+  { 
+    id: 1, 
+    expense: 'FedEx — City Hospital', 
+    category: 'SHIPMENT', 
+    amount: '$450.00', 
+    date: 'Mar 10, 2026', 
+    submittedBy: 'John Smith', 
+    status: 'APPROVED',
+    role: 'Logistics Coordinator',
+    submittedTime: 'Mar 11, 2026 • 08:30 AM',
+    physicianClient: 'City Hospital',
+    paidStatus: 'Corporate Card',
+    description: 'Emergency shipment of spinal implant kits to City Hospital for Dr. Roberts surgery.',
+    attachments: [
+      { name: 'FedEx_Receipt_1039.pdf', size: '1.2 MB', type: 'pdf' }
+    ]
+  },
+  { 
+    id: 2, 
+    expense: 'Flight — Chicago Conf.', 
+    category: 'TRAVEL', 
+    amount: '$820.00', 
+    date: 'Mar 8, 2026', 
+    submittedBy: 'Sarah Johnson', 
+    status: 'APPROVED',
+    role: 'Sales Representative',
+    submittedTime: 'Mar 09, 2026 • 10:15 AM',
+    physicianClient: 'N/A',
+    paidStatus: 'Reimbursable',
+    description: 'Round trip flight to Chicago for the Annual Orthopedic Surgeons Conference.',
+    attachments: [
+      { name: 'Delta_Itinerary.pdf', size: '840 KB', type: 'pdf' }
+    ]
+  },
+  { 
+    id: 3, 
+    expense: 'UPS — Metro Hospital', 
+    category: 'SHIPMENT', 
+    amount: '$380.00', 
+    date: 'Mar 12, 2026', 
+    submittedBy: 'Alex Johnson', 
+    status: 'PENDING',
+    role: 'Sales Representative',
+    submittedTime: 'Mar 12, 2026 • 09:45 AM',
+    physicianClient: 'Dr. Smith',
+    paidStatus: 'Corporate Card',
+    description: 'Lunch meeting with Dr. Smith to discuss the new pharmaceutical lineup and distribution schedule for the downtown clinic.',
+    attachments: [
+      { name: 'PO_889_Final.pdf', size: '1.2 MB', type: 'pdf' },
+      { name: 'Implant_Serial_Photo.jpg', size: '3.4 MB', type: 'jpg' }
+    ]
+  },
+  { 
+    id: 4, 
+    expense: 'Office Supplies Q1', 
+    category: 'OFFICE', 
+    amount: '$640.00', 
+    date: 'Mar 1, 2026', 
+    submittedBy: 'Admin', 
+    status: 'APPROVED',
+    role: 'Operations Manager',
+    submittedTime: 'Mar 02, 2026 • 11:00 AM',
+    physicianClient: 'N/A',
+    paidStatus: 'Corporate Card',
+    description: 'Bulk purchase of printer ink, paper, and general office supplies for Q1.',
+    attachments: [
+      { name: 'Staples_Invoice.pdf', size: '2.1 MB', type: 'pdf' }
+    ]
+  },
+  { 
+    id: 5, 
+    expense: 'LinkedIn Ads — March', 
+    category: 'MARKETING', 
+    amount: '$600.00', 
+    date: 'Mar 1, 2026', 
+    submittedBy: 'Marketing', 
+    status: 'PENDING',
+    role: 'Marketing Director',
+    submittedTime: 'Mar 05, 2026 • 02:20 PM',
+    physicianClient: 'N/A',
+    paidStatus: 'Corporate Card',
+    description: 'Monthly LinkedIn advertising budget for B2B clinical outreach campaign.',
+    attachments: [
+      { name: 'LinkedIn_Ads_March.pdf', size: '500 KB', type: 'pdf' }
+    ]
+  },
 ];
 
 export default function ExpensesPage() {
   const [filter, setFilter] = useState('All');
+  const [expensesData, setExpensesData] = useState<ExpenseItem[]>(initialExpenseData);
 
-  const filteredData = allExpenseData.filter(item => {
+  // Drawer and Modal States
+  const [selectedExpense, setSelectedExpense] = useState<ExpenseItem | null>(null);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  
+  const [isApproveModalOpen, setIsApproveModalOpen] = useState(false);
+  const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
+  const [actionExpense, setActionExpense] = useState<ExpenseItem | null>(null);
+
+  const filteredData = expensesData.filter(item => {
     if (filter === 'All') return true;
     if (filter === 'Approved') return item.status === 'APPROVED';
     if (filter === 'Pending') return item.status === 'PENDING';
     return true;
   });
 
+  const openDrawer = (expense: ExpenseItem) => {
+    setSelectedExpense(expense);
+    setIsDrawerOpen(true);
+  };
+
+  const openApproveModal = (expense: ExpenseItem) => {
+    setActionExpense(expense);
+    setIsApproveModalOpen(true);
+  };
+
+  const openRejectModal = (expense: ExpenseItem) => {
+    setActionExpense(expense);
+    setIsRejectModalOpen(true);
+  };
+
+  const handleApprove = () => {
+    if (!actionExpense) return;
+    setExpensesData(prev => prev.map(exp => 
+      exp.id === actionExpense.id ? { ...exp, status: 'APPROVED' } : exp
+    ));
+    if (selectedExpense?.id === actionExpense.id) {
+      setSelectedExpense({ ...selectedExpense, status: 'APPROVED' });
+    }
+  };
+
+  const handleReject = (reason: string) => {
+    if (!actionExpense) return;
+    // In a real app, you might save the reason to the expense object here
+    setExpensesData(prev => prev.map(exp => 
+      exp.id === actionExpense.id ? { ...exp, status: 'REJECTED' } : exp
+    ));
+    if (selectedExpense?.id === actionExpense.id) {
+      setSelectedExpense({ ...selectedExpense, status: 'REJECTED' });
+    }
+  };
+
   const columns = [
     { header: "EXPENSE", accessorKey: "expense" as const, className: "font-medium text-white text-sm" },
     {
       header: "CATEGORY",
-      render: (item: typeof allExpenseData[0]) => {
+      render: (item: ExpenseItem) => {
         let colorClass = "bg-gray-500/10 text-gray-400";
         if (item.category === 'SHIPMENT') colorClass = "bg-[#00E5FF]/10 text-[#00E5FF]";
         else if (item.category === 'TRAVEL') colorClass = "bg-purple-500/10 text-purple-400";
@@ -45,12 +173,12 @@ export default function ExpensesPage() {
     { header: "SUBMITTED BY", accessorKey: "submittedBy" as const, className: "text-gray-400 text-sm" },
     {
       header: "STATUS",
-      render: (item: typeof allExpenseData[0]) => {
+      render: (item: ExpenseItem) => {
         const isApproved = item.status === 'APPROVED';
         return (
           <span className={cn(
             "text-[10px] font-bold tracking-widest uppercase",
-            isApproved ? "text-emerald-500" : "text-amber-500"
+            isApproved ? "text-emerald-500" : item.status === 'PENDING' ? "text-amber-500" : "text-rose-500"
           )}>
             {item.status}
           </span>
@@ -59,18 +187,24 @@ export default function ExpensesPage() {
     },
     {
       header: "ACTIONS",
-      render: (item: typeof allExpenseData[0]) => (
+      render: (item: ExpenseItem) => (
         <div className="flex items-center gap-2">
           {item.status === 'PENDING' ? (
             <>
               <button
-                onClick={() => console.log('Approve', item.id)}
+                onClick={(e) => { e.stopPropagation(); openDrawer(item); }}
+                className="px-4 py-1.5 text-[11px] font-semibold text-gray-300 bg-[#334155]/50 hover:bg-[#334155] rounded transition-colors"
+              >
+                View
+              </button>
+              <button
+                onClick={(e) => { e.stopPropagation(); openApproveModal(item); }}
                 className="px-3 py-1.5 text-[11px] font-bold text-emerald-500 hover:text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/20 rounded transition-colors"
               >
                 Approve
               </button>
               <button
-                onClick={() => console.log('Reject', item.id)}
+                onClick={(e) => { e.stopPropagation(); openRejectModal(item); }}
                 className="px-3 py-1.5 text-[11px] font-bold text-rose-500 hover:text-rose-400 bg-rose-500/10 hover:bg-rose-500/20 rounded transition-colors"
               >
                 Reject
@@ -78,7 +212,7 @@ export default function ExpensesPage() {
             </>
           ) : (
             <button
-              onClick={() => console.log('View', item.id)}
+              onClick={(e) => { e.stopPropagation(); openDrawer(item); }}
               className="px-4 py-1.5 text-[11px] font-semibold text-gray-300 bg-[#334155]/50 hover:bg-[#334155] rounded transition-colors"
             >
               View
@@ -90,7 +224,7 @@ export default function ExpensesPage() {
   ];
 
   return (
-    <div className="space-y-6 animate-in fade-in zoom-in duration-500">
+    <div className="space-y-6 animate-in fade-in zoom-in duration-500 pb-10">
       <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
         <div>
           <h1 className="text-xl font-bold tracking-tight text-white mb-1">
@@ -116,44 +250,20 @@ export default function ExpensesPage() {
         </div>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-4 mb-6">
-        <StatCard title="TOTAL EXPENSES" amount="$12,000" subtitle="+8% this month" subtitleColor="text-rose-500" borderColor="border-t-rose-500" />
-        <StatCard title="PENDING APPROVAL" amount="$2,400" subtitle="4 pending" subtitleColor="text-amber-500" borderColor="border-t-amber-500" />
-        <StatCard title="APPROVED" amount="$9,600" subtitle="12 expenses" subtitleColor="text-emerald-500" borderColor="border-t-emerald-500" />
-        <StatCard title="BUDGET LEFT" amount="$8,000" subtitle="40% remaining" subtitleColor="text-amber-500" borderColor="border-t-blue-500" />
-      </div>
-
-      <div className="grid gap-4 lg:grid-cols-2 mb-6">
-        {/* By Category */}
-        <div className="rounded-xl border border-[#1E293B] bg-[#151B2B] p-5 shadow-sm">
-          <h2 className="text-sm font-bold text-white mb-5 border-b border-[#1E293B] pb-3">By Category</h2>
-          <div className="space-y-4">
-            <ProgressBar label="Shipment" amount="$5,400" percentage={54} color="bg-[#00E5FF]" />
-            <ProgressBar label="Travel" amount="$3,000" percentage={30} color="bg-purple-500" />
-            <ProgressBar label="Office" amount="$1,800" percentage={18} color="bg-emerald-500" />
-            <ProgressBar label="Marketing" amount="$1,200" percentage={12} color="bg-amber-500" />
-            <ProgressBar label="Other" amount="$600" percentage={6} color="bg-gray-500" />
-          </div>
+      <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 mb-6">
+        {/* LEFT: 2x2 Grid */}
+        <div className="xl:col-span-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <StatCard title="TOTAL EXPENSES" amount="$12,000" subtitle="+8% this month" subtitleColor="text-rose-500" borderColor="border-t-rose-500" glowColor="shadow-[0_0_15px_rgba(244,63,94,0.1)]" />
+          <StatCard title="PENDING APPROVAL" amount="$2,400" subtitle="4 pending" subtitleColor="text-amber-500" borderColor="border-t-amber-500" glowColor="shadow-[0_0_15px_rgba(245,158,11,0.1)]" />
+          <StatCard title="APPROVED" amount="$9,600" subtitle="12 expenses" subtitleColor="text-emerald-500" borderColor="border-t-emerald-500" glowColor="shadow-[0_0_15px_rgba(16,185,129,0.1)]" />
+          <StatCard title="BUDGET LEFT" amount="$8,000" subtitle="40% remaining" subtitleColor="text-amber-500" borderColor="border-t-blue-500" glowColor="shadow-[0_0_15px_rgba(59,130,246,0.1)]" />
         </div>
 
-        {/* Budget Utilization */}
-        <div className="rounded-xl border border-[#1E293B] bg-[#151B2B] p-5 shadow-sm flex flex-col">
-          <h2 className="text-sm font-bold text-white mb-5 border-b border-[#1E293B] pb-3">Budget Utilization</h2>
-          <div className="flex-1 flex flex-col items-center justify-center pt-8 pb-4">
-            <div className="text-center mb-6">
-              <span className="text-5xl font-black text-white tracking-tight">60%</span>
-              <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mt-2">OF $20,000 BUDGET USED</p>
-            </div>
-
-            <div className="w-full max-w-sm">
-              <div className="h-3 w-full bg-[#0B101E] rounded-full overflow-hidden mb-2">
-                <div className="h-full bg-gradient-to-r from-[#00E5FF] to-purple-500 rounded-full" style={{ width: '60%' }} />
-              </div>
-              <div className="flex items-center justify-between text-xs text-gray-500 font-medium">
-                <span>Used: $12,000</span>
-                <span>Left: $8,000</span>
-              </div>
-            </div>
+        {/* RIGHT: Graph */}
+        <div className="xl:col-span-7 rounded-xl border border-[#1E293B] bg-[#151B2B] p-5 shadow-sm flex flex-col">
+          <h2 className="text-sm font-bold text-white mb-6">Total Expenses Overview</h2>
+          <div className="flex-1 flex items-center justify-center min-h-[200px]">
+            <CustomLineChart />
           </div>
         </div>
       </div>
@@ -168,21 +278,120 @@ export default function ExpensesPage() {
           </div>
         </div>
         <div className="flex-1 px-5 pb-5">
-          <DataTable data={filteredData} columns={columns} />
+          <DataTable 
+            data={filteredData} 
+            columns={columns} 
+            onRowClick={(item) => openDrawer(item as ExpenseItem)}
+          />
         </div>
       </div>
+
+      {/* DRAWER */}
+      <ExpenseDetailsDrawer 
+        isOpen={isDrawerOpen}
+        onClose={() => setIsDrawerOpen(false)}
+        expense={selectedExpense}
+        onApprove={(exp) => {
+          openApproveModal(exp);
+        }}
+        onReject={(exp) => {
+          openRejectModal(exp);
+        }}
+      />
+
+      {/* MODALS */}
+      <ApproveExpenseModal 
+        isOpen={isApproveModalOpen}
+        onClose={() => setIsApproveModalOpen(false)}
+        onConfirm={handleApprove}
+      />
+
+      <RejectExpenseModal 
+        isOpen={isRejectModalOpen}
+        onClose={() => setIsRejectModalOpen(false)}
+        onSubmit={handleReject}
+      />
+
     </div>
   );
 }
 
-function StatCard({ title, amount, subtitle, subtitleColor, borderColor }: { title: string, amount: string, subtitle: string, subtitleColor: string, borderColor: string }) {
+function StatCard({ title, amount, subtitle, subtitleColor, borderColor, glowColor }: { title: string, amount: string, subtitle: string, subtitleColor: string, borderColor: string, glowColor?: string }) {
   return (
-    <div className={cn("rounded-xl border border-[#1E293B] border-t-[3px] bg-[#151B2B] p-5 shadow-sm transition-all hover:bg-white/[0.02]", borderColor)}>
+    <div className={cn("rounded-xl border border-[#1E293B] border-t-[3px] bg-[#151B2B] p-5 shadow-sm transition-all hover:bg-white/[0.02]", borderColor, glowColor)}>
       <h3 className="text-[10px] font-bold tracking-widest text-gray-500 uppercase">{title}</h3>
       <div className="mt-2 text-3xl font-black tracking-tight text-white">{amount}</div>
       <p className={cn("mt-1 text-xs font-medium", subtitleColor)}>{subtitle}</p>
     </div>
   )
+}
+
+function CustomLineChart() {
+  const data = [
+    { label: 'Oct', value: 4500 },
+    { label: 'Nov', value: 5200 },
+    { label: 'Dec', value: 4800 },
+    { label: 'Jan', value: 8100 },
+    { label: 'Feb', value: 10500 },
+    { label: 'Mar', value: 12000 },
+  ];
+
+  const maxVal = 14000;
+  const paddingX = 40;
+  const paddingY = 20;
+
+  // We use percentages for flexible rendering in SVG
+  const getX = (index: number) => paddingX + (index * (600 - 2 * paddingX)) / (data.length - 1);
+  const getY = (val: number) => 200 - paddingY - (val / maxVal) * (200 - 2 * paddingY);
+
+  let pathD = `M ${getX(0)},${getY(data[0].value)}`;
+  for (let i = 1; i < data.length; i++) {
+    const x0 = getX(i - 1);
+    const y0 = getY(data[i - 1].value);
+    const x1 = getX(i);
+    const y1 = getY(data[i].value);
+    
+    const cx0 = x0 + (x1 - x0) / 2;
+    const cy0 = y0;
+    const cx1 = x0 + (x1 - x0) / 2;
+    const cy1 = y1;
+
+    pathD += ` C ${cx0},${cy0} ${cx1},${cy1} ${x1},${y1}`;
+  }
+
+  return (
+    <div className="w-full overflow-x-auto">
+      <svg viewBox="0 0 600 200" className="w-full h-full min-w-[500px]" preserveAspectRatio="none">
+         <line x1={paddingX} y1={getY(10000)} x2={600-paddingX} y2={getY(10000)} stroke="#334155" strokeDasharray="4" strokeWidth="1" />
+         <line x1={paddingX} y1={getY(5000)} x2={600-paddingX} y2={getY(5000)} stroke="#334155" strokeDasharray="4" strokeWidth="1" />
+         
+         <text x={paddingX - 10} y={getY(10000)} fill="#64748b" fontSize="10" textAnchor="end" alignmentBaseline="middle">10k</text>
+         <text x={paddingX - 10} y={getY(5000)} fill="#64748b" fontSize="10" textAnchor="end" alignmentBaseline="middle">5k</text>
+         
+         <path d={pathD} fill="none" stroke="url(#lineGradient)" strokeWidth="3" />
+         
+         <path d={`${pathD} L ${getX(data.length - 1)},${200 - paddingY} L ${getX(0)},${200 - paddingY} Z`} fill="url(#areaGradient)" opacity="0.5" />
+
+         <defs>
+           <linearGradient id="lineGradient" x1="0" y1="0" x2="1" y2="0">
+             <stop offset="0%" stopColor="#8b5cf6" />
+             <stop offset="100%" stopColor="#00E5FF" />
+           </linearGradient>
+           <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
+             <stop offset="0%" stopColor="#00E5FF" stopOpacity="0.3" />
+             <stop offset="100%" stopColor="#151B2B" stopOpacity="0" />
+           </linearGradient>
+         </defs>
+
+         {data.map((d, i) => (
+           <g key={i}>
+             <circle cx={getX(i)} cy={getY(d.value)} r="4" fill="#0B101E" stroke="#00E5FF" strokeWidth="2" />
+             <text x={getX(i)} y={200 - 5} fill="#94a3b8" fontSize="10" textAnchor="middle">{d.label}</text>
+           </g>
+         ))}
+      </svg>
+    </div>
+  );
 }
 
 function ProgressBar({ label, amount, percentage, color }: { label: string, amount: string, percentage: number, color: string }) {

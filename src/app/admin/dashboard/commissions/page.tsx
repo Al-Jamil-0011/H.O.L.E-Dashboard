@@ -10,7 +10,7 @@ const commissionData = [
   { rep: 'Alex Rivera', sales: '$18,700', rate: '10%', comm: '$1,870', paid: '$0', status: 'PENDING' },
   { rep: 'Linda Torres', sales: '$15,200', rate: '10%', comm: '$1,520', paid: '$1,520', status: 'PAID' },
   { rep: 'James Park', sales: '$31,000', rate: '10%', comm: '$3,100', paid: '$3,100', status: 'PAID' },
-  { rep: 'David Kim', sales: '$13,600', rate: '10%', comm: '$1,360', paid: '$0', status: 'REJECTED' },
+  { rep: 'David Kim', sales: '$13,600', rate: '10%', comm: '$1,360', paid: '$0', status: 'PAID COMMISSION' },
 ];
 
 export default function CommissionsPage() {
@@ -27,7 +27,7 @@ export default function CommissionsPage() {
         if (item.status === 'PENDING') type = 'warning';
         if (item.status === 'APPROVED') type = 'success';
         if (item.status === 'PAID') type = 'success';
-        if (item.status === 'REJECTED') type = 'error';
+        if (item.status === 'TOTAL PAID') type = 'error';
         return <StatusBadge status={item.status} type={type} />;
       }
     },
@@ -79,7 +79,7 @@ export default function CommissionsPage() {
         <StatCard title="TOTAL COMMISSION" value="$44,000" trend="All reps YTD" topBorderColor="border-t-[#00E5FF]" />
         <StatCard title="PAID OUT" value="$32,000" trend="8 reps paid" trendColor="text-emerald-500" topBorderColor="border-t-emerald-500" />
         <StatCard title="PENDING APPROVAL" value="$8,500" trend="4 pending" trendColor="text-amber-500" topBorderColor="border-t-amber-500" />
-        <StatCard title="REJECTED" value="$3,500" trend="2 rejected" trendColor="text-rose-500" topBorderColor="border-t-rose-500" />
+        <StatCard title="PAID COMMISSION" value="$3,500" trend="2 PAID COMMISSION" trendColor="text-rose-500" topBorderColor="border-t-rose-500" />
       </div>
 
       <div className="rounded-xl border border-[#1E293B] bg-[#151B2B] shadow-sm transition-all overflow-hidden flex flex-col">

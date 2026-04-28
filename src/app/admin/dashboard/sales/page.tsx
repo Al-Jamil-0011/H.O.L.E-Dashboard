@@ -5,11 +5,11 @@ import { cn } from '@/lib/utils';
 import { DataTable, StatusBadge } from '@/components/ui/DataTable';
 import { CreateSaleModal } from '@/components/modals/CreateSaleModal';
 const salesData = [
-  { id: '#1001', rep: 'John Smith', doctor: 'Dr. Williams', hospital: 'City Hospital', implant: 'Knee 2x', amount: '$18,000', comm: '$1,800', status: 'PAID' },
-  { id: '#1002', rep: 'John Smith', doctor: 'Dr. Smith', hospital: 'City Hospital', implant: 'Hip 1x', amount: '$14,000', comm: '$1,400', status: 'PAID' },
+  { id: '#1001', rep: 'John Smith', doctor: 'Dr. Williams', hospital: 'City Hospital', implant: 'Knee 2x', amount: '$18,000', comm: '$1,800', status: 'APPROVED' },
+  { id: '#1002', rep: 'John Smith', doctor: 'Dr. Smith', hospital: 'City Hospital', implant: 'Hip 1x', amount: '$14,000', comm: '$1,400', status: 'APPROVED' },
   { id: '#1003', rep: 'Mike Chan', doctor: 'Dr. Patel', hospital: 'Metro Hospital', implant: 'Knee 1x', amount: '$9,500', comm: '$950', status: 'PENDING' },
-  { id: '#1004', rep: 'Alex Rivera', doctor: 'Dr. Johnson', hospital: 'Care Hospital', implant: 'Bone Cement 3x', amount: '$7,200', comm: '$720', status: 'PAID' },
-  { id: '#1005', rep: 'Sarah Johnson', doctor: 'Dr. Brown', hospital: 'Unity Medical', implant: 'Hip 2x', amount: '$11,500', comm: '$1,150', status: 'OVERDUE' },
+  { id: '#1004', rep: 'Alex Rivera', doctor: 'Dr. Johnson', hospital: 'Care Hospital', implant: 'Bone Cement 3x', amount: '$7,200', comm: '$720', status: 'APPROVED' },
+  { id: '#1005', rep: 'Sarah Johnson', doctor: 'Dr. Brown', hospital: 'Unity Medical', implant: 'Hip 2x', amount: '$11,500', comm: '$1,150', status: 'PENDING' },
 ];
 
 export default function SalesPage() {
@@ -18,9 +18,8 @@ export default function SalesPage() {
 
   const filteredData = salesData.filter(item => {
     if (filter === 'All') return true;
-    if (filter === 'Paid') return item.status === 'PAID';
+    if (filter === 'APPROVED') return item.status === 'APPROVED';
     if (filter === 'Pending') return item.status === 'PENDING';
-    if (filter === 'Overdue') return item.status === 'OVERDUE';
     return true;
   });
 
@@ -29,7 +28,7 @@ export default function SalesPage() {
     { header: "REP", accessorKey: "rep" as const },
     { header: "DOCTOR", accessorKey: "doctor" as const },
     { header: "HOSPITAL", accessorKey: "hospital" as const },
-    { header: "IMPLANT", accessorKey: "implant" as const },
+    // { header: "IMPLANT", accessorKey: "implant" as const },
     { header: "AMOUNT", accessorKey: "amount" as const, className: "text-[#00E5FF] font-medium" },
     { header: "COMMISSION", accessorKey: "comm" as const, className: "text-emerald-400" },
     {
@@ -37,7 +36,7 @@ export default function SalesPage() {
       render: (item: typeof salesData[0]) => {
         let type: "success" | "warning" | "error" = "success";
         if (item.status === 'PENDING') type = 'warning';
-        if (item.status === 'OVERDUE') type = 'error';
+        // if (item.status === 'OVERDUE') type = 'error';
         return <StatusBadge status={item.status} type={type} />;
       }
     },
@@ -48,9 +47,9 @@ export default function SalesPage() {
           <button className="px-3 py-1 text-[10px] font-medium text-gray-300 border border-[#1E293B] rounded hover:bg-white/5 transition-colors">
             View
           </button>
-          <button className="px-3 py-1 text-[10px] font-medium text-white bg-blue-600 rounded hover:bg-blue-700 transition-colors">
+          {/* <button className="px-3 py-1 text-[10px] font-medium text-white bg-blue-600 rounded hover:bg-blue-700 transition-colors">
             Invoice
-          </button>
+          </button> */}
         </div>
       )
     }
@@ -72,12 +71,12 @@ export default function SalesPage() {
           <button className="px-4 py-1.5 text-xs font-semibold text-gray-400 bg-[#151B2B] rounded shadow-sm border border-[#1E293B] transition-colors hover:text-white">
             Export CSV
           </button>
-          <button
+          {/* <button
             onClick={() => setIsModalOpen(true)}
             className="px-4 py-1.5 text-xs font-bold text-[#0B101E] bg-[#00E5FF] rounded shadow-sm transition-all hover:bg-cyan-400"
           >
             + New Sale
-          </button>
+          </button> */}
         </div>
       </div>
 
@@ -93,9 +92,9 @@ export default function SalesPage() {
           <h2 className="text-sm font-bold text-white">All Sales</h2>
           <div className="flex gap-2">
             <FilterPill text="All" active={filter === 'All'} onClick={() => setFilter('All')} />
-            <FilterPill text="Paid" active={filter === 'Paid'} color="bg-[#00E5FF]/20 text-[#00E5FF]" activeColor="bg-[#00E5FF] text-[#0B101E]" onClick={() => setFilter('Paid')} />
+            <FilterPill text="APPROVED" active={filter === 'APPROVED'} color="bg-[#00E5FF]/20 text-[#00E5FF]" activeColor="bg-[#00E5FF] text-[#0B101E]" onClick={() => setFilter('APPROVED')} />
             <FilterPill text="Pending" active={filter === 'Pending'} color="bg-amber-500/20 text-amber-500" activeColor="bg-amber-500 text-[#0B101E]" onClick={() => setFilter('Pending')} />
-            <FilterPill text="Overdue" active={filter === 'Overdue'} color="bg-rose-500/20 text-rose-500" activeColor="bg-rose-500 text-[#0B101E]" onClick={() => setFilter('Overdue')} />
+            {/* <FilterPill text="Overdue" active={filter === 'Overdue'} color="bg-rose-500/20 text-rose-500" activeColor="bg-rose-500 text-[#0B101E]" onClick={() => setFilter('Overdue')} /> */}
           </div>
         </div>
         <div className="flex-1 px-5 pb-5">
