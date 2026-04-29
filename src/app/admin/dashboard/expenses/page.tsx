@@ -7,13 +7,13 @@ import { ExpenseDetailsDrawer, ExpenseItem } from './components/ExpenseDetailsDr
 import { ApproveExpenseModal, RejectExpenseModal } from './components/ExpenseModals';
 
 const initialExpenseData: ExpenseItem[] = [
-  { 
-    id: 1, 
-    expense: 'FedEx — City Hospital', 
-    category: 'SHIPMENT', 
-    amount: '$450.00', 
-    date: 'Mar 10, 2026', 
-    submittedBy: 'John Smith', 
+  {
+    id: 1,
+    expense: 'FedEx — City Hospital',
+    category: 'SHIPMENT',
+    amount: '$450.00',
+    date: 'Mar 10, 2026',
+    submittedBy: 'John Smith',
     status: 'APPROVED',
     role: 'Logistics Coordinator',
     submittedTime: 'Mar 11, 2026 • 08:30 AM',
@@ -24,13 +24,13 @@ const initialExpenseData: ExpenseItem[] = [
       { name: 'FedEx_Receipt_1039.pdf', size: '1.2 MB', type: 'pdf' }
     ]
   },
-  { 
-    id: 2, 
-    expense: 'Flight — Chicago Conf.', 
-    category: 'TRAVEL', 
-    amount: '$820.00', 
-    date: 'Mar 8, 2026', 
-    submittedBy: 'Sarah Johnson', 
+  {
+    id: 2,
+    expense: 'Flight — Chicago Conf.',
+    category: 'TRAVEL',
+    amount: '$820.00',
+    date: 'Mar 8, 2026',
+    submittedBy: 'Sarah Johnson',
     status: 'APPROVED',
     role: 'Sales Representative',
     submittedTime: 'Mar 09, 2026 • 10:15 AM',
@@ -41,13 +41,13 @@ const initialExpenseData: ExpenseItem[] = [
       { name: 'Delta_Itinerary.pdf', size: '840 KB', type: 'pdf' }
     ]
   },
-  { 
-    id: 3, 
-    expense: 'UPS — Metro Hospital', 
-    category: 'SHIPMENT', 
-    amount: '$380.00', 
-    date: 'Mar 12, 2026', 
-    submittedBy: 'Alex Johnson', 
+  {
+    id: 3,
+    expense: 'UPS — Metro Hospital',
+    category: 'SHIPMENT',
+    amount: '$380.00',
+    date: 'Mar 12, 2026',
+    submittedBy: 'Alex Johnson',
     status: 'PENDING',
     role: 'Sales Representative',
     submittedTime: 'Mar 12, 2026 • 09:45 AM',
@@ -59,13 +59,13 @@ const initialExpenseData: ExpenseItem[] = [
       { name: 'Implant_Serial_Photo.jpg', size: '3.4 MB', type: 'jpg' }
     ]
   },
-  { 
-    id: 4, 
-    expense: 'Office Supplies Q1', 
-    category: 'OFFICE', 
-    amount: '$640.00', 
-    date: 'Mar 1, 2026', 
-    submittedBy: 'Admin', 
+  {
+    id: 4,
+    expense: 'Office Supplies Q1',
+    category: 'OFFICE',
+    amount: '$640.00',
+    date: 'Mar 1, 2026',
+    submittedBy: 'Admin',
     status: 'APPROVED',
     role: 'Operations Manager',
     submittedTime: 'Mar 02, 2026 • 11:00 AM',
@@ -76,13 +76,13 @@ const initialExpenseData: ExpenseItem[] = [
       { name: 'Staples_Invoice.pdf', size: '2.1 MB', type: 'pdf' }
     ]
   },
-  { 
-    id: 5, 
-    expense: 'LinkedIn Ads — March', 
-    category: 'MARKETING', 
-    amount: '$600.00', 
-    date: 'Mar 1, 2026', 
-    submittedBy: 'Marketing', 
+  {
+    id: 5,
+    expense: 'LinkedIn Ads — March',
+    category: 'MARKETING',
+    amount: '$600.00',
+    date: 'Mar 1, 2026',
+    submittedBy: 'Marketing',
     status: 'PENDING',
     role: 'Marketing Director',
     submittedTime: 'Mar 05, 2026 • 02:20 PM',
@@ -102,7 +102,7 @@ export default function ExpensesPage() {
   // Drawer and Modal States
   const [selectedExpense, setSelectedExpense] = useState<ExpenseItem | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  
+
   const [isApproveModalOpen, setIsApproveModalOpen] = useState(false);
   const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
   const [actionExpense, setActionExpense] = useState<ExpenseItem | null>(null);
@@ -131,7 +131,7 @@ export default function ExpensesPage() {
 
   const handleApprove = () => {
     if (!actionExpense) return;
-    setExpensesData(prev => prev.map(exp => 
+    setExpensesData(prev => prev.map(exp =>
       exp.id === actionExpense.id ? { ...exp, status: 'APPROVED' } : exp
     ));
     if (selectedExpense?.id === actionExpense.id) {
@@ -142,7 +142,7 @@ export default function ExpensesPage() {
   const handleReject = (reason: string) => {
     if (!actionExpense) return;
     // In a real app, you might save the reason to the expense object here
-    setExpensesData(prev => prev.map(exp => 
+    setExpensesData(prev => prev.map(exp =>
       exp.id === actionExpense.id ? { ...exp, status: 'REJECTED' } : exp
     ));
     if (selectedExpense?.id === actionExpense.id) {
@@ -241,12 +241,12 @@ export default function ExpensesPage() {
           >
             Export
           </button>
-          <button
+          {/* <button
             onClick={() => console.log('Add Expense')}
             className="px-4 py-2 text-xs font-bold text-[#0B101E] bg-[#00E5FF] rounded-lg shadow-sm transition-all hover:bg-cyan-400"
           >
             + Add Expense
-          </button>
+          </button> */}
         </div>
       </div>
 
@@ -278,16 +278,16 @@ export default function ExpensesPage() {
           </div>
         </div>
         <div className="flex-1 px-5 pb-5">
-          <DataTable 
-            data={filteredData} 
-            columns={columns} 
+          <DataTable
+            data={filteredData}
+            columns={columns}
             onRowClick={(item) => openDrawer(item as ExpenseItem)}
           />
         </div>
       </div>
 
       {/* DRAWER */}
-      <ExpenseDetailsDrawer 
+      <ExpenseDetailsDrawer
         isOpen={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
         expense={selectedExpense}
@@ -300,13 +300,13 @@ export default function ExpensesPage() {
       />
 
       {/* MODALS */}
-      <ApproveExpenseModal 
+      <ApproveExpenseModal
         isOpen={isApproveModalOpen}
         onClose={() => setIsApproveModalOpen(false)}
         onConfirm={handleApprove}
       />
 
-      <RejectExpenseModal 
+      <RejectExpenseModal
         isOpen={isRejectModalOpen}
         onClose={() => setIsRejectModalOpen(false)}
         onSubmit={handleReject}
@@ -350,7 +350,7 @@ function CustomLineChart() {
     const y0 = getY(data[i - 1].value);
     const x1 = getX(i);
     const y1 = getY(data[i].value);
-    
+
     const cx0 = x0 + (x1 - x0) / 2;
     const cy0 = y0;
     const cx1 = x0 + (x1 - x0) / 2;
@@ -362,33 +362,33 @@ function CustomLineChart() {
   return (
     <div className="w-full overflow-x-auto">
       <svg viewBox="0 0 600 200" className="w-full h-full min-w-[500px]" preserveAspectRatio="none">
-         <line x1={paddingX} y1={getY(10000)} x2={600-paddingX} y2={getY(10000)} stroke="#334155" strokeDasharray="4" strokeWidth="1" />
-         <line x1={paddingX} y1={getY(5000)} x2={600-paddingX} y2={getY(5000)} stroke="#334155" strokeDasharray="4" strokeWidth="1" />
-         
-         <text x={paddingX - 10} y={getY(10000)} fill="#64748b" fontSize="10" textAnchor="end" alignmentBaseline="middle">10k</text>
-         <text x={paddingX - 10} y={getY(5000)} fill="#64748b" fontSize="10" textAnchor="end" alignmentBaseline="middle">5k</text>
-         
-         <path d={pathD} fill="none" stroke="url(#lineGradient)" strokeWidth="3" />
-         
-         <path d={`${pathD} L ${getX(data.length - 1)},${200 - paddingY} L ${getX(0)},${200 - paddingY} Z`} fill="url(#areaGradient)" opacity="0.5" />
+        <line x1={paddingX} y1={getY(10000)} x2={600 - paddingX} y2={getY(10000)} stroke="#334155" strokeDasharray="4" strokeWidth="1" />
+        <line x1={paddingX} y1={getY(5000)} x2={600 - paddingX} y2={getY(5000)} stroke="#334155" strokeDasharray="4" strokeWidth="1" />
 
-         <defs>
-           <linearGradient id="lineGradient" x1="0" y1="0" x2="1" y2="0">
-             <stop offset="0%" stopColor="#8b5cf6" />
-             <stop offset="100%" stopColor="#00E5FF" />
-           </linearGradient>
-           <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
-             <stop offset="0%" stopColor="#00E5FF" stopOpacity="0.3" />
-             <stop offset="100%" stopColor="#151B2B" stopOpacity="0" />
-           </linearGradient>
-         </defs>
+        <text x={paddingX - 10} y={getY(10000)} fill="#64748b" fontSize="10" textAnchor="end" alignmentBaseline="middle">10k</text>
+        <text x={paddingX - 10} y={getY(5000)} fill="#64748b" fontSize="10" textAnchor="end" alignmentBaseline="middle">5k</text>
 
-         {data.map((d, i) => (
-           <g key={i}>
-             <circle cx={getX(i)} cy={getY(d.value)} r="4" fill="#0B101E" stroke="#00E5FF" strokeWidth="2" />
-             <text x={getX(i)} y={200 - 5} fill="#94a3b8" fontSize="10" textAnchor="middle">{d.label}</text>
-           </g>
-         ))}
+        <path d={pathD} fill="none" stroke="url(#lineGradient)" strokeWidth="3" />
+
+        <path d={`${pathD} L ${getX(data.length - 1)},${200 - paddingY} L ${getX(0)},${200 - paddingY} Z`} fill="url(#areaGradient)" opacity="0.5" />
+
+        <defs>
+          <linearGradient id="lineGradient" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor="#8b5cf6" />
+            <stop offset="100%" stopColor="#00E5FF" />
+          </linearGradient>
+          <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#00E5FF" stopOpacity="0.3" />
+            <stop offset="100%" stopColor="#151B2B" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+
+        {data.map((d, i) => (
+          <g key={i}>
+            <circle cx={getX(i)} cy={getY(d.value)} r="4" fill="#0B101E" stroke="#00E5FF" strokeWidth="2" />
+            <text x={getX(i)} y={200 - 5} fill="#94a3b8" fontSize="10" textAnchor="middle">{d.label}</text>
+          </g>
+        ))}
       </svg>
     </div>
   );

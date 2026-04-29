@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { DataTable, StatusBadge } from '@/components/ui/DataTable';
 import { CreateSaleModal } from '@/components/modals/CreateSaleModal';
@@ -42,11 +43,13 @@ export default function SalesPage() {
     },
     {
       header: "ACTIONS",
-      render: () => (
+      render: (item: typeof salesData[0]) => (
         <div className="flex items-center gap-2">
-          <button className="px-3 py-1 text-[10px] font-medium text-gray-300 border border-[#1E293B] rounded hover:bg-white/5 transition-colors">
-            View
-          </button>
+          <Link href={`/admin/dashboard/sales/${item.id.replace('#', '')}`}>
+            <button className="px-3 py-1 text-[10px] font-medium text-gray-300 border border-[#1E293B] rounded hover:bg-white/5 transition-colors">
+              View
+            </button>
+          </Link>
           {/* <button className="px-3 py-1 text-[10px] font-medium text-white bg-blue-600 rounded hover:bg-blue-700 transition-colors">
             Invoice
           </button> */}
