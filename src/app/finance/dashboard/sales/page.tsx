@@ -32,14 +32,14 @@ export default function SalesPage() {
     { header: "IMPLANT", accessorKey: "implant" as const },
     { header: "AMOUNT", accessorKey: "amount" as const, className: "text-accent-teal font-medium" },
     { header: "COMMISSION", accessorKey: "comm" as const, className: "text-emerald-400" },
-    { 
-      header: "STATUS", 
+    {
+      header: "STATUS",
       render: (item: typeof salesData[0]) => {
         let type: "success" | "warning" | "error" = "success";
         if (item.status === 'PENDING') type = 'warning';
         if (item.status === 'OVERDUE') type = 'error';
         return <StatusBadge status={item.status} type={type} />;
-      } 
+      }
     },
     {
       header: "ACTIONS",
@@ -72,12 +72,12 @@ export default function SalesPage() {
           <button className="px-4 py-1.5 text-xs font-semibold text-muted-foreground bg-[var(--card)] rounded shadow-sm border border-[var(--border)] transition-colors hover:text-foreground">
             Export CSV
           </button>
-          <button 
+          {/* <button 
             onClick={() => setIsModalOpen(true)}
             className="px-4 py-1.5 text-xs font-bold text-[var(--background)] bg-accent-teal rounded shadow-sm transition-all hover:bg-cyan-400"
           >
             + New Sale
-          </button>
+          </button> */}
         </div>
       </div>
 
@@ -93,9 +93,9 @@ export default function SalesPage() {
           <h2 className="text-sm font-bold text-foreground">All Sales</h2>
           <div className="flex gap-2">
             <FilterPill text="All" active={filter === 'All'} onClick={() => setFilter('All')} />
-            <FilterPill text="Paid" active={filter === 'Paid'} color="bg-accent-teal/20 text-accent-teal" activeColor="bg-accent-teal text-[var(--background)]" onClick={() => setFilter('Paid')} />
-            <FilterPill text="Pending" active={filter === 'Pending'} color="bg-amber-500/20 text-amber-500" activeColor="bg-amber-500 text-[var(--background)]" onClick={() => setFilter('Pending')} />
-            <FilterPill text="Overdue" active={filter === 'Overdue'} color="bg-rose-500/20 text-rose-500" activeColor="bg-rose-500 text-[var(--background)]" onClick={() => setFilter('Overdue')} />
+            <FilterPill text="Paid" active={filter === 'Paid'} color="bg-[#00E5FF]/20 text-[#00E5FF]" activeColor="bg-[#00E5FF] text-[#0B101E]" onClick={() => setFilter('Paid')} />
+            <FilterPill text="Pending" active={filter === 'Pending'} color="bg-amber-500/20 text-amber-500" activeColor="bg-amber-500 text-[#0B101E]" onClick={() => setFilter('Pending')} />
+            {/* <FilterPill text="Overdue" active={filter === 'Overdue'} color="bg-rose-500/20 text-rose-500" activeColor="bg-rose-500 text-[#0B101E]" onClick={() => setFilter('Overdue')} /> */}
           </div>
         </div>
         <div className="flex-1 px-5 pb-5">
@@ -106,14 +106,14 @@ export default function SalesPage() {
   );
 }
 
-function StatCard({ 
-  title, 
-  value, 
-  trend, 
+function StatCard({
+  title,
+  value,
+  trend,
   topBorderColor
-}: { 
-  title: string; 
-  value: string; 
+}: {
+  title: string;
+  value: string;
   trend: string;
   topBorderColor: string;
 }) {
@@ -133,8 +133,8 @@ function StatCard({
 }
 
 function FilterPill({ text, active, onClick, color, activeColor }: { text: string, active: boolean, onClick: () => void, color?: string, activeColor?: string }) {
-  const baseClasses = "px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded border border-[var(--border)] transition-all cursor-pointer";
-  
+  const baseClasses = "px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded border border-[#1E293B] transition-all cursor-pointer";
+
   if (active) {
     return (
       <button onClick={onClick} className={cn(baseClasses, activeColor || "bg-[#334155] text-foreground border-[#334155]")}>
@@ -142,7 +142,7 @@ function FilterPill({ text, active, onClick, color, activeColor }: { text: strin
       </button>
     );
   }
-  
+
   if (color) {
     return (
       <button onClick={onClick} className={cn(baseClasses, color, "hover:opacity-80")}>
@@ -150,7 +150,7 @@ function FilterPill({ text, active, onClick, color, activeColor }: { text: strin
       </button>
     )
   }
-  
+
   return (
     <button onClick={onClick} className={cn(baseClasses, "text-muted-foreground hover:text-foreground hover:bg-[var(--border)]/50")}>
       {text}
