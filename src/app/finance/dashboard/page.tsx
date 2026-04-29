@@ -14,10 +14,10 @@ import type { ApexOptions } from 'apexcharts';
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 // Mock Data
-const recentActivityData = [
-    { id: '#1002', rep: 'John Smith', hospital: 'City Hospital', amount: '$14,000', status: 'PAID' },
-    { id: '#1003', rep: 'Mike Chan', hospital: 'Metro Hospital', amount: '$9,500', status: 'PENDING' },
-    { id: '#1004', rep: 'Alex Rivera', hospital: 'Care Hospital', amount: '$7,200', status: 'PAID' },
+const recentSalesData = [
+    { id: '#1001', rep: 'John Smith', doctor: 'Dr. Williams', hospital: 'City Hospital', implant: 'Knee 2x', amount: '$18,000', comm: '$1,800', status: 'PAID' },
+    { id: '#1002', rep: 'John Smith', doctor: 'Dr. Smith', hospital: 'City Hospital', implant: 'Hip 1x', amount: '$14,000', comm: '$1,400', status: 'PAID' },
+    { id: '#1003', rep: 'Mike Chan', doctor: 'Dr. Patel', hospital: 'Metro Hospital', implant: 'Knee 1x', amount: '$9,500', comm: '$950', status: 'PENDING' }
 ];
 
 export default function Home() {
@@ -116,25 +116,29 @@ export default function Home() {
         { name: 'Sales YTD', data: [45000, 38000, 32000, 28000, 21000] }
     ];
 
+
     const columns = [
         { header: "SALE ID", accessorKey: "id" as const, className: "font-medium text-accent-teal" },
         { header: "REP", accessorKey: "rep" as const },
+        { header: "DOCTOR", accessorKey: "doctor" as const },
         { header: "HOSPITAL", accessorKey: "hospital" as const },
+        { header: "IMPLANT", accessorKey: "implant" as const },
         { header: "AMOUNT", accessorKey: "amount" as const, className: "text-accent-teal font-medium" },
+        { header: "COMMISSION", accessorKey: "comm" as const, className: "text-emerald-400" },
         {
             header: "STATUS",
-            render: (item: typeof recentActivityData[0]) => (
-                <StatusBadge
-                    status={item.status}
-                    type={item.status === 'PAID' ? 'success' : 'warning'}
-                />
-            )
+            render: (item: typeof recentSalesData[0]) => {
+                let type: "success" | "warning" | "error" = "success";
+                if (item.status === 'PENDING') type = 'warning';
+                if (item.status === 'OVERDUE') type = 'error';
+                return <StatusBadge status={item.status} type={type} />;
+            }
         },
         {
             header: "ACTIONS",
             render: () => (
                 <div className="flex items-center gap-2">
-                    <button className="px-3 py-1 text-[10px] font-medium text-muted-foreground border border-border rounded hover:bg-muted transition-colors">
+                    <button className="px-3 py-1 text-[10px] font-medium text-gray-300 border border-[var(--border)] rounded hover:bg-white/5 transition-colors">
                         View
                     </button>
                     <button className="px-3 py-1 text-[10px] font-medium text-white bg-blue-600 rounded hover:bg-blue-700 transition-colors">
@@ -207,13 +211,13 @@ export default function Home() {
 
             <div className="rounded-xl border border-border bg-card shadow-sm transition-all overflow-hidden flex flex-col">
                 <div className="flex items-center justify-between p-5">
-                    <h2 className="text-sm font-bold text-foreground">Recent Transactions</h2>
+                    <h2 className="text-sm font-bold text-foreground">Recent Sales</h2>
                     <button className="px-3 py-1 text-[10px] font-medium text-muted-foreground border border-border rounded hover:text-foreground transition-colors">
                         View All
                     </button>
                 </div>
                 <div className="flex-1 px-5 pb-5">
-                    <DataTable data={recentActivityData} columns={columns} />
+                    <DataTable data={recentSalesData} columns={columns} />
                 </div>
             </div>
         </div>

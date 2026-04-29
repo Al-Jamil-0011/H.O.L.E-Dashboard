@@ -117,7 +117,7 @@ export default function ExpensesPage() {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-4 mb-6">
-        <StatCard title="TOTAL EXPENSES" amount="$12,000" subtitle="+8% this month" subtitleColor="text-rose-500" borderColor="border-t-rose-500" />
+        <StatCard title="TOTAL EXPENSES" amount="$12,000" subtitle="+8% this month" subtitleColor="text-blue-500" borderColor="border-t-blue-500" />
         <StatCard title="PENDING APPROVAL" amount="$2,400" subtitle="4 pending" subtitleColor="text-amber-500" borderColor="border-t-amber-500" />
         <StatCard title="APPROVED" amount="$9,600" subtitle="12 expenses" subtitleColor="text-emerald-500" borderColor="border-t-emerald-500" />
         <StatCard title="BUDGET LEFT" amount="$8,000" subtitle="40% remaining" subtitleColor="text-amber-500" borderColor="border-t-blue-500" />

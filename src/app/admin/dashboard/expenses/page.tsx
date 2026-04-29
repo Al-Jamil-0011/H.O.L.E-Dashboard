@@ -253,10 +253,10 @@ export default function ExpensesPage() {
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 mb-6">
         {/* LEFT: 2x2 Grid */}
         <div className="xl:col-span-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <StatCard title="TOTAL EXPENSES" amount="$12,000" subtitle="+8% this month" subtitleColor="text-rose-500" borderColor="border-t-rose-500" glowColor="shadow-[0_0_15px_rgba(244,63,94,0.1)]" />
+          <StatCard title="TOTAL EXPENSES" amount="$12,000" subtitle="+8% this month" subtitleColor="text-blue-500" borderColor="border-t-blue-500" glowColor="shadow-[0_0_15px_rgba(59,130,246,0.1)]" />
           <StatCard title="PENDING APPROVAL" amount="$2,400" subtitle="4 pending" subtitleColor="text-amber-500" borderColor="border-t-amber-500" glowColor="shadow-[0_0_15px_rgba(245,158,11,0.1)]" />
           <StatCard title="APPROVED" amount="$9,600" subtitle="12 expenses" subtitleColor="text-emerald-500" borderColor="border-t-emerald-500" glowColor="shadow-[0_0_15px_rgba(16,185,129,0.1)]" />
-          <StatCard title="BUDGET LEFT" amount="$8,000" subtitle="40% remaining" subtitleColor="text-amber-500" borderColor="border-t-blue-500" glowColor="shadow-[0_0_15px_rgba(59,130,246,0.1)]" />
+          <StatCard title="REJECTED" amount="$120" subtitle="2 rejected" subtitleColor="text-rose-500" borderColor="border-t-rose-500" glowColor="shadow-[0_0_15px_rgba(244,63,94,0.1)]" />
         </div>
 
         {/* RIGHT: Graph */}
