@@ -32,14 +32,14 @@ export default function VendorPaymentsPage() {
     { header: "IMPLANT COST", accessorKey: "cost" as const, className: "text-[#00E5FF] font-medium" },
     { header: "PAYMENT DATE", accessorKey: "paymentDate" as const },
     { header: "METHOD", accessorKey: "method" as const },
-    { 
-      header: "STATUS", 
+    {
+      header: "STATUS",
       render: (item: typeof vendorData[0]) => {
         let type: "success" | "warning" | "error" = "success";
         if (item.status === 'PENDING') type = 'warning';
         if (item.status === 'OVERDUE') type = 'error';
         return <StatusBadge status={item.status} type={type} />;
-      } 
+      }
     },
     {
       header: "ACTIONS",
@@ -77,9 +77,9 @@ export default function VendorPaymentsPage() {
           <button className="px-4 py-1.5 text-xs font-semibold text-gray-400 bg-[#151B2B] rounded shadow-sm border border-[#1E293B] transition-colors hover:text-white">
             Export CSV
           </button>
-          <button className="px-4 py-1.5 text-xs font-bold text-[#0B101E] bg-[#00E5FF] rounded shadow-sm transition-all hover:bg-cyan-400">
+          {/* <button className="px-4 py-1.5 text-xs font-bold text-[#0B101E] bg-[#00E5FF] rounded shadow-sm transition-all hover:bg-cyan-400">
             + Add Vendor Payment
-          </button>
+          </button> */}
         </div>
       </div>
 
@@ -111,15 +111,15 @@ export default function VendorPaymentsPage() {
   );
 }
 
-function StatCard({ 
-  title, 
-  value, 
-  trend, 
+function StatCard({
+  title,
+  value,
+  trend,
   trendColor = "text-[#00E5FF]",
   topBorderColor
-}: { 
-  title: string; 
-  value: string; 
+}: {
+  title: string;
+  value: string;
   trend: string;
   trendColor?: string;
   topBorderColor: string;
@@ -141,7 +141,7 @@ function StatCard({
 
 function FilterPill({ text, active, onClick, color, activeColor }: { text: string, active: boolean, onClick: () => void, color?: string, activeColor?: string }) {
   const baseClasses = "px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded border border-[#1E293B] transition-all cursor-pointer";
-  
+
   if (active) {
     return (
       <button onClick={onClick} className={cn(baseClasses, activeColor || "bg-[#334155] text-white border-[#334155]")}>
@@ -149,7 +149,7 @@ function FilterPill({ text, active, onClick, color, activeColor }: { text: strin
       </button>
     );
   }
-  
+
   if (color) {
     return (
       <button onClick={onClick} className={cn(baseClasses, color, "hover:opacity-80")}>
@@ -157,7 +157,7 @@ function FilterPill({ text, active, onClick, color, activeColor }: { text: strin
       </button>
     )
   }
-  
+
   return (
     <button onClick={onClick} className={cn(baseClasses, "text-gray-400 hover:text-white hover:bg-[#1E293B]/50")}>
       {text}

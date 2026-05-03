@@ -20,16 +20,16 @@ export default function CommissionsPage() {
     { header: "RATE", accessorKey: "rate" as const },
     { header: "COMMISSION AMT", accessorKey: "comm" as const, className: "text-emerald-400 font-bold" },
     { header: "PAID", accessorKey: "paid" as const, className: "text-[#00E5FF] font-medium" },
-    { 
-      header: "STATUS", 
+    {
+      header: "STATUS",
       render: (item: typeof commissionData[0]) => {
         let type: "success" | "warning" | "error" | "default" = "default";
         if (item.status === 'PENDING') type = 'warning';
-        if (item.status === 'APPROVED') type = 'success';
+        if (item.status === 'Mark PaidD') type = 'success';
         if (item.status === 'PAID') type = 'success';
         if (item.status === 'REJECTED') type = 'error';
         return <StatusBadge status={item.status} type={type} />;
-      } 
+      }
     },
     {
       header: "ACTIONS",
@@ -38,7 +38,7 @@ export default function CommissionsPage() {
           {item.status === 'PENDING' ? (
             <>
               <button className="px-3 py-1 text-[10px] font-bold text-[#0B101E] bg-emerald-500 rounded hover:bg-emerald-400 transition-colors">
-                APPROVE
+                Mark Paid
               </button>
               <button className="px-3 py-1 text-[10px] font-medium text-gray-400 border border-[#1E293B] rounded hover:text-white transition-colors">
                 Receipt
@@ -69,9 +69,9 @@ export default function CommissionsPage() {
           <button className="px-4 py-1.5 text-xs font-semibold text-gray-400 bg-[#151B2B] rounded shadow-sm border border-[#1E293B] transition-colors hover:text-white">
             Export
           </button>
-          <button className="px-4 py-1.5 text-xs font-bold text-[#0B101E] bg-[#00E5FF] rounded shadow-sm transition-all hover:bg-cyan-400">
-            Bulk Approve
-          </button>
+          {/* <button className="px-4 py-1.5 text-xs font-bold text-[#0B101E] bg-[#00E5FF] rounded shadow-sm transition-all hover:bg-cyan-400">
+            Bulk Mark Paid
+          </button> */}
         </div>
       </div>
 
@@ -94,15 +94,15 @@ export default function CommissionsPage() {
   );
 }
 
-function StatCard({ 
-  title, 
-  value, 
-  trend, 
+function StatCard({
+  title,
+  value,
+  trend,
   trendColor = "text-[#00E5FF]",
   topBorderColor
-}: { 
-  title: string; 
-  value: string; 
+}: {
+  title: string;
+  value: string;
   trend: string;
   trendColor?: string;
   topBorderColor: string;
