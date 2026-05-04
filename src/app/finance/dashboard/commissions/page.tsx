@@ -19,17 +19,17 @@ export default function CommissionsPage() {
     { header: "TOTAL SALES", accessorKey: "sales" as const },
     { header: "RATE", accessorKey: "rate" as const },
     { header: "COMMISSION AMT", accessorKey: "comm" as const, className: "text-emerald-400 font-bold" },
-    { header: "PAID", accessorKey: "paid" as const, className: "text-accent-teal font-medium" },
-    { 
-      header: "STATUS", 
+    { header: "PAID", accessorKey: "paid" as const, className: "text-[#00E5FF] font-medium" },
+    {
+      header: "STATUS",
       render: (item: typeof commissionData[0]) => {
         let type: "success" | "warning" | "error" | "default" = "default";
         if (item.status === 'PENDING') type = 'warning';
-        if (item.status === 'APPROVED') type = 'success';
+        if (item.status === 'Mark PaidD') type = 'success';
         if (item.status === 'PAID') type = 'success';
         if (item.status === 'REJECTED') type = 'error';
         return <StatusBadge status={item.status} type={type} />;
-      } 
+      }
     },
     {
       header: "ACTIONS",
@@ -37,8 +37,8 @@ export default function CommissionsPage() {
         <div className="flex items-center gap-2">
           {item.status === 'PENDING' ? (
             <>
-              <button className="px-3 py-1 text-[10px] font-bold text-[var(--background)] bg-emerald-500 rounded hover:bg-emerald-400 transition-colors">
-                APPROVE
+              <button className="px-3 py-1 text-[10px] font-bold text-[#0B101E] bg-emerald-500 rounded hover:bg-emerald-400 transition-colors">
+                Mark Paid
               </button>
               <button className="px-3 py-1 text-[10px] font-medium text-muted-foreground border border-[var(--border)] rounded hover:text-foreground transition-colors">
                 Receipt
@@ -69,9 +69,9 @@ export default function CommissionsPage() {
           <button className="px-4 py-1.5 text-xs font-semibold text-muted-foreground bg-[var(--card)] rounded shadow-sm border border-[var(--border)] transition-colors hover:text-foreground">
             Export
           </button>
-          <button className="px-4 py-1.5 text-xs font-bold text-[var(--background)] bg-accent-teal rounded shadow-sm transition-all hover:bg-cyan-400">
-            Bulk Approve
-          </button>
+          {/* <button className="px-4 py-1.5 text-xs font-bold text-[#0B101E] bg-[#00E5FF] rounded shadow-sm transition-all hover:bg-cyan-400">
+            Bulk Mark Paid
+          </button> */}
         </div>
       </div>
 
@@ -94,15 +94,15 @@ export default function CommissionsPage() {
   );
 }
 
-function StatCard({ 
-  title, 
-  value, 
-  trend, 
-  trendColor = "text-accent-teal",
+function StatCard({
+  title,
+  value,
+  trend,
+  trendColor = "text-[#00E5FF]",
   topBorderColor
-}: { 
-  title: string; 
-  value: string; 
+}: {
+  title: string;
+  value: string;
   trend: string;
   trendColor?: string;
   topBorderColor: string;

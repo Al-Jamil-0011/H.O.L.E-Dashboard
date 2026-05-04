@@ -77,9 +77,9 @@ export default function VendorPaymentsPage() {
           <button className="px-4 py-1.5 text-xs font-semibold text-muted-foreground bg-[var(--card)] rounded shadow-sm border border-[var(--border)] transition-colors hover:text-foreground">
             Export CSV
           </button>
-          <button className="px-4 py-1.5 text-xs font-bold text-[var(--background)] bg-accent-teal rounded shadow-sm transition-all hover:bg-cyan-400">
+          {/* <button className="px-4 py-1.5 text-xs font-bold text-[#0B101E] bg-[#00E5FF] rounded shadow-sm transition-all hover:bg-cyan-400">
             + Add Vendor Payment
-          </button>
+          </button> */}
         </div>
       </div>
 

@@ -4,7 +4,8 @@ import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { DataTable, StatusBadge } from '@/components/ui/DataTable';
 import { Search, Plus, Filter, AlertTriangle, Box, Activity, Warehouse, ArrowRightLeft } from 'lucide-react';
-import { InventoryDetailsDrawer, InventoryItem } from './components/InventoryDetailsDrawer';
+import { useRouter } from 'next/navigation';
+import { InventoryItem } from './components/InventoryDetailsDrawer';
 
 // MOCK DATA
 const mockInventory: InventoryItem[] = [
@@ -121,9 +122,7 @@ export default function InventoryPage() {
   const [ownershipToggle, setOwnershipToggle] = useState<'Owned' | 'Consigned'>('Owned');
   const [search, setSearch] = useState('');
 
-  // Drawer State
-  const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null);
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const router = useRouter();
 
   // Filters
   const filteredData = mockInventory.filter((item) => {
@@ -146,8 +145,7 @@ export default function InventoryPage() {
   const consignedItems = mockInventory.filter(i => i.ownership === 'Consigned').length;
 
   const handleRowClick = (item: InventoryItem) => {
-    setSelectedItem(item);
-    setIsDrawerOpen(true);
+    router.push(`/admin/dashboard/inventory/${item.id}`);
   };
 
   const columns = [
@@ -297,7 +295,7 @@ export default function InventoryPage() {
             </div>
 
             {/* Ownership Toggle */}
-            <div className="flex items-center bg-[#0B101E] p-1 rounded-lg border border-[#1E293B]">
+            {/* <div className="flex items-center bg-[#0B101E] p-1 rounded-lg border border-[#1E293B]">
               {['Owned', 'Consigned'].map(toggle => (
                 <button
                   key={toggle}
@@ -312,7 +310,7 @@ export default function InventoryPage() {
                   {toggle}
                 </button>
               ))}
-            </div>
+            </div> */}
           </div>
 
           <div className="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
@@ -345,13 +343,6 @@ export default function InventoryPage() {
           />
         </div>
       </div>
-
-      {/* DETAILS DRAWER */}
-      <InventoryDetailsDrawer
-        isOpen={isDrawerOpen}
-        onClose={() => setIsDrawerOpen(false)}
-        item={selectedItem}
-      />
 
     </div>
   );

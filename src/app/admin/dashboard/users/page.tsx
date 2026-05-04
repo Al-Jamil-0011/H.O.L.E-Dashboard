@@ -174,10 +174,10 @@ export default function UsersManagementPage() {
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <button className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-[var(--background)] bg-accent-teal rounded-lg shadow-sm transition-all hover:bg-cyan-400">
+          {/* <button className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-[#0B101E] bg-[#00E5FF] rounded-lg shadow-sm transition-all hover:bg-cyan-400">
             <UserPlus className="h-4 w-4" />
             Add User
-          </button>
+          </button> */}
         </div>
       </div>
 
@@ -190,16 +190,16 @@ export default function UsersManagementPage() {
       </div>
 
       {/* MAIN CONTAINER */}
-      <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] shadow-lg flex flex-col overflow-hidden">
+      <div className="rounded-xl border border-[#1E293B] bg-[#151B2B] shadow-lg flex flex-col overflow-hidden">
 
         {/* FILTER BAR */}
         <div className="p-4 border-b border-border flex flex-col md:flex-row gap-4 items-center justify-between bg-muted/40">
           <div className="relative w-full md:w-72">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
             <input
               type="text"
               placeholder="Search users by name, email, territory..."
-              className="w-full bg-background border border-border rounded-md py-2 pl-9 pr-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-accent-teal transition-colors"
+              className="w-full bg-[#0B101E] border border-[#334155] rounded-md py-2 pl-9 pr-3 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-[#00E5FF] transition-colors"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
@@ -270,8 +270,8 @@ export default function UsersManagementPage() {
           {/* Drawer Content */}
           <div className="fixed inset-y-0 right-0 w-full max-w-md bg-[var(--background)] border-l border-[var(--border)] shadow-2xl flex flex-col animate-in slide-in-from-right duration-300">
             {/* Drawer Header */}
-            <div className="flex items-center justify-between p-6 border-b border-[var(--border)]">
-              <h2 className="text-lg font-bold text-foreground">User Profile Details</h2>
+            <div className="flex items-center justify-between p-6 border-b border-[#1E293B]">
+              <h2 className="text-lg font-bold text-white">User Profile Details</h2>
               <button
                 onClick={() => setSelectedUser(null)}
                 className="p-1.5 rounded-md hover:bg-[var(--border)] text-muted-foreground hover:text-foreground transition-colors"
@@ -296,7 +296,7 @@ export default function UsersManagementPage() {
               </div>
 
               {/* Info grid */}
-              <div className="space-y-4 mb-8 border border-[var(--border)] bg-[var(--card)] rounded-xl p-4">
+              <div className="space-y-4 mb-8 border border-[#1E293B] bg-[#151B2B] rounded-xl p-4">
                 <DetailRow icon={<Mail size={14} />} label="Email Address" value={selectedUser.email} />
                 <DetailRow icon={<Phone size={14} />} label="Phone Number" value={selectedUser.phone} />
                 <DetailRow icon={<Calendar size={14} />} label="Registration Date" value={selectedUser.regDate} />
@@ -305,7 +305,7 @@ export default function UsersManagementPage() {
 
               {/* Account Actions Section */}
               <div className="space-y-3">
-                <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">Account Actions</h4>
+                <h4 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4">Account Actions</h4>
 
                 <button
                   onClick={() => setIsTerritoryModalOpen(true)}
@@ -340,8 +340,6 @@ export default function UsersManagementPage() {
                     <ShieldAlert className="h-4 w-4" />
                     <div className="text-sm font-medium">Account Status ({selectedUser.status})</div>
                   </div>
-                  {/* <button
-                    onClick={handleToggleStatus} */}
                   <button
                     onClick={() => { if (selectedUser) handleToggleStatus(selectedUser, selectedUser.status); }}
                     className={cn(
@@ -359,7 +357,7 @@ export default function UsersManagementPage() {
             </div>
 
             {/* Drawer Footer */}
-            <div className="p-6 border-t border-[var(--border)] bg-[var(--card)] mt-auto">
+            <div className="p-6 border-t border-[#1E293B] bg-[#151B2B] mt-auto">
               <button
                 onClick={() => setSelectedUser(null)}
                 className="w-full py-2.5 text-sm font-bold text-[var(--background)] bg-accent-teal rounded-lg shadow-sm transition-all hover:bg-cyan-400"
@@ -437,15 +435,13 @@ export default function UsersManagementPage() {
                 If you deactivate this user, they will no longer appear in future dropdown selections and reports. Are you sure?
               </p>
             </div>
-            <div className="p-4 bg-[var(--card)] border-t border-[var(--border)] flex gap-3">
+            <div className="p-4 bg-[#151B2B] border-t border-[#1E293B] flex gap-3">
               <button
                 onClick={() => setIsDeactivateModalOpen(false)}
-                className="flex-1 py-2 text-xs font-bold text-muted-foreground bg-[var(--border)] rounded-lg hover:bg-[var(--border)] transition-colors"
+                className="flex-1 py-2 text-xs font-bold text-gray-300 bg-[#1E293B] rounded-lg hover:bg-[#334155] transition-colors"
               >
                 Cancel
               </button>
-              {/* <button
-                onClick={() => updateUserStatus('Inactive')} */}
               <button
                 onClick={() => selectedUser && updateUserStatus('Inactive', selectedUser.id)}
                 className="flex-1 py-2 text-xs font-bold text-white bg-rose-500 rounded-lg shadow-sm transition-all hover:bg-rose-600"
@@ -473,7 +469,7 @@ export default function UsersManagementPage() {
                 <X size={18} />
               </button>
             </div>
-            
+
             <div className="p-5 space-y-4">
               {/* Search Box */}
               <div className="relative">
@@ -490,24 +486,24 @@ export default function UsersManagementPage() {
               {/* Rep List */}
               <div className="max-h-[300px] overflow-y-auto space-y-2 pr-1 scrollbar-thin scrollbar-thumb-[var(--border)]">
                 {users
-                  .filter(u => 
-                    u.role === 'Rep' && 
+                  .filter(u =>
+                    u.role === 'Rep' &&
                     (u.name.toLowerCase().includes(repSearch.toLowerCase()) || u.email.toLowerCase().includes(repSearch.toLowerCase()))
                   )
                   .map(rep => {
                     const isSelected = selectedRepIds.includes(rep.id);
                     return (
-                      <div 
+                      <div
                         key={rep.id}
                         onClick={() => {
-                          setSelectedRepIds(prev => 
+                          setSelectedRepIds(prev =>
                             prev.includes(rep.id) ? prev.filter(id => id !== rep.id) : [...prev, rep.id]
                           );
                         }}
                         className={cn(
                           "flex items-center justify-between p-3 rounded-lg border cursor-pointer transition-all",
-                          isSelected 
-                            ? "bg-accent-teal/10 border-accent-teal" 
+                          isSelected
+                            ? "bg-accent-teal/10 border-accent-teal"
                             : "bg-[var(--card)] border-[var(--border)] hover:border-gray-500"
                         )}
                       >

@@ -77,9 +77,9 @@ export default function VendorPaymentsPage() {
           <button className="px-4 py-1.5 text-xs font-semibold text-muted-foreground bg-[var(--card)] rounded shadow-sm border border-[var(--border)] transition-colors hover:text-foreground">
             Export CSV
           </button>
-          <button className="px-4 py-1.5 text-xs font-bold text-[var(--background)] bg-accent-teal rounded shadow-sm transition-all hover:bg-cyan-400">
+          {/* <button className="px-4 py-1.5 text-xs font-bold text-[#0B101E] bg-[#00E5FF] rounded shadow-sm transition-all hover:bg-cyan-400">
             + Add Vendor Payment
-          </button>
+          </button> */}
         </div>
       </div>
 
@@ -115,7 +115,7 @@ function StatCard({
   title,
   value,
   trend,
-  trendColor = "text-accent-teal",
+  trendColor = "text-[#00E5FF]",
   topBorderColor
 }: {
   title: string;
@@ -140,7 +140,7 @@ function StatCard({
 }
 
 function FilterPill({ text, active, onClick, color, activeColor }: { text: string, active: boolean, onClick: () => void, color?: string, activeColor?: string }) {
-  const baseClasses = "px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded border border-[var(--border)] transition-all cursor-pointer";
+  const baseClasses = "px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded border border-[#1E293B] transition-all cursor-pointer";
 
   if (active) {
     return (
