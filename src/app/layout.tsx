@@ -14,6 +14,7 @@ export const metadata: Metadata = {
 };
 
 import { RootLayoutWrapper } from "@/components/layout/RootLayoutWrapper";
+import { Toaster } from "react-hot-toast";
 
 export default function RootLayout({
   children,
@@ -28,6 +29,7 @@ export default function RootLayout({
         <RootLayoutWrapper>
           {children}
         </RootLayoutWrapper>
+        <Toaster position="top-right" />
       </body>
     </html>
   );

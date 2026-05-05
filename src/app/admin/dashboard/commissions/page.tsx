@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from 'react';
-
+import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { DataTable, StatusBadge } from '@/components/ui/DataTable';
 import { Search } from 'lucide-react';
@@ -41,20 +41,16 @@ export default function CommissionsPage() {
       header: "ACTIONS",
       render: (item: typeof commissionData[0]) => (
         <div className="flex items-center gap-2">
-          {item.status === 'PENDING' ? (
-            <>
-              <button className="px-3 py-1 text-[10px] font-bold text-[#0B101E] bg-emerald-500 rounded hover:bg-emerald-400 transition-colors">
-                Mark Paid
-              </button>
-              <button className="px-3 py-1 text-[10px] font-medium text-gray-400 border border-[#1E293B] rounded hover:text-white transition-colors">
-                Paid
-              </button>
-            </>
-          ) : (
-            <button className="px-3 py-1 text-[10px] font-medium text-gray-400 border border-[#1E293B] rounded hover:text-white transition-colors">
-              Paid
+          {item.status === 'PENDING' && (
+            <button className="px-3 py-1 text-[10px] font-bold text-[#0B101E] bg-emerald-500 rounded hover:bg-emerald-400 transition-colors">
+              Mark Paid
             </button>
           )}
+          <Link href={`/admin/dashboard/commissions/C-1001`}>
+            <button className="px-3 py-1 text-[10px] font-medium text-gray-400 border border-[#1E293B] rounded hover:text-white transition-colors">
+              View Details
+            </button>
+          </Link>
         </div>
       )
     }
