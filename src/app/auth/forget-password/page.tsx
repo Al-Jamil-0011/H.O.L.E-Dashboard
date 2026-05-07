@@ -9,37 +9,35 @@ import FormField from "@/components/form";
 import { VscLoading } from "react-icons/vsc";
 import toast from "react-hot-toast";
 
-export default function LoginPage() {
+export default function ForgetPasswordPage() {
     const router = useRouter();
-    const { login, loading, error: authError } = useAuthService();
+    const { forgotPassword, loading, error: authError } = useAuthService();
     const { register, handleSubmit, formState: { errors } } = useForm();
 
     // console.log("authError : ", authError);
 
-    const handleLogin = async (data: any) => {
+    const handleForgotPassword = async (data: any) => {
         try {
-            const res = await login({ email: data.email, password: data.password });
-            const userData = res?.data?.results;
-            if (res?.statusCode === 200) {
-                const token = res?.data?.accessToken;
-                if (token) {
-                    Cookies.set("token", token, {
-                        expires: data.remember ? 7 : undefined,
-                        secure: true,
-                        sameSite: "strict",
-                    });
-                }
+            const res = await forgotPassword({ email: data.email });
 
+            console.log("res", res?.message)
+            if (res?.statusCode === 201) {
                 toast.success(res?.message, {
                     position: "top-center"
                 });
 
-                // Redirect by role
-                if (userData?.role === "admin") {
-                    router.push("/admin/dashboard");
-                } else if (userData?.role === "finance") {
-                    router.push("/admin/finance");
+                localStorage.setItem("email", data.email);
+
+                const tokan = res?.data?.token;
+
+                if (tokan) {
+                    Cookies.set("token", tokan, {
+                        expires: 1,
+                        secure: true,
+                        sameSite: "strict",
+                    });
                 }
+                router.push("/auth/otp-verification");
             }
         } catch (error: any) {
             console.log(error)
@@ -63,10 +61,10 @@ export default function LoginPage() {
 
                     <div className="text-center mb-8">
                         <h1 className="text-3xl text-muted-foreground dark:text-muted-foreground font-bold mb-2 tracking-tight">
-                            Welcome Back
+                            Forgot Password
                         </h1>
                         <p className="text-sm text-muted-foreground dark:text-muted-foreground">
-                            Enter your credentials to access your H.O.L.E account.
+                            Enter email address to reset your password.
                         </p>
                     </div>
 
@@ -89,7 +87,7 @@ export default function LoginPage() {
                     )}
 
 
-                    <form className="space-y-6 mt-2" onSubmit={handleSubmit(handleLogin)}>
+                    <form className="space-y-6 mt-2" onSubmit={handleSubmit(handleForgotPassword)}>
                         <div>
                             {/* Email Input */}
                             <FormField
@@ -105,34 +103,6 @@ export default function LoginPage() {
                                 }}
                             />
 
-                            {/* Password Input */}
-                            <FormField
-                                type="password"
-                                name="password"
-                                placeholder="Password"
-                                icon={<Lock className="h-5 w-5" />}
-                                register={register}
-                                errors={errors}
-                                validation={{ required: "Password is required" }}
-                            />
-                        </div>
-
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center">
-                                <FormField
-                                    type="checkbox"
-                                    name="remember"
-                                    placeholder="Remember me"
-                                    register={register}
-                                    errors={errors}
-                                />
-                            </div>
-
-                            <div className="text-sm pb-5">
-                                <Link href="/auth/forget-password" className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300 transition-colors">
-                                    Forgot password?
-                                </Link>
-                            </div>
                         </div>
 
                         <div>
@@ -147,7 +117,7 @@ export default function LoginPage() {
                                     </>
                                 ) : (
                                     <>
-                                        Sign In
+                                        Continue
                                         <MoveRight className="ml-2 h-4 w-4 opacity-70 group-hover:translate-x-1 group-hover:opacity-100 transition-all" />
                                     </>
                                 )}
@@ -156,9 +126,13 @@ export default function LoginPage() {
                     </form>
 
                     <div className="mt-8 text-center">
-                        <span className="text-muted-foreground dark:text-muted-foreground">Don&apos;t have an account?</span>{" "}
-                        <button className="cursor-pointer! text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300">
-                            Signup
+                        <span className="text-muted-foreground dark:text-muted-foreground">Back to </span>{" "}
+                        <button
+                            className="cursor-pointer! text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
+                        >
+                            <Link href="/auth/login">
+                                Login
+                            </Link>
                         </button>
                     </div>
                 </div>

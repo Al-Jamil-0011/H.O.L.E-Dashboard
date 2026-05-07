@@ -11,7 +11,7 @@ export interface IForgotPasswordPayload {
 }
 
 export interface IVerifyOtpPayload {
-    email: string;
+    email?: string;
     otp: string;
 }
 

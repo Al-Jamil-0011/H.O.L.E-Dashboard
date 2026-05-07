@@ -42,7 +42,7 @@ export function useAuthService() {
     const verifyOtp = useCallback(async (payload: IVerifyOtpPayload) => {
         setLoading(true);
         try {
-            const { data } = await useApi.post("/auth/verify-otp", payload);
+            const { data } = await useApi.post("/auth/forgot-otp-verify", payload);
             return data;
         } catch (error: any) {
             setError(error?.response?.data?.message)
@@ -53,7 +53,7 @@ export function useAuthService() {
     }, []);
 
     const resendOtp = useCallback(async (payload: IForgotPasswordPayload) => {
-        setLoading(true);
+        // setLoading(true);
         try {
             const { data } = await useApi.post("/auth/resend-otp", payload);
             return data;

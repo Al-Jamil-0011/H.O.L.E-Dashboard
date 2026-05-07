@@ -58,15 +58,15 @@ const FormField: React.FC<FormFieldProps> = ({
     const hasError = !!error;
 
     // Premium base styling matching the dashboard's design system
-    const baseInputClasses = "block w-full border border-gray-500 dark:border-white/10 rounded-xl leading-5 bg-white/10 dark:bg-white/5 placeholder-gray-400 focus:border-primary focus:outline-none transition-all duration-300 sm:text-sm text-gray-900 dark:text-gray-100 shadow-sm";
+    const baseInputClasses = "block w-full border border-gray-500 dark:border-white/10 rounded-xl leading-5 bg-white/10 dark:bg-white/5 placeholder-gray-400 focus:outline-none transition-all duration-300 sm:text-sm text-muted-foreground dark:text-muted-foreground shadow-sm";
 
     // Adjust padding if an icon is present, and add right padding for password toggle
     const paddingClasses = `${icon ? "pl-10" : "pl-4"} py-3 ${type === "password" ? "pr-11" : "pr-4"}`;
 
     // Dynamic error vs default classes
     const errorClasses = hasError
-        ? "border-red-500 focus:ring-2 focus:ring-red-500/50 focus:border-red-500 bg-red-50/50 dark:bg-red-500/5 text-red-900"
-        : `border-gray-200 dark:border-white/10 focus:ring-2 ${colorClass}`;
+        ? "border-red-500 bg-red-50/50 dark:bg-red-500/5 text-red-900"
+        : `border-gray-500 focus:border-primary dark:border-white/10 ${colorClass}`;
 
     // Common props spread to all input elements
     const commonProps = {
