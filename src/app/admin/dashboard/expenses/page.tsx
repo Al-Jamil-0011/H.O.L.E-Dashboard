@@ -168,7 +168,7 @@ export default function ExpensesPage() {
         );
       }
     },
-    { header: "AMOUNT", accessorKey: "amount" as const, className: "text-accent-teal font-medium" },
+    { header: "AMOUNT", accessorKey: "amount" as const, className: "text-primary font-medium" },
     { header: "DATE", accessorKey: "date" as const, className: "text-muted-foreground text-sm" },
     { header: "SUBMITTED BY", accessorKey: "submittedBy" as const, className: "text-muted-foreground text-sm" },
     {
@@ -243,7 +243,7 @@ export default function ExpensesPage() {
           </button>
           {/* <button
             onClick={() => console.log('Add Expense')}
-            className="px-4 py-2 text-xs font-bold text-[var(--background)] bg-accent-teal rounded-lg shadow-sm transition-all hover:bg-cyan-400"
+            className="px-4 py-2 text-xs font-bold text-[var(--background)] bg-primary rounded-lg shadow-sm transition-all hover:bg-cyan-400"
           >
             + Add Expense
           </button> */}

@@ -24,7 +24,7 @@ export default function AgingReportsPage() {
   const columns = [
     { header: "INVOICE", accessorKey: "invoice" as const, className: "font-medium text-foreground" },
     { header: "HOSPITAL", accessorKey: "hospital" as const },
-    { header: "AMOUNT", accessorKey: "amount" as const, className: "text-accent-teal font-medium" },
+    { header: "AMOUNT", accessorKey: "amount" as const, className: "text-primary font-medium" },
     { header: "DAYS PENDING", accessorKey: "days" as const },
     { 
       header: "STATUS", 
@@ -57,7 +57,7 @@ export default function AgingReportsPage() {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-4 mb-6">
-        <BucketCard title="0-30 DAYS" amount="$12,500" count="5 Invoices" borderColor="border-t-[#00E5FF]" textColor="text-accent-teal" />
+        <BucketCard title="0-30 DAYS" amount="$12,500" count="5 Invoices" borderColor="border-t-[#00E5FF]" textColor="text-primary" />
         <BucketCard title="30-60 DAYS" amount="$34,000" count="3 Invoices" borderColor="border-t-amber-500" textColor="text-amber-500" />
         <BucketCard title="60-90 DAYS" amount="$8,200" count="2 Invoices" borderColor="border-t-rose-400" textColor="text-rose-400" />
         <BucketCard title="90+ DAYS" amount="$2,400" count="1 Invoices" borderColor="border-t-rose-600" textColor="text-rose-600" />

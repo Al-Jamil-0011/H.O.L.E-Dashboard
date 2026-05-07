@@ -29,7 +29,7 @@ export default function VendorPaymentsPage() {
     { header: "VENDOR", accessorKey: "vendor" as const, className: "font-medium text-foreground" },
     { header: "INVOICE #", accessorKey: "invoice" as const, className: "text-muted-foreground" },
     { header: "IMPLANT / PRODUCT", accessorKey: "implant" as const },
-    { header: "IMPLANT COST", accessorKey: "cost" as const, className: "text-accent-teal font-medium" },
+    { header: "IMPLANT COST", accessorKey: "cost" as const, className: "text-primary font-medium" },
     { header: "PAYMENT DATE", accessorKey: "paymentDate" as const },
     { header: "METHOD", accessorKey: "method" as const },
     {
@@ -98,7 +98,7 @@ export default function VendorPaymentsPage() {
           </div>
           <div className="flex gap-2">
             <FilterPill text="All" active={filter === 'All'} activeColor="bg-black/80 text-[var(--background)]" onClick={() => setFilter('All')} />
-            <FilterPill text="Paid" active={filter === 'Paid'} color="bg-accent-teal/20 text-accent-teal" activeColor="bg-accent-teal text-[var(--background)]" onClick={() => setFilter('Paid')} />
+            <FilterPill text="Paid" active={filter === 'Paid'} color="bg-primary/20 text-primary" activeColor="bg-primary text-[var(--background)]" onClick={() => setFilter('Paid')} />
             <FilterPill text="Pending" active={filter === 'Pending'} color="bg-amber-500/20 text-amber-500" activeColor="bg-amber-500 text-[var(--background)]" onClick={() => setFilter('Pending')} />
             <FilterPill text="Overdue" active={filter === 'Overdue'} color="bg-rose-500/20 text-rose-500" activeColor="bg-rose-500 text-[var(--background)]" onClick={() => setFilter('Overdue')} />
           </div>

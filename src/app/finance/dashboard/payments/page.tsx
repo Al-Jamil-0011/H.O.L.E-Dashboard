@@ -24,7 +24,7 @@ export default function PaymentsPage() {
   const columns = [
     { header: "INVOICE", accessorKey: "invoice" as const, className: "font-medium text-foreground" },
     { header: "HOSPITAL", accessorKey: "hospital" as const },
-    { header: "AMOUNT", accessorKey: "amount" as const, className: "text-accent-teal font-medium" },
+    { header: "AMOUNT", accessorKey: "amount" as const, className: "text-primary font-medium" },
     { header: "PAYMENT METHOD", accessorKey: "method" as const },
     { header: "PAYMENT DATE", accessorKey: "date" as const },
     {
@@ -57,7 +57,7 @@ export default function PaymentsPage() {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-3 mb-6">
-        <StatCard title="TOTAL RECEIVED" amount="$45,200" color="text-accent-teal" />
+        <StatCard title="TOTAL RECEIVED" amount="$45,200" color="text-primary" />
         <StatCard title="PENDING" amount="$12,400" color="text-amber-500" />
         <StatCard title="OVERDUE" amount="$8,600" color="text-rose-500" />
       </div>
@@ -67,7 +67,7 @@ export default function PaymentsPage() {
           <h2 className="text-sm font-bold text-foreground">All Payments</h2>
           <div className="flex gap-2">
             <FilterPill text="All" active={filter === 'All'} activeColor="bg-black/80 text-[var(--background)]" onClick={() => setFilter('All')} />
-            <FilterPill text="Paid" active={filter === 'Paid'} color="bg-accent-teal/20 text-accent-teal" activeColor="bg-accent-teal text-[var(--background)]" onClick={() => setFilter('Paid')} />
+            <FilterPill text="Paid" active={filter === 'Paid'} color="bg-primary/20 text-primary" activeColor="bg-primary text-[var(--background)]" onClick={() => setFilter('Paid')} />
             <FilterPill text="Pending" active={filter === 'Pending'} color="bg-amber-500/20 text-amber-500" activeColor="bg-amber-500 text-[var(--background)]" onClick={() => setFilter('Pending')} />
             <FilterPill text="Overdue" active={filter === 'Overdue'} color="bg-rose-500/20 text-rose-500" activeColor="bg-rose-500 text-[var(--background)]" onClick={() => setFilter('Overdue')} />
           </div>

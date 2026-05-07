@@ -183,7 +183,7 @@ export default function UsersManagementPage() {
 
       {/* OVERVIEW CARDS */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard title="TOTAL USERS" value={users.length} topBorderColor="border-t-[var(--accent-teal)]" />
+        <StatCard title="TOTAL USERS" value={users.length} topBorderColor="border-t-[var(--primary)]" />
         <StatCard title="ACTIVE USERS" value={activeCount} topBorderColor="border-t-emerald-500" />
         <StatCard title="INACTIVE USERS" value={inactiveCount} topBorderColor="border-t-gray-500" />
         <StatCard title="PENDING TERRITORY" value={pendingTerritoryCount} trendColor="text-amber-500" topBorderColor="border-t-amber-500" />
@@ -214,7 +214,7 @@ export default function UsersManagementPage() {
             <select
               value={roleFilter}
               onChange={e => setRoleFilter(e.target.value)}
-              className="bg-[var(--background)] border border-[var(--border)] rounded-md py-1.5 px-3 text-xs font-medium text-foreground appearance-none focus:outline-none focus:border-[var(--accent-teal)] cursor-pointer"
+              className="bg-[var(--background)] border border-[var(--border)] rounded-md py-1.5 px-3 text-xs font-medium text-foreground appearance-none focus:outline-none focus:border-[var(--primary)] cursor-pointer"
             >
               <option value="All">All Roles</option>
               <option value="Rep">Rep</option>
@@ -226,7 +226,7 @@ export default function UsersManagementPage() {
             <select
               value={statusFilter}
               onChange={e => setStatusFilter(e.target.value)}
-              className="bg-[var(--background)] border border-[var(--border)] rounded-md py-1.5 px-3 text-xs font-medium text-foreground appearance-none focus:outline-none focus:border-[var(--accent-teal)] cursor-pointer"
+              className="bg-[var(--background)] border border-[var(--border)] rounded-md py-1.5 px-3 text-xs font-medium text-foreground appearance-none focus:outline-none focus:border-[var(--primary)] cursor-pointer"
             >
               <option value="All">All Status</option>
               <option value="Active">Active</option>
@@ -236,7 +236,7 @@ export default function UsersManagementPage() {
             <select
               value={territoryFilter}
               onChange={e => setTerritoryFilter(e.target.value)}
-              className="bg-[var(--background)] border border-[var(--border)] rounded-md py-1.5 px-3 text-xs font-medium text-foreground appearance-none focus:outline-none focus:border-[var(--accent-teal)] cursor-pointer"
+              className="bg-[var(--background)] border border-[var(--border)] rounded-md py-1.5 px-3 text-xs font-medium text-foreground appearance-none focus:outline-none focus:border-[var(--primary)] cursor-pointer"
             >
               <option value="All">All Territories</option>
               <option value="Northeast">Northeast</option>
@@ -288,7 +288,7 @@ export default function UsersManagementPage() {
                 <div>
                   <h3 className="text-xl font-black tracking-tight text-foreground">{selectedUser.name}</h3>
                   <div className="flex items-center gap-2 mt-1">
-                    <span className="text-accent-teal font-semibold text-sm">{selectedUser.role}</span>
+                    <span className="text-primary font-semibold text-sm">{selectedUser.role}</span>
                     <span className="w-1 h-1 rounded-full bg-gray-500" />
                     <StatusBadge status={selectedUser.status} type={selectedUser.status === 'Active' ? 'success' : 'default'} />
                   </div>
@@ -360,7 +360,7 @@ export default function UsersManagementPage() {
             <div className="p-6 border-t border-[#1E293B] bg-[#151B2B] mt-auto">
               <button
                 onClick={() => setSelectedUser(null)}
-                className="w-full py-2.5 text-sm font-bold text-[var(--background)] bg-accent-teal rounded-lg shadow-sm transition-all hover:bg-cyan-400"
+                className="w-full py-2.5 text-sm font-bold text-[var(--background)] bg-primary rounded-lg shadow-sm transition-all hover:bg-cyan-400"
               >
                 Done
               </button>
@@ -383,7 +383,7 @@ export default function UsersManagementPage() {
             <div className="p-5 space-y-4">
               <div>
                 <label className="block text-xs font-medium text-muted-foreground mb-1.5 uppercase tracking-wider">Territory / Region</label>
-                <select className="w-full bg-[var(--card)] border border-[var(--border)] rounded-lg p-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--accent-teal)]">
+                <select className="w-full bg-[var(--card)] border border-[var(--border)] rounded-lg p-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--primary)]">
                   <option>Select Territory...</option>
                   <option value="Northeast">Northeast</option>
                   <option value="West Coast">West Coast</option>
@@ -393,7 +393,7 @@ export default function UsersManagementPage() {
               </div>
               <div>
                 <label className="block text-xs font-medium text-muted-foreground mb-1.5 uppercase tracking-wider">Assign Facility Group (Optional)</label>
-                <select className="w-full bg-[var(--card)] border border-[var(--border)] rounded-lg p-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--accent-teal)]">
+                <select className="w-full bg-[var(--card)] border border-[var(--border)] rounded-lg p-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--primary)]">
                   <option>No specific facility</option>
                   <option value="Metro Hospitals">Metro Hospitals Network</option>
                   <option value="City Clinics">City Clinics</option>
@@ -412,7 +412,7 @@ export default function UsersManagementPage() {
                   }
                   setIsTerritoryModalOpen(false);
                 }}
-                className="px-5 py-2 text-xs font-bold text-[var(--background)] bg-accent-teal rounded-lg shadow-sm transition-all hover:bg-cyan-400"
+                className="px-5 py-2 text-xs font-bold text-[var(--background)] bg-primary rounded-lg shadow-sm transition-all hover:bg-cyan-400"
               >
                 Save Changes
               </button>
@@ -477,7 +477,7 @@ export default function UsersManagementPage() {
                 <input
                   type="text"
                   placeholder="Search by name or email..."
-                  className="w-full bg-[var(--card)] border border-[var(--border)] rounded-lg py-2 pl-9 pr-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-accent-teal transition-colors"
+                  className="w-full bg-[var(--card)] border border-[var(--border)] rounded-lg py-2 pl-9 pr-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors"
                   value={repSearch}
                   onChange={(e) => setRepSearch(e.target.value)}
                 />
@@ -503,7 +503,7 @@ export default function UsersManagementPage() {
                         className={cn(
                           "flex items-center justify-between p-3 rounded-lg border cursor-pointer transition-all",
                           isSelected
-                            ? "bg-accent-teal/10 border-accent-teal"
+                            ? "bg-primary/10 border-primary"
                             : "bg-[var(--card)] border-[var(--border)] hover:border-gray-500"
                         )}
                       >
@@ -516,7 +516,7 @@ export default function UsersManagementPage() {
                         </div>
                         <div className={cn(
                           "h-5 w-5 rounded-full border flex items-center justify-center transition-colors",
-                          isSelected ? "bg-accent-teal border-accent-teal" : "border-[var(--border)]"
+                          isSelected ? "bg-primary border-primary" : "border-[var(--border)]"
                         )}>
                           {isSelected && <Check className="h-3 w-3 text-background" />}
                         </div>
@@ -540,7 +540,7 @@ export default function UsersManagementPage() {
                   // Logic to save assignment would go here
                   setIsRepModalOpen(false);
                 }}
-                className="px-5 py-2 text-xs font-bold text-[var(--background)] bg-accent-teal rounded-lg shadow-sm transition-all hover:bg-cyan-400 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-5 py-2 text-xs font-bold text-[var(--background)] bg-primary rounded-lg shadow-sm transition-all hover:bg-cyan-400 disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={selectedRepIds.length === 0}
               >
                 Confirm Assignment ({selectedRepIds.length})

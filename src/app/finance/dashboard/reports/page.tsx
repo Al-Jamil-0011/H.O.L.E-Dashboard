@@ -25,13 +25,13 @@ export default function ReportsPage() {
 
   const columns = [
     { header: "REPORT NAME", accessorKey: "name" as const, className: "font-medium text-foreground" },
-    { header: "CATEGORY", accessorKey: "type" as const, className: "text-accent-teal" },
+    { header: "CATEGORY", accessorKey: "type" as const, className: "text-primary" },
     { header: "LAST GENERATED", accessorKey: "lastGenerated" as const, className: "text-muted-foreground" },
     {
       header: "ACTIONS",
       render: () => (
         <div className="flex items-center gap-2">
-          <button className="px-3 py-1 text-[10px] font-bold text-[var(--background)] bg-accent-teal rounded hover:bg-cyan-400 transition-colors">
+          <button className="px-3 py-1 text-[10px] font-bold text-[var(--background)] bg-primary rounded hover:bg-cyan-400 transition-colors">
             Generate New
           </button>
           <button className="px-3 py-1 text-[10px] font-medium text-muted-foreground border border-[var(--border)] rounded hover:text-foreground transition-colors">
@@ -63,7 +63,7 @@ export default function ReportsPage() {
           <h2 className="text-sm font-bold text-foreground">Available Reports</h2>
           <div className="flex gap-2">
             <FilterPill text="All" active={filter === 'All'} onClick={() => setFilter('All')} />
-            <FilterPill text="Financial" active={filter === 'Financial'} color="bg-accent-teal/20 text-accent-teal" activeColor="bg-accent-teal text-[var(--background)]" onClick={() => setFilter('Financial')} />
+            <FilterPill text="Financial" active={filter === 'Financial'} color="bg-primary/20 text-primary" activeColor="bg-primary text-[var(--background)]" onClick={() => setFilter('Financial')} />
             <FilterPill text="Sales" active={filter === 'Sales'} color="bg-purple-500/20 text-purple-400" activeColor="bg-purple-500 text-[var(--background)]" onClick={() => setFilter('Sales')} />
             <FilterPill text="Payroll" active={filter === 'Payroll'} color="bg-emerald-500/20 text-emerald-400" activeColor="bg-emerald-500 text-[var(--background)]" onClick={() => setFilter('Payroll')} />
           </div>

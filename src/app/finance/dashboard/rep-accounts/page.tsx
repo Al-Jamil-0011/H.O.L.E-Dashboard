@@ -16,11 +16,11 @@ export default function RepAccountsPage() {
   const filteredData = repData.filter(item => {
     if (filter === 'All') return true;
     if (filter === 'Top Performers') {
-      const salesNum = parseInt(item.sales.replace(/[^0-9.-]+/g,""));
+      const salesNum = parseInt(item.sales.replace(/[^0-9.-]+/g, ""));
       return salesNum >= 100000;
     }
     if (filter === 'Needs Payment') {
-      const pendingNum = parseInt(item.pending.replace(/[^0-9.-]+/g,""));
+      const pendingNum = parseInt(item.pending.replace(/[^0-9.-]+/g, ""));
       return pendingNum > 0;
     }
     return true;
@@ -29,7 +29,7 @@ export default function RepAccountsPage() {
   const columns = [
     { header: "REP NAME", accessorKey: "rep" as const, className: "font-medium text-foreground" },
     { header: "TOTAL SALES", accessorKey: "sales" as const },
-    { header: "COMMISSION EARNED", accessorKey: "earned" as const, className: "text-accent-teal" },
+    { header: "COMMISSION EARNED", accessorKey: "earned" as const, className: "text-primary" },
     { header: "COMMISSION PAID", accessorKey: "paid" as const, className: "text-emerald-400" },
     { header: "PENDING BALANCE", accessorKey: "pending" as const, className: "text-rose-400 font-medium" },
   ];
@@ -53,7 +53,7 @@ export default function RepAccountsPage() {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-3 mb-6">
-        <SummaryCard title="TOTAL REP SALES" amount="$429,000" color="text-accent-teal" />
+        <SummaryCard title="TOTAL REP SALES" amount="$429,000" color="text-primary" />
         <SummaryCard title="TOTAL COMMISSIONS" amount="$54,100" color="text-purple-400" />
         <SummaryCard title="TOTAL PENDING PAYABLE" amount="$7,600" color="text-rose-400" />
       </div>
@@ -86,7 +86,7 @@ function SummaryCard({ title, amount, color }: { title: string, amount: string, 
 
 function FilterPill({ text, active, onClick, color, activeColor }: { text: string, active: boolean, onClick: () => void, color?: string, activeColor?: string }) {
   const baseClasses = "px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded border border-[var(--border)] transition-all cursor-pointer";
-  
+
   if (active) {
     return (
       <button onClick={onClick} className={cn(baseClasses, activeColor || "bg-[#334155] text-foreground border-[#334155]")}>
@@ -94,7 +94,7 @@ function FilterPill({ text, active, onClick, color, activeColor }: { text: strin
       </button>
     );
   }
-  
+
   if (color) {
     return (
       <button onClick={onClick} className={cn(baseClasses, color, "hover:opacity-80")}>
@@ -102,7 +102,7 @@ function FilterPill({ text, active, onClick, color, activeColor }: { text: strin
       </button>
     )
   }
-  
+
   return (
     <button onClick={onClick} className={cn(baseClasses, "text-muted-foreground hover:text-foreground hover:bg-[var(--border)]/50")}>
       {text}

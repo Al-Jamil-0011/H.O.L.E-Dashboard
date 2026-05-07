@@ -24,7 +24,7 @@ export default function CommissionsPage() {
     { header: "TOTAL SALES", accessorKey: "sales" as const },
     { header: "RATE", accessorKey: "rate" as const },
     { header: "COMMISSION AMT", accessorKey: "comm" as const, className: "text-emerald-400 font-bold" },
-    { header: "PAID", accessorKey: "paid" as const, className: "text-accent-teal font-medium" },
+    { header: "PAID", accessorKey: "paid" as const, className: "text-primary font-medium" },
     {
       header: "STATUS",
       render: (item: typeof commissionData[0]) => {
@@ -120,7 +120,7 @@ function StatCard({
   title,
   value,
   trend,
-  trendColor = "text-accent-teal",
+  trendColor = "text-primary",
   topBorderColor
 }: {
   title: string;

@@ -34,7 +34,7 @@ export default function PurchaseOrderDetailPage({ params }: { params: Promise<{ 
     { header: "PRODUCT NAME", accessorKey: "name" as const, className: "font-semibold text-foreground" },
     { header: "QTY", accessorKey: "qty" as const, className: "text-muted-foreground font-mono" },
     { header: "UNIT PRICE", accessorKey: "price" as const, className: "text-muted-foreground font-mono" },
-    { header: "TOTAL", accessorKey: "total" as const, className: "text-accent-teal font-bold font-mono tracking-wider" },
+    { header: "TOTAL", accessorKey: "total" as const, className: "text-primary font-bold font-mono tracking-wider" },
   ];
 
   return (
@@ -45,7 +45,7 @@ export default function PurchaseOrderDetailPage({ params }: { params: Promise<{ 
       {/* ------------------------------------------------------------- */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <Link href="/admin/dashboard/purchase-orders" className="inline-flex items-center gap-1.5 text-xs font-bold text-muted-foreground hover:text-accent-teal uppercase tracking-widest mb-3 transition-colors">
+          <Link href="/admin/dashboard/purchase-orders" className="inline-flex items-center gap-1.5 text-xs font-bold text-muted-foreground hover:text-primary uppercase tracking-widest mb-3 transition-colors">
             <ChevronLeft className="h-4 w-4" /> Back to Orders
           </Link>
           <div className="flex flex-wrap items-center gap-4">
@@ -86,11 +86,11 @@ export default function PurchaseOrderDetailPage({ params }: { params: Promise<{ 
             <div className="p-6 md:p-8 pt-0 relative z-10 -mt-10">
               <div className="flex items-end justify-between mb-8">
                 <div className="h-20 w-20 rounded-2xl bg-[var(--background)] border-4 border-[var(--card)] flex items-center justify-center shadow-lg">
-                  <Building2 className="h-8 w-8 text-accent-teal" />
+                  <Building2 className="h-8 w-8 text-primary" />
                 </div>
                 <div className="text-right">
                   <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-1">Total PO Amount</p>
-                  <p className="text-3xl font-black text-accent-teal tracking-tight">$5,400.00</p>
+                  <p className="text-3xl font-black text-primary tracking-tight">$5,400.00</p>
                 </div>
               </div>
 
@@ -110,7 +110,7 @@ export default function PurchaseOrderDetailPage({ params }: { params: Promise<{ 
             <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] shadow-xl overflow-hidden animate-in slide-in-from-bottom-4 duration-300">
               <div className="p-6 border-b border-[var(--border)]">
                 <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
-                  <FileText className="w-4 h-4 text-accent-teal" /> Line Items
+                  <FileText className="w-4 h-4 text-primary" /> Line Items
                 </h3>
               </div>
 
@@ -129,7 +129,7 @@ export default function PurchaseOrderDetailPage({ params }: { params: Promise<{ 
                   </div>
                   <div className="pt-3 border-t border-[var(--border)] flex justify-between text-sm font-black text-foreground">
                     <span>Total Amount</span>
-                    <span className="text-accent-teal">$5,400.00</span>
+                    <span className="text-primary">$5,400.00</span>
                   </div>
                 </div>
               </div>
@@ -139,13 +139,13 @@ export default function PurchaseOrderDetailPage({ params }: { params: Promise<{ 
           {/* 3) DOCUMENTS SECTION */}
           <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] shadow-xl p-6">
             <h3 className="text-sm font-bold text-foreground flex items-center gap-2 mb-6">
-              <FileText className="w-4 h-4 text-accent-teal" /> Associated Documents
+              <FileText className="w-4 h-4 text-primary" /> Associated Documents
             </h3>
             <div className="grid gap-3">
               {MOCK_DOCS.map((doc) => (
                 <div key={doc.id} className="group flex items-center justify-between p-4 rounded-xl border border-[var(--border)] bg-[var(--background)] hover:border-[var(--border)] transition-colors">
                   <div className="flex items-center gap-4">
-                    <div className="p-2.5 bg-[var(--border)] rounded-lg text-muted-foreground group-hover:text-accent-teal transition-colors">
+                    <div className="p-2.5 bg-[var(--border)] rounded-lg text-muted-foreground group-hover:text-primary transition-colors">
                       <FileText className="w-5 h-5" />
                     </div>
                     <div>
@@ -173,7 +173,7 @@ export default function PurchaseOrderDetailPage({ params }: { params: Promise<{ 
 
           {/* QUICK SUMMARY MINI CARD */}
           <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] shadow-xl p-6 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-accent-teal/5 rounded-full blur-3xl" />
+            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl" />
             <h3 className="text-[11px] font-bold tracking-widest text-muted-foreground uppercase mb-5">Financial Summary</h3>
             <div className="space-y-4">
               <div className="flex items-center justify-between">
@@ -185,8 +185,8 @@ export default function PurchaseOrderDetailPage({ params }: { params: Promise<{ 
                 <span className="text-sm font-black text-emerald-500">+$540.00</span>
               </div>
               <div className="pt-4 border-t border-[var(--border)] flex items-center justify-between">
-                <span className="text-xs font-bold tracking-widest text-accent-teal uppercase">Final Deposit</span>
-                <span className="text-xl font-black text-accent-teal">$4,860.00</span>
+                <span className="text-xs font-bold tracking-widest text-primary uppercase">Final Deposit</span>
+                <span className="text-xl font-black text-primary">$4,860.00</span>
               </div>
             </div>
           </div>
@@ -195,7 +195,7 @@ export default function PurchaseOrderDetailPage({ params }: { params: Promise<{ 
           <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] shadow-xl p-6">
             <h3 className="text-[11px] font-bold tracking-widest text-muted-foreground uppercase mb-6">Status Timeline</h3>
 
-            <div className="space-y-6 relative before:absolute before:inset-0 before:ml-2.5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-[var(--accent-teal)] before:to-[var(--border)]">
+            <div className="space-y-6 relative before:absolute before:inset-0 before:ml-2.5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-[var(--primary)] before:to-[var(--border)]">
               <TimelineStep title="PO Created" date="Feb 15, 2026 • 09:30 AM" active completed />
               <TimelineStep title="Sent to Vendor" date="Feb 15, 2026 • 11:45 AM" active completed />
               <TimelineStep title="Vendor Accepted" date="Feb 16, 2026 • 02:15 PM" active completed />
@@ -252,10 +252,10 @@ function TimelineStep({ title, date, active, completed, isCurrent }: { title: st
       {/* Icon Node */}
       <div className={cn(
         "flex items-center justify-center w-5 h-5 rounded-full border-2 shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow-sm z-10",
-        completed ? "bg-accent-teal border-[var(--accent-teal)]" : isCurrent ? "bg-[var(--background)] border-[var(--accent-teal)]" : "bg-[var(--border)] border-[var(--border)]"
+        completed ? "bg-primary border-[var(--primary)]" : isCurrent ? "bg-[var(--background)] border-[var(--primary)]" : "bg-[var(--border)] border-[var(--border)]"
       )}>
         {completed && <CheckCircle2 className="w-3 h-3 text-[var(--background)]" />}
-        {isCurrent && <div className="w-1.5 h-1.5 rounded-full bg-accent-teal animate-pulse" />}
+        {isCurrent && <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />}
       </div>
       {/* Content */}
       <div className="w-[calc(100%-2.5rem)] md:w-[calc(50%-1.25rem)] pl-3 md:pl-0 md:group-odd:text-right md:group-even:text-left">

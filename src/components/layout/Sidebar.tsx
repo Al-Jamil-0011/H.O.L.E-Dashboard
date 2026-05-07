@@ -169,7 +169,7 @@ function NavSection({
               className={cn(
                 "group flex items-center justify-between rounded-md px-2 py-2 text-sm font-medium transition-colors",
                 isActive
-                  ? "bg-accent-teal/10 text-accent-teal"
+                  ? "bg-primary/10 text-primary"
                   : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
               )}
             >
@@ -177,7 +177,7 @@ function NavSection({
                 <item.icon
                   className={cn(
                     "h-[18px] w-[18px] shrink-0",
-                    isActive ? "text-accent-teal" : "text-muted-foreground group-hover:text-foreground"
+                    isActive ? "text-primary" : "text-muted-foreground group-hover:text-foreground"
                   )}
                 />
                 <span className="text-[13px]">{item.name}</span>

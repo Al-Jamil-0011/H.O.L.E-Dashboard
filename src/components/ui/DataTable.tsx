@@ -78,7 +78,7 @@ export function StatusBadge({ status, type = "default" }: {
   type?: "success" | "warning" | "error" | "default"
 }) {
   const styles = {
-    success: "bg-accent-teal/10 text-accent-teal px-3 py-1 text-[10px] uppercase font-bold tracking-wider rounded-md",
+    success: "bg-primary/10 text-primary px-3 py-1 text-[10px] uppercase font-bold tracking-wider rounded-md",
     warning: "bg-amber-500/10 text-amber-500 px-3 py-1 text-[10px] uppercase font-bold tracking-wider rounded-md",
     error: "bg-rose-500/10 text-rose-500 px-3 py-1 text-[10px] uppercase font-bold tracking-wider rounded-md",
     default: "bg-blue-500/10 text-blue-500 px-3 py-1 text-[10px] uppercase font-bold tracking-wider rounded-md"

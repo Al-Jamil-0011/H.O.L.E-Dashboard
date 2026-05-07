@@ -25,7 +25,7 @@ export default function SalesPage() {
   });
 
   const columns = [
-    { header: "SALE ID", accessorKey: "id" as const, className: "font-medium text-accent-teal" },
+    { header: "SALE ID", accessorKey: "id" as const, className: "font-medium text-primary" },
     { header: "REP", accessorKey: "rep" as const },
     { header: "DOCTOR", accessorKey: "doctor" as const },
     { header: "HOSPITAL", accessorKey: "hospital" as const },
@@ -76,7 +76,7 @@ export default function SalesPage() {
           </button>
           {/* <button
             onClick={() => setIsModalOpen(true)}
-            className="px-4 py-1.5 text-xs font-bold text-[var(--background)] bg-accent-teal rounded shadow-sm transition-all hover:bg-cyan-400"
+            className="px-4 py-1.5 text-xs font-bold text-[var(--background)] bg-primary rounded shadow-sm transition-all hover:bg-cyan-400"
           >
             + New Sale
           </button> */}
@@ -84,7 +84,7 @@ export default function SalesPage() {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard title="REVENUE" value="$245K" trend="+12.4%" topBorderColor="border-t-[var(--accent-teal)]" />
+        <StatCard title="REVENUE" value="$245K" trend="+12.4%" topBorderColor="border-t-[var(--primary)]" />
         <StatCard title="TOTAL SALES" value="83" trend="+7 new" topBorderColor="border-t-emerald-500" />
         <StatCard title="AVG VALUE" value="$2,951" trend="+3.1%" topBorderColor="border-t-purple-500" />
         <StatCard title="CONVERSION" value="73%" trend="Stable" topBorderColor="border-t-amber-500" />
@@ -126,7 +126,7 @@ function StatCard({
       </h3>
       <div className="mt-3">
         <div className="text-2xl font-black tracking-tight text-foreground">{value}</div>
-        <p className="mt-2 text-[11px] font-medium text-accent-teal">
+        <p className="mt-2 text-[11px] font-medium text-primary">
           {trend}
         </p>
       </div>

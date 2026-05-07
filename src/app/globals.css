@@ -8,7 +8,7 @@
   --color-border: var(--border);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
-  --color-accent-teal: var(--accent-teal);
+  --color-primary: var(--primary);
 
   /* Fonts */
   --font-sans: var(--font-poppins), ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
@@ -29,7 +29,7 @@
   --border: #E2E8F0;
   --muted: #F1F5F9;
   --muted-foreground: #64748B;
-  --accent-teal: #0D9488;
+  --primary: #309488;
 }
 
 .dark {
@@ -40,7 +40,7 @@
   --border: #1E293B;
   --muted: #1E293B;
   --muted-foreground: #94A3B8;
-  --accent-teal: #00E5FF;
+  --primary: #00E5FF;
 }
 
 /* Fallback for system preference if no class is set */
@@ -53,7 +53,7 @@
     --border: #1E293B;
     --muted: #1E293B;
     --muted-foreground: #94A3B8;
-    --accent-teal: #00E5FF;
+    --primary: #00E5FF;
   }
 }
 

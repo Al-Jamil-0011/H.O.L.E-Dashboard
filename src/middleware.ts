@@ -19,8 +19,9 @@ export function middleware(req: NextRequest) {
             loginUrl.pathname = "/auth/login";
             return NextResponse.redirect(loginUrl);
         } else {
+            // Check if user is admin or finance based on token (mock logic or redirect to a default dashboard)
             const dashboardUrl = req.nextUrl.clone();
-            dashboardUrl.pathname = "/dashboard";
+            dashboardUrl.pathname = "/admin/dashboard"; // Defaulting to admin for now
             return NextResponse.redirect(dashboardUrl);
         }
     }

@@ -54,7 +54,7 @@ export default function PurchaseOrdersPage() {
         </div>
       )
     },
-    { header: "TOTAL VALUE", accessorKey: "total" as const, className: "text-accent-teal font-bold text-sm tracking-wide" },
+    { header: "TOTAL VALUE", accessorKey: "total" as const, className: "text-primary font-bold text-sm tracking-wide" },
     { 
       header: "STATUS", 
       render: (item: typeof mockPurchaseOrders[0]) => {
@@ -92,7 +92,7 @@ export default function PurchaseOrdersPage() {
           <button className="flex items-center gap-2 px-4 py-2 text-xs font-semibold text-muted-foreground bg-[var(--card)] rounded-lg shadow-sm border border-[var(--border)] transition-colors hover:text-foreground hover:bg-[var(--border)]">
             <Download className="h-4 w-4" /> Export
           </button>
-          <button className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-[var(--background)] bg-accent-teal rounded-lg shadow-sm transition-all hover:bg-cyan-400">
+          <button className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-[var(--background)] bg-primary rounded-lg shadow-sm transition-all hover:bg-cyan-400">
             <Plus className="h-4 w-4" /> Create PO
           </button>
         </div>
@@ -100,7 +100,7 @@ export default function PurchaseOrdersPage() {
 
       {/* STAT CARDS */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard title="TOTAL VOLUME" value="$22,300" trend="+15% this month" topBorderColor="border-t-[var(--accent-teal)]" />
+        <StatCard title="TOTAL VOLUME" value="$22,300" trend="+15% this month" topBorderColor="border-t-[var(--primary)]" />
         <StatCard title="COMPLETED" value="23" trend="4 this week" topBorderColor="border-t-emerald-500" />
         <StatCard title="OPEN POS" value="8" trend="Needs attention" trendColor="text-amber-500" topBorderColor="border-t-amber-500" />
         <StatCard title="LOST / REJECTED" value="2" trend="-1 from last month" trendColor="text-rose-500" topBorderColor="border-t-rose-500" />
@@ -136,7 +136,7 @@ export default function PurchaseOrdersPage() {
               placeholder="Search by PO#, Surgeon, or facility..." 
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full bg-[var(--background)] border border-[var(--border)] rounded-lg py-2 pl-9 pr-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-[var(--accent-teal)] transition-colors"
+              className="w-full bg-[var(--background)] border border-[var(--border)] rounded-lg py-2 pl-9 pr-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-[var(--primary)] transition-colors"
             />
           </div>
 
@@ -155,7 +155,7 @@ export default function PurchaseOrdersPage() {
   );
 }
 
-function StatCard({ title, value, trend, trendColor = "text-accent-teal", topBorderColor }: { title: string, value: string | number, trend: string, trendColor?: string, topBorderColor: string }) {
+function StatCard({ title, value, trend, trendColor = "text-primary", topBorderColor }: { title: string, value: string | number, trend: string, trendColor?: string, topBorderColor: string }) {
   return (
     <div className={cn("rounded-xl border border-[var(--border)] border-t-[3px] bg-[var(--card)] p-5 shadow-sm transition-all hover:bg-[var(--muted)]", topBorderColor)}>
       <h3 className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase">{title}</h3>

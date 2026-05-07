@@ -72,7 +72,7 @@ export function ThemeSwitcher() {
                   className={cn(
                     "flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors",
                     isActive 
-                      ? "bg-accent-teal/10 text-accent-teal font-semibold" 
+                      ? "bg-primary/10 text-primary font-semibold" 
                       : "text-muted-foreground hover:bg-muted hover:text-foreground"
                   )}
                 >

@@ -24,7 +24,7 @@ export default function ShippingPage() {
     { header: "SHIPMENT ID", accessorKey: "id" as const, className: "font-medium text-foreground" },
     { header: "CARRIER", accessorKey: "carrier" as const },
     { header: "REP", accessorKey: "rep" as const },
-    { header: "COST", accessorKey: "cost" as const, className: "text-accent-teal font-medium" },
+    { header: "COST", accessorKey: "cost" as const, className: "text-primary font-medium" },
     {
       header: "STATUS",
       render: (item: typeof shippingData[0]) => {

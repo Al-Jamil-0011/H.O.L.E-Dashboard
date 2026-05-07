@@ -117,12 +117,12 @@ export default function AdminDashboard() {
     ];
 
     const columns = [
-        { header: "SALE ID", accessorKey: "id" as const, className: "font-medium text-accent-teal" },
+        { header: "SALE ID", accessorKey: "id" as const, className: "font-medium text-primary" },
         { header: "REP", accessorKey: "rep" as const },
         { header: "DOCTOR", accessorKey: "doctor" as const },
         { header: "HOSPITAL", accessorKey: "hospital" as const },
         { header: "IMPLANT", accessorKey: "implant" as const },
-        { header: "AMOUNT", accessorKey: "amount" as const, className: "text-accent-teal font-medium" },
+        { header: "AMOUNT", accessorKey: "amount" as const, className: "text-primary font-medium" },
         { header: "COMMISSION", accessorKey: "comm" as const, className: "text-emerald-400" },
         {
             header: "STATUS",
@@ -164,14 +164,14 @@ export default function AdminDashboard() {
                     <button className="px-4 py-1.5 text-xs font-semibold text-muted-foreground bg-card rounded shadow-sm border border-border transition-colors hover:text-foreground">
                         Refresh
                     </button>
-                    <button className="px-4 py-1.5 text-xs font-bold text-background bg-accent-teal rounded shadow-sm transition-all hover:opacity-90">
+                    <button className="px-4 py-1.5 text-xs font-bold text-background bg-primary rounded shadow-sm transition-all hover:opacity-90">
                         Generate Report
                     </button>
                 </div>
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                <StatCard title="TOTAL REVENUE" value="$245,000" trend="+12.4% this month" trendType="up" topBorderColor="border-t-[var(--accent-teal)]" />
+                <StatCard title="TOTAL REVENUE" value="$245,000" trend="+12.4% this month" trendType="up" topBorderColor="border-t-[var(--primary)]" />
                 <StatCard title="TOTAL SALES" value="83" trend="+7 new this month" trendType="up" topBorderColor="border-t-emerald-500" />
                 <StatCard title="COMMISSION PAID" value="$32,000" trend="12 reps paid out" trendType="neutral" topBorderColor="border-t-rose-500" />
                 <StatCard title="VENDOR PAYMENTS" value="$18,400" trend="3 pending payments" trendType="neutral" topBorderColor="border-t-amber-500" />
@@ -187,7 +187,7 @@ export default function AdminDashboard() {
                             <p className="text-[10px] text-muted-foreground mt-1">Jan-Jun 2026</p>
                         </div>
                         <div className="flex items-center gap-3 text-[10px] text-muted-foreground">
-                            <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-accent-teal"></span>Revenue</span>
+                            <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-primary"></span>Revenue</span>
                             <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-blue-500/50"></span>Expenses</span>
                         </div>
                     </div>
@@ -245,7 +245,7 @@ function StatCard({
             <div className="mt-3">
                 <div className="text-2xl font-black tracking-tight text-foreground">{value}</div>
                 <p className="mt-2 text-[11px] font-medium text-muted-foreground">
-                    {trendType === 'up' && <span className="text-accent-teal font-semibold">{trend}</span>}
+                    {trendType === 'up' && <span className="text-primary font-semibold">{trend}</span>}
                     {trendType === 'down' && <span className="text-rose-500 font-semibold">{trend}</span>}
                     {trendType === 'neutral' && <span className="text-emerald-400 font-semibold">{trend}</span>}
                 </p>

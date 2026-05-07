@@ -23,17 +23,17 @@ export function Header({ onMenuClick }: HeaderProps) {
         
         {/* Search */}
         <div className="hidden md:flex relative group">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground group-hover:text-accent-teal transition-colors" />
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground group-hover:text-primary transition-colors" />
           <input
             type="text"
             placeholder="Search vendors, invoices, reps..."
-            className="h-9 w-72 rounded-lg border border-border bg-card pl-10 pr-4 text-[13px] text-foreground outline-none transition-all focus:border-accent-teal focus:bg-background focus:ring-1 focus:ring-accent-teal placeholder:text-muted-foreground"
+            className="h-9 w-72 rounded-lg border border-border bg-card pl-10 pr-4 text-[13px] text-foreground outline-none transition-all focus:border-primary focus:bg-background focus:ring-1 focus:ring-primary placeholder:text-muted-foreground"
           />
         </div>
       </div>
 
       <div className="flex items-center gap-2 md:gap-4">
-        <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-lg border border-border bg-card focus-within:ring-1 focus-within:ring-accent-teal transition-all">
+        <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-lg border border-border bg-card focus-within:ring-1 focus-within:ring-primary transition-all">
           <span className="text-[11px] font-semibold text-muted-foreground">Mar 2026</span>
           <Menu className="h-3 w-3 text-muted-foreground" />
         </div>
@@ -46,8 +46,8 @@ export function Header({ onMenuClick }: HeaderProps) {
         </button>
         
         <div className="flex items-center gap-3 ml-2 border-l border-border pl-4 cursor-pointer hover:opacity-80 transition-opacity">
-          <div className="h-8 w-8 overflow-hidden rounded-full border border-accent-teal/30">
-            <div className="flex h-full w-full items-center justify-center bg-accent-teal/10 text-accent-teal">
+          <div className="h-8 w-8 overflow-hidden rounded-full border border-primary/30">
+            <div className="flex h-full w-full items-center justify-center bg-primary/10 text-primary">
               <User className="h-4 w-4" />
             </div>
           </div>

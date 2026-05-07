@@ -118,12 +118,12 @@ export default function Home() {
 
 
     const columns = [
-        { header: "SALE ID", accessorKey: "id" as const, className: "font-medium text-accent-teal" },
+        { header: "SALE ID", accessorKey: "id" as const, className: "font-medium text-primary" },
         { header: "REP", accessorKey: "rep" as const },
         { header: "DOCTOR", accessorKey: "doctor" as const },
         { header: "HOSPITAL", accessorKey: "hospital" as const },
         { header: "IMPLANT", accessorKey: "implant" as const },
-        { header: "AMOUNT", accessorKey: "amount" as const, className: "text-accent-teal font-medium" },
+        { header: "AMOUNT", accessorKey: "amount" as const, className: "text-primary font-medium" },
         { header: "COMMISSION", accessorKey: "comm" as const, className: "text-emerald-400" },
         {
             header: "STATUS",
@@ -164,7 +164,7 @@ export default function Home() {
                     <button className="px-4 py-1.5 text-xs font-semibold text-muted-foreground bg-card rounded shadow-sm border border-border transition-colors hover:text-foreground">
                         Refresh
                     </button>
-                    <button className="px-4 py-1.5 text-xs font-bold text-background bg-accent-teal rounded shadow-sm transition-all hover:opacity-90">
+                    <button className="px-4 py-1.5 text-xs font-bold text-background bg-primary rounded shadow-sm transition-all hover:opacity-90">
                         Generate Report
                     </button>
                 </div>
@@ -187,7 +187,7 @@ export default function Home() {
                             <p className="text-[10px] text-muted-foreground mt-1">Jan-Jun 2026</p>
                         </div>
                         <div className="flex items-center gap-3 text-[10px] text-muted-foreground">
-                            <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-accent-teal"></span>Revenue</span>
+                            <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-primary"></span>Revenue</span>
                             <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-blue-500/50"></span>Expenses</span>
                         </div>
                     </div>
@@ -245,7 +245,7 @@ function StatCard({
             <div className="mt-3">
                 <div className="text-2xl font-black tracking-tight text-foreground">{value}</div>
                 <p className="mt-2 text-[11px] font-medium text-muted-foreground">
-                    {trendType === 'up' && <span className="text-accent-teal font-semibold">{trend}</span>}
+                    {trendType === 'up' && <span className="text-primary font-semibold">{trend}</span>}
                     {trendType === 'down' && <span className="text-rose-500 font-semibold">{trend}</span>}
                     {trendType === 'neutral' && <span className="text-emerald-400 font-semibold">{trend}</span>}
                 </p>

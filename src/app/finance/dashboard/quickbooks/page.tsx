@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from '@/lib/utils';
-import { 
+import {
   RefreshCcw,
   CheckCircle2,
   AlertCircle
@@ -30,7 +30,7 @@ export default function QuickBooksPage() {
       <div className="grid gap-6 md:grid-cols-2">
         <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] shadow-sm overflow-hidden flex flex-col">
           <div className="p-5 pb-4 border-b border-[var(--border)]">
-             <h2 className="text-sm font-bold text-foreground">Manual Sync Actions</h2>
+            <h2 className="text-sm font-bold text-foreground">Manual Sync Actions</h2>
           </div>
           <div className="p-5 space-y-3">
             <SyncAction title="SYNC INVOICES" description="Push all newly generated invoices to QB" />
@@ -46,11 +46,11 @@ export default function QuickBooksPage() {
         </div>
 
         <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] shadow-sm overflow-hidden flex flex-col">
-           <div className="p-5 pb-4 border-b border-[var(--border)] flex justify-between items-center">
-             <h2 className="text-sm font-bold text-foreground">Recent Sync Logs</h2>
-             <button className="text-[10px] uppercase font-bold text-accent-teal hover:text-cyan-300 transition-colors">
-               View All
-             </button>
+          <div className="p-5 pb-4 border-b border-[var(--border)] flex justify-between items-center">
+            <h2 className="text-sm font-bold text-foreground">Recent Sync Logs</h2>
+            <button className="text-[10px] uppercase font-bold text-primary hover:text-cyan-300 transition-colors">
+              View All
+            </button>
           </div>
           <div className="p-5 space-y-4">
             <LogItem status="success" message="Successfully synced 12 invoices" time="10 mins ago" />
@@ -72,7 +72,7 @@ function SyncAction({ title, description }: { title: string, description: string
         <h3 className="text-[11px] font-bold text-foreground tracking-widest uppercase mb-1">{title}</h3>
         <p className="text-[11px] text-muted-foreground">{description}</p>
       </div>
-      <button className="text-[11px] font-bold text-accent-teal hover:text-cyan-300 uppercase tracking-widest bg-accent-teal/10 px-3 py-1.5 rounded transition-colors">Sync</button>
+      <button className="text-[11px] font-bold text-primary hover:text-cyan-300 uppercase tracking-widest bg-primary/10 px-3 py-1.5 rounded transition-colors">Sync</button>
     </div>
   );
 }

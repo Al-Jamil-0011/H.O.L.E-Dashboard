@@ -14,7 +14,7 @@ export default function LoginPage() {
     const { login, loading, error: authError } = useAuthService();
     const { register, handleSubmit, formState: { errors } } = useForm();
 
-    console.log("authError : ", authError);
+    // console.log("authError : ", authError);
 
     const handleLogin = async (data: any) => {
         try {
@@ -129,7 +129,7 @@ export default function LoginPage() {
                             </div>
 
                             <div className="text-sm pb-5">
-                                <Link href="#" className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300 transition-colors">
+                                <Link href="/auth/forget-password" className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300 transition-colors">
                                     Forgot password?
                                 </Link>
                             </div>
@@ -138,7 +138,7 @@ export default function LoginPage() {
                         <div>
                             <button
                                 type="submit"
-                                className="group relative w-full flex items-center justify-center py-3 px-4 border border-transparent text-sm font-semibold rounded-xl text-foreground bg-accent-teal text-black! hover:bg-accent-teal/80 dark:bg-white dark:text-black dark:hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 dark:focus:ring-white transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] shadow-md hover:shadow-lg cursor-pointer"
+                                className="group relative w-full flex items-center justify-center py-3 px-4 border border-transparent text-sm font-semibold rounded-xl text-foreground bg-primary text-black! hover:bg-primary/80 dark:bg-white dark:text-black dark:hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 dark:focus:ring-white transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] shadow-md hover:shadow-lg cursor-pointer"
                             >
                                 {loading ? (
                                     <>

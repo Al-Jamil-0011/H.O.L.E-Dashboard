@@ -28,7 +28,7 @@ export default function ExpensesPage() {
       header: "CATEGORY",
       render: (item: typeof allExpenseData[0]) => {
         let colorClass = "bg-gray-500/10 text-muted-foreground";
-        if (item.category === 'SHIPMENT') colorClass = "bg-accent-teal/10 text-accent-teal";
+        if (item.category === 'SHIPMENT') colorClass = "bg-primary/10 text-primary";
         else if (item.category === 'TRAVEL') colorClass = "bg-purple-500/10 text-purple-400";
         else if (item.category === 'OFFICE') colorClass = "bg-emerald-500/10 text-emerald-400";
         else if (item.category === 'MARKETING') colorClass = "bg-amber-500/10 text-amber-400";
@@ -40,7 +40,7 @@ export default function ExpensesPage() {
         );
       }
     },
-    { header: "AMOUNT", accessorKey: "amount" as const, className: "text-accent-teal font-medium" },
+    { header: "AMOUNT", accessorKey: "amount" as const, className: "text-primary font-medium" },
     { header: "DATE", accessorKey: "date" as const, className: "text-muted-foreground text-sm" },
     { header: "SUBMITTED BY", accessorKey: "submittedBy" as const, className: "text-muted-foreground text-sm" },
     {
@@ -109,7 +109,7 @@ export default function ExpensesPage() {
           </button>
           <button
             onClick={() => console.log('Add Expense')}
-            className="px-4 py-2 text-xs font-bold text-[var(--background)] bg-accent-teal rounded-lg shadow-sm transition-all hover:bg-cyan-400"
+            className="px-4 py-2 text-xs font-bold text-[var(--background)] bg-primary rounded-lg shadow-sm transition-all hover:bg-cyan-400"
           >
             + Add Expense
           </button>
@@ -128,7 +128,7 @@ export default function ExpensesPage() {
         <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-5 shadow-sm">
           <h2 className="text-sm font-bold text-foreground mb-5 border-b border-[var(--border)] pb-3">By Category</h2>
           <div className="space-y-4">
-            <ProgressBar label="Shipment" amount="$5,400" percentage={54} color="bg-accent-teal" />
+            <ProgressBar label="Shipment" amount="$5,400" percentage={54} color="bg-primary" />
             <ProgressBar label="Travel" amount="$3,000" percentage={30} color="bg-purple-500" />
             <ProgressBar label="Office" amount="$1,800" percentage={18} color="bg-emerald-500" />
             <ProgressBar label="Marketing" amount="$1,200" percentage={12} color="bg-amber-500" />

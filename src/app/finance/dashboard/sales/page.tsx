@@ -25,12 +25,12 @@ export default function SalesPage() {
   });
 
   const columns = [
-    { header: "SALE ID", accessorKey: "id" as const, className: "font-medium text-accent-teal" },
+    { header: "SALE ID", accessorKey: "id" as const, className: "font-medium text-primary" },
     { header: "REP", accessorKey: "rep" as const },
     { header: "DOCTOR", accessorKey: "doctor" as const },
     { header: "HOSPITAL", accessorKey: "hospital" as const },
     { header: "IMPLANT", accessorKey: "implant" as const },
-    { header: "AMOUNT", accessorKey: "amount" as const, className: "text-accent-teal font-medium" },
+    { header: "AMOUNT", accessorKey: "amount" as const, className: "text-primary font-medium" },
     { header: "COMMISSION", accessorKey: "comm" as const, className: "text-emerald-400" },
     {
       header: "STATUS",
@@ -74,7 +74,7 @@ export default function SalesPage() {
           </button>
           {/* <button 
             onClick={() => setIsModalOpen(true)}
-            className="px-4 py-1.5 text-xs font-bold text-[var(--background)] bg-accent-teal rounded shadow-sm transition-all hover:bg-cyan-400"
+            className="px-4 py-1.5 text-xs font-bold text-[var(--background)] bg-primary rounded shadow-sm transition-all hover:bg-cyan-400"
           >
             + New Sale
           </button> */}
@@ -124,7 +124,7 @@ function StatCard({
       </h3>
       <div className="mt-3">
         <div className="text-2xl font-black tracking-tight text-foreground">{value}</div>
-        <p className="mt-2 text-[11px] font-medium text-accent-teal">
+        <p className="mt-2 text-[11px] font-medium text-primary">
           {trend}
         </p>
       </div>

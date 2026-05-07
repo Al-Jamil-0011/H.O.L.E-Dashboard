@@ -73,7 +73,7 @@ export default function CreateNewManagementPage() {
       header: "ACTIONS",
       render: (item: any) => (
         <div className="flex items-center gap-2">
-          <button onClick={() => handleEdit('facility', item)} className="p-1.5 text-muted-foreground hover:text-accent-teal transition-colors rounded-md hover:bg-accent-teal/10">
+          <button onClick={() => handleEdit('facility', item)} className="p-1.5 text-muted-foreground hover:text-primary transition-colors rounded-md hover:bg-primary/10">
             <Edit2 className="h-4 w-4" />
           </button>
           <button onClick={handleDeleteClick} className="p-1.5 text-muted-foreground hover:text-rose-500 transition-colors rounded-md hover:bg-rose-500/10">
@@ -92,7 +92,7 @@ export default function CreateNewManagementPage() {
       )
     },
     { header: "VENDOR NAME", accessorKey: "name" as const, className: "font-semibold text-foreground" },
-    { header: "COMPANY", accessorKey: "company" as const, className: "text-accent-teal" },
+    { header: "COMPANY", accessorKey: "company" as const, className: "text-primary" },
     { header: "EMAIL", accessorKey: "email" as const },
     { header: "PHONE", accessorKey: "phone" as const },
     { header: "CREATED DATE", accessorKey: "created" as const, className: "text-muted-foreground" },
@@ -100,7 +100,7 @@ export default function CreateNewManagementPage() {
       header: "ACTIONS",
       render: (item: any) => (
         <div className="flex items-center gap-2">
-          <button onClick={() => handleEdit('vendor', item)} className="p-1.5 text-muted-foreground hover:text-accent-teal transition-colors rounded-md hover:bg-accent-teal/10">
+          <button onClick={() => handleEdit('vendor', item)} className="p-1.5 text-muted-foreground hover:text-primary transition-colors rounded-md hover:bg-primary/10">
             <Edit2 className="h-4 w-4" />
           </button>
           <button onClick={handleDeleteClick} className="p-1.5 text-muted-foreground hover:text-rose-500 transition-colors rounded-md hover:bg-rose-500/10">
@@ -126,7 +126,7 @@ export default function CreateNewManagementPage() {
       header: "ACTIONS",
       render: (item: any) => (
         <div className="flex items-center gap-2">
-          <button onClick={() => handleEdit('practice', item)} className="p-1.5 text-muted-foreground hover:text-accent-teal transition-colors rounded-md hover:bg-accent-teal/10">
+          <button onClick={() => handleEdit('practice', item)} className="p-1.5 text-muted-foreground hover:text-primary transition-colors rounded-md hover:bg-primary/10">
             <Edit2 className="h-4 w-4" />
           </button>
           <button onClick={handleDeleteClick} className="p-1.5 text-muted-foreground hover:text-rose-500 transition-colors rounded-md hover:bg-rose-500/10">
@@ -154,19 +154,19 @@ export default function CreateNewManagementPage() {
         <div className="flex flex-wrap items-center gap-3">
           <button 
             onClick={() => { setModalMode('add'); setIsFacilityModalOpen(true); }}
-            className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-[var(--background)] bg-accent-teal rounded-lg shadow-sm transition-all hover:bg-cyan-400"
+            className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-[var(--background)] bg-primary rounded-lg shadow-sm transition-all hover:bg-cyan-400"
           >
             <Building2 className="h-4 w-4" /> Add Facility
           </button>
           <button 
             onClick={() => { setModalMode('add'); setIsVendorModalOpen(true); }}
-            className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-[var(--background)] bg-accent-teal rounded-lg shadow-sm transition-all hover:bg-cyan-400"
+            className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-[var(--background)] bg-primary rounded-lg shadow-sm transition-all hover:bg-cyan-400"
           >
             <Briefcase className="h-4 w-4" /> Add Vendor
           </button>
           <button 
             onClick={() => { setModalMode('add'); setIsPracticeModalOpen(true); }}
-            className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-[var(--background)] bg-accent-teal rounded-lg shadow-sm transition-all hover:bg-cyan-400"
+            className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-[var(--background)] bg-primary rounded-lg shadow-sm transition-all hover:bg-cyan-400"
           >
             <Stethoscope className="h-4 w-4" /> Add Practice
           </button>
@@ -223,24 +223,24 @@ export default function CreateNewManagementPage() {
           <div className="space-y-4">
             <div>
               <label className="block text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-1.5">Facility Name <span className="text-rose-500">*</span></label>
-              <input type="text" placeholder="e.g. City General Hospital" className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--accent-teal)] transition-colors" />
+              <input type="text" placeholder="e.g. City General Hospital" className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--primary)] transition-colors" />
             </div>
             <div>
               <label className="block text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-1.5">Address <span className="text-rose-500">*</span></label>
-              <input type="text" placeholder="Full street address..." className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--accent-teal)] transition-colors" />
+              <input type="text" placeholder="Full street address..." className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--primary)] transition-colors" />
             </div>
             <div>
               <label className="block text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-1.5">Email <span className="text-rose-500">*</span></label>
-              <input type="email" placeholder="contact@hospital.org" className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--accent-teal)] transition-colors" />
+              <input type="email" placeholder="contact@hospital.org" className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--primary)] transition-colors" />
             </div>
             <div>
               <label className="block text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-1.5">Contact <span className="text-gray-600 font-medium normal-case tracking-normal">(optional)</span></label>
-              <input type="tel" placeholder="(555) 000-0000" className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--accent-teal)] transition-colors" />
+              <input type="tel" placeholder="(555) 000-0000" className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--primary)] transition-colors" />
             </div>
           </div>
           <div className="mt-8 flex gap-3">
             <button onClick={closeAllModals} className="flex-1 py-2.5 text-sm font-bold text-muted-foreground bg-[var(--muted)] hover:bg-[var(--border)] rounded-xl transition-colors">Cancel</button>
-            <button onClick={closeAllModals} className="flex-1 py-2.5 text-sm font-bold text-[var(--background)] bg-accent-teal rounded-xl shadow-sm hover:bg-cyan-400 transition-all">Save</button>
+            <button onClick={closeAllModals} className="flex-1 py-2.5 text-sm font-bold text-[var(--background)] bg-primary rounded-xl shadow-sm hover:bg-cyan-400 transition-all">Save</button>
           </div>
         </ModalWrapper>
       )}
@@ -252,32 +252,32 @@ export default function CreateNewManagementPage() {
             <div>
               <label className="block text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-2">Vendor Profile Picture</label>
               <div className="w-full h-24 border-2 border-dashed border-[var(--border)] rounded-xl bg-[var(--card)] hover:bg-[var(--muted)] transition-colors flex flex-col items-center justify-center cursor-pointer group">
-                <UploadCloud className="h-5 w-5 text-muted-foreground group-hover:text-accent-teal mb-1 transition-colors" />
+                <UploadCloud className="h-5 w-5 text-muted-foreground group-hover:text-primary mb-1 transition-colors" />
                 <p className="text-[10px] font-medium text-muted-foreground group-hover:text-foreground transition-colors">Drag & drop or browse</p>
               </div>
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="block text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-1.5">Vendor Name <span className="text-rose-500">*</span></label>
-                <input type="text" placeholder="John Doe" className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--accent-teal)] transition-colors" />
+                <input type="text" placeholder="John Doe" className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--primary)] transition-colors" />
               </div>
               <div>
                 <label className="block text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-1.5">Company Name <span className="text-rose-500">*</span></label>
-                <input type="text" placeholder="MedTech Inc." className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--accent-teal)] transition-colors" />
+                <input type="text" placeholder="MedTech Inc." className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--primary)] transition-colors" />
               </div>
             </div>
             <div>
               <label className="block text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-1.5">Vendor Email <span className="text-rose-500">*</span></label>
-              <input type="email" placeholder="vendor@company.com" className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--accent-teal)] transition-colors" />
+              <input type="email" placeholder="vendor@company.com" className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--primary)] transition-colors" />
             </div>
             <div>
               <label className="block text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-1.5">Vendor Phone <span className="text-rose-500">*</span></label>
-              <input type="tel" placeholder="(555) 000-0000" className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--accent-teal)] transition-colors" />
+              <input type="tel" placeholder="(555) 000-0000" className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--primary)] transition-colors" />
             </div>
           </div>
           <div className="mt-8 flex gap-3">
             <button onClick={closeAllModals} className="flex-1 py-2.5 text-sm font-bold text-muted-foreground bg-[var(--muted)] hover:bg-[var(--border)] rounded-xl transition-colors">Cancel</button>
-            <button onClick={closeAllModals} className="flex-1 py-2.5 text-sm font-bold text-[var(--background)] bg-accent-teal rounded-xl shadow-sm hover:bg-cyan-400 transition-all">Save</button>
+            <button onClick={closeAllModals} className="flex-1 py-2.5 text-sm font-bold text-[var(--background)] bg-primary rounded-xl shadow-sm hover:bg-cyan-400 transition-all">Save</button>
           </div>
         </ModalWrapper>
       )}
@@ -288,19 +288,19 @@ export default function CreateNewManagementPage() {
           <div className="space-y-4">
             <div>
               <label className="block text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-1.5">Practice Name <span className="text-rose-500">*</span></label>
-              <input type="text" placeholder="Advanced Orthopedics" className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--accent-teal)] transition-colors" />
+              <input type="text" placeholder="Advanced Orthopedics" className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--primary)] transition-colors" />
             </div>
             <div>
               <label className="block text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-1.5">Address <span className="text-rose-500">*</span></label>
-              <input type="text" placeholder="Practice street address..." className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--accent-teal)] transition-colors" />
+              <input type="text" placeholder="Practice street address..." className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--primary)] transition-colors" />
             </div>
             <div>
               <label className="block text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-1.5">Phone Number <span className="text-rose-500">*</span></label>
-              <input type="tel" placeholder="(555) 000-0000" className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--accent-teal)] transition-colors" />
+              <input type="tel" placeholder="(555) 000-0000" className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--primary)] transition-colors" />
             </div>
             <div>
               <label className="block text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-1.5">Email <span className="text-rose-500">*</span></label>
-              <input type="email" placeholder="contact@practice.com" className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--accent-teal)] transition-colors" />
+              <input type="email" placeholder="contact@practice.com" className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--primary)] transition-colors" />
             </div>
             <div className="flex items-center justify-between bg-[var(--card)] border border-[var(--border)] rounded-xl p-3">
               <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">Status Toggle</span>
@@ -315,7 +315,7 @@ export default function CreateNewManagementPage() {
           </div>
           <div className="mt-8 flex gap-3">
             <button onClick={closeAllModals} className="flex-1 py-2.5 text-sm font-bold text-muted-foreground bg-[var(--muted)] hover:bg-[var(--border)] rounded-xl transition-colors">Cancel</button>
-            <button onClick={closeAllModals} className="flex-1 py-2.5 text-sm font-bold text-[var(--background)] bg-accent-teal rounded-xl shadow-sm hover:bg-cyan-400 transition-all">Save</button>
+            <button onClick={closeAllModals} className="flex-1 py-2.5 text-sm font-bold text-[var(--background)] bg-primary rounded-xl shadow-sm hover:bg-cyan-400 transition-all">Save</button>
           </div>
         </ModalWrapper>
       )}
@@ -364,12 +364,12 @@ function TabButton({ active, onClick, label }: { active: boolean, onClick: () =>
       onClick={onClick}
       className={cn(
         "px-6 py-3 text-sm font-bold transition-all relative outline-none",
-        active ? "text-accent-teal" : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+        active ? "text-primary" : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
       )}
     >
       {label}
       {active && (
-        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-accent-teal rounded-t-full shadow-[0_-2px_10px_rgba(0,229,255,0.4)]" />
+        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-t-full shadow-[0_-2px_10px_rgba(0,229,255,0.4)]" />
       )}
     </button>
   );

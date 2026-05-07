@@ -29,7 +29,7 @@ export default function VendorPaymentsPage() {
     { header: "VENDOR", accessorKey: "vendor" as const, className: "font-medium text-foreground" },
     { header: "INVOICE #", accessorKey: "invoice" as const, className: "text-muted-foreground" },
     { header: "IMPLANT / PRODUCT", accessorKey: "implant" as const },
-    { header: "IMPLANT COST", accessorKey: "cost" as const, className: "text-accent-teal font-medium" },
+    { header: "IMPLANT COST", accessorKey: "cost" as const, className: "text-primary font-medium" },
     { header: "PAYMENT DATE", accessorKey: "paymentDate" as const },
     { header: "METHOD", accessorKey: "method" as const },
     {
@@ -84,7 +84,7 @@ export default function VendorPaymentsPage() {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard title="TOTAL PAID" value="$42,600" trend="8 vendors" topBorderColor="border-t-[var(--accent-teal)]" />
+        <StatCard title="TOTAL PAID" value="$42,600" trend="8 vendors" topBorderColor="border-t-[var(--primary)]" />
         <StatCard title="PENDING" value="$18,400" trend="3 pending" trendColor="text-amber-500" topBorderColor="border-t-amber-500" />
         <StatCard title="OVERDUE" value="$6,000" trend="1 overdue" trendColor="text-rose-500" topBorderColor="border-t-rose-500" />
         <StatCard title="THIS MONTH" value="$22,400" trend="3 transactions" topBorderColor="border-t-emerald-500" />
@@ -98,7 +98,7 @@ export default function VendorPaymentsPage() {
           </div>
           <div className="flex gap-2">
             <FilterPill text="All" active={filter === 'All'} activeColor="bg-black/80 text-[var(--background)]" onClick={() => setFilter('All')} />
-            <FilterPill text="Paid" active={filter === 'Paid'} color="bg-accent-teal/20 text-accent-teal" activeColor="bg-accent-teal text-[var(--background)]" onClick={() => setFilter('Paid')} />
+            <FilterPill text="Paid" active={filter === 'Paid'} color="bg-primary/20 text-primary" activeColor="bg-primary text-[var(--background)]" onClick={() => setFilter('Paid')} />
             <FilterPill text="Pending" active={filter === 'Pending'} color="bg-amber-500/20 text-amber-500" activeColor="bg-amber-500 text-[var(--background)]" onClick={() => setFilter('Pending')} />
             <FilterPill text="Overdue" active={filter === 'Overdue'} color="bg-rose-500/20 text-rose-500" activeColor="bg-rose-500 text-[var(--background)]" onClick={() => setFilter('Overdue')} />
           </div>
@@ -115,7 +115,7 @@ function StatCard({
   title,
   value,
   trend,
-  trendColor = "text-accent-teal",
+  trendColor = "text-primary",
   topBorderColor
 }: {
   title: string;
