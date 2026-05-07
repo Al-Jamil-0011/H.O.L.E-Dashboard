@@ -35,7 +35,7 @@ export default function ResetPasswordPage() {
                 toast.success(res?.message || "Password reset successful!", {
                     position: "top-center"
                 });
-                // return router.push("/")
+                return router.push("/auth/login")
             }
 
         } catch (error: any) {

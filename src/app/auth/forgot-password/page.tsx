@@ -19,7 +19,7 @@ export default function ForgetPasswordPage() {
     const handleForgotPassword = async (data: any) => {
         try {
             const res = await forgotPassword({ email: data.email });
-
+            Cookies.remove("token");
             console.log("res", res?.message)
             if (res?.statusCode === 201) {
                 toast.success(res?.message, {

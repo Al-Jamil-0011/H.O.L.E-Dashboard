@@ -1,9 +1,38 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import jwt from "jsonwebtoken";
 
 export function middleware(req: NextRequest) {
+
     const { pathname } = req.nextUrl;
+
     const token = req.cookies.get("token")?.value;
+
+    /**
+     * PUBLIC ROUTES
+     */
+
+    const publicRoutes = [
+        "/auth/login",
+        "/auth/register",
+        "/auth/forgot-password",
+        "/auth/verify-otp",
+        "/auth/reset-password",
+    ];
+
+    /**
+     * ONLY THESE AUTH ROUTES
+     * SHOULD REDIRECT WHEN USER IS LOGGED IN
+     */
+
+    const blockedWhenLoggedIn = [
+        "/auth/login",
+        "/auth/register",
+    ];
+
+    /**
+     * SKIP STATIC FILES
+     */
 
     if (
         pathname.startsWith("/_next") ||
@@ -13,34 +42,103 @@ export function middleware(req: NextRequest) {
         return NextResponse.next();
     }
 
-    if (pathname === "/") {
-        if (!token) {
-            const loginUrl = req.nextUrl.clone();
-            loginUrl.pathname = "/auth/login";
-            return NextResponse.redirect(loginUrl);
-        } else {
-            // Check if user is admin or finance based on token (mock logic or redirect to a default dashboard)
-            const dashboardUrl = req.nextUrl.clone();
-            dashboardUrl.pathname = "/admin/dashboard"; // Defaulting to admin for now
-            return NextResponse.redirect(dashboardUrl);
-        }
-    }
+    /**
+     * NO TOKEN
+     */
 
-    if ((pathname.startsWith("/dashboard") || pathname.startsWith("/admin") || pathname.startsWith("/finance")) && !token) {
+    if (!token) {
+
+        // allow public routes
+        if (publicRoutes.includes(pathname)) {
+            return NextResponse.next();
+        }
+
+        // otherwise redirect login
         const loginUrl = req.nextUrl.clone();
         loginUrl.pathname = "/auth/login";
+
         return NextResponse.redirect(loginUrl);
     }
 
-    if (token && (pathname.startsWith("/auth/login") || pathname.startsWith("/auth/register") || pathname.startsWith("/auth/forgot-password") || pathname.startsWith("/auth/reset-password"))) {
-        const dashboardUrl = req.nextUrl.clone();
-        dashboardUrl.pathname = "/dashboard";
-        return NextResponse.redirect(dashboardUrl);
-    }
+    try {
 
-    return NextResponse.next();
+        const decoded: any = jwt.decode(token);
+
+        const role = decoded?.role;
+        const isResetPassword = decoded?.isResetPassword;
+
+        /**
+         * RESET PASSWORD FLOW
+         */
+
+        if (isResetPassword) {
+
+            // allow only recovery pages
+            if (
+                pathname === "/auth/reset-password" ||
+                pathname === "/auth/verify-otp" ||
+                pathname === "/auth/forgot-password"
+            ) {
+                return NextResponse.next();
+            }
+
+            // force reset-password
+            const resetUrl = req.nextUrl.clone();
+            resetUrl.pathname = "/auth/reset-password";
+
+            return NextResponse.redirect(resetUrl);
+        }
+
+        /**
+         * ROOT ROUTE
+         */
+
+        if (pathname === "/") {
+
+            const dashboardUrl = req.nextUrl.clone();
+
+            if (role === "admin") {
+                dashboardUrl.pathname = "/admin/dashboard";
+            } else if (role === "finance") {
+                dashboardUrl.pathname = "/finance/dashboard";
+            } else {
+                dashboardUrl.pathname = "/dashboard";
+            }
+
+            return NextResponse.redirect(dashboardUrl);
+        }
+
+
+
+        if (blockedWhenLoggedIn.includes(pathname)) {
+
+            const dashboardUrl = req.nextUrl.clone();
+
+            if (role === "admin") {
+                dashboardUrl.pathname = "/admin/dashboard";
+            } else if (role === "finance") {
+                dashboardUrl.pathname = "/finance/dashboard";
+            } else {
+                dashboardUrl.pathname = "/dashboard";
+            }
+
+            return NextResponse.redirect(dashboardUrl);
+        }
+
+        return NextResponse.next();
+
+    } catch (error) {
+
+        const response = NextResponse.redirect(
+            new URL("/auth/login", req.url)
+        );
+
+        response.cookies.delete("token");
+
+        return response;
+    }
 }
 
 export const config = {
-    matcher: "/((?!_next/static|_next/image|favicon.ico).*)",
+    matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
 };
