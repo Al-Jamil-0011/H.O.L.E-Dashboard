@@ -2,11 +2,36 @@
 import Link from "next/link";
 import { MoveRight, Lock, Mail } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useAuthService } from "@/hooks/auth";
+import Cookies from "js-cookie";
+import { useForm } from "react-hook-form";
+import FormField from "@/components/form";
+import { VscLoading } from "react-icons/vsc";
 
 export default function LoginPage() {
     const router = useRouter();
-    const handleLogin = () => {
-        router.push("/admin/dashboard");
+    const { login, loading, error: authError } = useAuthService();
+    const { register, handleSubmit, formState: { errors } } = useForm();
+
+    const handleLogin = async (data: any) => {
+        try {
+            const res = await login({ email: data.email, password: data.password });
+            console.log("response : ", res);
+            if (res?.statusCode === 200) {
+                const token = res?.data?.accessToken;
+                console.log("response : ", res?.data?.accessToken);
+                if (token) {
+                    Cookies.set("token", token, {
+                        expires: data.remember ? 7 : undefined,
+                        secure: true,
+                        sameSite: "strict",
+                    });
+                }
+                router.push("/admin/dashboard");
+            }
+        } catch (error) {
+            console.log(error);
+        }
     }
     return (
         <div className="min-h-screen flex items-center justify-center bg-background relative overflow-hidden font-sans w-full">
@@ -32,49 +57,46 @@ export default function LoginPage() {
                         </p>
                     </div>
 
-                    <form className="space-y-6">
-                        <div className="space-y-4">
+                    <form className="space-y-6" onSubmit={handleSubmit(handleLogin)}>
+                        <div>
                             {/* Email Input */}
-                            <div className="relative group/input">
-                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-muted-foreground group-focus-within/input:text-blue-500 transition-colors">
-                                    <Mail className="h-5 w-5" />
-                                </div>
-                                <input
-                                    type="email"
-                                    className="block w-full pl-10 pr-3 py-3 border border-gray-200 dark:border-white/10 rounded-xl leading-5 bg-white/50 dark:bg-white/5 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-300 sm:text-sm text-gray-900 dark:text-gray-100"
-                                    placeholder="Email Address"
-                                    required
-                                />
-                            </div>
+                            <FormField
+                                type="email"
+                                name="email"
+                                placeholder="Email Address"
+                                icon={<Mail className="h-5 w-5" />}
+                                register={register}
+                                errors={errors}
+                                validation={{
+                                    required: "Email is required",
+                                    pattern: { value: /\S+@\S+\.\S+/, message: "Invalid email format" }
+                                }}
+                            />
 
                             {/* Password Input */}
-                            <div className="relative group/input">
-                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-muted-foreground group-focus-within/input:text-blue-500 transition-colors">
-                                    <Lock className="h-5 w-5" />
-                                </div>
-                                <input
-                                    type="password"
-                                    className="block w-full pl-10 pr-3 py-3 border border-gray-200 dark:border-white/10 rounded-xl leading-5 bg-white/50 dark:bg-white/5 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-300 sm:text-sm text-gray-900 dark:text-gray-100"
-                                    placeholder="Password"
-                                    required
-                                />
-                            </div>
+                            <FormField
+                                type="password"
+                                name="password"
+                                placeholder="Password"
+                                icon={<Lock className="h-5 w-5" />}
+                                register={register}
+                                errors={errors}
+                                validation={{ required: "Password is required" }}
+                            />
                         </div>
 
                         <div className="flex items-center justify-between">
                             <div className="flex items-center">
-                                <input
-                                    id="remember-me"
-                                    name="remember-me"
+                                <FormField
                                     type="checkbox"
-                                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded cursor-pointer transition-colors"
+                                    name="remember"
+                                    placeholder="Remember me"
+                                    register={register}
+                                    errors={errors}
                                 />
-                                <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-600 dark:text-muted-foreground cursor-pointer">
-                                    Remember me
-                                </label>
                             </div>
 
-                            <div className="text-sm">
+                            <div className="text-sm pb-5">
                                 <Link href="#" className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300 transition-colors">
                                     Forgot password?
                                 </Link>
@@ -83,18 +105,26 @@ export default function LoginPage() {
 
                         <div>
                             <button
-                                onClick={handleLogin}
                                 type="submit"
-                                className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-semibold rounded-xl text-foreground bg-accent-teal text-white hover:bg-accent-teal/80 dark:bg-white dark:text-black dark:hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 dark:focus:ring-white transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] shadow-md hover:shadow-lg"
+                                className="group relative w-full flex items-center justify-center py-3 px-4 border border-transparent text-sm font-semibold rounded-xl text-foreground bg-accent-teal text-black! hover:bg-accent-teal/80 dark:bg-white dark:text-black dark:hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 dark:focus:ring-white transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] shadow-md hover:shadow-lg cursor-pointer"
                             >
-                                Sign In
-                                <MoveRight className="ml-2 h-4 w-4 opacity-70 group-hover:translate-x-1 group-hover:opacity-100 transition-all" />
+                                {loading ? (
+                                    <>
+                                        <VscLoading className="mr-2 h-5 w-5 animate-spin" />
+                                        Please wait...
+                                    </>
+                                ) : (
+                                    <>
+                                        Sign In
+                                        <MoveRight className="ml-2 h-4 w-4 opacity-70 group-hover:translate-x-1 group-hover:opacity-100 transition-all" />
+                                    </>
+                                )}
                             </button>
                         </div>
                     </form>
 
                     <div className="mt-8 text-center text-sm text-muted-foreground dark:text-muted-foreground">
-                        Don't have an account?{" "}
+                        Don&apos;t have an account?{" "}
                         <Link href="#" className="font-semibold text-gray-900 dark:text-foreground hover:underline transition-all">
                             Contact Admin
                         </Link>
