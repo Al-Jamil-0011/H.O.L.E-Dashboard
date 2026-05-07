@@ -80,6 +80,38 @@ export function middleware(req: NextRequest) {
         /**
          * ROOT ROUTE
          */
+        if (pathname.startsWith("/admin")) {
+
+            if (role !== "admin") {
+
+                const redirectUrl = req.nextUrl.clone();
+
+                if (role === "finance") {
+                    redirectUrl.pathname = "/finance/dashboard";
+                } else {
+                    redirectUrl.pathname = "/dashboard";
+                }
+
+                return NextResponse.redirect(redirectUrl);
+            }
+        }
+
+        // finance routes
+        if (pathname.startsWith("/finance")) {
+
+            if (role !== "finance") {
+
+                const redirectUrl = req.nextUrl.clone();
+
+                if (role === "admin") {
+                    redirectUrl.pathname = "/admin/dashboard";
+                } else {
+                    redirectUrl.pathname = "/dashboard";
+                }
+
+                return NextResponse.redirect(redirectUrl);
+            }
+        }
 
         if (pathname === "/") {
 

@@ -32,9 +32,9 @@ import {
 } from 'lucide-react';
 
 const mainNavItems = [
-  { name: 'Home', href: '/', icon: LayoutDashboard },
-  { name: 'Finance', href: '/finance/dashboard', icon: LayoutDashboard },
-  { name: 'Admin', href: '/admin/dashboard', icon: LayoutDashboard },
+  { name: 'Overview', href: '/', icon: LayoutDashboard },
+  // { name: 'Finance', href: '/finance/dashboard', icon: LayoutDashboard },
+  // { name: 'Admin', href: '/admin/dashboard', icon: LayoutDashboard },
 ];
 
 const financeNavItems = [
@@ -58,7 +58,7 @@ const integrationsNavItems = [
 ];
 
 const adminNavItems = [
-  { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
+  // { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
   { name: 'Create New', href: '/admin/dashboard/create-new', icon: FolderPlus },
   { name: 'Users & Roles', href: '/admin/dashboard/users', icon: Users },
   { name: 'Expense', href: '/admin/dashboard/expenses', icon: Receipt },
