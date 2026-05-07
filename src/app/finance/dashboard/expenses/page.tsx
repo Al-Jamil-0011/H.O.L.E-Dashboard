@@ -13,7 +13,7 @@ const allExpenseData = [
 ];
 
 export default function ExpensesPage() {
-  const [filter, setFilter] = useState('All');
+  const [filter, setFilter] = useState({});
 
   const filteredData = allExpenseData.filter(item => {
     if (filter === 'All') return true;
