@@ -62,7 +62,7 @@ export default function LoginPage() {
                     <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 opacity-80"></div>
 
                     <div className="text-center mb-8">
-                        <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-400 mb-2 tracking-tight">
+                        <h1 className="text-3xl text-muted-foreground dark:text-muted-foreground font-bold mb-2 tracking-tight">
                             Welcome Back
                         </h1>
                         <p className="text-sm text-muted-foreground dark:text-muted-foreground">

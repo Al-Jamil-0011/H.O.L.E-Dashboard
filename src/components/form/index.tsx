@@ -46,7 +46,7 @@ const FormField: React.FC<FormFieldProps> = ({
     errors,
     validation,
     options = [],
-    colorClass = "focus:ring-blue-500/50 focus:border-blue-500/50",
+    colorClass = "",
     className = "",
     multiple = false,
     accept,
@@ -58,7 +58,7 @@ const FormField: React.FC<FormFieldProps> = ({
     const hasError = !!error;
 
     // Premium base styling matching the dashboard's design system
-    const baseInputClasses = "block w-full border rounded-xl leading-5 bg-white/50 dark:bg-white/5 placeholder-gray-400 focus:outline-none transition-all duration-300 sm:text-sm text-gray-900 dark:text-gray-100 shadow-sm";
+    const baseInputClasses = "block w-full border border-gray-500 dark:border-white/10 rounded-xl leading-5 bg-white/10 dark:bg-white/5 placeholder-gray-400 focus:border-primary focus:outline-none transition-all duration-300 sm:text-sm text-gray-900 dark:text-gray-100 shadow-sm";
 
     // Adjust padding if an icon is present, and add right padding for password toggle
     const paddingClasses = `${icon ? "pl-10" : "pl-4"} py-3 ${type === "password" ? "pr-11" : "pr-4"}`;
@@ -200,7 +200,7 @@ const FormField: React.FC<FormFieldProps> = ({
             <div className="relative group/input w-full">
                 {/* Floating Icon for text-based inputs */}
                 {icon && type !== "radio" && type !== "checkbox" && type !== "file" && type !== "textarea" && (
-                    <div className={`absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none transition-colors ${hasError ? 'text-red-500' : 'text-gray-400 group-focus-within/input:text-blue-500'}`}>
+                    <div className={`absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none transition-colors ${hasError ? 'text-red-500' : 'text-gray-400 group-focus-within/input:text-primary'}`}>
                         {icon}
                     </div>
                 )}
