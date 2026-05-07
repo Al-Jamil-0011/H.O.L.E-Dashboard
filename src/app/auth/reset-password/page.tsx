@@ -1,48 +1,45 @@
 'use client'
 import Link from "next/link";
-import { MoveRight, Lock, Mail } from "lucide-react";
+import { MoveRight, Lock } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useAuthService } from "@/hooks/auth";
-import Cookies from "js-cookie";
 import { useForm } from "react-hook-form";
 import FormField from "@/components/form";
 import { VscLoading } from "react-icons/vsc";
 import toast from "react-hot-toast";
+import { useState } from "react";
 
-export default function LoginPage() {
+export default function ResetPasswordPage() {
     const router = useRouter();
-    const { login, loading, error: authError } = useAuthService();
+    const { resetPassword, loading, error: authError } = useAuthService();
     const { register, handleSubmit, formState: { errors } } = useForm();
+    const [fieldError, setFieldError] = useState<string | null>(null);
 
-    // console.log("authError : ", authError);
+    const handleResetPassword = async (data: any) => {
 
-    const handleLogin = async (data: any) => {
+        if (data.newPassword !== data.confirmPassword) {
+            setFieldError("Passwords do not match");
+            return;
+        }
+
         try {
-            const res = await login({ email: data.email, password: data.password });
-            const userData = res?.data?.results;
-            if (res?.statusCode === 200) {
-                const token = res?.data?.accessToken;
-                if (token) {
-                    Cookies.set("token", token, {
-                        expires: data.remember ? 7 : undefined,
-                        secure: true,
-                        sameSite: "strict",
-                    });
-                }
+            const res = await resetPassword({
+                newPassword: data.newPassword,
+                confirmPassword: data.confirmPassword,
+            });
 
-                toast.success(res?.message, {
+            console.log("res:", res)
+
+            if (res?.statusCode === 201) {
+
+                toast.success(res?.message || "Password reset successful!", {
                     position: "top-center"
                 });
-
-                // Redirect by role
-                if (userData?.role === "admin") {
-                    router.push("/admin/dashboard");
-                } else if (userData?.role === "finance") {
-                    router.push("/admin/finance");
-                }
+                // return router.push("/")
             }
+
         } catch (error: any) {
-            console.log(error)
+            console.log(error);
         }
     }
 
@@ -63,14 +60,14 @@ export default function LoginPage() {
 
                     <div className="text-center mb-8">
                         <h1 className="text-3xl text-muted-foreground dark:text-muted-foreground font-bold mb-2 tracking-tight">
-                            Welcome Back
+                            Reset Password
                         </h1>
                         <p className="text-sm text-muted-foreground dark:text-muted-foreground w-2/3 mx-auto">
-                            Enter your credentials to access your H.O.L.E account.
+                            Enter your new password to access your H.O.L.E account.
                         </p>
                     </div>
 
-                    {authError && (
+                    {fieldError && (
                         <div className="p-3 mb-2 rounded-xl bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 flex items-start animate-in fade-in slide-in-from-top-2">
                             <div className="flex-shrink-0 mt-0.5">
                                 <svg className="w-5 h-5 text-red-600 dark:text-red-400" fill="currentColor" viewBox="0 0 20 20">
@@ -82,57 +79,36 @@ export default function LoginPage() {
                                     Authentication Failed
                                 </h3>
                                 <p className="mt-1 text-sm text-red-600 dark:text-red-400 opacity-90">
-                                    {authError}
+                                    {fieldError || authError}
                                 </p>
                             </div>
                         </div>
                     )}
 
 
-                    <form className="space-y-6 mt-2" onSubmit={handleSubmit(handleLogin)}>
+                    <form className="space-y-6 mt-2" onSubmit={handleSubmit(handleResetPassword)}>
                         <div>
                             {/* Email Input */}
                             <FormField
-                                type="email"
-                                name="email"
-                                placeholder="Email Address"
-                                icon={<Mail className="h-5 w-5" />}
-                                register={register}
-                                errors={errors}
-                                validation={{
-                                    required: "Email is required",
-                                    pattern: { value: /\S+@\S+\.\S+/, message: "Invalid email format" }
-                                }}
-                            />
-
-                            {/* Password Input */}
-                            <FormField
                                 type="password"
-                                name="password"
-                                placeholder="Password"
+                                name="newPassword"
+                                placeholder="New Password"
                                 icon={<Lock className="h-5 w-5" />}
                                 register={register}
                                 errors={errors}
                                 validation={{ required: "Password is required" }}
                             />
-                        </div>
 
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center">
-                                <FormField
-                                    type="checkbox"
-                                    name="remember"
-                                    placeholder="Remember me"
-                                    register={register}
-                                    errors={errors}
-                                />
-                            </div>
-
-                            <div className="text-sm pb-5">
-                                <Link href="/auth/forget-password" className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300 transition-colors">
-                                    Forgot password?
-                                </Link>
-                            </div>
+                            {/* Password Input */}
+                            <FormField
+                                type="password"
+                                name="confirmPassword"
+                                placeholder="Confirm Password"
+                                icon={<Lock className="h-5 w-5" />}
+                                register={register}
+                                errors={errors}
+                                validation={{ required: "Confirm Password is required" }}
+                            />
                         </div>
 
                         <div>
@@ -143,24 +119,17 @@ export default function LoginPage() {
                                 {loading ? (
                                     <>
                                         <VscLoading className="mr-2 h-5 w-5 animate-spin" />
-                                        Please wait...
+                                        Resetting Password...
                                     </>
                                 ) : (
                                     <>
-                                        Sign In
+                                        Reset Password
                                         <MoveRight className="ml-2 h-4 w-4 opacity-70 group-hover:translate-x-1 group-hover:opacity-100 transition-all" />
                                     </>
                                 )}
                             </button>
                         </div>
                     </form>
-
-                    <div className="mt-8 text-center">
-                        <span className="text-muted-foreground dark:text-muted-foreground">Don&apos;t have an account?</span>{" "}
-                        <button className="cursor-pointer! text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300">
-                            Signup
-                        </button>
-                    </div>
                 </div>
             </div>
         </div>
