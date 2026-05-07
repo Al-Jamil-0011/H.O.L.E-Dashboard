@@ -15,6 +15,7 @@ export const metadata: Metadata = {
 
 import { RootLayoutWrapper } from "@/components/layout/RootLayoutWrapper";
 import { ThemeProvider } from "@/components/theme-provider";
+import { Toaster } from "react-hot-toast";
 
 export default function RootLayout({
   children,
@@ -35,6 +36,13 @@ export default function RootLayout({
           <RootLayoutWrapper>
             {children}
           </RootLayoutWrapper>
+          <Toaster 
+            position="top-right" 
+            toastOptions={{
+              className: 'dark:bg-gray-800 dark:text-white',
+              duration: 4000,
+            }}
+          />
         </ThemeProvider>
       </body>
     </html>
