@@ -8,9 +8,7 @@ export function middleware(req: NextRequest) {
 
     const token = req.cookies.get("token")?.value;
 
-    /**
-     * PUBLIC ROUTES
-     */
+
 
     const publicRoutes = [
         "/auth/login",
@@ -20,19 +18,13 @@ export function middleware(req: NextRequest) {
         "/auth/reset-password",
     ];
 
-    /**
-     * ONLY THESE AUTH ROUTES
-     * SHOULD REDIRECT WHEN USER IS LOGGED IN
-     */
 
     const blockedWhenLoggedIn = [
         "/auth/login",
         "/auth/register",
     ];
 
-    /**
-     * SKIP STATIC FILES
-     */
+
 
     if (
         pathname.startsWith("/_next") ||
@@ -41,10 +33,6 @@ export function middleware(req: NextRequest) {
     ) {
         return NextResponse.next();
     }
-
-    /**
-     * NO TOKEN
-     */
 
     if (!token) {
 

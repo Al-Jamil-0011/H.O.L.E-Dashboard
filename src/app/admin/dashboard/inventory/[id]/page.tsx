@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { 
-  ChevronLeft, Eye, FileText, Calendar, MapPin, 
+import {
+  ChevronLeft, Eye, FileText, Calendar, MapPin,
   ArrowRightLeft, CheckCircle2, Box, Truck, UserCircle2
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -79,7 +79,7 @@ export default function InventoryDetailsPage() {
   const params = useParams();
   const router = useRouter();
   const id = params.id as string;
-  
+
   // Default to Implant if ID not found for demo purposes
   const item = mockInventoryData[id as keyof typeof mockInventoryData] || mockInventoryData['INV-1001'];
 
@@ -87,10 +87,10 @@ export default function InventoryDetailsPage() {
     <div className="flex justify-center w-full pb-24 animate-in fade-in duration-500">
       {/* Centered container (max-width: 1200px-1400px) */}
       <div className="w-full max-w-5xl space-y-8">
-        
+
         {/* HEADER SECTION */}
         <div className="flex items-center gap-4 border-b border-[#1E293B] pb-6">
-          <button 
+          <button
             onClick={() => router.push('/admin/dashboard/inventory')}
             className="p-2.5 bg-[#1E293B] hover:bg-[#334155] rounded-xl transition-colors flex items-center justify-center"
           >
@@ -108,19 +108,19 @@ export default function InventoryDetailsPage() {
         <div className="bg-[#151B2B] rounded-2xl border border-[#1E293B] overflow-hidden shadow-sm relative">
           <div className="h-[300px] md:h-[400px] w-full bg-[#0B101E] relative">
             <div className="absolute inset-0 bg-gradient-to-t from-[#151B2B] to-transparent opacity-60 z-10" />
-            <img 
-              src={item.image} 
+            <img
+              src={item.image}
               alt={item.title}
               className="w-full h-full object-cover opacity-80"
             />
-            
+
             {/* Overlay Elements */}
             <div className="absolute top-6 right-6 z-20">
               <span className="px-4 py-1.5 text-xs font-bold bg-[#00E5FF]/20 text-[#00E5FF] rounded-full border border-[#00E5FF]/30 shadow-lg backdrop-blur-md">
                 {item.status}
               </span>
             </div>
-            
+
             {item.type === 'Tray' && item.tags && (
               <div className="absolute bottom-6 left-6 z-20 flex gap-3">
                 <span className="px-4 py-2 text-sm font-bold bg-[#1E293B]/80 text-amber-500 rounded-lg backdrop-blur-md flex items-center gap-2 border border-[#334155]/50">
@@ -142,7 +142,7 @@ export default function InventoryDetailsPage() {
               {item.status}
             </span>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
             {item.type !== 'Biological' ? (
               // Implant / Tray General Info
@@ -210,16 +210,16 @@ export default function InventoryDetailsPage() {
         {/* 3. LOCATION & LOGISTICS */}
         <div className="bg-[#151B2B] rounded-2xl border border-[#1E293B] p-8 shadow-sm">
           <h2 className="text-xl font-bold text-white mb-8">Location & Logistics</h2>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
             <div className="flex items-center justify-between border-b border-[#1E293B] pb-4">
               <span className="text-sm font-bold text-gray-500 flex items-center gap-3">
-                <MapPin className="h-5 w-5 text-[#00E5FF]" /> 
+                <MapPin className="h-5 w-5 text-[#00E5FF]" />
                 {item.type === 'Biological' ? 'Location' : 'Facility / Location'}
               </span>
               <span className="text-lg font-bold text-white">{item.location.facility || item.location.location}</span>
             </div>
-            
+
             {item.type !== 'Biological' && item.location.recipientEmail && (
               <div className="flex items-center justify-between border-b border-[#1E293B] pb-4">
                 <span className="text-sm font-bold text-gray-500 flex items-center gap-3">
@@ -228,7 +228,7 @@ export default function InventoryDetailsPage() {
                 <span className="text-lg font-bold text-gray-300">{item.location.recipientEmail}</span>
               </div>
             )}
-            
+
             {item.type === 'Biological' && item.location.expiryDate && (
               <div className="flex items-center justify-between border-b border-[#1E293B] pb-4">
                 <span className="text-sm font-bold text-gray-500 flex items-center gap-3">
@@ -288,13 +288,13 @@ export default function InventoryDetailsPage() {
             <h2 className="text-xl font-bold text-white mb-8">Movement History</h2>
             <div className="relative pl-6 space-y-10">
               <div className="absolute left-[31px] top-4 bottom-4 w-[2px] bg-[#1E293B]" />
-              
+
               {item.history.map((event, idx) => (
                 <div key={idx} className="relative flex gap-8">
                   <div className={cn(
                     "relative z-10 w-4 h-4 rounded-full mt-1.5 shrink-0 shadow-[0_0_0_6px_#151B2B]",
                     idx === 0 ? "bg-amber-500" :
-                    idx === 1 ? "bg-gray-600" : "bg-gray-400"
+                      idx === 1 ? "bg-gray-600" : "bg-gray-400"
                   )} />
                   <div className="flex-1">
                     <div className="flex items-center justify-between mb-2">
