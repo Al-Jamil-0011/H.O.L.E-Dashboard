@@ -27,6 +27,7 @@ export function DataTable<T>({
   className,
   onRowClick,
 }: DataTableProps<T>) {
+
   return (
     <div
       className={cn(
@@ -58,7 +59,7 @@ export function DataTable<T>({
 
           {/* LOADING */}
           {loading &&
-            Array.from({ length: 5 }).map((_, rowIndex) => (
+            Array.from({ length: 8 }).map((_, rowIndex) => (
               <tr key={`skeleton-${rowIndex}`} className="animate-pulse border-b border-border">
                 {columns.map((_, colIndex) => (
                   <td key={`skeleton-col-${colIndex}`} className="px-4 py-4">

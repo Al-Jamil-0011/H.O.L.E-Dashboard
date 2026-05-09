@@ -23,6 +23,7 @@ import { useUsers, useUserSummary, useChangeUserStatus } from '@/hooks/admin/use
 import { IUser } from '@/hooks/admin/users/interface';
 import { IDetailRowProps, IStatCardProps } from './interface';
 import Image from 'next/image';
+import { FaEye } from 'react-icons/fa';
 
 const getInitials = (name: string) => {
   if (!name) return 'NA';
@@ -182,14 +183,21 @@ export default function UsersManagementPage() {
       header: "ACTIONS",
       render: (item: IUser) => (
         <div className="flex items-center gap-2">
-          <Link href={`/admin/dashboard/users/${item._id}`} onClick={(e) => e.stopPropagation()}>
-            <button className="px-3 py-1 font-bold text-[#00E5FF] bg-[#00E5FF]/10 rounded hover:bg-[#00E5FF]/20 transition-colors">
-              Details
+          {
+            item?.role === "driver" ? (
+              <Link href={`/admin/dashboard/users/${item._id}`} onClick={(e) => e.stopPropagation()}>
+                <button className="px-3 flex items-center gap-2 py-1 font-bold text-[#00E5FF] bg-[#00E5FF]/10 rounded hover:bg-[#00E5FF]/20 transition-colors cursor-pointer">
+                  <FaEye /> Details
+                </button>
+              </Link>
+            ) : <button className="px-3 flex items-center gap-2 py-1 font-bold text-[#00E5FF] bg-[#00E5FF]/10 rounded hover:bg-[#00E5FF]/20 transition-colors cursor-pointer">
+              <FaEye /> Details
             </button>
-          </Link>
-          <button onClick={(e) => { e.stopPropagation(); setSelectedUser(item); }} className="p-1 text-muted-foreground hover:text-foreground transition-colors">
+          }
+
+          {/* <button onClick={(e) => { e.stopPropagation(); setSelectedUser(item); }} className="p-1 text-muted-foreground hover:text-foreground transition-colors">
             <Edit2 className="h-4 w-4" />
-          </button>
+          </button> */}
         </div>
       )
     }
@@ -252,7 +260,7 @@ export default function UsersManagementPage() {
               <input
                 type="text"
                 placeholder="Search users by name, email..."
-                className="w-full bg-[var(--background)] border border-[var(--border)] rounded-md py-2 pl-9 pr-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] transition-colors"
+                className="w-full bg-[var(--background)] border border-[var(--border)] rounded-md py-2 pl-9 pr-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-[var(--primary)]  transition-colors"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
@@ -267,35 +275,35 @@ export default function UsersManagementPage() {
               <select
                 value={roleFilter}
                 onChange={e => setRoleFilter(e.target.value)}
-                className="bg-background border border-border rounded-md py-1.5 px-3 text-xs font-medium text-foreground appearance-none focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] cursor-pointer"
+                className="bg-background border border-border rounded-md py-1.5 px-3 text-xs font-medium text-foreground appearance-none focus:outline-none focus:border-[var(--primary)] cursor-pointer"
               >
-                <option value="All">All Roles</option>
-                <option value="Representative">Representative</option>
-                <option value="Manager">Manager</option>
-                <option value="Admin">Admin</option>
-                <option value="Driver">Driver</option>
+                <option className="cursor-pointer" value="All">All Roles</option>
+                <option className="cursor-pointer" value="Representative">Representative</option>
+                <option className="cursor-pointer" value="Manager">Manager</option>
+                <option className="cursor-pointer" value="Admin">Admin</option>
+                <option className="cursor-pointer" value="Driver">Driver</option>
               </select>
 
               <select
                 value={statusFilter}
                 onChange={e => setStatusFilter(e.target.value)}
-                className="bg-background border border-border rounded-md py-1.5 px-3 text-xs font-medium text-foreground appearance-none focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] cursor-pointer"
+                className="bg-background border border-border rounded-md py-1.5 px-3 text-xs font-medium text-foreground appearance-none focus:outline-none focus:border-[var(--primary)] cursor-pointer"
               >
-                <option value="All">All Status</option>
-                <option value="Active">Active</option>
-                <option value="Inactive">Inactive</option>
+                <option className="cursor-pointer!" value="All">All Status</option>
+                <option className="cursor-pointer" value="Active">Active</option>
+                <option className="cursor-pointer" value="Inactive">Inactive</option>
               </select>
 
               <select
                 value={territoryFilter}
                 onChange={e => setTerritoryFilter(e.target.value)}
-                className="bg-background border border-border rounded-md py-1.5 px-3 text-xs font-medium text-foreground appearance-none focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] cursor-pointer"
+                className="bg-background border border-border rounded-md py-1.5 px-3 text-xs font-medium text-foreground appearance-none focus:outline-none focus:border-[var(--primary)] cursor-pointer"
               >
-                <option value="All">All Territories</option>
-                <option value="Northeast">Northeast</option>
-                <option value="West Coast">West Coast</option>
-                <option value="South">South</option>
-                <option value="Pending">Pending</option>
+                <option className="cursor-pointer" value="All">All Territories</option>
+                <option className="cursor-pointer" value="Northeast">Northeast</option>
+                <option className="cursor-pointer" value="West Coast">West Coast</option>
+                <option className="cursor-pointer" value="South">South</option>
+                <option className="cursor-pointer" value="Pending">Pending</option>
               </select>
             </div>
           </div>
@@ -447,12 +455,12 @@ export default function UsersManagementPage() {
             <div className="p-5 space-y-4">
               <div>
                 <label className="block text-xs font-medium text-muted-foreground mb-1.5 uppercase tracking-wider">Territory / Region</label>
-                <select className="w-full bg-[var(--card)] border border-[var(--border)] rounded-lg p-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] transition-colors">
-                  <option>Select Territory...</option>
-                  <option value="Northeast">Northeast</option>
-                  <option value="West Coast">West Coast</option>
-                  <option value="South">South</option>
-                  <option value="Midwest">Midwest</option>
+                <select className="w-full bg-[var(--card)] border border-[var(--border)] rounded-lg p-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--primary)] cursor-pointer transition-colors">
+                  <option className="cursor-pointer">Select Territory...</option>
+                  <option className="cursor-pointer" value="Northeast">Northeast</option>
+                  <option className="cursor-pointer" value="West Coast">West Coast</option>
+                  <option className="cursor-pointer" value="South">South</option>
+                  <option className="cursor-pointer" value="Midwest">Midwest</option>
                 </select>
               </div>
             </div>
@@ -531,7 +539,7 @@ export default function UsersManagementPage() {
                 <input
                   type="text"
                   placeholder="Search by name or email..."
-                  className="w-full bg-[var(--card)] border border-[var(--border)] rounded-lg py-2 pl-9 pr-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] transition-colors"
+                  className="w-full bg-[var(--card)] border border-[var(--border)] rounded-lg py-2 pl-9 pr-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-[var(--primary)]  transition-colors"
                   value={repSearch}
                   onChange={(e) => setRepSearch(e.target.value)}
                 />

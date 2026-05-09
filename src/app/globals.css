@@ -68,3 +68,11 @@
     @apply bg-background text-foreground antialiased min-h-screen flex flex-col;
   }
 }
+
+select>option {
+  cursor: pointer !important;
+}
+
+option {
+  cursor: pointer !important;
+}
