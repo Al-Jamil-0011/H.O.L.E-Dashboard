@@ -131,7 +131,7 @@ export default function UsersManagementPage() {
           "font-medium",
           !item.territory ? "text-amber-500" : "text-muted-foreground"
         )}>
-          {item.territory || 'Pending'}
+          {item.territory || 'N/A'}
         </span>
       )
     },
