@@ -23,6 +23,8 @@ export function useUsers() {
         limit: 10,
         searchTerm: "",
         role: "",
+        status: "",
+        territory: "",
     });
 
     const fetchUsers = useCallback(async () => {
@@ -30,7 +32,7 @@ export function useUsers() {
         setError(null);
 
         try {
-            const { page, limit, searchTerm, role } = query;
+            const { page, limit, searchTerm, role, status, territory } = query;
 
             const params = new URLSearchParams();
 
@@ -43,6 +45,14 @@ export function useUsers() {
 
             if (role) {
                 params.append("role", role);
+            }
+
+            if (status) {
+                params.append("status", status);
+            }
+
+            if (territory) {
+                params.append("territory", territory);
             }
 
             const response = await useApi.get<IApiResponse<IUsersResponse>>(

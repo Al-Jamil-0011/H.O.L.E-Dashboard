@@ -5,3 +5,10 @@ export interface IStatCardProps {
     topBorderColor: string;
     loading?: boolean;
 }
+
+export interface IDetailRowProps {
+    icon: React.ReactNode;
+    label: string;
+    value: string;
+    highlight?: boolean;
+}

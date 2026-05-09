@@ -84,6 +84,8 @@ export interface IUsersQuery {
     limit: number;
     searchTerm: string;
     role: string;
+    status: string;
+    territory: string;
 }
 
 

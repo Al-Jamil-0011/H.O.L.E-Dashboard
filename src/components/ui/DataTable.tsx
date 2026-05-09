@@ -57,16 +57,16 @@ export function DataTable<T>({
         <tbody className="divide-y divide-border">
 
           {/* LOADING */}
-          {loading && (
-            <tr>
-              <td
-                colSpan={columns.length}
-                className="px-4 py-10 text-center text-muted-foreground"
-              >
-                Loading...
-              </td>
-            </tr>
-          )}
+          {loading &&
+            Array.from({ length: 5 }).map((_, rowIndex) => (
+              <tr key={`skeleton-${rowIndex}`} className="animate-pulse border-b border-border">
+                {columns.map((_, colIndex) => (
+                  <td key={`skeleton-col-${colIndex}`} className="px-4 py-4">
+                    <div className={cn("h-4 bg-muted rounded", colIndex === 0 ? "w-3/4 max-w-[200px]" : "w-1/2 max-w-[100px]")}></div>
+                  </td>
+                ))}
+              </tr>
+            ))}
 
           {/* DATA */}
           {!loading &&

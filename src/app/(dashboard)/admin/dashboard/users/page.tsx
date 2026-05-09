@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { DataTable, StatusBadge } from '@/components/ui/DataTable';
@@ -21,7 +21,7 @@ import {
 } from 'lucide-react';
 import { useUsers, useUserSummary, useChangeUserStatus } from '@/hooks/admin/users';
 import { IUser } from '@/hooks/admin/users/interface';
-import { IStatCardProps } from './interface';
+import { IDetailRowProps, IStatCardProps } from './interface';
 import Image from 'next/image';
 
 const getInitials = (name: string) => {
@@ -38,7 +38,7 @@ export default function UsersManagementPage() {
   const [territoryFilter, setTerritoryFilter] = useState('All');
 
   const { users: allUsers, loading: usersLoading, refetch, query, setQuery, meta } = useUsers();
-  const { summary, loading: statLoading } = useUserSummary();
+  const { summary, loading: statLoading, refetch: summaryRefetch } = useUserSummary();
   const { changeUserStatus, loading: changingStatus } = useChangeUserStatus();
 
   const [selectedUser, setSelectedUser] = useState<IUser | null>(null);
@@ -51,14 +51,32 @@ export default function UsersManagementPage() {
   // Sync local search and role to the useUsers query hook
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      setQuery((prev) => ({
-        ...prev,
-        searchTerm: search,
-        role: roleFilter === 'All' ? "" : roleFilter.toLowerCase(),
-      }));
+      setQuery((prev) => {
+        const newRole = roleFilter === 'All' ? "" : roleFilter.toLowerCase();
+        const newStatus = statusFilter === 'All' ? "" : statusFilter.toLowerCase();
+        const newTerritory = territoryFilter === 'All' ? "" : territoryFilter;
+
+        if (
+          prev.searchTerm === search &&
+          prev.role === newRole &&
+          prev.status === newStatus &&
+          prev.territory === newTerritory
+        ) {
+          return prev;
+        }
+
+        return {
+          ...prev,
+          page: 1,
+          searchTerm: search,
+          role: newRole,
+          status: newStatus,
+          territory: newTerritory,
+        };
+      });
     }, 500);
     return () => clearTimeout(timeoutId);
-  }, [search, roleFilter, setQuery]);
+  }, [search, roleFilter, statusFilter, territoryFilter, setQuery]);
 
   const handleToggleStatus = (user: IUser, currentStatus: string) => {
     setSelectedUser(user);
@@ -73,6 +91,7 @@ export default function UsersManagementPage() {
     const success = await changeUserStatus(userId, newStatus);
     if (success) {
       refetch();
+      summaryRefetch();
       if (selectedUser?._id === userId) {
         setSelectedUser({ ...selectedUser, status: newStatus });
       }
@@ -168,7 +187,7 @@ export default function UsersManagementPage() {
               Details
             </button>
           </Link>
-          <button onClick={(e) => { e.stopPropagation(); setSelectedUser(item); }} className="p-1 text-gray-400 hover:text-white transition-colors">
+          <button onClick={(e) => { e.stopPropagation(); setSelectedUser(item); }} className="p-1 text-muted-foreground hover:text-foreground transition-colors">
             <Edit2 className="h-4 w-4" />
           </button>
         </div>
@@ -223,48 +242,73 @@ export default function UsersManagementPage() {
       </div>
 
       {/* MAIN CONTAINER */}
-      <div className="rounded-xl border border-[#1E293B] bg-[#151B2B] shadow-lg flex flex-col overflow-hidden">
+      <div className="rounded-xl border border-gray-200 dark:border-[#1E293B] dark:bg-[#151B2B] shadow-lg flex flex-col overflow-hidden">
         {/* FILTER BAR */}
-        <div className="p-4 border-b border-border flex flex-col md:flex-row gap-4 items-center justify-between bg-muted/40">
-          <div className="relative w-full md:w-72">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Search users by name, email..."
-              className="w-full bg-[#0B101E] border border-[#334155] rounded-md py-2 pl-9 pr-3 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-[#00E5FF] transition-colors"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          </div>
+        <div className="p-4 border-b border-border flex flex-col gap-4 bg-muted/40">
 
-          <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
-            <div className="flex items-center gap-2 text-muted-foreground">
-              <Filter className="h-4 w-4" />
-              <span className="text-xs font-semibold uppercase tracking-wider">Filters</span>
+          <div className="p-4 border-b border-[var(--border)] flex flex-col md:flex-row items-center justify-between gap-4 bg-muted/40">
+            <div className="relative w-full md:w-72">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <input
+                type="text"
+                placeholder="Search users by name, email..."
+                className="w-full bg-[var(--background)] border border-[var(--border)] rounded-md py-2 pl-9 pr-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] transition-colors"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
             </div>
 
-            <select
-              value={roleFilter}
-              onChange={e => setRoleFilter(e.target.value)}
-              className="bg-[var(--background)] border border-[var(--border)] rounded-md py-1.5 px-3 text-xs font-medium text-foreground appearance-none focus:outline-none focus:border-[var(--primary)] cursor-pointer"
-            >
-              <option value="All">All Roles</option>
-              <option value="Representative">Representative</option>
-              <option value="Manager">Manager</option>
-              <option value="Admin">Admin</option>
-              <option value="Driver">Driver</option>
-            </select>
-          </div>
-        </div>
+            <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <Filter className="h-4 w-4" />
+                <span className="text-xs font-semibold uppercase tracking-wider">Filters</span>
+              </div>
 
-        {/* DATA TABLE */}
-        <div className="p-0">
-          <DataTable
-            data={allUsers}
-            columns={columns}
-            loading={usersLoading}
-            onRowClick={(item) => setSelectedUser(item)}
-          />
+              <select
+                value={roleFilter}
+                onChange={e => setRoleFilter(e.target.value)}
+                className="bg-background border border-border rounded-md py-1.5 px-3 text-xs font-medium text-foreground appearance-none focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] cursor-pointer"
+              >
+                <option value="All">All Roles</option>
+                <option value="Representative">Representative</option>
+                <option value="Manager">Manager</option>
+                <option value="Admin">Admin</option>
+                <option value="Driver">Driver</option>
+              </select>
+
+              <select
+                value={statusFilter}
+                onChange={e => setStatusFilter(e.target.value)}
+                className="bg-background border border-border rounded-md py-1.5 px-3 text-xs font-medium text-foreground appearance-none focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] cursor-pointer"
+              >
+                <option value="All">All Status</option>
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+              </select>
+
+              <select
+                value={territoryFilter}
+                onChange={e => setTerritoryFilter(e.target.value)}
+                className="bg-background border border-border rounded-md py-1.5 px-3 text-xs font-medium text-foreground appearance-none focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] cursor-pointer"
+              >
+                <option value="All">All Territories</option>
+                <option value="Northeast">Northeast</option>
+                <option value="West Coast">West Coast</option>
+                <option value="South">South</option>
+                <option value="Pending">Pending</option>
+              </select>
+            </div>
+          </div>
+
+          {/* DATA TABLE */}
+          <div className="p-0">
+            <DataTable
+              data={allUsers}
+              columns={columns}
+              loading={usersLoading}
+              onRowClick={(item) => setSelectedUser(item)}
+            />
+          </div>
         </div>
       </div>
 
@@ -280,8 +324,8 @@ export default function UsersManagementPage() {
           {/* Drawer Content */}
           <div className="fixed inset-y-0 right-0 w-full max-w-md bg-[var(--background)] border-l border-[var(--border)] shadow-2xl flex flex-col animate-in slide-in-from-right duration-300">
             {/* Drawer Header */}
-            <div className="flex items-center justify-between p-6 border-b border-[#1E293B]">
-              <h2 className="text-lg font-bold text-white">User Profile Details</h2>
+            <div className="flex items-center justify-between p-6 border-b border-border">
+              <h2 className="text-lg font-bold text-foreground">User Profile Details</h2>
               <button
                 onClick={() => setSelectedUser(null)}
                 className="p-1.5 rounded-md hover:bg-[var(--border)] text-muted-foreground hover:text-foreground transition-colors"
@@ -315,7 +359,7 @@ export default function UsersManagementPage() {
               </div>
 
               {/* Info grid */}
-              <div className="space-y-4 mb-8 border border-[#1E293B] bg-[#151B2B] rounded-xl p-4">
+              <div className="space-y-4 mb-8 border border-border bg-card rounded-xl p-4">
                 <DetailRow icon={<Mail size={14} />} label="Email Address" value={selectedUser.email} />
                 <DetailRow icon={<Phone size={14} />} label="Phone Number" value={selectedUser.phoneNumber || 'N/A'} />
                 <DetailRow icon={<Calendar size={14} />} label="Registration Date" value={selectedUser.createdAt ? new Date(selectedUser.createdAt).toLocaleDateString() : 'N/A'} />
@@ -377,7 +421,7 @@ export default function UsersManagementPage() {
             </div>
 
             {/* Drawer Footer */}
-            <div className="p-6 border-t border-[#1E293B] bg-[#151B2B] mt-auto">
+            <div className="p-6 border-t border-border bg-card mt-auto">
               <button
                 onClick={() => setSelectedUser(null)}
                 className="w-full py-2.5 text-sm font-bold text-[var(--background)] bg-primary rounded-lg shadow-sm transition-all hover:bg-cyan-400"
@@ -403,7 +447,7 @@ export default function UsersManagementPage() {
             <div className="p-5 space-y-4">
               <div>
                 <label className="block text-xs font-medium text-muted-foreground mb-1.5 uppercase tracking-wider">Territory / Region</label>
-                <select className="w-full bg-[var(--card)] border border-[var(--border)] rounded-lg p-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--primary)]">
+                <select className="w-full bg-[var(--card)] border border-[var(--border)] rounded-lg p-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] transition-colors">
                   <option>Select Territory...</option>
                   <option value="Northeast">Northeast</option>
                   <option value="West Coast">West Coast</option>
@@ -443,10 +487,10 @@ export default function UsersManagementPage() {
                 If you deactivate this user, they will no longer appear in future dropdown selections and reports. Are you sure?
               </p>
             </div>
-            <div className="p-4 bg-[#151B2B] border-t border-[#1E293B] flex gap-3">
+            <div className="p-4 bg-card border-t border-border flex gap-3">
               <button
                 onClick={() => setIsDeactivateModalOpen(false)}
-                className="flex-1 py-2 text-xs font-bold text-gray-300 bg-[#1E293B] rounded-lg hover:bg-[#334155] transition-colors"
+                className="flex-1 py-2 text-xs font-bold text-muted-foreground bg-muted rounded-lg hover:bg-muted/80 transition-colors"
                 disabled={changingStatus}
               >
                 Cancel
@@ -487,7 +531,7 @@ export default function UsersManagementPage() {
                 <input
                   type="text"
                   placeholder="Search by name or email..."
-                  className="w-full bg-[var(--card)] border border-[var(--border)] rounded-lg py-2 pl-9 pr-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors"
+                  className="w-full bg-[var(--card)] border border-[var(--border)] rounded-lg py-2 pl-9 pr-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] transition-colors"
                   value={repSearch}
                   onChange={(e) => setRepSearch(e.target.value)}
                 />
@@ -568,7 +612,8 @@ export default function UsersManagementPage() {
       )}
 
     </div>
-  );
+
+  )
 }
 
 function StatCard({
@@ -601,7 +646,7 @@ function StatCard({
   );
 }
 
-function DetailRow({ icon, label, value, highlight }: { icon: React.ReactNode, label: string, value: string, highlight?: boolean }) {
+function DetailRow({ icon, label, value, highlight }: IDetailRowProps) {
   return (
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-3 text-muted-foreground">
