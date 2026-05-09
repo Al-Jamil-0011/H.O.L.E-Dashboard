@@ -24,6 +24,7 @@ import { IUser } from '@/hooks/admin/users/interface';
 import { IDetailRowProps, IStatCardProps } from './interface';
 import Image from 'next/image';
 import { FaEye } from 'react-icons/fa';
+import { VerifyBadge } from '@/components/verify-bedge';
 
 const getInitials = (name: string) => {
   if (!name) return 'NA';
@@ -362,6 +363,7 @@ export default function UsersManagementPage() {
                     <span className="text-primary font-semibold text-sm capitalize">{selectedUser.role}</span>
                     <span className="w-1 h-1 rounded-full bg-gray-500" />
                     <StatusBadge status={selectedUser.status} type={selectedUser.status === 'active' ? 'success' : 'default'} />
+                    <VerifyBadge isVerified={selectedUser.isVerified} showLabel size='sm' />
                   </div>
                 </div>
               </div>

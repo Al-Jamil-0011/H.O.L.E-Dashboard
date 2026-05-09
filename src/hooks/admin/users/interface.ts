@@ -36,7 +36,7 @@ export interface IUser {
     role: UserRole;
     status: UserStatus;
 
-    phoneNumber?: string;
+    phoneNumber?: string | undefined;
     territory?: string;
     employeeId?: string;
     dateOfBirth?: string | null;
@@ -52,7 +52,7 @@ export interface IUser {
     createdAt?: string;
     updatedAt?: string;
     updated_at?: string;
-
+    gender?: string;
     location?: ILocation;
 
     drivingInfo?: IDrivingInfo;

@@ -5,89 +5,88 @@ import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { ArrowLeft, Edit, AlertTriangle, Mail, Phone, MapPin, Calendar, User, FileText, CreditCard, Car, Download, Eye, File, Image as ImageIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import Image from 'next/image';
+import { useChangeUserStatus, useSingleUser } from '@/hooks/admin/users';
+import { VerifyBadge } from '@/components/verify-bedge';
+import { IUser } from '@/hooks/admin/users/interface';
+import { StatusBadge } from '@/components/ui/DataTable';
+import toast from 'react-hot-toast';
+import Loader from '@/components/loader';
 
 export default function UserDetailsPage() {
   const router = useRouter();
   const params = useParams();
-  
-  // Mock data for Driver
-  const [driver, setDriver] = useState({
-    id: params.id as string,
-    name: 'Daniel Carter',
-    role: 'Driver',
-    status: 'Active',
-    avatar: 'https://i.pravatar.cc/150?u=5',
-    bio: 'Professional medical logistics driver with 5+ years of experience in safely transporting sensitive medical equipment and supplies across regions.',
-    email: 'daniel.c@invictus.com',
-    phone: '(555) 789-0123',
-    address: '123 Logistics Way, New York, NY 10001',
-    dob: '15 Mar 1988',
-    gender: 'Male',
-    nid: 'NID-9876543210',
-    licenseNumber: 'DL-ABC123456',
-    carPlate: 'XYZ-9876',
-  });
-
   const [isDeactivateModalOpen, setIsDeactivateModalOpen] = useState(false);
+  const { changeUserStatus, loading: changingStatus } = useChangeUserStatus();
+  const { user, loading: userLoading, error, refetch } = useSingleUser(params.id as string);
 
-  const toggleStatus = () => {
-    setDriver({ ...driver, status: driver.status === 'Active' ? 'Inactive' : 'Active' });
+  console.log(user);
+
+
+
+
+
+  const toggleStatus = async () => {
+    if (!user) return;
+    const success = await changeUserStatus(user?._id, user?.status === 'active' ? 'inactive' : 'active');
+    if (success) {
+      refetch();
+      toast.success(`User ${user?.status === 'active' ? 'deactivated' : 'activated'} successfully`);
+    } else {
+      toast.error(`Failed to ${user?.status === 'active' ? 'deactivate' : 'activate'} user`);
+    }
     setIsDeactivateModalOpen(false);
   };
+
+  if (userLoading) {
+    return <div className='flex items-center justify-center w-full h-[60vh]'>
+      <Loader size={32} text='Processing details...' />
+    </div>
+  }
 
   return (
     <div className="space-y-6 animate-in fade-in zoom-in duration-500 pb-10">
       {/* Top Header */}
       <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
         <div className="flex items-start gap-4">
-          <button 
+          <button
             onClick={() => router.back()}
-            className="p-2 mt-1 rounded-full bg-[#1E293B] text-gray-400 hover:text-white hover:bg-[#334155] transition-colors"
+            className="p-2 mt-1 rounded-full bg-[#1E293B] text-gray-400 hover:text-white hover:bg-[#334155] transition-colors cursor-pointer"
           >
-            <ArrowLeft className="h-5 w-5" />
+            <ArrowLeft className="h-5 w-5 text-primary" />
           </button>
           <div className="flex gap-4">
-            <img src={driver.avatar} alt="Avatar" className="w-16 h-16 rounded-full border-2 border-[#1E293B] object-cover" />
+            <div className="w-16 h-16 rounded-full relative overflow-hidden border-2 border-[#1E293B]">
+              <Image src={user?.profileUrl || '/default-avatar.png'} alt={user?.fullName || 'N/A'} fill className="object-cover" />
+            </div>
             <div>
-              <h1 className="text-2xl font-bold tracking-tight text-white mb-1">{driver.name}</h1>
+              <h1 className="text-2xl font-bold tracking-tight text-white mb-1">{user?.fullName}</h1>
               <div className="flex items-center gap-3">
                 <span className="px-2.5 py-1 text-[10px] uppercase font-bold tracking-wider rounded-md bg-purple-500/10 text-purple-400 border border-purple-500/20">
-                  {driver.role}
+                  {user?.role}
                 </span>
-                <span className="w-1.5 h-1.5 rounded-full bg-gray-600" />
-                <button 
-                  onClick={() => setIsDeactivateModalOpen(true)}
-                  className="flex items-center gap-2 group"
-                >
-                  <div className={cn(
-                    "relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full transition-colors",
-                    driver.status === 'Active' ? "bg-[#00E5FF]" : "bg-gray-600"
-                  )}>
-                    <span className={cn(
-                      "pointer-events-none block h-4 w-4 rounded-full bg-white shadow-sm ring-0 transition-transform",
-                      driver.status === 'Active' ? "translate-x-2" : "-translate-x-2"
-                    )} />
-                  </div>
-                  <span className={cn("text-xs font-bold uppercase tracking-wider", driver.status === 'Active' ? "text-[#00E5FF]" : "text-gray-500 group-hover:text-gray-400")}>
-                    {driver.status}
-                  </span>
-                </button>
+                {/* <span className="w-1.5 h-1.5 rounded-full bg-gray-600" /> */}
+                <StatusBadge status={user?.status as any} type={user?.status === 'active' ? 'success' : 'error'} />
+                <VerifyBadge isVerified={user?.isVerified} showLabel size='sm' />
               </div>
             </div>
           </div>
         </div>
 
         <div className="flex items-center gap-3">
-          <button className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-white bg-[#1E293B] border border-[#334155] rounded-lg shadow-sm transition-colors hover:bg-[#334155]">
+          {/* <button className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-white bg-[#1E293B] border border-[#334155] rounded-lg shadow-sm transition-colors hover:bg-[#334155]">
             <Edit className="h-4 w-4" />
             Edit Profile
-          </button>
-          <button 
+          </button> */}
+          <button
             onClick={() => setIsDeactivateModalOpen(true)}
-            className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-rose-400 bg-rose-500/10 border border-rose-500/20 rounded-lg shadow-sm transition-colors hover:bg-rose-500 hover:text-white"
+            disabled={changingStatus}
+            className={cn(`flex items-center gap-2 px-4 py-2 text-xs font-bold text-rose-400 bg-rose-500/10 border border-rose-500/20 rounded-lg shadow-sm transition-colors hover:bg-rose-500 hover:text-white cursor-pointer`,
+              user?.status === 'inactive' && 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500 hover:text-white'
+            )}
           >
             <AlertTriangle className="h-4 w-4" />
-            Deactivate Driver
+            {user?.status === 'active' ? 'Deactivate Driver' : 'Activate Driver'}
           </button>
         </div>
       </div>
@@ -95,26 +94,26 @@ export default function UserDetailsPage() {
       <div className="grid gap-6 grid-cols-1 lg:grid-cols-3 xl:grid-cols-3">
         {/* LEFT SIDE (Main Info Card) */}
         <div className="lg:col-span-1 xl:col-span-1 space-y-6">
-          
+
           <div className="rounded-xl border border-[#1E293B] bg-[#151B2B] p-5 shadow-sm">
             <h3 className="text-xs font-bold tracking-widest text-[#00E5FF] uppercase mb-4">Bio</h3>
             <p className="text-sm text-gray-300 leading-relaxed">
-              {driver.bio}
+              {user?.bio}
             </p>
           </div>
 
           <div className="rounded-xl border border-[#1E293B] bg-[#151B2B] p-5 shadow-sm space-y-5">
             <h3 className="text-xs font-bold tracking-widest text-[#00E5FF] uppercase mb-2">Driver Information</h3>
-            
-            <InfoRow icon={<Mail className="h-4 w-4" />} label="Email Address" value={driver.email} />
-            <InfoRow icon={<Phone className="h-4 w-4" />} label="Phone Number" value={driver.phone} />
-            <InfoRow icon={<MapPin className="h-4 w-4" />} label="Address" value={driver.address} />
-            <InfoRow icon={<Calendar className="h-4 w-4" />} label="Date of Birth" value={driver.dob} />
-            <InfoRow icon={<User className="h-4 w-4" />} label="Gender" value={driver.gender} />
+
+            <InfoRow icon={<Mail className="h-4 w-4" />} label="Email Address" value={user?.email || 'N/A'} />
+            <InfoRow icon={<Phone className="h-4 w-4" />} label="Phone Number" value={user?.phoneNumber || 'N/A'} />
+            <InfoRow icon={<MapPin className="h-4 w-4" />} label="Address" value={user?.address || 'N/A'} />
+            <InfoRow icon={<Calendar className="h-4 w-4" />} label="Date of Birth" value={user?.dateOfBirth || 'N/A'} />
+            <InfoRow icon={<User className="h-4 w-4" />} label="Gender" value={user?.gender || 'N/A'} />
             <div className="my-2 h-px bg-[#1E293B]" />
-            <InfoRow icon={<CreditCard className="h-4 w-4" />} label="National ID Number" value={driver.nid} valueColor="text-[#00E5FF]" />
-            <InfoRow icon={<FileText className="h-4 w-4" />} label="Driving License" value={driver.licenseNumber} valueColor="text-amber-500" />
-            <InfoRow icon={<Car className="h-4 w-4" />} label="Car Plate Number" value={driver.carPlate} />
+            <InfoRow icon={<CreditCard className="h-4 w-4" />} label="National ID Number" value={user?.nidInfo?.nidNumber || "N/A"} valueColor="text-[#00E5FF]" />
+            <InfoRow icon={<FileText className="h-4 w-4" />} label="Driving License" value={user?.drivingInfo?.licenseNumber || "N/A"} valueColor="text-amber-500" />
+            <InfoRow icon={<Car className="h-4 w-4" />} label="Car Plate Number" value={"XYZ-9876"} />
           </div>
 
         </div>
@@ -128,9 +127,9 @@ export default function UserDetailsPage() {
                 <p className="text-xs text-gray-500 mt-1">Manage and verify uploaded driver credentials</p>
               </div>
             </div>
-            
+
             <div className="p-5 space-y-8 flex-1 overflow-y-auto">
-              
+
               {/* NID / Tax ID */}
               <div className="space-y-3">
                 <h3 className="text-sm font-semibold tracking-wide text-gray-300 flex items-center gap-2">
@@ -138,8 +137,8 @@ export default function UserDetailsPage() {
                   NID / Tax ID
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <FileCard name="NID_Front_Scan.pdf" size="1.2 MB" type="pdf" />
-                  <FileCard name="Tax_Certificate_2025.jpg" size="845 KB" type="image" />
+                  <FileCard name={user?.nidInfo?.frontPhoto || "N/A"} size="1.2 MB" type="pdf" router={router} />
+                  <FileCard name={user?.nidInfo?.backPhoto || "N/A"} size="845 KB" type="image" router={router} />
                 </div>
               </div>
 
@@ -150,8 +149,8 @@ export default function UserDetailsPage() {
                   Driving License
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <FileCard name="Driving_License_Front.jpg" size="2.1 MB" type="image" />
-                  <FileCard name="Driving_License_Back.jpg" size="1.8 MB" type="image" />
+                  <FileCard name={user?.drivingInfo?.frontPhoto || "N/A"} size="2.1 MB" type="image" router={router} />
+                  <FileCard name={user?.drivingInfo?.backPhoto || "N/A"} size="1.8 MB" type="image" router={router} />
                 </div>
               </div>
 
@@ -162,8 +161,8 @@ export default function UserDetailsPage() {
                   Driver & Car Picture
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <FileCard name="Driver_Profile_Photo.jpg" size="4.2 MB" type="image" />
-                  <FileCard name="Vehicle_Registration_Photo.jpg" size="3.5 MB" type="image" />
+                  <FileCard name={user?.driverAndCarInfo?.platePhoto || "N/A"} size="4.2 MB" type="image" router={router} />
+                  <FileCard name={user?.driverAndCarInfo?.carPhoto || "N/A"} size="3.5 MB" type="image" router={router} />
                 </div>
               </div>
 
@@ -190,17 +189,17 @@ export default function UserDetailsPage() {
               </div>
             </div>
             <div className="p-5 bg-[#151B2B] border-t border-[#1E293B] flex gap-3">
-              <button 
-                onClick={() => setIsDeactivateModalOpen(false)} 
+              <button
+                onClick={() => setIsDeactivateModalOpen(false)}
                 className="flex-1 py-3 text-sm font-bold text-gray-300 bg-[#1E293B] rounded-lg hover:bg-[#334155] transition-colors"
               >
                 Cancel
               </button>
-              <button 
+              <button
                 onClick={() => toggleStatus()}
-                className="flex-1 py-3 text-sm font-bold text-white bg-rose-500 rounded-lg shadow-sm transition-all hover:bg-rose-600"
+                className={cn("flex-1 py-3 text-sm font-bold text-white bg-rose-500 rounded-lg shadow-sm transition-all hover:bg-rose-600", changingStatus && "opacity-50 cursor-not-allowed")}
               >
-                Confirm
+                {changingStatus ? "Changing..." : "Confirm"}
               </button>
             </div>
           </div>
@@ -225,7 +224,7 @@ function InfoRow({ icon, label, value, valueColor = "text-white" }: { icon: Reac
   );
 }
 
-function FileCard({ name, size, type }: { name: string, size: string, type: 'pdf' | 'image' }) {
+function FileCard({ name, size, type, router }: { name: string, size: string, type: 'pdf' | 'image', router: any }) {
   return (
     <div className="flex items-center justify-between p-3 rounded-lg border border-[#1E293B] bg-[#0B101E] group hover:border-[#334155] transition-colors">
       <div className="flex items-center gap-3 overflow-hidden">
@@ -241,12 +240,15 @@ function FileCard({ name, size, type }: { name: string, size: string, type: 'pdf
         </div>
       </div>
       <div className="flex gap-2 shrink-0">
-        <button className="p-1.5 text-gray-500 hover:text-[#00E5FF] hover:bg-[#00E5FF]/10 rounded-md transition-colors" title="View">
+
+        <button onClick={() => router.push(name)} disabled={!name || name === 'N/A'} className="p-1.5 text-gray-500 hover:text-[#00E5FF] hover:bg-[#00E5FF]/10 rounded-md transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed" title="View">
           <Eye size={16} />
         </button>
-        <button className="p-1.5 text-gray-500 hover:text-white hover:bg-[#1E293B] rounded-md transition-colors" title="Download">
+
+        <button className="p-1.5 text-gray-500 hover:text-white hover:bg-[#1E293B] rounded-md transition-colors cursor-pointer" title="Download">
           <Download size={16} />
         </button>
+
       </div>
     </div>
   );
