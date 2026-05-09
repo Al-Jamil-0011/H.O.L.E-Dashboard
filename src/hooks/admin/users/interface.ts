@@ -85,3 +85,8 @@ export interface IUsersQuery {
     searchTerm: string;
     role: string;
 }
+
+
+export interface IChangeStatusPayload {
+    status: UserStatus;
+}

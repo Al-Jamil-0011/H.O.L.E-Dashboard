@@ -1,5 +1,5 @@
 "use client";
-
+import { MdOutlineLogout } from "react-icons/md";
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -38,39 +38,135 @@ const mainNavItems = [
 ];
 
 const financeNavItems = [
-  { name: 'Sales & Revenue', href: '/finance/dashboard/sales', icon: BarChart4 },
-  { name: 'Invoices', href: '/finance/dashboard/invoices', icon: FileText },
-  { name: 'Payments', href: '/finance/dashboard/payments', icon: CreditCard },
-  { name: 'Vendor Payments', href: '/finance/dashboard/vendor-payments', icon: Wallet },
-  { name: 'Commission', href: '/finance/dashboard/commissions', icon: Percent },
-  { name: 'Expenses', href: '/finance/dashboard/expenses', icon: Receipt },
-  { name: 'Shipping Costs', href: '/finance/dashboard/shipping', icon: Truck },
+  {
+    name: 'Sales & Revenue',
+    href: '/finance/dashboard/sales',
+    icon: BarChart4
+  },
+  {
+    name: 'Invoices',
+    href: '/finance/dashboard/invoices',
+    icon: FileText
+  },
+  {
+    name: 'Payments',
+    href: '/finance/dashboard/payments',
+    icon: CreditCard
+  },
+  {
+    name: 'Vendor Payments',
+    href: '/finance/dashboard/vendor-payments',
+    icon: Wallet
+  },
+  {
+    name: 'Commission',
+    href: '/finance/dashboard/commissions',
+    icon: Percent
+  },
+  {
+    name: 'Expenses',
+    href: '/finance/dashboard/expenses',
+    icon: Receipt
+  },
+  {
+    name: 'Shipping Costs',
+    href: '/finance/dashboard/shipping',
+    icon: Truck
+  },
 ];
 
 const analyticsNavItems = [
-  { name: 'Aging Report', href: '/finance/dashboard/aging-reports', icon: Clock },
-  { name: 'Financial Reports', href: '/finance/dashboard/reports', icon: PieChart },
-  { name: 'Rep Accounts', href: '/finance/dashboard/rep-accounts', icon: Users },
+  {
+    name: 'Aging Report',
+    href: '/finance/dashboard/aging-reports',
+    icon: Clock
+  },
+  {
+    name: 'Financial Reports',
+    href: '/finance/dashboard/reports',
+    icon: PieChart
+  },
+  {
+    name: 'Rep Accounts',
+    href: '/finance/dashboard/rep-accounts',
+    icon: Users
+  },
 ];
 
 const integrationsNavItems = [
-  { name: 'QuickBooks', href: '/finance/dashboard/quickbooks', icon: RefreshCcw },
+  {
+    name: 'QuickBooks',
+    href: '/finance/dashboard/quickbooks',
+    icon: RefreshCcw
+  },
 ];
 
 const adminNavItems = [
-  { name: 'Create New', href: '/admin/dashboard/create-new', icon: FolderPlus },
-  { name: 'Users & Roles', href: '/admin/dashboard/users', icon: Users },
-  { name: 'Expense', href: '/admin/dashboard/expenses', icon: Receipt },
-  { name: 'Sales', href: '/admin/dashboard/sales', icon: BarChart4 },
-  { name: 'Commission', href: '/admin/dashboard/commissions', icon: Percent },
-  { name: 'Vendor Payment', href: '/admin/dashboard/vendor-payments', icon: Wallet },
-  { name: 'Inventory', href: '/admin/dashboard/inventory', icon: Package },
-  { name: 'Purchase Orders (PO)', href: '/admin/dashboard/purchase-orders', icon: ShoppingCart },
-  { name: 'Shipments', href: '/admin/dashboard/shipments', icon: Truck },
-  { name: 'Driver Payments', href: '/admin/dashboard/driver-earnings', icon: Wallet },
-  { name: 'Physicians & Surgeries', href: '/admin/dashboard/physicians', icon: Stethoscope },
-  { name: 'Notifications', href: '/admin/dashboard/notifications', icon: Bell },
-  { name: 'Support / Help', href: '/admin/dashboard/support', icon: HelpCircle },
+  {
+    name: 'Create New',
+    href: '/admin/dashboard/create-new',
+    icon: FolderPlus
+  },
+  {
+    name: 'Users & Roles',
+    href: '/admin/dashboard/users',
+    icon: Users
+  },
+  {
+    name: 'Expense',
+    href: '/admin/dashboard/expenses',
+    icon: Receipt
+  },
+  {
+    name: 'Sales',
+    href: '/admin/dashboard/sales',
+    icon: BarChart4
+  },
+  {
+    name: 'Commission',
+    href: '/admin/dashboard/commissions',
+    icon: Percent
+  },
+  {
+    name: 'Vendor Payment',
+    href: '/admin/dashboard/vendor-payments',
+    icon: Wallet
+  },
+  {
+    name: 'Inventory',
+    href: '/admin/dashboard/inventory',
+    icon: Package
+  },
+  {
+    name: 'Purchase Orders (PO)',
+    href: '/admin/dashboard/purchase-orders',
+    icon: ShoppingCart
+  },
+  {
+    name: 'Shipments',
+    href: '/admin/dashboard/shipments',
+    icon: Truck
+  },
+  {
+    name: 'Driver Payments',
+    href: '/admin/dashboard/driver-earnings',
+    icon: Wallet
+  },
+  {
+    name: 'Physicians & Surgeries',
+    href: '/admin/dashboard/physicians',
+    icon: Stethoscope
+  },
+  {
+    name: 'Notifications',
+    href: '/admin/dashboard/notifications',
+    icon: Bell
+  },
+  {
+    name: 'Support / Help',
+    href: '/admin/dashboard/support',
+    icon: HelpCircle
+  },
 ];
 
 interface SidebarProps {
@@ -82,14 +178,26 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
   const pathname = usePathname();
 
   const systemNavItems = [
-    { 
-      name: 'Settings', 
+    {
+      name: 'Settings',
       icon: Settings,
       subItems: [
-        { name: 'View Profile', href: '/profile' },
-        { name: 'About Us', href: '/about-us' },
-        { name: 'Privacy Policy', href: '/privacy-policy' },
-        { name: 'Terms and Service', href: '/terms' },
+        {
+          name: 'View Profile',
+          href: '/profile'
+        },
+        {
+          name: 'About Us',
+          href: '/about-us'
+        },
+        {
+          name: 'Privacy Policy',
+          href: '/privacy-policy'
+        },
+        {
+          name: 'Terms and Service',
+          href: '/terms'
+        },
       ]
     }
   ];
@@ -149,6 +257,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
 
           <div className="mt-auto pt-6">
             <NavSection title="SYSTEM" items={systemNavItems} pathname={pathname} />
+            <button className='flex items-center gap-3 w-full px-2 py-2 text-sm font-medium transition-colors text-muted-foreground hover:bg-muted/50 hover:text-foreground'><MdOutlineLogout />Logout</button>
           </div>
         </div>
       </aside>

@@ -6,7 +6,8 @@ import {
     IUser,
     IUsersQuery,
     IUsersResponse,
-    UserStatus
+    UserStatus,
+    IChangeStatusPayload
 } from "./interface";
 
 export function useUsers() {
@@ -79,7 +80,6 @@ export function useUsers() {
 }
 
 
-
 export function useSingleUser(id?: string) {
     const [user, setUser] = useState<IUser | null>(null);
 
@@ -120,6 +120,47 @@ export function useSingleUser(id?: string) {
         loading,
         error,
         refetch: fetchSingleUser,
+    };
+}
+
+export function useUserSummary() {
+    const [summary, setSummary] = useState<IUser | null>(null);
+
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
+
+    const fetchSummary = useCallback(async () => {
+        setLoading(true);
+        setError(null);
+
+        try {
+            const response = await useApi.get<IApiResponse<IUser>>(
+                `/user/overview`
+            );
+
+            setSummary(response?.data?.data || null);
+        } catch (err: any) {
+            const message =
+                err?.response?.data?.message ||
+                "Failed to fetch user summary";
+
+            setError(message);
+        } finally {
+            setTimeout(() => {
+                setLoading(false);
+            }, 400);
+        }
+    }, []);
+
+    useEffect(() => {
+        fetchSummary();
+    }, [fetchSummary]);
+
+    return {
+        summary,
+        loading,
+        error,
+        refetch: fetchSummary,
     };
 }
 
@@ -202,11 +243,6 @@ export function useUpdateProfile() {
     };
 }
 
-
-
-interface IChangeStatusPayload {
-    status: UserStatus;
-}
 
 export function useChangeUserStatus() {
     const [loading, setLoading] = useState<boolean>(false);
