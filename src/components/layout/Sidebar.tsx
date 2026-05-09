@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
+import { useState } from 'react';
 import {
   LayoutDashboard,
   BarChart4,
@@ -29,12 +30,11 @@ import {
   HelpCircle,
   X,
   FolderPlus,
+  ChevronDown,
 } from 'lucide-react';
 
 const mainNavItems = [
   { name: 'Overview', href: '/', icon: LayoutDashboard },
-  // { name: 'Finance', href: '/finance/dashboard', icon: LayoutDashboard },
-  // { name: 'Admin', href: '/admin/dashboard', icon: LayoutDashboard },
 ];
 
 const financeNavItems = [
@@ -58,7 +58,6 @@ const integrationsNavItems = [
 ];
 
 const adminNavItems = [
-  // { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
   { name: 'Create New', href: '/admin/dashboard/create-new', icon: FolderPlus },
   { name: 'Users & Roles', href: '/admin/dashboard/users', icon: Users },
   { name: 'Expense', href: '/admin/dashboard/expenses', icon: Receipt },
@@ -81,6 +80,19 @@ interface SidebarProps {
 
 export function Sidebar({ isOpen, onClose }: SidebarProps) {
   const pathname = usePathname();
+
+  const systemNavItems = [
+    { 
+      name: 'Settings', 
+      icon: Settings,
+      subItems: [
+        { name: 'View Profile', href: '/profile' },
+        { name: 'About Us', href: '/about-us' },
+        { name: 'Privacy Policy', href: '/privacy-policy' },
+        { name: 'Terms and Service', href: '/terms' },
+      ]
+    }
+  ];
 
   return (
     <>
@@ -136,11 +148,89 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
           )}
 
           <div className="mt-auto pt-6">
-            <NavSection title="SYSTEM" items={[{ name: 'Settings', href: '/settings', icon: Settings }]} pathname={pathname} />
+            <NavSection title="SYSTEM" items={systemNavItems} pathname={pathname} />
           </div>
         </div>
       </aside>
     </>
+  );
+}
+
+function NavItem({ item, pathname }: { item: any; pathname: string }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const isActive = item.href ? pathname === item.href : (item.subItems && item.subItems.some((sub: any) => pathname === sub.href));
+  const hasSubItems = !!item.subItems;
+
+  if (hasSubItems) {
+    return (
+      <div className="flex flex-col gap-0.5">
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className={cn(
+            "group flex w-full items-center justify-between rounded-md px-2 py-2 text-sm font-medium transition-colors",
+            isActive
+              ? "bg-primary/10 text-primary"
+              : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
+          )}
+        >
+          <div className="flex items-center gap-3">
+            <item.icon
+              className={cn(
+                "h-[18px] w-[18px] shrink-0",
+                isActive ? "text-primary" : "text-muted-foreground group-hover:text-foreground"
+              )}
+            />
+            <span className="text-[13px]">{item.name}</span>
+          </div>
+          <ChevronDown className={cn("h-4 w-4 transition-transform", isOpen ? "rotate-180" : "")} />
+        </button>
+        {isOpen && (
+          <div className="ml-6 mt-1 flex flex-col gap-1 border-l border-border pl-2">
+            {item.subItems.map((sub: any) => (
+              <Link
+                key={sub.name}
+                href={sub.href}
+                className={cn(
+                  "block rounded-md px-2 py-1.5 text-xs font-medium transition-colors",
+                  pathname === sub.href
+                    ? "text-primary bg-primary/5"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                )}
+              >
+                {sub.name}
+              </Link>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  return (
+    <Link
+      href={item.href}
+      className={cn(
+        "group flex items-center justify-between rounded-md px-2 py-2 text-sm font-medium transition-colors",
+        pathname === item.href
+          ? "bg-primary/10 text-primary"
+          : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
+      )}
+    >
+      <div className="flex items-center gap-3">
+        <item.icon
+          className={cn(
+            "h-[18px] w-[18px] shrink-0",
+            pathname === item.href ? "text-primary" : "text-muted-foreground group-hover:text-foreground"
+          )}
+        />
+        <span className="text-[13px]">{item.name}</span>
+      </div>
+      {item.badge && (
+        <span className="flex h-4 min-w-4 items-center justify-center rounded-full bg-rose-500 px-1 text-[10px] font-bold text-white">
+          {item.badge}
+        </span>
+      )}
+    </Link>
   );
 }
 
@@ -159,38 +249,11 @@ function NavSection({
         {title}
       </h3>
       <nav className="flex flex-col gap-0.5">
-        {items.map((item) => {
-          const isActive = pathname === item.href;
-
-          return (
-            <Link
-              key={item.name}
-              href={item.href}
-              className={cn(
-                "group flex items-center justify-between rounded-md px-2 py-2 text-sm font-medium transition-colors",
-                isActive
-                  ? "bg-primary/10 text-primary"
-                  : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
-              )}
-            >
-              <div className="flex items-center gap-3">
-                <item.icon
-                  className={cn(
-                    "h-[18px] w-[18px] shrink-0",
-                    isActive ? "text-primary" : "text-muted-foreground group-hover:text-foreground"
-                  )}
-                />
-                <span className="text-[13px]">{item.name}</span>
-              </div>
-              {item.badge && (
-                <span className="flex h-4 min-w-4 items-center justify-center rounded-full bg-rose-500 px-1 text-[10px] font-bold text-white">
-                  {item.badge}
-                </span>
-              )}
-            </Link>
-          );
-        })}
+        {items.map((item) => (
+          <NavItem key={item.name} item={item} pathname={pathname} />
+        ))}
       </nav>
     </div>
   );
 }
+

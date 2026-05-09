@@ -13,7 +13,6 @@ export const metadata: Metadata = {
   description: "Next-Generation Finance Dashboard",
 };
 
-import { RootLayoutWrapper } from "@/components/layout/RootLayoutWrapper";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "react-hot-toast";
 
@@ -33,9 +32,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <RootLayoutWrapper>
-            {children}
-          </RootLayoutWrapper>
+          {children}
           <Toaster 
             position="top-right" 
             toastOptions={{
@@ -48,4 +45,3 @@ export default function RootLayout({
     </html>
   );
 }
-

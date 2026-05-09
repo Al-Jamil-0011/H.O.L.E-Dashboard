@@ -1,15 +1,29 @@
 "use client";
 
-import { Bell, Search, User, Menu } from 'lucide-react';
+import { Bell, Search, User, Menu, LogOut, FileText, BarChart4, Settings, UserCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { ThemeSwitcher } from '@/components/ui/ThemeSwitcher';
+import Link from 'next/link';
 
 interface HeaderProps {
   onMenuClick: () => void;
 }
 
 export function Header({ onMenuClick }: HeaderProps) {
+  const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
+  const userDropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (userDropdownRef.current && !userDropdownRef.current.contains(event.target as Node)) {
+        setIsUserDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   return (
     <header className="sticky top-0 z-30 flex h-16 w-full items-center justify-between border-b border-border bg-background px-4 transition-all duration-300">
       <div className="flex items-center gap-4">
@@ -45,15 +59,52 @@ export function Header({ onMenuClick }: HeaderProps) {
           <span className="absolute right-1.5 top-1.5 flex h-2 w-2 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.8)] animate-pulse"></span>
         </button>
         
-        <div className="flex items-center gap-3 ml-2 border-l border-border pl-4 cursor-pointer hover:opacity-80 transition-opacity">
-          <div className="h-8 w-8 overflow-hidden rounded-full border border-primary/30">
-            <div className="flex h-full w-full items-center justify-center bg-primary/10 text-primary">
-              <User className="h-4 w-4" />
+        <div className="relative" ref={userDropdownRef}>
+          <div 
+            onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)}
+            className="flex items-center gap-3 ml-2 border-l border-border pl-4 cursor-pointer hover:opacity-80 transition-opacity"
+          >
+            <div className="h-8 w-8 overflow-hidden rounded-full border border-primary/30">
+              <div className="flex h-full w-full items-center justify-center bg-primary/10 text-primary">
+                <User className="h-4 w-4" />
+              </div>
+            </div>
+            <div className="hidden md:block">
+              <p className="text-xs font-bold text-foreground leading-tight">Finance Mgr</p>
             </div>
           </div>
-          <div className="hidden md:block">
-            <p className="text-xs font-bold text-foreground leading-tight">Finance Mgr</p>
-          </div>
+
+          {/* User Dropdown */}
+          {isUserDropdownOpen && (
+            <div className="absolute right-0 top-full mt-2 w-64 rounded-xl border border-border bg-card p-2 shadow-lg z-50">
+              <div className="mb-2 border-b border-border p-2">
+                <p className="text-sm font-semibold text-foreground">Finance Mgr</p>
+                <p className="text-xs text-muted-foreground">finance@holeapp.com</p>
+              </div>
+              
+              <div className="flex flex-col gap-1">
+                <Link href="/profile" className="flex items-center gap-2 rounded-md px-2 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors">
+                  <UserCircle className="h-4 w-4" /> View Profile
+                </Link>
+                <Link href="/sales" className="flex items-center gap-2 rounded-md px-2 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors">
+                  <BarChart4 className="h-4 w-4" /> Sales
+                </Link>
+                <Link href="/invoices" className="flex items-center gap-2 rounded-md px-2 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors">
+                  <FileText className="h-4 w-4" /> Invoice
+                </Link>
+                <Link href="/notifications" className="flex items-center gap-2 rounded-md px-2 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors">
+                  <Bell className="h-4 w-4" /> Notifications
+                </Link>
+                <Link href="/settings" className="flex items-center gap-2 rounded-md px-2 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors">
+                  <Settings className="h-4 w-4" /> Settings
+                </Link>
+                <div className="my-1 border-t border-border"></div>
+                <button className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm text-rose-500 hover:bg-rose-500/10 transition-colors">
+                  <LogOut className="h-4 w-4" /> Logout
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </header>
