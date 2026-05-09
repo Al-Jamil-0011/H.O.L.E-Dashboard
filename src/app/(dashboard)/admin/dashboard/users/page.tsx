@@ -1,13 +1,12 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { DataTable, StatusBadge } from '@/components/ui/DataTable';
 import {
   Search,
   Filter,
-  ChevronDown,
   UserPlus,
   X,
   MapPin,
@@ -20,18 +19,17 @@ import {
   Users,
   Check
 } from 'lucide-react';
-import { useUserSummary } from '@/hooks/admin/users';
+import { useUsers, useUserSummary, useChangeUserStatus } from '@/hooks/admin/users';
+import { IUser } from '@/hooks/admin/users/interface';
 import { IStatCardProps } from './interface';
 import Image from 'next/image';
 
-const mockUsers = [
-  { id: '1', name: 'John Smith', email: 'john@invictus.com', phone: '(555) 123-4567', role: 'Rep', territory: 'Northeast', regDate: 'Jan 15, 2026', status: 'Active', avatar: 'https://i.pravatar.cc/150?u=1' },
-  { id: '2', name: 'Sarah Johnson', email: 'sarah@invictus.com', phone: '(555) 234-5678', role: 'Manager', territory: 'Northeast', regDate: 'Feb 02, 2026', status: 'Active', avatar: 'https://i.pravatar.cc/150?u=2' },
-  { id: '3', name: 'Michael Chen', email: 'michael@invictus.com', phone: '(555) 345-6789', role: 'Rep', territory: 'Pending', regDate: 'Mar 10, 2026', status: 'Active', avatar: 'https://i.pravatar.cc/150?u=3' },
-  { id: '4', name: 'Amanda Davis', email: 'amanda@invictus.com', phone: '(555) 456-7890', role: 'Finance', territory: 'All Regions', regDate: 'Nov 05, 2025', status: 'Active', avatar: 'https://i.pravatar.cc/150?u=4' },
-  { id: '5', name: 'Daniel Carter', email: 'daniel.c@invictus.com', phone: '(555) 789-0123', role: 'Driver', territory: 'Northeast', regDate: 'Dec 12, 2025', status: 'Active', avatar: 'https://i.pravatar.cc/150?u=5' },
-  { id: '6', name: 'Jessica Taylor', email: 'jessica@invictus.com', phone: '(555) 678-9012', role: 'Rep', territory: 'West Coast', regDate: 'Apr 02, 2026', status: 'Inactive', avatar: 'https://i.pravatar.cc/150?u=6' },
-];
+const getInitials = (name: string) => {
+  if (!name) return 'NA';
+  const words = name.trim().split(/\s+/);
+  if (words.length === 1) return words[0].charAt(0).toUpperCase();
+  return `${words[0].charAt(0)}${words[words.length - 1].charAt(0)}`.toUpperCase();
+};
 
 export default function UsersManagementPage() {
   const [search, setSearch] = useState('');
@@ -39,75 +37,86 @@ export default function UsersManagementPage() {
   const [statusFilter, setStatusFilter] = useState('All');
   const [territoryFilter, setTerritoryFilter] = useState('All');
 
-  const { summary, loading: statLoading, error } = useUserSummary();
-  console.log(summary);
+  const { users: allUsers, loading: usersLoading, refetch, query, setQuery, meta } = useUsers();
+  const { summary, loading: statLoading } = useUserSummary();
+  const { changeUserStatus, loading: changingStatus } = useChangeUserStatus();
 
-  const [users, setUsers] = useState(mockUsers);
-  const [selectedUser, setSelectedUser] = useState<typeof mockUsers[0] | null>(null);
+  const [selectedUser, setSelectedUser] = useState<IUser | null>(null);
   const [isTerritoryModalOpen, setIsTerritoryModalOpen] = useState(false);
   const [isDeactivateModalOpen, setIsDeactivateModalOpen] = useState(false);
   const [isRepModalOpen, setIsRepModalOpen] = useState(false);
   const [selectedRepIds, setSelectedRepIds] = useState<string[]>([]);
   const [repSearch, setRepSearch] = useState('');
 
-  // Filters logic
-  const filteredUsers = users.filter((u) => {
-    const matchesSearch = u.name.toLowerCase().includes(search.toLowerCase()) ||
-      u.email.toLowerCase().includes(search.toLowerCase()) ||
-      u.phone.includes(search) ||
-      u.territory.toLowerCase().includes(search.toLowerCase());
-    const matchesRole = roleFilter === 'All' || u.role === roleFilter;
-    const matchesStatus = statusFilter === 'All' || u.status === statusFilter;
-    const matchesTerritory = territoryFilter === 'All' || u.territory === territoryFilter;
-    return matchesSearch && matchesRole && matchesStatus && matchesTerritory;
-  });
+  // Sync local search and role to the useUsers query hook
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setQuery((prev) => ({
+        ...prev,
+        searchTerm: search,
+        role: roleFilter === 'All' ? "" : roleFilter.toLowerCase(),
+      }));
+    }, 500);
+    return () => clearTimeout(timeoutId);
+  }, [search, roleFilter, setQuery]);
 
-  const activeCount = users.filter(u => u.status === 'Active').length;
-  const inactiveCount = users.filter(u => u.status === 'Inactive').length;
-  const pendingTerritoryCount = users.filter(u => u.territory === 'Pending').length;
-
-  const handleToggleStatus = (user: typeof mockUsers[0], currentStatus: string) => {
+  const handleToggleStatus = (user: IUser, currentStatus: string) => {
     setSelectedUser(user);
-    if (currentStatus === 'Active') {
+    if (currentStatus === 'active') {
       setIsDeactivateModalOpen(true);
     } else {
-      updateUserStatus('Active', user.id);
+      updateUserStatus('active', user._id);
     }
   };
 
-  const updateUserStatus = (newStatus: string, userId: string) => {
-    setUsers(users.map(u => u.id === userId ? { ...u, status: newStatus } : u));
-    if (selectedUser?.id === userId) setSelectedUser({ ...selectedUser, status: newStatus });
+  const updateUserStatus = async (newStatus: "active" | "inactive" | "blocked", userId: string) => {
+    const success = await changeUserStatus(userId, newStatus);
+    if (success) {
+      refetch();
+      if (selectedUser?._id === userId) {
+        setSelectedUser({ ...selectedUser, status: newStatus });
+      }
+    }
     setIsDeactivateModalOpen(false);
   };
 
   const columns = [
     {
       header: "USER",
-      render: (item: typeof mockUsers[0]) => (
+      render: (item: IUser) => (
         <div className="flex items-center gap-3">
-          <div className="h-8 w-8 rounded-full bg-[var(--border)] overflow-hidden border border-[var(--border)]">
-            <img src={item.avatar} alt={item.name} className="h-full w-full object-cover" />
+          <div className="h-8 w-8 rounded-full overflow-hidden border border-[var(--border)] relative bg-primary/10 flex items-center justify-center">
+            {item.profileUrl ? (
+              <Image
+                src={item.profileUrl}
+                alt={item.fullName}
+                fill
+                className="object-cover"
+              />
+            ) : (
+              <span className="text-primary font-bold text-xs uppercase tracking-wider">
+                {getInitials(item.fullName)}
+              </span>
+            )}
           </div>
           <div>
-            <div className="font-semibold text-foreground">{item.name}</div>
+            <div className="font-semibold text-foreground">{item.fullName}</div>
             <div className="text-[10px] text-muted-foreground">{item.email}</div>
           </div>
         </div>
       )
     },
-    { header: "PHONE", accessorKey: "phone" as const },
-    { header: "EMAIL", accessorKey: "email" as const },
+    { header: "PHONE", accessorKey: "phoneNumber" as const },
     {
       header: "ROLE",
-      render: (item: typeof mockUsers[0]) => (
+      render: (item: IUser) => (
         <span className={cn(
           "px-2.5 py-1 text-[10px] uppercase font-bold tracking-wider rounded-md",
-          item.role === 'Driver'
+          item.role === 'driver'
             ? "bg-purple-500/10 text-purple-400 border border-purple-500/20"
-            : item.role === 'Manager'
+            : item.role === 'manager'
               ? "bg-amber-500/10 text-amber-500 border border-amber-500/20"
-              : item.role === 'Finance'
+              : item.role === 'admin'
                 ? "bg-emerald-500/10 text-emerald-500 border border-emerald-500/20"
                 : "bg-[#00E5FF]/10 text-[#00E5FF] border border-[#00E5FF]/20"
         )}>
@@ -115,36 +124,36 @@ export default function UsersManagementPage() {
         </span>
       )
     },
-    { header: "PHONE", accessorKey: "phone" as const },
     {
       header: "TERRITORY",
-      render: (item: typeof mockUsers[0]) => (
+      render: (item: IUser) => (
         <span className={cn(
           "font-medium",
-          item.territory === 'Pending' ? "text-amber-500" : "text-muted-foreground"
+          !item.territory ? "text-amber-500" : "text-muted-foreground"
         )}>
-          {item.territory}
+          {item.territory || 'Pending'}
         </span>
       )
     },
     {
       header: "STATUS",
-      render: (item: typeof mockUsers[0]) => (
+      render: (item: IUser) => (
         <div className="flex items-center gap-2">
           <button
             onClick={(e) => { e.stopPropagation(); handleToggleStatus(item, item.status); }}
             className={cn(
               "relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full transition-colors focus:outline-none",
-              item.status === 'Active' ? "bg-[#00E5FF]" : "bg-gray-600"
+              item.status === 'active' ? "bg-[#00E5FF]" : "bg-gray-600"
             )}
-            title={`Click to ${item.status === 'Active' ? 'deactivate' : 'activate'}`}
+            title={`Click to ${item.status === 'active' ? 'deactivate' : 'activate'}`}
+            disabled={changingStatus}
           >
             <span className={cn(
               "pointer-events-none block h-4 w-4 rounded-full bg-white shadow-sm ring-0 transition-transform",
-              item.status === 'Active' ? "translate-x-2" : "-translate-x-2"
+              item.status === 'active' ? "translate-x-2" : "-translate-x-2"
             )} />
           </button>
-          <span className={cn("text-xs font-medium", item.status === 'Active' ? "text-gray-300" : "text-gray-500")}>
+          <span className={cn("text-xs font-medium capitalize", item.status === 'active' ? "text-gray-300" : "text-gray-500")}>
             {item.status}
           </span>
         </div>
@@ -152,9 +161,9 @@ export default function UsersManagementPage() {
     },
     {
       header: "ACTIONS",
-      render: (item: typeof mockUsers[0]) => (
+      render: (item: IUser) => (
         <div className="flex items-center gap-2">
-          <Link href={`/admin/dashboard/users/${item.id}`} onClick={(e) => e.stopPropagation()}>
+          <Link href={`/admin/dashboard/users/${item._id}`} onClick={(e) => e.stopPropagation()}>
             <button className="px-3 py-1 font-bold text-[#00E5FF] bg-[#00E5FF]/10 rounded hover:bg-[#00E5FF]/20 transition-colors">
               Details
             </button>
@@ -178,12 +187,6 @@ export default function UsersManagementPage() {
           <p className="text-[11px] text-muted-foreground font-medium uppercase tracking-wider">
             Manage registered users, roles, territories, and account status
           </p>
-        </div>
-        <div className="flex items-center gap-3">
-          {/* <button className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-[#0B101E] bg-[#00E5FF] rounded-lg shadow-sm transition-all hover:bg-cyan-400">
-            <UserPlus className="h-4 w-4" />
-            Add User
-          </button> */}
         </div>
       </div>
 
@@ -210,7 +213,6 @@ export default function UsersManagementPage() {
           topBorderColor="border-t-red-500"
         />
 
-
         <StatCard
           title="THIS MONTH USERS"
           value={summary?.thisMonthUsers}
@@ -222,14 +224,13 @@ export default function UsersManagementPage() {
 
       {/* MAIN CONTAINER */}
       <div className="rounded-xl border border-[#1E293B] bg-[#151B2B] shadow-lg flex flex-col overflow-hidden">
-
         {/* FILTER BAR */}
         <div className="p-4 border-b border-border flex flex-col md:flex-row gap-4 items-center justify-between bg-muted/40">
           <div className="relative w-full md:w-72">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
             <input
               type="text"
-              placeholder="Search users by name, email, territory..."
+              placeholder="Search users by name, email..."
               className="w-full bg-[#0B101E] border border-[#334155] rounded-md py-2 pl-9 pr-3 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-[#00E5FF] transition-colors"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -248,32 +249,10 @@ export default function UsersManagementPage() {
               className="bg-[var(--background)] border border-[var(--border)] rounded-md py-1.5 px-3 text-xs font-medium text-foreground appearance-none focus:outline-none focus:border-[var(--primary)] cursor-pointer"
             >
               <option value="All">All Roles</option>
-              <option value="Rep">Rep</option>
+              <option value="Representative">Representative</option>
               <option value="Manager">Manager</option>
-              <option value="Finance">Finance</option>
+              <option value="Admin">Admin</option>
               <option value="Driver">Driver</option>
-            </select>
-
-            <select
-              value={statusFilter}
-              onChange={e => setStatusFilter(e.target.value)}
-              className="bg-[var(--background)] border border-[var(--border)] rounded-md py-1.5 px-3 text-xs font-medium text-foreground appearance-none focus:outline-none focus:border-[var(--primary)] cursor-pointer"
-            >
-              <option value="All">All Status</option>
-              <option value="Active">Active</option>
-              <option value="Inactive">Inactive</option>
-            </select>
-
-            <select
-              value={territoryFilter}
-              onChange={e => setTerritoryFilter(e.target.value)}
-              className="bg-[var(--background)] border border-[var(--border)] rounded-md py-1.5 px-3 text-xs font-medium text-foreground appearance-none focus:outline-none focus:border-[var(--primary)] cursor-pointer"
-            >
-              <option value="All">All Territories</option>
-              <option value="Northeast">Northeast</option>
-              <option value="West Coast">West Coast</option>
-              <option value="South">South</option>
-              <option value="Pending">Pending</option>
             </select>
           </div>
         </div>
@@ -281,10 +260,10 @@ export default function UsersManagementPage() {
         {/* DATA TABLE */}
         <div className="p-0">
           <DataTable
-            data={filteredUsers}
+            data={allUsers}
             columns={columns}
+            loading={usersLoading}
             onRowClick={(item) => setSelectedUser(item)}
-            className="rounded-none border-0"
           />
         </div>
       </div>
@@ -315,16 +294,22 @@ export default function UsersManagementPage() {
             <div className="flex-1 overflow-y-auto p-6 scrollbar-thin scrollbar-thumb-[var(--border)]">
               {/* Profile Top */}
               <div className="flex items-center gap-4 mb-8">
-                <div className="w-16 h-16 rounded-full relative border-2 border-[var(--border)] overflow-hidden">
-                  <Image src={selectedUser.avatar} alt="" fill className="object-cover" />
+                <div className="w-16 h-16 rounded-full relative border-2 border-[var(--border)] overflow-hidden bg-primary/10 flex items-center justify-center">
+                  {selectedUser.profileUrl ? (
+                    <Image src={selectedUser.profileUrl} alt="" fill className="object-cover" />
+                  ) : (
+                    <span className="text-primary font-bold text-2xl uppercase tracking-wider">
+                      {getInitials(selectedUser.fullName)}
+                    </span>
+                  )}
                 </div>
 
                 <div>
-                  <h3 className="text-xl font-black tracking-tight text-foreground">{selectedUser.name}</h3>
+                  <h3 className="text-xl font-black tracking-tight text-foreground">{selectedUser.fullName}</h3>
                   <div className="flex items-center gap-2 mt-1">
-                    <span className="text-primary font-semibold text-sm">{selectedUser.role}</span>
+                    <span className="text-primary font-semibold text-sm capitalize">{selectedUser.role}</span>
                     <span className="w-1 h-1 rounded-full bg-gray-500" />
-                    <StatusBadge status={selectedUser.status} type={selectedUser.status === 'Active' ? 'success' : 'default'} />
+                    <StatusBadge status={selectedUser.status} type={selectedUser.status === 'active' ? 'success' : 'default'} />
                   </div>
                 </div>
               </div>
@@ -332,9 +317,9 @@ export default function UsersManagementPage() {
               {/* Info grid */}
               <div className="space-y-4 mb-8 border border-[#1E293B] bg-[#151B2B] rounded-xl p-4">
                 <DetailRow icon={<Mail size={14} />} label="Email Address" value={selectedUser.email} />
-                <DetailRow icon={<Phone size={14} />} label="Phone Number" value={selectedUser.phone} />
-                <DetailRow icon={<Calendar size={14} />} label="Registration Date" value={selectedUser.regDate} />
-                <DetailRow icon={<MapPin size={14} />} label="Territory" value={selectedUser.territory} highlight={selectedUser.territory === 'Pending'} />
+                <DetailRow icon={<Phone size={14} />} label="Phone Number" value={selectedUser.phoneNumber || 'N/A'} />
+                <DetailRow icon={<Calendar size={14} />} label="Registration Date" value={selectedUser.createdAt ? new Date(selectedUser.createdAt).toLocaleDateString() : 'N/A'} />
+                <DetailRow icon={<MapPin size={14} />} label="Territory" value={selectedUser.territory || 'Pending'} highlight={!selectedUser.territory} />
               </div>
 
               {/* Account Actions Section */}
@@ -352,7 +337,7 @@ export default function UsersManagementPage() {
                   <Edit2 className="h-3 w-3 text-muted-foreground" />
                 </button>
 
-                {selectedUser.role === 'Manager' && (
+                {selectedUser.role === 'manager' && (
                   <button
                     onClick={() => {
                       setRepSearch('');
@@ -372,18 +357,19 @@ export default function UsersManagementPage() {
                 <div className="flex items-center justify-between p-3 rounded-lg border border-[var(--border)] bg-[var(--card)]">
                   <div className="flex items-center gap-3 text-muted-foreground">
                     <ShieldAlert className="h-4 w-4" />
-                    <div className="text-sm font-medium">Account Status ({selectedUser.status})</div>
+                    <div className="text-sm font-medium capitalize">Account Status ({selectedUser.status})</div>
                   </div>
                   <button
                     onClick={() => { if (selectedUser) handleToggleStatus(selectedUser, selectedUser.status); }}
                     className={cn(
                       "relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full transition-colors",
-                      selectedUser.status === 'Active' ? "bg-emerald-500" : "bg-gray-500"
+                      selectedUser.status === 'active' ? "bg-emerald-500" : "bg-gray-500"
                     )}
+                    disabled={changingStatus}
                   >
                     <span className={cn(
                       "pointer-events-none block h-4 w-4 rounded-full bg-white shadow-sm ring-0 transition-transform",
-                      selectedUser.status === 'Active' ? "translate-x-2" : "-translate-x-2"
+                      selectedUser.status === 'active' ? "translate-x-2" : "-translate-x-2"
                     )} />
                   </button>
                 </div>
@@ -425,14 +411,6 @@ export default function UsersManagementPage() {
                   <option value="Midwest">Midwest</option>
                 </select>
               </div>
-              <div>
-                <label className="block text-xs font-medium text-muted-foreground mb-1.5 uppercase tracking-wider">Assign Facility Group (Optional)</label>
-                <select className="w-full bg-[var(--card)] border border-[var(--border)] rounded-lg p-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--primary)]">
-                  <option>No specific facility</option>
-                  <option value="Metro Hospitals">Metro Hospitals Network</option>
-                  <option value="City Clinics">City Clinics</option>
-                </select>
-              </div>
             </div>
             <div className="p-4 bg-[var(--card)] border-t border-[var(--border)] flex justify-end gap-3">
               <button onClick={() => setIsTerritoryModalOpen(false)} className="px-4 py-2 text-xs font-bold text-muted-foreground hover:text-foreground transition-colors">
@@ -440,10 +418,6 @@ export default function UsersManagementPage() {
               </button>
               <button
                 onClick={() => {
-                  if (selectedUser) {
-                    setUsers(users.map(u => u.id === selectedUser.id ? { ...u, territory: 'Northeast' } : u));
-                    setSelectedUser({ ...selectedUser, territory: 'Northeast' });
-                  }
                   setIsTerritoryModalOpen(false);
                 }}
                 className="px-5 py-2 text-xs font-bold text-[var(--background)] bg-primary rounded-lg shadow-sm transition-all hover:bg-cyan-400"
@@ -473,14 +447,16 @@ export default function UsersManagementPage() {
               <button
                 onClick={() => setIsDeactivateModalOpen(false)}
                 className="flex-1 py-2 text-xs font-bold text-gray-300 bg-[#1E293B] rounded-lg hover:bg-[#334155] transition-colors"
+                disabled={changingStatus}
               >
                 Cancel
               </button>
               <button
-                onClick={() => selectedUser && updateUserStatus('Inactive', selectedUser.id)}
-                className="flex-1 py-2 text-xs font-bold text-white bg-rose-500 rounded-lg shadow-sm transition-all hover:bg-rose-600"
+                onClick={() => selectedUser && updateUserStatus('inactive', selectedUser._id)}
+                className="flex-1 py-2 text-xs font-bold text-white bg-rose-500 rounded-lg shadow-sm transition-all hover:bg-rose-600 disabled:opacity-50"
+                disabled={changingStatus}
               >
-                Confirm
+                {changingStatus ? 'Processing...' : 'Confirm'}
               </button>
             </div>
           </div>
@@ -496,7 +472,7 @@ export default function UsersManagementPage() {
               <div>
                 <h3 className="font-bold text-foreground">Add Representative</h3>
                 <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold mt-0.5">
-                  Assign representatives to {selectedUser?.name}
+                  Assign representatives to {selectedUser?.fullName}
                 </p>
               </div>
               <button onClick={() => setIsRepModalOpen(false)} className="text-muted-foreground hover:text-foreground transition-colors">
@@ -519,19 +495,19 @@ export default function UsersManagementPage() {
 
               {/* Rep List */}
               <div className="max-h-[300px] overflow-y-auto space-y-2 pr-1 scrollbar-thin scrollbar-thumb-[var(--border)]">
-                {users
+                {allUsers
                   .filter(u =>
-                    u.role === 'Rep' &&
-                    (u.name.toLowerCase().includes(repSearch.toLowerCase()) || u.email.toLowerCase().includes(repSearch.toLowerCase()))
+                    u.role === 'representative' &&
+                    (u.fullName.toLowerCase().includes(repSearch.toLowerCase()) || u.email.toLowerCase().includes(repSearch.toLowerCase()))
                   )
                   .map(rep => {
-                    const isSelected = selectedRepIds.includes(rep.id);
+                    const isSelected = selectedRepIds.includes(rep._id);
                     return (
                       <div
-                        key={rep.id}
+                        key={rep._id}
                         onClick={() => {
                           setSelectedRepIds(prev =>
-                            prev.includes(rep.id) ? prev.filter(id => id !== rep.id) : [...prev, rep.id]
+                            prev.includes(rep._id) ? prev.filter(id => id !== rep._id) : [...prev, rep._id]
                           );
                         }}
                         className={cn(
@@ -542,11 +518,17 @@ export default function UsersManagementPage() {
                         )}
                       >
                         <div className="flex items-center gap-3">
-                          <div className='h-8 w-8 relative rounded-full overflow-hidden border border-[var(--border)] '>
-                            <Image src={rep.avatar} alt="" fill className="object-cover" />
+                          <div className='h-8 w-8 relative rounded-full overflow-hidden border border-[var(--border)] bg-primary/10 flex items-center justify-center'>
+                            {rep.profileUrl ? (
+                              <Image src={rep.profileUrl} alt="" fill className="object-cover" />
+                            ) : (
+                              <span className="text-primary font-bold text-xs uppercase tracking-wider">
+                                {getInitials(rep.fullName)}
+                              </span>
+                            )}
                           </div>
                           <div>
-                            <div className="text-sm font-bold text-foreground">{rep.name}</div>
+                            <div className="text-sm font-bold text-foreground">{rep.fullName}</div>
                             <div className="text-[10px] text-muted-foreground">{rep.email}</div>
                           </div>
                         </div>
@@ -559,7 +541,7 @@ export default function UsersManagementPage() {
                       </div>
                     );
                   })}
-                {users.filter(u => u.role === 'Rep' && (u.name.toLowerCase().includes(repSearch.toLowerCase()) || u.email.toLowerCase().includes(repSearch.toLowerCase()))).length === 0 && (
+                {allUsers.filter(u => u.role === 'representative' && (u.fullName.toLowerCase().includes(repSearch.toLowerCase()) || u.email.toLowerCase().includes(repSearch.toLowerCase()))).length === 0 && (
                   <div className="py-8 text-center text-muted-foreground text-sm">
                     No representatives found matching your search.
                   </div>
@@ -573,7 +555,6 @@ export default function UsersManagementPage() {
               </button>
               <button
                 onClick={() => {
-                  // Logic to save assignment would go here
                   setIsRepModalOpen(false);
                 }}
                 className="px-5 py-2 text-xs font-bold text-[var(--background)] bg-primary rounded-lg shadow-sm transition-all hover:bg-cyan-400 disabled:opacity-50 disabled:cursor-not-allowed"
@@ -638,4 +619,3 @@ function DetailRow({ icon, label, value, highlight }: { icon: React.ReactNode, l
     </div>
   );
 }
-

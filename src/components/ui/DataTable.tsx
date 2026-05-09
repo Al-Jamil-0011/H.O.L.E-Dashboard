@@ -1,6 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import React from "react";
 
 interface Column<T> {
   header: string;
@@ -12,21 +13,37 @@ interface Column<T> {
 interface DataTableProps<T> {
   data: T[];
   columns: Column<T>[];
+  loading?: boolean;
+  emptyText?: string;
   className?: string;
   onRowClick?: (item: T) => void;
 }
 
-export function DataTable<T>({ data, columns, className, onRowClick }: DataTableProps<T>) {
+export function DataTable<T>({
+  data,
+  columns,
+  loading = false,
+  emptyText = "No data available",
+  className,
+  onRowClick,
+}: DataTableProps<T>) {
   return (
-    <div className={cn("w-full overflow-x-auto rounded-xl bg-card", className)}>
+    <div
+      className={cn(
+        "w-full overflow-x-auto rounded-lg border border-border bg-card",
+        className
+      )}
+    >
       <table className="w-full text-left text-sm whitespace-nowrap">
+
+        {/* HEADER */}
         <thead className="bg-muted/50">
           <tr>
             {columns.map((col, i) => (
               <th
                 key={i}
                 className={cn(
-                  "px-6 py-4 font-semibold text-muted-foreground uppercase tracking-widest text-[10px] border-b border-border",
+                  "px-4 py-3 text-[10px] uppercase tracking-widest text-muted-foreground font-semibold border-b border-border",
                   col.className
                 )}
               >
@@ -35,35 +52,59 @@ export function DataTable<T>({ data, columns, className, onRowClick }: DataTable
             ))}
           </tr>
         </thead>
+
+        {/* BODY */}
         <tbody className="divide-y divide-border">
-          {data.map((item, rowIndex) => (
-            <tr
-              key={rowIndex}
-              onClick={() => onRowClick?.(item)}
-              className={cn(
-                "hover:bg-muted/50 transition-colors duration-150 ease-in-out",
-                onRowClick && "cursor-pointer"
-              )}
-            >
-              {columns.map((col, colIndex) => (
-                <td
-                  key={colIndex}
-                  className={cn("px-6 py-4 text-foreground font-medium text-xs", col.className)}
-                >
-                  {col.render
-                    ? col.render(item)
-                    : col.accessorKey
-                      ? String(item[col.accessorKey] || "")
-                      : null
-                  }
-                </td>
-              ))}
-            </tr>
-          ))}
-          {data.length === 0 && (
+
+          {/* LOADING */}
+          {loading && (
             <tr>
-              <td colSpan={columns.length} className="px-6 py-12 text-center text-muted-foreground">
-                No data available
+              <td
+                colSpan={columns.length}
+                className="px-4 py-10 text-center text-muted-foreground"
+              >
+                Loading...
+              </td>
+            </tr>
+          )}
+
+          {/* DATA */}
+          {!loading &&
+            data?.map((item, rowIndex) => (
+              <tr
+                key={rowIndex}
+                onClick={() => onRowClick?.(item)}
+                className={cn(
+                  "transition-colors",
+                  onRowClick && "cursor-pointer hover:bg-muted/50"
+                )}
+              >
+                {columns.map((col, colIndex) => (
+                  <td
+                    key={colIndex}
+                    className={cn(
+                      "px-4 py-3 text-foreground text-xs font-medium",
+                      col.className
+                    )}
+                  >
+                    {col.render
+                      ? col.render(item)
+                      : col.accessorKey
+                        ? String(item[col.accessorKey] ?? "-")
+                        : "-"}
+                  </td>
+                ))}
+              </tr>
+            ))}
+
+          {/* EMPTY STATE */}
+          {!loading && data?.length === 0 && (
+            <tr>
+              <td
+                colSpan={columns.length}
+                className="px-4 py-10 text-center text-muted-foreground text-sm"
+              >
+                {emptyText}
               </td>
             </tr>
           )}
@@ -72,7 +113,6 @@ export function DataTable<T>({ data, columns, className, onRowClick }: DataTable
     </div>
   );
 }
-
 export function StatusBadge({ status, type = "default" }: {
   status: string,
   type?: "success" | "warning" | "error" | "default"
