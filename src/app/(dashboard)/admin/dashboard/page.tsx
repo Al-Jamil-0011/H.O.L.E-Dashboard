@@ -10,7 +10,6 @@ import { DataTable, StatusBadge } from '@/components/ui/DataTable';
 import dynamic from 'next/dynamic';
 import { useTheme } from 'next-themes';
 import type { ApexOptions } from 'apexcharts';
-import Loader from '@/components/loader';
 
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
@@ -152,9 +151,6 @@ export default function AdminDashboard() {
 
     return (
         <div className="space-y-6 animate-in fade-in zoom-in duration-500">
-            <div className="flex h-screen w-full items-center justify-center">
-                <Loader size={40} text="Syncing Data..." />
-            </div>
             <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
                 <div>
                     <h1 className="text-xl font-bold tracking-tight text-foreground mb-1">

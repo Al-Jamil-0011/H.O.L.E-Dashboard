@@ -20,6 +20,9 @@ import {
   Users,
   Check
 } from 'lucide-react';
+import { useUserSummary } from '@/hooks/admin/users';
+import { IStatCardProps } from './interface';
+import Image from 'next/image';
 
 const mockUsers = [
   { id: '1', name: 'John Smith', email: 'john@invictus.com', phone: '(555) 123-4567', role: 'Rep', territory: 'Northeast', regDate: 'Jan 15, 2026', status: 'Active', avatar: 'https://i.pravatar.cc/150?u=1' },
@@ -35,6 +38,9 @@ export default function UsersManagementPage() {
   const [roleFilter, setRoleFilter] = useState('All');
   const [statusFilter, setStatusFilter] = useState('All');
   const [territoryFilter, setTerritoryFilter] = useState('All');
+
+  const { summary, loading: statLoading, error } = useUserSummary();
+  console.log(summary);
 
   const [users, setUsers] = useState(mockUsers);
   const [selectedUser, setSelectedUser] = useState<typeof mockUsers[0] | null>(null);
@@ -183,10 +189,35 @@ export default function UsersManagementPage() {
 
       {/* OVERVIEW CARDS */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard title="TOTAL USERS" value={users.length} topBorderColor="border-t-[var(--primary)]" />
-        <StatCard title="ACTIVE USERS" value={activeCount} topBorderColor="border-t-emerald-500" />
-        <StatCard title="INACTIVE USERS" value={inactiveCount} topBorderColor="border-t-gray-500" />
-        <StatCard title="PENDING TERRITORY" value={pendingTerritoryCount} trendColor="text-amber-500" topBorderColor="border-t-amber-500" />
+        <StatCard
+          title="TOTAL USERS"
+          value={summary?.totalUsers}
+          loading={statLoading}
+          topBorderColor="border-t-[var(--primary)]"
+        />
+
+        <StatCard
+          title="ACTIVE USERS"
+          value={summary?.activeUsers}
+          loading={statLoading}
+          topBorderColor="border-t-emerald-500"
+        />
+
+        <StatCard
+          title="INACTIVE USERS"
+          value={summary?.inactiveUsers}
+          loading={statLoading}
+          topBorderColor="border-t-red-500"
+        />
+
+
+        <StatCard
+          title="THIS MONTH USERS"
+          value={summary?.thisMonthUsers}
+          trendColor="text-amber-500"
+          loading={statLoading}
+          topBorderColor="border-t-amber-500"
+        />
       </div>
 
       {/* MAIN CONTAINER */}
@@ -284,7 +315,10 @@ export default function UsersManagementPage() {
             <div className="flex-1 overflow-y-auto p-6 scrollbar-thin scrollbar-thumb-[var(--border)]">
               {/* Profile Top */}
               <div className="flex items-center gap-4 mb-8">
-                <img src={selectedUser.avatar} className="w-16 h-16 rounded-full border-2 border-[var(--border)] object-cover" alt="" />
+                <div className="w-16 h-16 rounded-full relative border-2 border-[var(--border)] overflow-hidden">
+                  <Image src={selectedUser.avatar} alt="" fill className="object-cover" />
+                </div>
+
                 <div>
                   <h3 className="text-xl font-black tracking-tight text-foreground">{selectedUser.name}</h3>
                   <div className="flex items-center gap-2 mt-1">
@@ -508,7 +542,9 @@ export default function UsersManagementPage() {
                         )}
                       >
                         <div className="flex items-center gap-3">
-                          <img src={rep.avatar} alt="" className="h-8 w-8 rounded-full border border-[var(--border)] object-cover" />
+                          <div className='h-8 w-8 relative rounded-full overflow-hidden border border-[var(--border)] '>
+                            <Image src={rep.avatar} alt="" fill className="object-cover" />
+                          </div>
                           <div>
                             <div className="text-sm font-bold text-foreground">{rep.name}</div>
                             <div className="text-[10px] text-muted-foreground">{rep.email}</div>
@@ -554,15 +590,34 @@ export default function UsersManagementPage() {
   );
 }
 
-function StatCard({ title, value, trendColor, topBorderColor }: { title: string, value: string | number, trendColor?: string, topBorderColor: string }) {
+function StatCard({
+  title,
+  value,
+  topBorderColor,
+  loading = false,
+}: IStatCardProps) {
   return (
-    <div className={cn("rounded-xl border border-border border-t-[3px] bg-card p-5 shadow-sm transition-all hover:bg-muted/30", topBorderColor)}>
-      <h3 className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase">{title}</h3>
+    <div
+      className={cn(
+        "rounded-xl border border-border border-t-[3px] bg-card p-5 shadow-sm transition-all hover:bg-muted/30",
+        topBorderColor
+      )}
+    >
+      <h3 className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase">
+        {title}
+      </h3>
+
       <div className="mt-2 flex items-center justify-between">
-        <div className="text-3xl font-black tracking-tight text-foreground">{value}</div>
+        {loading ? (
+          <div className="h-9 w-full animate-pulse rounded-md bg-muted" />
+        ) : (
+          <div className="text-3xl font-black tracking-tight text-foreground">
+            {value}
+          </div>
+        )}
       </div>
     </div>
-  )
+  );
 }
 
 function DetailRow({ icon, label, value, highlight }: { icon: React.ReactNode, label: string, value: string, highlight?: boolean }) {

@@ -90,3 +90,9 @@ export interface IUsersQuery {
 export interface IChangeStatusPayload {
     status: UserStatus;
 }
+export interface IUserSummary {
+    totalUsers: number;
+    activeUsers: number;
+    inactiveUsers: number;
+    thisMonthUsers: number;
+}

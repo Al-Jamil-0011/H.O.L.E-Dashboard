@@ -7,7 +7,8 @@ import {
     IUsersQuery,
     IUsersResponse,
     UserStatus,
-    IChangeStatusPayload
+    IChangeStatusPayload,
+    IUserSummary
 } from "./interface";
 
 export function useUsers() {
@@ -56,9 +57,10 @@ export function useUsers() {
 
             setError(message);
         } finally {
-            setTimeout(() => {
-                setLoading(false);
-            }, 400);
+            setLoading(false);
+            // setTimeout(() => {
+            //     setLoading(false);
+            // }, 400);
         }
     }, [query]);
 
@@ -105,9 +107,10 @@ export function useSingleUser(id?: string) {
 
             setError(message);
         } finally {
-            setTimeout(() => {
-                setLoading(false);
-            }, 400);
+            setLoading(false);
+            // setTimeout(() => {
+            //     setLoading(false);
+            // }, 400);
         }
     }, [id]);
 
@@ -124,7 +127,7 @@ export function useSingleUser(id?: string) {
 }
 
 export function useUserSummary() {
-    const [summary, setSummary] = useState<IUser | null>(null);
+    const [summary, setSummary] = useState<IUserSummary | null>(null);
 
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
@@ -134,7 +137,7 @@ export function useUserSummary() {
         setError(null);
 
         try {
-            const response = await useApi.get<IApiResponse<IUser>>(
+            const response = await useApi.get<IApiResponse<IUserSummary>>(
                 `/user/overview`
             );
 
@@ -146,9 +149,10 @@ export function useUserSummary() {
 
             setError(message);
         } finally {
-            setTimeout(() => {
-                setLoading(false);
-            }, 400);
+            setLoading(false);
+            // setTimeout(() => {
+            //     setLoading(false);
+            // }, 400);
         }
     }, []);
 
@@ -188,9 +192,10 @@ export function useMyProfile() {
 
             setError(message);
         } finally {
-            setTimeout(() => {
-                setLoading(false);
-            }, 400);
+            setLoading(false);
+            // setTimeout(() => {
+            //     setLoading(false);
+            // }, 400);
         }
     }, []);
 
