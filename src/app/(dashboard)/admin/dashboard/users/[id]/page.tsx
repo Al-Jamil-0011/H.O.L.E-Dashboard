@@ -1,17 +1,17 @@
 "use client";
 
 import { useState } from 'react';
-import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
-import { ArrowLeft, Edit, AlertTriangle, Mail, Phone, MapPin, Calendar, User, FileText, CreditCard, Car, Download, Eye, File, Image as ImageIcon } from 'lucide-react';
+import { ArrowLeft, AlertTriangle, Mail, Phone, MapPin, Calendar, User, FileText, CreditCard, Car, Download, Eye, File, Image as ImageIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import { useChangeUserStatus, useSingleUser } from '@/hooks/admin/users';
 import { VerifyBadge } from '@/components/verify-bedge';
-import { IUser } from '@/hooks/admin/users/interface';
 import { StatusBadge } from '@/components/ui/DataTable';
 import toast from 'react-hot-toast';
 import Loader from '@/components/loader';
+import { IUser } from '@/hooks/admin/users/interface';
+import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 
 export default function UserDetailsPage() {
   const router = useRouter();
@@ -66,7 +66,7 @@ export default function UserDetailsPage() {
                   {user?.role}
                 </span>
                 {/* <span className="w-1.5 h-1.5 rounded-full bg-gray-600" /> */}
-                <StatusBadge status={user?.status as any} type={user?.status === 'active' ? 'success' : 'error'} />
+                <StatusBadge status={user?.status as IUser['status']} type={user?.status === 'active' ? 'success' : 'error'} />
                 <VerifyBadge isVerified={user?.isVerified} showLabel size='sm' />
               </div>
             </div>
@@ -224,7 +224,7 @@ function InfoRow({ icon, label, value, valueColor = "text-white" }: { icon: Reac
   );
 }
 
-function FileCard({ name, size, type, router }: { name: string, size: string, type: 'pdf' | 'image', router: any }) {
+function FileCard({ name, size, type, router }: { name: string, size: string, type: 'pdf' | 'image', router: AppRouterInstance }) {
   return (
     <div className="flex items-center justify-between p-3 rounded-lg border border-[#1E293B] bg-[#0B101E] group hover:border-[#334155] transition-colors">
       <div className="flex items-center gap-3 overflow-hidden">
@@ -245,7 +245,40 @@ function FileCard({ name, size, type, router }: { name: string, size: string, ty
           <Eye size={16} />
         </button>
 
-        <button className="p-1.5 text-gray-500 hover:text-white hover:bg-[#1E293B] rounded-md transition-colors cursor-pointer" title="Download">
+        <button
+          onClick={async () => {
+            const toastId = toast.loading('Preparing download...');
+            try {
+              const response = await fetch(name);
+              if (!response.ok) throw new Error('Download failed');
+              const blob = await response.blob();
+              const blobUrl = window.URL.createObjectURL(blob);
+              const link = document.createElement('a');
+              link.href = blobUrl;
+              link.download = name.split('/').pop() || 'download';
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+              window.URL.revokeObjectURL(blobUrl);
+              toast.success('Download started!', { id: toastId });
+            } catch (error) {
+              console.error('Download failed:', error);
+              toast.dismiss(toastId);
+              // Fallback to opening the URL directly if fetching the blob fails (e.g. CORS)
+              const link = document.createElement('a');
+              link.href = name;
+              link.download = name.split('/').pop() || 'download';
+              link.target = '_blank';
+              link.rel = 'noopener noreferrer';
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+            }
+          }}
+          disabled={!name || name === 'N/A'}
+          className="p-1.5 text-gray-500 hover:text-white hover:bg-[#1E293B] rounded-md transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          title="Download"
+        >
           <Download size={16} />
         </button>
 

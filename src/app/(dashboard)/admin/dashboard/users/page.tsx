@@ -191,14 +191,15 @@ export default function UsersManagementPage() {
                   <FaEye /> Details
                 </button>
               </Link>
-            ) : <button className="px-3 flex items-center gap-2 py-1 font-bold text-[#00E5FF] bg-[#00E5FF]/10 rounded hover:bg-[#00E5FF]/20 transition-colors cursor-pointer">
+            ) : <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedUser(item);
+              }}
+              className="px-3 flex items-center gap-2 py-1 font-bold text-[#00E5FF] bg-[#00E5FF]/10 rounded hover:bg-[#00E5FF]/20 transition-colors cursor-pointer">
               <FaEye /> Details
             </button>
           }
-
-          {/* <button onClick={(e) => { e.stopPropagation(); setSelectedUser(item); }} className="p-1 text-muted-foreground hover:text-foreground transition-colors">
-            <Edit2 className="h-4 w-4" />
-          </button> */}
         </div>
       )
     }
@@ -315,7 +316,7 @@ export default function UsersManagementPage() {
               data={allUsers}
               columns={columns}
               loading={usersLoading}
-              onRowClick={(item) => setSelectedUser(item)}
+              onRowClick={() => { }}
             />
           </div>
         </div>
@@ -382,7 +383,7 @@ export default function UsersManagementPage() {
 
                 <button
                   onClick={() => setIsTerritoryModalOpen(true)}
-                  className="w-full flex items-center justify-between p-3 rounded-lg border border-border bg-card hover:bg-muted/50 transition-colors group"
+                  className="w-full flex items-center cursor-pointer! justify-between p-3 rounded-lg border border-border bg-card hover:bg-muted/50 transition-colors group"
                 >
                   <div className="flex items-center gap-3 text-muted-foreground group-hover:text-foreground">
                     <MapPin className="h-4 w-4" />
@@ -434,7 +435,7 @@ export default function UsersManagementPage() {
             <div className="p-6 border-t border-border bg-card mt-auto">
               <button
                 onClick={() => setSelectedUser(null)}
-                className="w-full py-2.5 text-sm font-bold text-[var(--background)] bg-primary rounded-lg shadow-sm transition-all hover:bg-cyan-400"
+                className="w-full cursor-pointer py-2.5 text-sm font-bold text-[var(--background)] bg-primary rounded-lg shadow-sm transition-all hover:bg-cyan-400"
               >
                 Done
               </button>
