@@ -2,6 +2,7 @@
 
 import { X, CheckCircle2, ChevronLeft, FileText, Image as ImageIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 export interface ExpenseItem {
   id: number;
@@ -34,16 +35,16 @@ export function ExpenseDetailsDrawer({ isOpen, onClose, expense, onApprove, onRe
     <>
       <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm transition-opacity" onClick={onClose} />
       <div className="fixed inset-y-0 right-0 z-50 w-full max-w-md bg-[#18181B] border-l border-[#27272A] shadow-2xl flex flex-col animate-in slide-in-from-right duration-300">
-        
+
         {/* HEADER */}
         <div className="flex items-center justify-between p-4 border-b border-[#27272A] bg-[#18181B] shrink-0">
           <div className="flex items-center gap-2">
-            <button onClick={onClose} className="p-1.5 rounded-md text-gray-400 hover:text-white hover:bg-[#27272A] transition-colors">
+            <button onClick={onClose} className="p-1.5 rounded-md text-gray-400 hover:text-white hover:bg-[#27272A] transition-colors cursor-pointer">
               <ChevronLeft className="h-5 w-5" />
             </button>
             <h2 className="text-sm font-bold text-white tracking-tight">Expense Details</h2>
           </div>
-          <button onClick={onClose} className="p-1.5 rounded-md text-gray-400 hover:text-white hover:bg-[#27272A] transition-colors">
+          <button onClick={onClose} className="p-1.5 rounded-md text-gray-400 hover:text-white hover:bg-[#27272A] transition-colors cursor-pointer">
             <X className="h-5 w-5" />
           </button>
         </div>
@@ -54,7 +55,13 @@ export function ExpenseDetailsDrawer({ isOpen, onClose, expense, onApprove, onRe
           {/* PROFILE CARD */}
           <div className="bg-[#202024] border border-[#27272A] rounded-2xl p-4 flex items-center gap-4">
             <div className="h-14 w-14 rounded-full bg-gray-700 overflow-hidden shrink-0 border-2 border-[#27272A]">
-              <img src={`https://api.dicebear.com/7.x/notionists/svg?seed=${expense.submittedBy}`} alt="avatar" className="w-full h-full object-cover" />
+              <Image
+                src={`https://api.dicebear.com/7.x/notionists/svg?seed=${expense.submittedBy}`}
+                alt="avatar"
+                width={0}
+                height={0}
+                className="w-full h-full object-cover"
+              />
             </div>
             <div>
               <h3 className="text-base font-bold text-white">{expense.submittedBy}</h3>
@@ -127,12 +134,12 @@ export function ExpenseDetailsDrawer({ isOpen, onClose, expense, onApprove, onRe
                         {file.type === 'pdf' ? <FileText className="h-5 w-5" /> : <ImageIcon className="h-5 w-5" />}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-bold text-white truncate group-hover:text-[#00E5FF] transition-colors">{file.name}</p>
+                        <p className="text-sm font-bold text-white truncate group-hover:text-[#00E5FF] transition-colors cursor-pointer">{file.name}</p>
                         <p className="text-[10px] text-gray-500 font-medium uppercase tracking-wider">{file.size}</p>
                       </div>
                     </div>
-                    <button className="h-8 w-8 rounded-full flex items-center justify-center text-[#00E5FF] hover:bg-[#00E5FF]/10 transition-colors">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                    <button className="h-8 w-8 rounded-full flex items-center justify-center text-[#00E5FF] hover:bg-[#00E5FF]/10 transition-colors cursor-pointer">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" /><circle cx="12" cy="12" r="3" /></svg>
                     </button>
                   </div>
                 ))}
@@ -147,13 +154,13 @@ export function ExpenseDetailsDrawer({ isOpen, onClose, expense, onApprove, onRe
           <div className="p-5 border-t border-[#27272A] bg-[#18181B] shrink-0 flex gap-3">
             <button
               onClick={() => onReject(expense)}
-              className="flex-1 py-3.5 bg-transparent border border-[#27272A] hover:bg-rose-500/10 hover:text-rose-500 hover:border-rose-500/20 text-white rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-colors"
+              className="flex-1 py-3.5 bg-transparent border border-[#27272A] hover:bg-rose-500/10 hover:text-rose-500 hover:border-rose-500/20 text-white rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-colors cursor-pointer"
             >
               <X className="h-4 w-4" /> Reject
             </button>
             <button
               onClick={() => onApprove(expense)}
-              className="flex-1 py-3.5 bg-[#00E5FF] hover:bg-cyan-400 text-[#0B101E] rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-colors shadow-[0_0_15px_rgba(0,229,255,0.3)]"
+              className="flex-1 py-3.5 bg-[#00E5FF] hover:bg-cyan-400 text-[#0B101E] rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-colors shadow-[0_0_15px_rgba(0,229,255,0.3)] cursor-pointer"
             >
               <CheckCircle2 className="h-4 w-4" /> Approve
             </button>

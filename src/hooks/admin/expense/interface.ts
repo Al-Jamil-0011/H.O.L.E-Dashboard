@@ -130,4 +130,5 @@ export interface IExpenseQuery {
 
 export interface IUpdateExpenseStatusPayload {
     status: "approved" | "rejected";
+    rejectionNote?: string;
 }

@@ -229,7 +229,8 @@ export function useUpdateExpenseStatus() {
     const updateExpenseStatus =
         async (
             id: string,
-            status: "approved" | "rejected"
+            status: "approved" | "rejected",
+            rejectionNote?: string
         ) => {
             setLoading(true);
             setError(null);
@@ -238,6 +239,7 @@ export function useUpdateExpenseStatus() {
                 const payload: IUpdateExpenseStatusPayload =
                 {
                     status,
+                    rejectionNote,
                 };
 
                 const response =
