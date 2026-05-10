@@ -1,5 +1,7 @@
 "use client";
 
+import Loader from "@/components/loader";
+import { useSinglePhysician } from "@/hooks/admin/physicians";
 import { cn } from "@/lib/utils";
 import {
   ChevronLeft,
@@ -15,33 +17,26 @@ import {
   Trash2,
   Edit
 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 
-// MOCK DATA (Matches the one from the list for consistency)
-const mockPhysicianProfile = {
-  id: 'dr_john_smith',
-  name: 'Dr. John Smith',
-  specialty: 'Orthopedic Surgeon',
-  tags: ['Ortho'],
-  practice: 'City Hospital, New York',
-  phone: '(212) 555-0100',
-  cell: '(917) 555-0122',
-  email: 'jsmith@cityhospital.org',
-  dob: 'March 14, 1978',
-  notes: 'Highly preferred for complex spinal fusions. Efficient with surgical time and maintains excellent patient outcomes. Follows up personally within 24 hours post-op.',
-  documents: [
-    { name: 'Surgical_Report_Jenkins.pdf', size: '1.2 MB', type: 'pdf' },
-    { name: 'Facility_Auth_Letter.docx', size: '842 KB', type: 'doc' }
-  ]
-};
 
 export default function PhysicianProfilePage() {
   const params = useParams();
   const id = params.id as string;
 
-  // In a real app, you would fetch the physician details here using the ID.
-  const profile = mockPhysicianProfile;
+  const { physician, loading: isLoading } = useSinglePhysician(id);
+
+  console.log("physician", physician);
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center w-full h-[60vh]">
+        <Loader size={32} text="Fetching physician data..." />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 animate-in fade-in zoom-in duration-500 pb-12">
@@ -80,16 +75,24 @@ export default function PhysicianProfilePage() {
 
           <div className="relative flex items-center gap-6 p-4 z-10">
             <div className="h-24 w-24 rounded-full bg-gradient-to-br from-[#1E293B] to-[#0B101E] flex items-center justify-center border-4 border-[#0B101E] shadow-xl mx-auto mb-4 overflow-hidden relative">
-              {/* Green active dot */}
-              <div className="absolute bottom-1 right-1 w-4 h-4 bg-emerald-500 border-2 border-[#0B101E] rounded-full z-20" />
-              <Stethoscope className="h-10 w-10 text-[#00E5FF]/50" />
-              {/* <Image src="/path" fill alt="Profile" /> */}
+              <div className={cn(
+                "absolute bottom-1 right-1 w-4 h-4 border-2 border-[#0B101E] rounded-full z-20",
+                physician.isDeleted ? "bg-rose-500" : "bg-emerald-500"
+              )} />
+              {physician.profileUrl ? (
+                <Image
+                  src={`${process.env.NEXT_PUBLIC_BASE_URL}/${physician.profileUrl}`}
+                  fill className="object-cover"
+                  alt={physician.fullName} />
+              ) : (
+                <Stethoscope className="h-10 w-10 text-[#00E5FF]/50" />
+              )}
             </div>
             <div className="flex flex-col gap-1">
-              <h1 className="text-2xl font-black text-white tracking-tight mb-2">{profile.name}</h1>
+              <h1 className="text-2xl font-black text-white tracking-tight mb-2">{physician.fullName}</h1>
               <div className="flex items-center gap-2">
                 <span className="px-3 py-1 bg-[#00E5FF]/10 text-[#00E5FF] text-[10px] font-bold uppercase tracking-widest rounded-full border border-[#00E5FF]/20">
-                  {profile.tags[0]}
+                  {physician.specialty}
                 </span>
               </div>
             </div>
@@ -110,7 +113,7 @@ export default function PhysicianProfilePage() {
                 <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">Practice Name</p>
                 <div className="flex items-center gap-2 text-sm font-medium text-white">
                   <Building2 className="h-4 w-4 text-gray-400" />
-                  {profile.practice}
+                  {physician.practice}
                 </div>
               </div>
 
@@ -118,7 +121,7 @@ export default function PhysicianProfilePage() {
                 <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">Phone</p>
                 <div className="flex items-center gap-2 text-sm font-medium text-white">
                   <Phone className="h-4 w-4 text-gray-400" />
-                  {profile.phone}
+                  {physician.contactInfo?.phoneNumber}
                 </div>
               </div>
 
@@ -126,7 +129,7 @@ export default function PhysicianProfilePage() {
                 <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">Cell</p>
                 <div className="flex items-center gap-2 text-sm font-medium text-white">
                   <Phone className="h-4 w-4 text-gray-400" />
-                  {profile.cell}
+                  {physician.contactInfo?.cellNumber}
                 </div>
               </div>
 
@@ -134,7 +137,7 @@ export default function PhysicianProfilePage() {
                 <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">Email Address</p>
                 <div className="flex items-center gap-2 text-sm font-medium text-[#00E5FF]">
                   <Mail className="h-4 w-4 text-[#00E5FF]/70" />
-                  <a href={`mailto:${profile.email}`} className="hover:underline">{profile.email}</a>
+                  <a href={`mailto:${physician.contactInfo?.email}`} className="hover:underline">{physician.contactInfo?.email}</a>
                 </div>
               </div>
 
@@ -142,7 +145,7 @@ export default function PhysicianProfilePage() {
                 <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">Birthday</p>
                 <div className="flex items-center gap-2 text-sm font-medium text-white">
                   <Calendar className="h-4 w-4 text-gray-400" />
-                  {profile.dob}
+                  {physician.contactInfo?.dateOfBirth ? new Date(physician.contactInfo.dateOfBirth).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : 'N/A'}
                 </div>
               </div>
             </div>
@@ -155,7 +158,7 @@ export default function PhysicianProfilePage() {
             </h3>
             <div className="bg-[#0B101E] border border-[#1E293B] rounded-xl p-5">
               <p className="text-sm text-gray-300 leading-relaxed font-medium">
-                {profile.notes}
+                {physician.noteToSelf || "No notes available."}
               </p>
             </div>
           </section>
@@ -166,25 +169,28 @@ export default function PhysicianProfilePage() {
               <span className="w-1.5 h-1.5 rounded-full bg-[#00E5FF]" /> Documents
             </h3>
             <div className="grid gap-3">
-              {profile.documents.map((doc, idx) => (
-                <div key={idx} className="flex items-center justify-between p-4 bg-[#0B101E] border border-[#1E293B] rounded-xl group hover:border-[#334155] transition-colors">
-                  <div className="flex items-center gap-3">
-                    <div className={cn(
-                      "p-2 rounded-lg flex items-center justify-center",
-                      doc.type === 'pdf' ? "bg-rose-500/10 text-rose-500" : "bg-blue-500/10 text-blue-500"
-                    )}>
-                      <FileText className="h-5 w-5" />
+              {physician.documents && physician.documents.length > 0 ? (
+                physician.documents.map((doc, idx) => (
+                  <div key={idx} className="flex items-center justify-between p-4 bg-[#0B101E] border border-[#1E293B] rounded-xl group hover:border-[#334155] transition-colors">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 rounded-lg flex items-center justify-center bg-blue-500/10 text-blue-500">
+                        <FileText className="h-5 w-5" />
+                      </div>
+                      <div className="overflow-hidden">
+                        <h4 className="text-sm font-bold text-white group-hover:text-[#00E5FF] transition-colors truncate w-48">{doc.split('/').pop()}</h4>
+                        <p className="text-[10px] font-medium text-gray-500 uppercase">Document File</p>
+                      </div>
                     </div>
-                    <div>
-                      <h4 className="text-sm font-bold text-white group-hover:text-[#00E5FF] transition-colors">{doc.name}</h4>
-                      <p className="text-[10px] font-medium text-gray-500">{doc.size}</p>
-                    </div>
+                    <a href={doc} target="_blank" rel="noopener noreferrer" className="p-2 text-gray-400 hover:text-white hover:bg-[#1E293B] rounded-md transition-colors">
+                      <Download className="h-4 w-4" />
+                    </a>
                   </div>
-                  <button className="p-2 text-gray-400 hover:text-white hover:bg-[#1E293B] rounded-md transition-colors">
-                    <Download className="h-4 w-4" />
-                  </button>
+                ))
+              ) : (
+                <div className="py-8 text-center border border-dashed border-[#1E293B] rounded-xl text-gray-600 text-xs italic">
+                  No documents uploaded.
                 </div>
-              ))}
+              )}
             </div>
           </section>
 

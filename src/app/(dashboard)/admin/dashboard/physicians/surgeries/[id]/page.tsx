@@ -15,11 +15,14 @@ import {
   Layers,
   Link2,
   Syringe,
-  Box
+  Box,
+  Eye
 } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import Image from "next/image";
+import { useSingleSurgery } from "@/hooks/admin/surgeries";
+import Loader from "@/components/loader";
 
 // MOCK DATA
 const mockSurgeryDetails = {
@@ -53,8 +56,21 @@ export default function SurgeryDetailsPage() {
   const params = useParams();
   const id = params.id as string;
 
+  const { surgery, loading: isLoading } = useSingleSurgery(id);
+
+  console.log(surgery);
+
   // In a real application, you would fetch details by ID here
   const details = mockSurgeryDetails;
+
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center w-full h-[60vh]">
+        <Loader size={32} text="Fetching surgery data..." />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 animate-in fade-in zoom-in duration-500 pb-12">
@@ -82,13 +98,30 @@ export default function SurgeryDetailsPage() {
       <div className="bg-[#151B2B] border border-[#1E293B] rounded-2xl shadow-xl overflow-hidden">
 
         {/* HEADER */}
-        <div className="relative p-8 flex flex-col items-center justify-center text-center border-b border-[#1E293B]">
+        <div className="relative border-b border-[#1E293B]">
           <div className="absolute top-0 w-full h-32 bg-gradient-to-b from-[#00E5FF]/5 to-transparent pointer-events-none" />
-          <div className="relative z-10">
-            <div className="h-20 w-20 rounded-full bg-[#1E293B] flex items-center justify-center border-4 border-[#0B101E] shadow-xl mx-auto mb-4">
-              <UserCircle2 className="h-10 w-10 text-gray-400" />
+          <div className="relative flex items-center gap-4 z-10 p-8">
+            <div className="h-20 w-20 rounded-full bg-[#1E293B] border-4 border-[#0B101E] shadow-xl overflow-hidden relative">
+              {surgery.info?.profileUrl ? (
+                <Image
+                  src={surgery.info?.profileUrl}
+                  alt={surgery.info?.fullName}
+                  fill
+                  className="object-cover"
+                />
+              ) : (
+                <UserCircle2 className="h-10 w-10 text-gray-400" />
+              )}
             </div>
-            <h1 className="text-2xl font-black text-white tracking-tight">{details.patientName}</h1>
+            <div className="flex flex-col gap-3">
+              <h1 className="text-2xl font-black text-white tracking-tight">{surgery.info?.fullName}</h1>
+              <span className={cn(
+                "w-max px-3 py-1 bg-green-500/10 text-green-500 text-[10px] font-bold uppercase tracking-widest rounded-full border border-green-500/20",
+                surgery.isDeleted && "bg-rose-500/10 text-rose-500 border-rose-500/20"
+              )}>
+                {surgery.isDeleted ? "Inactive" : "Active"}
+              </span>
+            </div>
           </div>
         </div>
 
@@ -107,29 +140,29 @@ export default function SurgeryDetailsPage() {
               <div className="bg-[#0B101E] border border-[#1E293B] rounded-xl p-5 space-y-4">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-medium text-gray-500">Physician</span>
-                  <span className="text-sm font-bold text-white flex items-center gap-2">
-                    <Stethoscope className="h-4 w-4 text-gray-400" /> {details.physician}
+                  <span className="text-sm font-bold text-white flex items-center gap-2 text-right">
+                    <Stethoscope className="h-4 w-4 text-gray-400" /> {typeof surgery.info?.physician === 'object' ? surgery.info.physician.fullName : surgery.info?.physician}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-medium text-gray-500">PT ID</span>
-                  <span className="text-sm font-bold text-white">{details.ptId}</span>
+                  <span className="text-sm font-bold text-white">{surgery.info?.patientId}</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-medium text-gray-500">Facility</span>
-                  <span className="text-sm font-bold text-white flex items-center gap-2">
-                    <Building2 className="h-4 w-4 text-gray-400" /> {details.facility}
+                  <span className="text-sm font-bold text-white flex items-center gap-2 text-right">
+                    <Building2 className="h-4 w-4 text-gray-400" /> {typeof surgery.info?.facility === 'object' ? surgery.info.facility.name : surgery.info?.facility}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-medium text-gray-500">Date of Surgery</span>
                   <span className="text-sm font-bold text-white flex items-center gap-2">
-                    <Calendar className="h-4 w-4 text-gray-400" /> {details.date}
+                    <Calendar className="h-4 w-4 text-gray-400" /> {surgery.info?.dateOfSurgery ? new Date(surgery.info.dateOfSurgery).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : 'N/A'}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-medium text-gray-500">Surgery Type</span>
-                  <span className="text-sm font-bold text-white">{details.surgeryType}</span>
+                  <span className="text-sm font-bold text-white">{surgery.info?.surgeryType}</span>
                 </div>
               </div>
             </section>
@@ -141,20 +174,25 @@ export default function SurgeryDetailsPage() {
               </h3>
 
               <div className="space-y-3">
-                {details.attachments.map((file, idx) => (
-                  <div key={idx} className="flex items-center justify-between p-4 bg-[#0B101E] border border-[#1E293B] rounded-xl hover:border-[#334155] transition-colors cursor-pointer group">
-                    <div className="flex items-center gap-3">
-                      <div className={cn(
-                        "p-2 rounded-lg flex items-center justify-center",
-                        file.type === 'pdf' ? "bg-rose-500/10 text-rose-500" : "bg-blue-500/10 text-blue-500"
-                      )}>
-                        <file.icon className="h-5 w-5" />
+                {surgery.docAndNotes?.files && surgery.docAndNotes.files.length > 0 ? (
+                  surgery.docAndNotes.files.map((file, idx) => (
+                    <div key={idx} className="flex items-center justify-between p-4 bg-[#0B101E] border border-[#1E293B] rounded-xl hover:border-[#334155] transition-colors cursor-pointer group">
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 rounded-lg flex items-center justify-center bg-blue-500/10 text-blue-500">
+                          <FileText className="h-5 w-5" />
+                        </div>
+                        <span className="text-sm font-bold text-gray-300 group-hover:text-white transition-colors truncate w-48">{file.split('/').pop()}</span>
                       </div>
-                      <span className="text-sm font-bold text-gray-300 group-hover:text-white transition-colors">{file.name}</span>
+                      <a href={file} target="_blank" rel="noopener noreferrer" className="p-1.5">
+                        <Download className="h-4 w-4 text-gray-500 group-hover:text-[#00E5FF] transition-colors" />
+                      </a>
                     </div>
-                    <Download className="h-4 w-4 text-gray-500 group-hover:text-[#00E5FF] transition-colors" />
+                  ))
+                ) : (
+                  <div className="py-4 text-center border border-dashed border-[#1E293B] rounded-xl text-gray-600 text-xs italic">
+                    No attachments.
                   </div>
-                ))}
+                )}
               </div>
             </section>
 
@@ -165,18 +203,45 @@ export default function SurgeryDetailsPage() {
               </h3>
 
               <div className="grid grid-cols-2 gap-4">
-                {details.radiologyImages.map((img, idx) => (
+                {[
+                  { type: 'PT STICKER', url: surgery.radiologyClinicalFile?.patientSticker },
+                  { type: 'PRE-OP AP', url: surgery.radiologyClinicalFile?.preOpAP },
+                  { type: 'POST-OP AP', url: surgery.radiologyClinicalFile?.postOpAP },
+                  { type: 'PRE-OP LATERAL', url: surgery.radiologyClinicalFile?.preOpLateral },
+                  { type: 'POST-OP LATERAL', url: surgery.radiologyClinicalFile?.postOpLateral }
+                ].filter(img => img.url).map((img, idx) => (
                   <div key={idx} className="relative aspect-square bg-[#0B101E] border border-[#1E293B] rounded-xl overflow-hidden group">
-                    <div className="absolute inset-0 flex items-center justify-center bg-[#1E293B] text-gray-500 group-hover:text-gray-300 transition-colors">
-                      {/* Placeholder for actual image */}
-                      <Activity className="h-8 w-8 opacity-50" />
+                    <Image src={img.url!} fill className="object-cover transition-transform duration-500 group-hover:scale-110" alt={img.type} />
+
+                    {/* Hover Overlay */}
+                    <div className="absolute inset-0 bg-black/75 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10">
+                      <a
+                        href={img.url!}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 px-3 py-1.5 border border-[#00E5FF]/20 bg-[#00E5FF]/10 text-white text-[10px] font-bold  transition-all scale-90 group-hover:scale-100 duration-300 hover:bg-[#00E5FF]/20 hover:border-[#00E5FF] rounded-full"
+                      >
+                        <Eye className="h-3.5 w-3.5" /> Preview
+                      </a>
                     </div>
-                    <div className="absolute bottom-0 inset-x-0 p-2 bg-black/60 backdrop-blur-sm">
+
+                    <div className="absolute bottom-0 inset-x-0 p-2 bg-black/60 backdrop-blur-sm z-20">
                       <p className="text-[10px] font-bold text-center text-[#00E5FF] tracking-widest">{img.type}</p>
                     </div>
                   </div>
                 ))}
               </div>
+
+              {surgery.docAndNotes?.caseNotes && (
+                <section className="space-y-4 pt-6 border-t border-[#1E293B]">
+                  <h3 className="text-xs font-bold text-[#00E5FF] uppercase tracking-widest flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#00E5FF]" /> Case Notes
+                  </h3>
+                  <div className="bg-[#0B101E] border border-[#1E293B] rounded-xl p-5">
+                    <p className="text-sm text-gray-400 leading-relaxed italic">{surgery.docAndNotes.caseNotes}</p>
+                  </div>
+                </section>
+              )}
             </section>
 
           </div>
@@ -199,9 +264,7 @@ export default function SurgeryDetailsPage() {
                   <span className="text-[11px] font-bold text-[#00E5FF] uppercase tracking-widest">Screws</span>
                 </div>
                 <div className="p-4 space-y-2">
-                  {details.materials.screws.map((item, idx) => (
-                    <div key={idx} className="text-sm font-medium text-gray-300">{item}</div>
-                  ))}
+                  <div className="text-sm font-medium text-gray-300">{surgery.surgeryMaterial?.screws || "N/A"}</div>
                 </div>
               </div>
 
@@ -212,9 +275,7 @@ export default function SurgeryDetailsPage() {
                   <span className="text-[11px] font-bold text-[#00E5FF] uppercase tracking-widest">Rods / Connectors</span>
                 </div>
                 <div className="p-4 space-y-2">
-                  {details.materials.rods.map((item, idx) => (
-                    <div key={idx} className="text-sm font-medium text-gray-300">{item}</div>
-                  ))}
+                  <div className="text-sm font-medium text-gray-300">{surgery.surgeryMaterial?.rodsOrconnectors || "N/A"}</div>
                 </div>
               </div>
 
@@ -225,9 +286,7 @@ export default function SurgeryDetailsPage() {
                   <span className="text-[11px] font-bold text-[#00E5FF] uppercase tracking-widest">Plates</span>
                 </div>
                 <div className="p-4 space-y-2">
-                  {details.materials.plates.map((item, idx) => (
-                    <div key={idx} className="text-sm font-medium text-gray-300">{item}</div>
-                  ))}
+                  <div className="text-sm font-medium text-gray-300">{surgery.surgeryMaterial?.plates || "N/A"}</div>
                 </div>
               </div>
 
@@ -238,9 +297,7 @@ export default function SurgeryDetailsPage() {
                   <span className="text-[11px] font-bold text-[#00E5FF] uppercase tracking-widest">Implants</span>
                 </div>
                 <div className="p-4 space-y-2">
-                  {details.materials.implants.map((item, idx) => (
-                    <div key={idx} className="text-sm font-medium text-gray-300">{item}</div>
-                  ))}
+                  <div className="text-sm font-medium text-gray-300">{surgery.surgeryMaterial?.implants || "N/A"}</div>
                 </div>
               </div>
 
@@ -251,9 +308,7 @@ export default function SurgeryDetailsPage() {
                   <span className="text-[11px] font-bold text-[#00E5FF] uppercase tracking-widest">Biologics</span>
                 </div>
                 <div className="p-4 space-y-2">
-                  {details.materials.biologics.map((item, idx) => (
-                    <div key={idx} className="text-sm font-medium text-gray-300">{item}</div>
-                  ))}
+                  <div className="text-sm font-medium text-gray-300">{surgery.surgeryMaterial?.biologics || "N/A"}</div>
                 </div>
               </div>
 
