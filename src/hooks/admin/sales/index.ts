@@ -1,9 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { useCallback, useEffect, useState } from "react";
-
-import useApi from "./../../use-api/index";
-
 import {
     IApiResponse,
     IPaginationMeta,
@@ -15,6 +12,7 @@ import {
     IUpdateSalesPayload,
     IUpdateSalesStatusPayload,
 } from "./interface";
+import useApi from "@/hooks/use-api";
 
 export function useSalesSummary() {
     const [summary, setSummary] =

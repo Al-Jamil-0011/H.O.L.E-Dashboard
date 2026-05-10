@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { useCallback, useEffect, useState } from "react";
-import useApi from "./../../use-api/index";
+import useApi from "@/hooks/use-api";
 import { IApiResponse, IFacility, IFacilityPayload, IFacilityQuery, IFacilityResponse, IPaginationMeta, IUpdateFacilityPayload } from "./interface";
 
 

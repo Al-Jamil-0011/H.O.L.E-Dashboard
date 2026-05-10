@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import useApi from "./../../use-api/index";
-
+import useApi from "@/hooks/use-api";
 import {
     IApiResponse,
     IPaginationMeta,
