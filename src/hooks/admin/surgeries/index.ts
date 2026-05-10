@@ -1,3 +1,4 @@
+'use client';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { useCallback, useEffect, useState } from "react";
@@ -291,13 +292,7 @@ export function useCreateSurgery() {
                     IApiResponse<ISurgery>
                 >(
                     "/surgery/create",
-                    formData,
-                    {
-                        headers: {
-                            "Content-Type":
-                                "multipart/form-data",
-                        },
-                    }
+                    formData
                 );
 
             return response?.data;

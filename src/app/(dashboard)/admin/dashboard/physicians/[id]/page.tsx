@@ -1,7 +1,7 @@
 "use client";
 
 import Loader from "@/components/loader";
-import { useSinglePhysician } from "@/hooks/admin/physicians";
+import { useSinglePhysician, useUpdatePhysician } from "@/hooks/admin/physicians";
 import { cn } from "@/lib/utils";
 import {
   ChevronLeft,
@@ -15,11 +15,15 @@ import {
   Download,
   Building2,
   Trash2,
-  Edit
+  Edit,
+  PenSquare,
+  PenSquareIcon
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { useState } from "react";
+import { AddPhysicianModal } from "../components/AddPhysicianModal";
 
 
 export default function PhysicianProfilePage() {
@@ -27,6 +31,8 @@ export default function PhysicianProfilePage() {
   const id = params.id as string;
 
   const { physician, loading: isLoading } = useSinglePhysician(id);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const { updatePhysician, loading: isUpdating, error: updateError } = useUpdatePhysician();
 
   console.log("physician", physician);
 
@@ -52,15 +58,15 @@ export default function PhysicianProfilePage() {
         </Link>
 
         <div className="flex items-center gap-2">
-          {/* <button className="hidden sm:flex items-center gap-2 px-4 py-2 text-xs font-bold text-gray-300 bg-[#151B2B] border border-[#1E293B] rounded-lg hover:text-white hover:bg-[#1E293B] transition-colors">
-            Assign Facility
-          </button> */}
-          <div className="flex items-center bg-[#151B2B] border border-[#1E293B] rounded-lg p-1">
-            <button className="p-1.5 text-gray-400 hover:text-white hover:bg-[#1E293B] rounded-md transition-colors" title="Edit">
-              <Edit className="h-4 w-4" />
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            <button 
+              onClick={() => setIsEditModalOpen(true)}
+              className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-bold text-black bg-[#00E5FF] rounded-lg hover:bg-cyan-400 transition-colors shadow-[0_0_15px_rgba(0,229,255,0.3)] cursor-pointer"
+            >
+              <PenSquareIcon className="h-4 w-4" /> Edit Physician
             </button>
-            <button className="p-1.5 text-rose-500 hover:text-rose-400 hover:bg-rose-500/10 rounded-md transition-colors" title="Delete">
-              <Trash2 className="h-4 w-4" />
+            <button className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-bold text-gray-300 bg-[#151B2B] border border-[#1E293B] rounded-lg hover:text-white hover:bg-[#1E293B] transition-colors cursor-pointer">
+              <Download className="h-4 w-4" /> Download PDF
             </button>
           </div>
         </div>
@@ -196,6 +202,12 @@ export default function PhysicianProfilePage() {
 
         </div>
       </div>
+
+      <AddPhysicianModal 
+        isOpen={isEditModalOpen} 
+        onClose={() => setIsEditModalOpen(false)} 
+        initialData={physician}
+      />
     </div>
   );
 }

@@ -21,47 +21,24 @@ import {
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import Image from "next/image";
-import { useSingleSurgery } from "@/hooks/admin/surgeries";
+import { useSingleSurgery, useUpdateSurgery } from "@/hooks/admin/surgeries";
 import Loader from "@/components/loader";
+import { useState } from "react";
+import { AddSurgeryModal } from "../../components/AddSurgeryModal";
 
-// MOCK DATA
-const mockSurgeryDetails = {
-  id: 'sur_001',
-  patientName: 'John Doe',
-  ptId: '132135454',
-  physician: 'Dr. Sarah Jenkins',
-  facility: 'St. Jude Medical Center',
-  date: '27 March, 2026',
-  surgeryType: 'General',
-  attachments: [
-    { name: 'Surgery Sheet.pdf', type: 'pdf', icon: FileText },
-    { name: 'Medical Report.docx', type: 'doc', icon: FileText }
-  ],
-  materials: {
-    screws: ['Pedicle Screw 6.5mm x 45mm QTY (4)'],
-    rods: ['Titanium Rod 5.5mm x 100mm QTY (2)'],
-    plates: ['Pedicle Screw 6.5mm x 45mm QTY (4)'],
-    implants: ['PEEK Inter body Cage QTY (2)'],
-    biologics: ['Pedicle Screw 6.5mm x 45mm QTY (1)']
-  },
-  radiologyImages: [
-    { type: 'AP POST', url: '/ap-post.jpg' },
-    { type: 'AP PRE', url: '/ap-pre.jpg' },
-    { type: 'LATERAL POST', url: '/lat-post.jpg' },
-    { type: 'LATERAL PRE', url: '/lat-pre.jpg' }
-  ]
-};
+
 
 export default function SurgeryDetailsPage() {
   const params = useParams();
   const id = params.id as string;
 
   const { surgery, loading: isLoading } = useSingleSurgery(id);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   console.log(surgery);
 
-  // In a real application, you would fetch details by ID here
-  const details = mockSurgeryDetails;
+  const { updateSurgery, loading: isUpdating, error: updateError } = useUpdateSurgery();
+
 
 
   if (isLoading) {
@@ -86,10 +63,13 @@ export default function SurgeryDetailsPage() {
         </Link>
 
         <div className="flex items-center gap-2 w-full sm:w-auto">
-          <button className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-bold text-white bg-[#00E5FF] rounded-lg hover:bg-cyan-400 transition-colors shadow-[0_0_15px_rgba(0,229,255,0.3)]">
+          <button 
+            onClick={() => setIsEditModalOpen(true)}
+            className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-bold text-black bg-[#00E5FF] rounded-lg hover:bg-cyan-400 transition-colors shadow-[0_0_15px_rgba(0,229,255,0.3)] cursor-pointer"
+          >
             <PenSquare className="h-4 w-4" /> Edit Surgery
           </button>
-          <button className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-bold text-gray-300 bg-[#151B2B] border border-[#1E293B] rounded-lg hover:text-white hover:bg-[#1E293B] transition-colors">
+          <button className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-bold text-gray-300 bg-[#151B2B] border border-[#1E293B] rounded-lg hover:text-white hover:bg-[#1E293B] transition-colors cursor-pointer">
             <Download className="h-4 w-4" /> Download PDF
           </button>
         </div>
@@ -325,6 +305,11 @@ export default function SurgeryDetailsPage() {
         </button>
       </div>
 
+      <AddSurgeryModal 
+        isOpen={isEditModalOpen} 
+        onClose={() => setIsEditModalOpen(false)} 
+        initialData={surgery}
+      />
     </div>
   );
 }

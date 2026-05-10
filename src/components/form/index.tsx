@@ -97,15 +97,16 @@ const FormField: React.FC<FormFieldProps> = ({
     const hasError = !!error;
 
     // Premium base styling matching the dashboard's design system
-    const baseInputClasses = "block w-full border border-gray-500 dark:border-white/10 rounded-xl leading-5 bg-white/10 dark:bg-white/5 placeholder-gray-400 focus:outline-none transition-all duration-300 sm:text-sm text-muted-foreground dark:text-muted-foreground shadow-sm";
+    // Premium base styling matching the dashboard's design system
+    const baseInputClasses = "block w-full border rounded-xl leading-5 bg-gray-50 dark:bg-[#151B2B] text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none transition-all duration-300 sm:text-sm shadow-sm";
 
     // Adjust padding if an icon is present, and add right padding for password toggle
     const paddingClasses = `${icon ? "pl-10" : "pl-4"} py-3 ${type === "password" ? "pr-11" : "pr-4"}`;
 
     // Dynamic error vs default classes
     const errorClasses = hasError
-        ? "border-red-500 bg-red-50/50 dark:bg-red-500/5 text-red-900"
-        : `border-gray-500 focus:border-primary dark:border-white/10 ${colorClass}`;
+        ? "border-rose-500 bg-rose-50 dark:bg-rose-500/5 text-rose-600 dark:text-rose-400 focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20"
+        : `border-gray-200 dark:border-[#1E293B] focus:border-[#00E5FF] focus:ring-2 focus:ring-[#00E5FF]/20 ${colorClass}`;
 
     // Common props spread to all input elements
     const commonProps = {
@@ -201,20 +202,22 @@ const FormField: React.FC<FormFieldProps> = ({
                             <label
                                 htmlFor={`file-input-${name}`}
                                 className={`w-full h-32 border-2 border-dashed rounded-xl transition-all duration-300 flex flex-col items-center justify-center cursor-pointer group
-                                ${hasError ? 'border-red-500 bg-red-500/5' : 'border-[#334155] bg-[#151B2B] hover:bg-[#1A2234] hover:border-[#4b5563]'}`}
+                                ${hasError
+                                        ? 'border-rose-500 bg-rose-50 dark:bg-rose-500/5'
+                                        : 'border-gray-200 dark:border-[#334155] bg-gray-50 dark:bg-[#151B2B] hover:bg-gray-100 dark:hover:bg-[#1A2234] hover:border-gray-300 dark:hover:border-[#4b5563]'}`}
                             >
-                                <div className="p-3 rounded-full bg-gray-800/50 group-hover:bg-[#00E5FF]/10 transition-colors mb-2">
-                                    <UploadCloud className={`h-6 w-6 transition-colors ${hasError ? 'text-red-500' : 'text-gray-500 group-hover:text-[#00E5FF]'}`} />
+                                <div className="p-3 rounded-full bg-gray-200/50 dark:bg-gray-800/50 group-hover:bg-[#00E5FF]/10 transition-colors mb-2">
+                                    <UploadCloud className={`h-6 w-6 transition-colors ${hasError ? 'text-rose-500' : 'text-gray-400 dark:text-gray-500 group-hover:text-[#00E5FF]'}`} />
                                 </div>
-                                <p className={`text-[11px] font-semibold transition-colors ${hasError ? 'text-red-500' : 'text-gray-400 group-hover:text-white'}`}>
+                                <p className={`text-[11px] font-semibold transition-colors ${hasError ? 'text-rose-500' : 'text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white'}`}>
                                     Drag & drop or <span className="text-[#00E5FF]">browse</span>
                                 </p>
-                                <p className="text-[10px] text-gray-500 mt-1">Supports images, PDF up to 10MB</p>
+                                <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-1">Supports images, PDF up to 10MB</p>
                             </label>
                         ) : (
-                            <div className="relative group/preview w-full h-32 rounded-xl border border-[#334155] bg-[#151B2B] overflow-hidden flex items-center p-3 animate-in fade-in zoom-in-95 duration-300">
+                            <div className="relative group/preview w-full h-32 rounded-xl border border-gray-200 dark:border-[#334155] bg-gray-50 dark:bg-[#151B2B] overflow-hidden flex items-center p-3 animate-in fade-in zoom-in-95 duration-300">
                                 {filePreview ? (
-                                    <div className="w-24 h-full rounded-lg overflow-hidden border border-white/10 relative flex-shrink-0">
+                                    <div className="w-24 h-full rounded-lg overflow-hidden border border-gray-200 dark:border-white/10 relative flex-shrink-0">
                                         <Image
                                             src={filePreview}
                                             width={100}
@@ -224,13 +227,13 @@ const FormField: React.FC<FormFieldProps> = ({
                                         />
                                     </div>
                                 ) : (
-                                    <div className="w-24 h-full rounded-lg bg-gray-800 flex items-center justify-center border border-white/10 flex-shrink-0">
-                                        <UploadCloud className="h-8 w-8 text-gray-600" />
+                                    <div className="w-24 h-full rounded-lg bg-gray-200 dark:bg-gray-800 flex items-center justify-center border border-gray-200 dark:border-white/10 flex-shrink-0">
+                                        <UploadCloud className="h-8 w-8 text-gray-400 dark:text-gray-600" />
                                     </div>
                                 )}
 
                                 <div className="ml-4 flex-1 min-w-0">
-                                    <p className="text-sm font-bold text-white truncate pr-8">{fileName}</p>
+                                    <p className="text-sm font-bold text-gray-900 dark:text-white truncate pr-8">{fileName}</p>
                                     <p className="text-[10px] text-gray-500 font-medium uppercase tracking-wider mt-1">Ready to upload</p>
                                 </div>
 
@@ -285,9 +288,9 @@ const FormField: React.FC<FormFieldProps> = ({
         <div className="w-full flex flex-col mb-5">
             {/* Field Label */}
             {label && type !== "checkbox" && type !== "file" && (
-                <label className="mb-1.5 text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center">
+                <label className="mb-1.5 text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-widest ml-1">
                     {label}
-                    {validation?.required && <span className="text-red-500 ml-1">*</span>}
+                    {validation?.required && <span className="text-rose-500 ml-1">*</span>}
                 </label>
             )}
 
@@ -295,7 +298,7 @@ const FormField: React.FC<FormFieldProps> = ({
             <div className="relative group/input w-full">
                 {/* Floating Icon for text-based inputs */}
                 {icon && type !== "radio" && type !== "checkbox" && type !== "file" && type !== "textarea" && (
-                    <div className={`absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none transition-colors ${hasError ? 'text-red-500' : 'text-gray-400 group-focus-within/input:text-primary'}`}>
+                    <div className={`absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none transition-colors ${hasError ? 'text-rose-500' : 'text-gray-400 dark:text-gray-500 group-focus-within/input:text-[#00E5FF]'}`}>
                         {icon}
                     </div>
                 )}
@@ -304,7 +307,7 @@ const FormField: React.FC<FormFieldProps> = ({
 
                 {/* Dropdown chevron for select */}
                 {type === "select" && (
-                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-500">
+                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-400 dark:text-gray-600">
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
                         </svg>
@@ -314,8 +317,8 @@ const FormField: React.FC<FormFieldProps> = ({
 
             {/* Error Message */}
             {hasError && (
-                <div className="mt-1.5 flex items-start text-red-500 text-sm font-medium animate-in fade-in slide-in-from-top-1">
-                    <svg className="w-4 h-4 mr-1 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <div className="mt-1.5 ml-1 flex items-start text-rose-500 text-[10px] font-bold uppercase tracking-wider animate-in fade-in slide-in-from-top-1">
+                    <svg className="w-3.5 h-3.5 mr-1 mt-px flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                     </svg>
                     <span>{error.message?.toString() || "This field is required"}</span>

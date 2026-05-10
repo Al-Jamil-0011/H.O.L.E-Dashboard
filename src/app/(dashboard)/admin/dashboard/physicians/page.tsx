@@ -52,14 +52,26 @@ export default function PhysiciansAndSurgeriesPage() {
         </div>
       )
     },
-    { header: "SPECIALTY", accessorKey: "specialty" as const, className: "text-[#00E5FF] font-medium" },
-    { header: "PRACTICE", accessorKey: "practice" as const, className: "text-gray-400" },
+    {
+      header: "SPECIALTY",
+      render: (item: any) => {
+        const specialty = typeof item.specialty === 'object' ? item.specialty.name : item.specialty;
+        return <span className="text-[#00E5FF] font-medium capitalize">{specialty || 'N/A'}</span>;
+      }
+    },
+    {
+      header: "PRACTICE",
+      render: (item: any) => {
+        const practice = typeof item.practice === 'object' ? item.practice.name : item.practice;
+        return <span className="text-gray-400">{practice || 'N/A'}</span>;
+      }
+    },
     {
       header: "CONTACT",
       render: (item: any) => (
         <div className="flex flex-col">
           <span className="text-white text-xs">{item.contactInfo?.email}</span>
-          <span className="text-gray-500 text-[10px]">{item.contactInfo?.phoneNumber}</span>
+          <span className="text-gray-500 text-xs pt-2">{item.contactInfo?.phoneNumber}</span>
         </div>
       )
     },
