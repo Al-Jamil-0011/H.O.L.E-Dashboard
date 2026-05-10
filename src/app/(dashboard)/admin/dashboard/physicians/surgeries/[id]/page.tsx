@@ -1,10 +1,10 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { 
-  ChevronLeft, 
-  UserCircle2, 
-  FileText, 
+import {
+  ChevronLeft,
+  UserCircle2,
+  FileText,
   Download,
   Calendar,
   Building2,
@@ -52,16 +52,16 @@ const mockSurgeryDetails = {
 export default function SurgeryDetailsPage() {
   const params = useParams();
   const id = params.id as string;
-  
+
   // In a real application, you would fetch details by ID here
   const details = mockSurgeryDetails;
 
   return (
-    <div className="space-y-6 animate-in fade-in zoom-in duration-500 pb-12 max-w-4xl mx-auto">
-      
+    <div className="space-y-6 animate-in fade-in zoom-in duration-500 pb-12">
+
       {/* TOP NAV & ACTIONS */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <Link 
+        <Link
           href="/admin/dashboard/physicians"
           className="flex items-center gap-2 text-sm font-bold text-gray-400 hover:text-white transition-colors"
         >
@@ -80,7 +80,7 @@ export default function SurgeryDetailsPage() {
       </div>
 
       <div className="bg-[#151B2B] border border-[#1E293B] rounded-2xl shadow-xl overflow-hidden">
-        
+
         {/* HEADER */}
         <div className="relative p-8 flex flex-col items-center justify-center text-center border-b border-[#1E293B]">
           <div className="absolute top-0 w-full h-32 bg-gradient-to-b from-[#00E5FF]/5 to-transparent pointer-events-none" />
@@ -94,16 +94,16 @@ export default function SurgeryDetailsPage() {
 
         {/* BODY */}
         <div className="p-8 grid grid-cols-1 md:grid-cols-2 gap-10">
-          
+
           {/* LEFT COLUMN: Info & Attachments */}
           <div className="space-y-8">
-            
+
             {/* Surgery Info */}
             <section className="space-y-4">
               <h3 className="text-xs font-bold text-[#00E5FF] uppercase tracking-widest flex items-center gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#00E5FF]" /> Surgery Info
               </h3>
-              
+
               <div className="bg-[#0B101E] border border-[#1E293B] rounded-xl p-5 space-y-4">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-medium text-gray-500">Physician</span>
@@ -139,7 +139,7 @@ export default function SurgeryDetailsPage() {
               <h3 className="text-xs font-bold text-[#00E5FF] uppercase tracking-widest flex items-center gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#00E5FF]" /> Attachments
               </h3>
-              
+
               <div className="space-y-3">
                 {details.attachments.map((file, idx) => (
                   <div key={idx} className="flex items-center justify-between p-4 bg-[#0B101E] border border-[#1E293B] rounded-xl hover:border-[#334155] transition-colors cursor-pointer group">
@@ -163,7 +163,7 @@ export default function SurgeryDetailsPage() {
               <h3 className="text-xs font-bold text-[#00E5FF] uppercase tracking-widest flex items-center gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#00E5FF]" /> Radiology Images
               </h3>
-              
+
               <div className="grid grid-cols-2 gap-4">
                 {details.radiologyImages.map((img, idx) => (
                   <div key={idx} className="relative aspect-square bg-[#0B101E] border border-[#1E293B] rounded-xl overflow-hidden group">
@@ -178,7 +178,7 @@ export default function SurgeryDetailsPage() {
                 ))}
               </div>
             </section>
-            
+
           </div>
 
           {/* RIGHT COLUMN: Materials */}
@@ -191,7 +191,7 @@ export default function SurgeryDetailsPage() {
             </div>
 
             <div className="space-y-4">
-              
+
               {/* Screws */}
               <div className="bg-[#0B101E] border border-[#1E293B] rounded-xl overflow-hidden">
                 <div className="px-4 py-3 bg-[#151B2B] border-b border-[#1E293B] flex items-center gap-2">

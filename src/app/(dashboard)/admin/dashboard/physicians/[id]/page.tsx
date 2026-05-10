@@ -44,7 +44,7 @@ export default function PhysicianProfilePage() {
   const profile = mockPhysicianProfile;
 
   return (
-    <div className="space-y-6 animate-in fade-in zoom-in duration-500 pb-12 max-w-3xl mx-auto">
+    <div className="space-y-6 animate-in fade-in zoom-in duration-500 pb-12">
 
       {/* TOP NAV & ACTIONS */}
       <div className="flex items-center justify-between">
@@ -74,22 +74,24 @@ export default function PhysicianProfilePage() {
       <div className="bg-[#151B2B] border border-[#1E293B] rounded-2xl shadow-xl overflow-hidden">
 
         {/* PROFILE HEADER */}
-        <div className="relative p-8 flex flex-col items-center justify-center text-center border-b border-[#1E293B]">
+        <div className="relative flex flex-col items-start border-b border-[#1E293B]">
           {/* Background Glow */}
           <div className="absolute top-0 w-full h-32 bg-gradient-to-b from-[#00E5FF]/5 to-transparent pointer-events-none" />
 
-          <div className="relative z-10">
+          <div className="relative flex items-center gap-6 p-4 z-10">
             <div className="h-24 w-24 rounded-full bg-gradient-to-br from-[#1E293B] to-[#0B101E] flex items-center justify-center border-4 border-[#0B101E] shadow-xl mx-auto mb-4 overflow-hidden relative">
               {/* Green active dot */}
               <div className="absolute bottom-1 right-1 w-4 h-4 bg-emerald-500 border-2 border-[#0B101E] rounded-full z-20" />
               <Stethoscope className="h-10 w-10 text-[#00E5FF]/50" />
               {/* <Image src="/path" fill alt="Profile" /> */}
             </div>
-            <h1 className="text-2xl font-black text-white tracking-tight mb-2">{profile.name}</h1>
-            <div className="flex items-center justify-center gap-2">
-              <span className="px-3 py-1 bg-[#00E5FF]/10 text-[#00E5FF] text-[10px] font-bold uppercase tracking-widest rounded-full border border-[#00E5FF]/20">
-                {profile.tags[0]}
-              </span>
+            <div className="flex flex-col gap-1">
+              <h1 className="text-2xl font-black text-white tracking-tight mb-2">{profile.name}</h1>
+              <div className="flex items-center gap-2">
+                <span className="px-3 py-1 bg-[#00E5FF]/10 text-[#00E5FF] text-[10px] font-bold uppercase tracking-widest rounded-full border border-[#00E5FF]/20">
+                  {profile.tags[0]}
+                </span>
+              </div>
             </div>
           </div>
         </div>
