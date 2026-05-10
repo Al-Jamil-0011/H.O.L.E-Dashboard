@@ -1,3 +1,5 @@
+"use client";
+
 import { useCallback, useEffect, useState } from "react";
 import useApi from "@/hooks/use-api";
 import {
@@ -47,9 +49,10 @@ export function usePurchaseOrderSummary() {
 
                 setError(message);
             } finally {
-                setTimeout(() => {
-                    setLoading(false);
-                }, 400);
+                setLoading(false);
+                // setTimeout(() => {
+                //     setLoading(false);
+                // }, 400);
             }
         }, []);
 
