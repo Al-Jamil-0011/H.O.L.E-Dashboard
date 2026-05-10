@@ -75,6 +75,7 @@ export interface IExpense {
     totalAmount: number;
 
     isPaid: boolean;
+    rejectionNote?: string;
 
     description?: string;
 

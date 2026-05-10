@@ -8,6 +8,7 @@ import { ExpenseDetailsDrawer, ExpenseItem } from './components/ExpenseDetailsDr
 import { ApproveExpenseModal, RejectExpenseModal } from './components/ExpenseModals';
 import { useExpenses, useExpenseSummary, useUpdateExpenseStatus } from '@/hooks/admin/expense';
 import toast from 'react-hot-toast';
+import Link from 'next/link';
 
 
 export default function ExpensesPage() {
@@ -65,9 +66,9 @@ export default function ExpensesPage() {
 
   const handleApprove = async () => {
     if (!actionExpense) return;
-    
+
     const promise = updateExpenseStatus(actionExpense.id as string, 'approved');
-    
+
     toast.promise(promise, {
       loading: 'Approving expense...',
       success: (data) => {
@@ -86,9 +87,9 @@ export default function ExpensesPage() {
 
   const handleReject = async (reason: string) => {
     if (!actionExpense) return;
-    
+
     const promise = updateExpenseStatus(actionExpense.id as string, 'rejected', reason);
-    
+
     toast.promise(promise, {
       loading: 'Rejecting expense...',
       success: (data) => {
@@ -170,12 +171,14 @@ export default function ExpensesPage() {
         <div className="flex items-center gap-2">
           {item.status === 'PENDING' ? (
             <>
-              <button
-                onClick={(e) => { e.stopPropagation(); openDrawer(item); }}
-                className="px-4 py-1.5 text-[11px] font-semibold text-gray-300 bg-[#334155]/50 hover:bg-[#334155] rounded transition-colors cursor-pointer"
-              >
-                View
-              </button>
+              <Link href={`/admin/dashboard/expenses/${item.id}`}>
+                <button
+                  // onClick={(e) => { e.stopPropagation(); openDrawer(item); }}
+                  className="px-4 py-1.5 text-[11px] font-semibold text-gray-300 bg-[#334155]/50 hover:bg-[#334155] rounded transition-colors cursor-pointer"
+                >
+                  View
+                </button>
+              </Link>
               <button
                 onClick={(e) => { e.stopPropagation(); openApproveModal(item); }}
                 className="px-3 py-1.5 text-[11px] font-bold text-emerald-500 hover:text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/20 rounded transition-colors cursor-pointer"
@@ -190,12 +193,14 @@ export default function ExpensesPage() {
               </button>
             </>
           ) : (
-            <button
-              onClick={(e) => { e.stopPropagation(); openDrawer(item); }}
-              className="px-4 py-1.5 text-[11px] font-semibold text-gray-300 bg-[#334155]/50 hover:bg-[#334155] rounded transition-colors cursor-pointer"
-            >
-              View
-            </button>
+            <Link href={`/admin/dashboard/expenses/${item.id}`}>
+              <button
+                // onClick={(e) => { e.stopPropagation(); openDrawer(item); }}
+                className="px-4 py-1.5 text-[11px] font-semibold text-gray-300 bg-[#334155]/50 hover:bg-[#334155] rounded transition-colors cursor-pointer"
+              >
+                View
+              </button>
+            </Link>
           )}
         </div>
       )
