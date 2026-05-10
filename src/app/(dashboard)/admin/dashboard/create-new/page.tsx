@@ -3,52 +3,130 @@
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { DataTable, StatusBadge } from '@/components/ui/DataTable';
-import { 
-  Building2, 
-  Briefcase, 
-  Stethoscope, 
+import { useForm } from 'react-hook-form';
+import FormField from '@/components/form';
+import {
+  Building2,
+  Briefcase,
+  Stethoscope,
   UploadCloud,
   X,
   Edit2,
   Trash2,
-  AlertTriangle
+  AlertTriangle,
+  Mail,
+  MapPin,
+  Phone,
+  Clock
 } from 'lucide-react';
+import { useFacilities, useCreateFacility, useUpdateFacility, useDeleteFacility } from '@/hooks/admin/facility';
+import { useVendors, useCreateVendor, useUpdateVendor, useDeleteVendor } from '@/hooks/admin/vendor';
+import { usePractices, useCreatePractice, useUpdatePractice, useDeletePractice } from '@/hooks/admin/practice';
+import Image from 'next/image';
+import { toast } from 'react-hot-toast';
 
-const MOCK_FACILITIES = [
-  { id: '1', name: 'City General Hospital', address: '123 Main St, NY', email: 'contact@citygen.org', contact: '(555) 111-2222', created: 'Jan 10, 2026' },
-  { id: '2', name: 'Metro Clinic', address: '456 West Ave, LA', email: 'info@metroclinic.com', contact: '(555) 222-3333', created: 'Jan 15, 2026' }
-];
-
-const MOCK_VENDORS = [
-  { id: '1', avatar: 'https://i.pravatar.cc/150?u=v1', name: 'John Doe', company: 'MedTech Inc.', email: 'john@medtech.com', phone: '(555) 333-4444', created: 'Feb 12, 2026' },
-  { id: '2', avatar: 'https://i.pravatar.cc/150?u=v2', name: 'Sarah Connor', company: 'OrthoSupply', email: 'sarah@orthosupply.com', phone: '(555) 444-5555', created: 'Mar 01, 2026' }
-];
-
-const MOCK_PRACTICES = [
-  { id: '1', name: 'Advanced Orthopedics', address: '789 Oak Dr, Boston', phone: '(555) 555-6666', email: 'info@advortho.com', status: 'Open' },
-  { id: '2', name: 'Peak Spine Center', address: '321 Pine St, Chicago', phone: '(555) 666-7777', email: 'hello@peakspine.com', status: 'Closed' }
-];
 
 export default function CreateNewManagementPage() {
   const [activeTab, setActiveTab] = useState<'facilities' | 'vendors' | 'practices'>('facilities');
-  
+
+  // Data hooks
+  const { facilities, loading: isLoadingFacilities, refetch: refetchFacilities } = useFacilities();
+  const { vendors, loading: isLoadingVendors, refetch: refetchVendors } = useVendors();
+  const { practices, loading: isLoadingPractices, refetch: refetchPractices } = usePractices();
+
+  // Mutation hooks
+  const { createFacility, loading: isCreatingFacility } = useCreateFacility();
+  const { updateFacility, loading: isUpdatingFacility } = useUpdateFacility();
+  const { deleteFacility, loading: isDeletingFacility } = useDeleteFacility();
+
+  const { createVendor, loading: isCreatingVendor } = useCreateVendor();
+  const { updateVendor, loading: isUpdatingVendor } = useUpdateVendor();
+  const { deleteVendor, loading: isDeletingVendor } = useDeleteVendor();
+
+  const { createPractice, loading: isCreatingPractice } = useCreatePractice();
+  const { updatePractice, loading: isUpdatingPractice } = useUpdatePractice();
+  const { deletePractice, loading: isDeletingPractice } = useDeletePractice();
+
   // Modal states
-  const [modalMode, setModalMode] = useState<'add'|'edit'>('add');
+  const [modalMode, setModalMode] = useState<'add' | 'edit'>('add');
   const [isFacilityModalOpen, setIsFacilityModalOpen] = useState(false);
   const [isVendorModalOpen, setIsVendorModalOpen] = useState(false);
   const [isPracticeModalOpen, setIsPracticeModalOpen] = useState(false);
-  
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
+  // Selection state for edit/delete
+  const [selectedRecord, setSelectedRecord] = useState<any>(null);
+  const [deleteType, setDeleteType] = useState<'facility' | 'vendor' | 'practice' | null>(null);
+
+  // react-hook-form initializations
+  const { 
+    register: registerFacility, 
+    handleSubmit: handleSubmitFacility, 
+    reset: resetFacility, 
+    formState: { errors: errorsFacility } 
+  } = useForm({
+    defaultValues: { name: '', address: '', email: '', phoneNumber: '', contacts: '' }
+  });
+
+  const { 
+    register: registerVendor, 
+    handleSubmit: handleSubmitVendor, 
+    reset: resetVendor, 
+    setValue: setVendorValue,
+    watch: watchVendor,
+    formState: { errors: errorsVendor } 
+  } = useForm({
+    defaultValues: { name: '', companyName: '', email: '', phoneNumber: '', profile: null as any }
+  });
+
+  const { 
+    register: registerPractice, 
+    handleSubmit: handleSubmitPractice, 
+    reset: resetPractice, 
+    formState: { errors: errorsPractice } 
+  } = useForm({
+    defaultValues: { practiceName: '', address: '', phone: '', email: '', hours: 0 }
+  });
+
   // Handlers
-  const handleEdit = (type: 'facility'|'vendor'|'practice', record: any) => {
+  const handleEdit = (type: 'facility' | 'vendor' | 'practice', record: any) => {
     setModalMode('edit');
-    if (type === 'facility') setIsFacilityModalOpen(true);
-    if (type === 'vendor') setIsVendorModalOpen(true);
-    if (type === 'practice') setIsPracticeModalOpen(true);
+    setSelectedRecord(record);
+    if (type === 'facility') {
+      resetFacility({
+        name: record.name,
+        address: record.address,
+        email: record.email,
+        phoneNumber: record.phoneNumber || '',
+        contacts: record.contacts || ''
+      });
+      setIsFacilityModalOpen(true);
+    }
+    if (type === 'vendor') {
+      resetVendor({
+        name: record.name,
+        companyName: record.companyName || '',
+        email: record.email,
+        phoneNumber: record.phoneNumber || '',
+        profile: null
+      });
+      setIsVendorModalOpen(true);
+    }
+    if (type === 'practice') {
+      resetPractice({
+        practiceName: record.practiceName,
+        address: record.address,
+        phone: record.phone,
+        email: record.email,
+        hours: record.hours || 0
+      });
+      setIsPracticeModalOpen(true);
+    }
   };
 
-  const handleDeleteClick = () => {
+  const handleDeleteClick = (type: 'facility' | 'vendor' | 'practice', record: any) => {
+    setSelectedRecord(record);
+    setDeleteType(type);
     setIsDeleteModalOpen(true);
   };
 
@@ -57,18 +135,102 @@ export default function CreateNewManagementPage() {
     setIsVendorModalOpen(false);
     setIsPracticeModalOpen(false);
     setIsDeleteModalOpen(false);
+    setSelectedRecord(null);
+    setDeleteType(null);
+    
+    resetFacility();
+    resetVendor();
+    resetPractice();
   };
 
-  // -------------------------
-  // TABLE COLUMNS
-  // -------------------------
-  
+
+  const handleFacilitySubmit = async (data: any) => {
+    let result;
+    if (modalMode === 'add') {
+      result = await createFacility(data);
+    } else {
+      result = await updateFacility(selectedRecord._id, data);
+    }
+    if (result) {
+      toast.success(modalMode === 'add' ? 'Facility added' : 'Facility updated');
+      refetchFacilities();
+      closeAllModals();
+    }
+  };
+
+  const handleVendorSubmit = async (data: any) => {
+    let result;
+    if (modalMode === 'add') {
+      result = await createVendor({
+        ...data,
+        profile: data.profile?.[0] || null
+      });
+    } else {
+      result = await updateVendor(selectedRecord._id, {
+        ...data,
+        profile: data.profile?.[0] || null
+      });
+    }
+    if (result) {
+      toast.success(modalMode === 'add' ? 'Vendor added' : 'Vendor updated');
+      refetchVendors();
+      closeAllModals();
+    }
+  };
+
+  const handlePracticeSubmit = async (data: any) => {
+    let result;
+    if (modalMode === 'add') {
+      result = await createPractice(data);
+    } else {
+      result = await updatePractice(selectedRecord._id, data);
+    }
+    if (result) {
+      toast.success(modalMode === 'add' ? 'Practice added' : 'Practice updated');
+      refetchPractices();
+      closeAllModals();
+    }
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!selectedRecord || !deleteType) return;
+    let result;
+    if (deleteType === 'facility') result = await deleteFacility(selectedRecord._id);
+    if (deleteType === 'vendor') result = await deleteVendor(selectedRecord._id);
+    if (deleteType === 'practice') result = await deletePractice(selectedRecord._id);
+
+    if (result) {
+      toast.success('Record deleted successfully');
+      if (deleteType === 'facility') refetchFacilities();
+      if (deleteType === 'vendor') refetchVendors();
+      if (deleteType === 'practice') refetchPractices();
+      closeAllModals();
+    }
+  };
+
+
   const facilityColumns = [
-    { header: "FACILITY NAME", accessorKey: "name" as const, className: "font-semibold text-foreground" },
-    { header: "ADDRESS", accessorKey: "address" as const },
-    { header: "EMAIL", accessorKey: "email" as const },
-    { header: "CONTACT", accessorKey: "contact" as const },
-    { header: "CREATED DATE", accessorKey: "created" as const, className: "text-muted-foreground" },
+    {
+      header: "FACILITY NAME",
+      accessorKey: "name" as const, className: "font-semibold text-foreground"
+    },
+    {
+      header: "ADDRESS",
+      accessorKey: "address" as const
+    },
+    {
+      header: "EMAIL",
+      accessorKey: "email" as const
+    },
+    {
+      header: "CONTACT",
+      accessorKey: "phoneNumber" as const
+    },
+    {
+      header: "CREATED DATE",
+      render: (item: any) => new Date(item.createdAt).toLocaleDateString(),
+      className: "text-muted-foreground"
+    },
     {
       header: "ACTIONS",
       render: (item: any) => (
@@ -76,7 +238,7 @@ export default function CreateNewManagementPage() {
           <button onClick={() => handleEdit('facility', item)} className="p-1.5 text-muted-foreground hover:text-primary transition-colors rounded-md hover:bg-primary/10">
             <Edit2 className="h-4 w-4" />
           </button>
-          <button onClick={handleDeleteClick} className="p-1.5 text-muted-foreground hover:text-rose-500 transition-colors rounded-md hover:bg-rose-500/10">
+          <button onClick={() => handleDeleteClick('facility', item)} className="p-1.5 text-muted-foreground hover:text-rose-500 transition-colors rounded-md hover:bg-rose-500/10">
             <Trash2 className="h-4 w-4" />
           </button>
         </div>
@@ -85,17 +247,41 @@ export default function CreateNewManagementPage() {
   ];
 
   const vendorColumns = [
-    { 
-      header: "PROFILE", 
+    {
+      header: "PROFILE",
       render: (item: any) => (
-        <img src={item.avatar} alt={item.name} className="w-8 h-8 rounded-full border border-[var(--border)] object-cover" />
+        <div className="w-8 h-8 rounded-full relative overflow-hidden">
+          <Image
+            src={item.profileUrl || 'https://i.pravatar.cc/150'}
+            alt={item.name}
+            fill
+            className="w-8 h-8 rounded-full border border-[var(--border)] object-cover"
+          />
+        </div>
       )
     },
-    { header: "VENDOR NAME", accessorKey: "name" as const, className: "font-semibold text-foreground" },
-    { header: "COMPANY", accessorKey: "company" as const, className: "text-primary" },
-    { header: "EMAIL", accessorKey: "email" as const },
-    { header: "PHONE", accessorKey: "phone" as const },
-    { header: "CREATED DATE", accessorKey: "created" as const, className: "text-muted-foreground" },
+    {
+      header: "VENDOR NAME",
+      accessorKey: "name" as const, className: "font-semibold text-foreground"
+    },
+    {
+      header: "COMPANY",
+      accessorKey: "companyName" as const,
+      className: "text-primary"
+    },
+    {
+      header: "EMAIL",
+      accessorKey: "email" as const
+    },
+    {
+      header: "PHONE",
+      accessorKey: "phoneNumber" as const
+    },
+    {
+      header: "CREATED DATE",
+      render: (item: any) => new Date(item.createdAt).toLocaleDateString(),
+      className: "text-muted-foreground"
+    },
     {
       header: "ACTIONS",
       render: (item: any) => (
@@ -103,7 +289,7 @@ export default function CreateNewManagementPage() {
           <button onClick={() => handleEdit('vendor', item)} className="p-1.5 text-muted-foreground hover:text-primary transition-colors rounded-md hover:bg-primary/10">
             <Edit2 className="h-4 w-4" />
           </button>
-          <button onClick={handleDeleteClick} className="p-1.5 text-muted-foreground hover:text-rose-500 transition-colors rounded-md hover:bg-rose-500/10">
+          <button onClick={() => handleDeleteClick('vendor', item)} className="p-1.5 text-muted-foreground hover:text-rose-500 transition-colors rounded-md hover:bg-rose-500/10">
             <Trash2 className="h-4 w-4" />
           </button>
         </div>
@@ -112,14 +298,26 @@ export default function CreateNewManagementPage() {
   ];
 
   const practiceColumns = [
-    { header: "PRACTICE NAME", accessorKey: "name" as const, className: "font-semibold text-foreground" },
-    { header: "ADDRESS", accessorKey: "address" as const },
-    { header: "PHONE", accessorKey: "phone" as const },
-    { header: "EMAIL", accessorKey: "email" as const },
-    { 
-      header: "STATUS", 
+    {
+      header: "PRACTICE NAME",
+      accessorKey: "practiceName" as const, className: "font-semibold text-foreground"
+    },
+    {
+      header: "ADDRESS",
+      accessorKey: "address" as const
+    },
+    {
+      header: "PHONE",
+      accessorKey: "phone" as const
+    },
+    {
+      header: "EMAIL",
+      accessorKey: "email" as const
+    },
+    {
+      header: "STATUS",
       render: (item: any) => (
-        <StatusBadge status={item.status} type={item.status === 'Open' ? 'success' : 'error'} />
+        <StatusBadge status={item.isDeleted ? 'Closed' : 'Open'} type={!item.isDeleted ? 'success' : 'error'} />
       )
     },
     {
@@ -129,7 +327,7 @@ export default function CreateNewManagementPage() {
           <button onClick={() => handleEdit('practice', item)} className="p-1.5 text-muted-foreground hover:text-primary transition-colors rounded-md hover:bg-primary/10">
             <Edit2 className="h-4 w-4" />
           </button>
-          <button onClick={handleDeleteClick} className="p-1.5 text-muted-foreground hover:text-rose-500 transition-colors rounded-md hover:bg-rose-500/10">
+          <button onClick={() => handleDeleteClick('practice', item)} className="p-1.5 text-muted-foreground hover:text-rose-500 transition-colors rounded-md hover:bg-rose-500/10">
             <Trash2 className="h-4 w-4" />
           </button>
         </div>
@@ -139,8 +337,8 @@ export default function CreateNewManagementPage() {
 
   return (
     <div className="space-y-6 animate-in fade-in zoom-in duration-500 pb-10">
-      
-      {/* HEADER & TOP ADD BUTTONS */}
+
+      {/* header & top add buttons */}
       <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
         <div>
           <h1 className="text-xl font-bold tracking-tight text-foreground mb-1">
@@ -150,177 +348,287 @@ export default function CreateNewManagementPage() {
             Manage Facilities, Vendors, and Practices
           </p>
         </div>
-        
+
         <div className="flex flex-wrap items-center gap-3">
-          <button 
+          <button
             onClick={() => { setModalMode('add'); setIsFacilityModalOpen(true); }}
-            className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-[var(--background)] bg-primary rounded-lg shadow-sm transition-all hover:bg-cyan-400"
+            className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-[var(--background)] bg-primary rounded-lg shadow-sm transition-all hover:bg-cyan-400 cursor-pointer"
           >
             <Building2 className="h-4 w-4" /> Add Facility
           </button>
-          <button 
+          <button
             onClick={() => { setModalMode('add'); setIsVendorModalOpen(true); }}
-            className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-[var(--background)] bg-primary rounded-lg shadow-sm transition-all hover:bg-cyan-400"
+            className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-[var(--background)] bg-primary rounded-lg shadow-sm transition-all hover:bg-cyan-400  cursor-pointer"
           >
             <Briefcase className="h-4 w-4" /> Add Vendor
           </button>
-          <button 
+          <button
             onClick={() => { setModalMode('add'); setIsPracticeModalOpen(true); }}
-            className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-[var(--background)] bg-primary rounded-lg shadow-sm transition-all hover:bg-cyan-400"
+            className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-[var(--background)] bg-primary rounded-lg shadow-sm transition-all hover:bg-cyan-400  cursor-pointer"
           >
             <Stethoscope className="h-4 w-4" /> Add Practice
           </button>
         </div>
       </div>
 
-      {/* BELOW SECTION - TABLE HISTORY VIEW */}
+      {/* table history view */}
       <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] shadow-lg flex flex-col overflow-hidden min-h-[500px]">
-        
-        {/* SEGMENTED TABS */}
+
+        {/* segmented tabs */}
         <div className="flex items-center border-b border-[var(--border)] bg-[var(--muted)] p-1">
-          <TabButton 
-            active={activeTab === 'facilities'} 
+          <TabButton
+            active={activeTab === 'facilities'}
             onClick={() => setActiveTab('facilities')}
             label="Facilities"
           />
-          <TabButton 
-            active={activeTab === 'vendors'} 
+          <TabButton
+            active={activeTab === 'vendors'}
             onClick={() => setActiveTab('vendors')}
             label="Vendors"
           />
-          <TabButton 
-            active={activeTab === 'practices'} 
+          <TabButton
+            active={activeTab === 'practices'}
             onClick={() => setActiveTab('practices')}
             label="Practices"
           />
         </div>
 
-        {/* TABLE CONTENT */}
+        {/* table content */}
         <div className="flex-1 p-0">
           {activeTab === 'facilities' && (
             <div className="animate-in fade-in duration-300">
-              <DataTable data={MOCK_FACILITIES} columns={facilityColumns} className="rounded-none border-0" />
+              <DataTable data={facilities} columns={facilityColumns} loading={isLoadingFacilities} className="rounded-none border-0" />
             </div>
           )}
           {activeTab === 'vendors' && (
             <div className="animate-in fade-in duration-300">
-              <DataTable data={MOCK_VENDORS} columns={vendorColumns} className="rounded-none border-0" />
+              <DataTable data={vendors} columns={vendorColumns} loading={isLoadingVendors} className="rounded-none border-0" />
             </div>
           )}
           {activeTab === 'practices' && (
             <div className="animate-in fade-in duration-300">
-              <DataTable data={MOCK_PRACTICES} columns={practiceColumns} className="rounded-none border-0" />
+              <DataTable data={practices} columns={practiceColumns} loading={isLoadingPractices} className="rounded-none border-0" />
             </div>
           )}
         </div>
       </div>
 
-      {/* -------------------- MODALS -------------------- */}
 
-      {/* FACILITY MODAL */}
+      {/* facility modal */}
       {isFacilityModalOpen && (
         <ModalWrapper title={modalMode === 'add' ? 'Add Facility' : 'Edit Facility'} onClose={closeAllModals}>
           <div className="space-y-4">
             <div>
               <label className="block text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-1.5">Facility Name <span className="text-rose-500">*</span></label>
-              <input type="text" placeholder="e.g. City General Hospital" className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--primary)] transition-colors" />
+              <input
+                type="text"
+                value={facilityForm.name}
+                onChange={(e) => setFacilityForm({ ...facilityForm, name: e.target.value })}
+                placeholder="e.g. City General Hospital"
+                className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--primary)] transition-colors"
+              />
             </div>
             <div>
               <label className="block text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-1.5">Address <span className="text-rose-500">*</span></label>
-              <input type="text" placeholder="Full street address..." className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--primary)] transition-colors" />
+              <input
+                type="text"
+                value={facilityForm.address}
+                onChange={(e) => setFacilityForm({ ...facilityForm, address: e.target.value })}
+                placeholder="Full street address..."
+                className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--primary)] transition-colors"
+              />
             </div>
             <div>
               <label className="block text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-1.5">Email <span className="text-rose-500">*</span></label>
-              <input type="email" placeholder="contact@hospital.org" className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--primary)] transition-colors" />
+              <input
+                type="email"
+                value={facilityForm.email}
+                onChange={(e) => setFacilityForm({ ...facilityForm, email: e.target.value })}
+                placeholder="contact@hospital.org"
+                className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--primary)] transition-colors"
+              />
             </div>
             <div>
-              <label className="block text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-1.5">Contact <span className="text-gray-600 font-medium normal-case tracking-normal">(optional)</span></label>
-              <input type="tel" placeholder="(555) 000-0000" className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--primary)] transition-colors" />
+              <label className="block text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-1.5">Phone Number <span className="text-rose-500">*</span></label>
+              <input
+                type="tel"
+                value={facilityForm.phoneNumber}
+                onChange={(e) => setFacilityForm({ ...facilityForm, phoneNumber: e.target.value })}
+                placeholder="(555) 000-0000"
+                className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--primary)] transition-colors"
+              />
+            </div>
+            <div>
+              <label className="block text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-1.5">Contacts <span className="text-rose-500">*</span></label>
+              <input
+                type="text"
+                value={facilityForm.contacts}
+                onChange={(e) => setFacilityForm({ ...facilityForm, contacts: e.target.value })}
+                placeholder="Secondary contact or name..."
+                className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--primary)] transition-colors"
+              />
             </div>
           </div>
           <div className="mt-8 flex gap-3">
             <button onClick={closeAllModals} className="flex-1 py-2.5 text-sm font-bold text-muted-foreground bg-[var(--muted)] hover:bg-[var(--border)] rounded-xl transition-colors">Cancel</button>
-            <button onClick={closeAllModals} className="flex-1 py-2.5 text-sm font-bold text-[var(--background)] bg-primary rounded-xl shadow-sm hover:bg-cyan-400 transition-all">Save</button>
+            <button
+              onClick={handleFacilitySubmit}
+              disabled={isCreatingFacility || isUpdatingFacility}
+              className="flex-1 py-2.5 text-sm font-bold text-[var(--background)] bg-primary rounded-xl shadow-sm hover:bg-cyan-400 transition-all disabled:opacity-50"
+            >
+              {isCreatingFacility || isUpdatingFacility ? 'Saving...' : 'Save'}
+            </button>
           </div>
         </ModalWrapper>
       )}
 
-      {/* VENDOR MODAL */}
+      {/* vendor modal */}
       {isVendorModalOpen && (
         <ModalWrapper title={modalMode === 'add' ? 'Add Vendor' : 'Edit Vendor'} onClose={closeAllModals}>
-           <div className="space-y-4">
+          <div className="space-y-4">
             <div>
               <label className="block text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-2">Vendor Profile Picture</label>
-              <div className="w-full h-24 border-2 border-dashed border-[var(--border)] rounded-xl bg-[var(--card)] hover:bg-[var(--muted)] transition-colors flex flex-col items-center justify-center cursor-pointer group">
+              <div
+                className="w-full h-24 border-2 border-dashed border-[var(--border)] rounded-xl bg-[var(--card)] hover:bg-[var(--muted)] transition-colors flex flex-col items-center justify-center cursor-pointer group"
+                onClick={() => document.getElementById('vendor-profile')?.click()}
+              >
+                <input
+                  id="vendor-profile"
+                  type="file"
+                  className="hidden"
+                  onChange={(e) => setVendorForm({ ...vendorForm, profile: e.target.files?.[0] || null })}
+                />
                 <UploadCloud className="h-5 w-5 text-muted-foreground group-hover:text-primary mb-1 transition-colors" />
-                <p className="text-[10px] font-medium text-muted-foreground group-hover:text-foreground transition-colors">Drag & drop or browse</p>
+                <p className="text-[10px] font-medium text-muted-foreground group-hover:text-foreground transition-colors">
+                  {vendorForm.profile ? vendorForm.profile.name : 'Drag & drop or browse'}
+                </p>
               </div>
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="block text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-1.5">Vendor Name <span className="text-rose-500">*</span></label>
-                <input type="text" placeholder="John Doe" className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--primary)] transition-colors" />
+                <input
+                  type="text"
+                  value={vendorForm.name}
+                  onChange={(e) => setVendorForm({ ...vendorForm, name: e.target.value })}
+                  placeholder="John Doe"
+                  className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--primary)] transition-colors"
+                />
               </div>
               <div>
                 <label className="block text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-1.5">Company Name <span className="text-rose-500">*</span></label>
-                <input type="text" placeholder="MedTech Inc." className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--primary)] transition-colors" />
+                <input
+                  type="text"
+                  value={vendorForm.companyName}
+                  onChange={(e) => setVendorForm({ ...vendorForm, companyName: e.target.value })}
+                  placeholder="MedTech Inc."
+                  className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--primary)] transition-colors"
+                />
               </div>
             </div>
             <div>
               <label className="block text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-1.5">Vendor Email <span className="text-rose-500">*</span></label>
-              <input type="email" placeholder="vendor@company.com" className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--primary)] transition-colors" />
+              <input
+                type="email"
+                value={vendorForm.email}
+                onChange={(e) => setVendorForm({ ...vendorForm, email: e.target.value })}
+                placeholder="vendor@company.com"
+                className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--primary)] transition-colors"
+              />
             </div>
             <div>
               <label className="block text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-1.5">Vendor Phone <span className="text-rose-500">*</span></label>
-              <input type="tel" placeholder="(555) 000-0000" className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--primary)] transition-colors" />
+              <input
+                type="tel"
+                value={vendorForm.phoneNumber}
+                onChange={(e) => setVendorForm({ ...vendorForm, phoneNumber: e.target.value })}
+                placeholder="(555) 000-0000"
+                className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--primary)] transition-colors"
+              />
             </div>
           </div>
           <div className="mt-8 flex gap-3">
             <button onClick={closeAllModals} className="flex-1 py-2.5 text-sm font-bold text-muted-foreground bg-[var(--muted)] hover:bg-[var(--border)] rounded-xl transition-colors">Cancel</button>
-            <button onClick={closeAllModals} className="flex-1 py-2.5 text-sm font-bold text-[var(--background)] bg-primary rounded-xl shadow-sm hover:bg-cyan-400 transition-all">Save</button>
+            <button
+              onClick={handleVendorSubmit}
+              disabled={isCreatingVendor || isUpdatingVendor}
+              className="flex-1 py-2.5 text-sm font-bold text-[var(--background)] bg-primary rounded-xl shadow-sm hover:bg-cyan-400 transition-all disabled:opacity-50"
+            >
+              {isCreatingVendor || isUpdatingVendor ? 'Saving...' : 'Save'}
+            </button>
           </div>
         </ModalWrapper>
       )}
 
-      {/* PRACTICE MODAL */}
+      {/* practice modal */}
       {isPracticeModalOpen && (
         <ModalWrapper title={modalMode === 'add' ? 'Add Practice' : 'Edit Practice'} onClose={closeAllModals}>
           <div className="space-y-4">
             <div>
               <label className="block text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-1.5">Practice Name <span className="text-rose-500">*</span></label>
-              <input type="text" placeholder="Advanced Orthopedics" className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--primary)] transition-colors" />
+              <input
+                type="text"
+                value={practiceForm.practiceName}
+                onChange={(e) => setPracticeForm({ ...practiceForm, practiceName: e.target.value })}
+                placeholder="Advanced Orthopedics"
+                className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--primary)] transition-colors"
+              />
             </div>
             <div>
               <label className="block text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-1.5">Address <span className="text-rose-500">*</span></label>
-              <input type="text" placeholder="Practice street address..." className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--primary)] transition-colors" />
+              <input
+                type="text"
+                value={practiceForm.address}
+                onChange={(e) => setPracticeForm({ ...practiceForm, address: e.target.value })}
+                placeholder="Practice street address..."
+                className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--primary)] transition-colors"
+              />
             </div>
             <div>
               <label className="block text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-1.5">Phone Number <span className="text-rose-500">*</span></label>
-              <input type="tel" placeholder="(555) 000-0000" className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--primary)] transition-colors" />
+              <input
+                type="tel"
+                value={practiceForm.phone}
+                onChange={(e) => setPracticeForm({ ...practiceForm, phone: e.target.value })}
+                placeholder="(555) 000-0000"
+                className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--primary)] transition-colors"
+              />
             </div>
             <div>
               <label className="block text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-1.5">Email <span className="text-rose-500">*</span></label>
-              <input type="email" placeholder="contact@practice.com" className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--primary)] transition-colors" />
+              <input
+                type="email"
+                value={practiceForm.email}
+                onChange={(e) => setPracticeForm({ ...practiceForm, email: e.target.value })}
+                placeholder="contact@practice.com"
+                className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--primary)] transition-colors"
+              />
             </div>
-            <div className="flex items-center justify-between bg-[var(--card)] border border-[var(--border)] rounded-xl p-3">
-              <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">Status Toggle</span>
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-semibold text-emerald-500">Open</span>
-                {/* Modern Toggle Mockup */}
-                <div className="w-10 h-6 bg-emerald-500 rounded-full flex items-center p-0.5 cursor-pointer">
-                  <div className="w-5 h-5 bg-white rounded-full shadow-sm ml-auto" />
-                </div>
-              </div>
+            <div>
+              <label className="block text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-1.5">Operating Hours <span className="text-rose-500">*</span></label>
+              <input
+                type="number"
+                value={practiceForm.hours}
+                onChange={(e) => setPracticeForm({ ...practiceForm, hours: parseInt(e.target.value) || 0 })}
+                placeholder="e.g. 8"
+                className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--primary)] transition-colors"
+              />
             </div>
           </div>
           <div className="mt-8 flex gap-3">
             <button onClick={closeAllModals} className="flex-1 py-2.5 text-sm font-bold text-muted-foreground bg-[var(--muted)] hover:bg-[var(--border)] rounded-xl transition-colors">Cancel</button>
-            <button onClick={closeAllModals} className="flex-1 py-2.5 text-sm font-bold text-[var(--background)] bg-primary rounded-xl shadow-sm hover:bg-cyan-400 transition-all">Save</button>
+            <button
+              onClick={handlePracticeSubmit}
+              disabled={isCreatingPractice || isUpdatingPractice}
+              className="flex-1 py-2.5 text-sm font-bold text-[var(--background)] bg-primary rounded-xl shadow-sm hover:bg-cyan-400 transition-all disabled:opacity-50"
+            >
+              {isCreatingPractice || isUpdatingPractice ? 'Saving...' : 'Save'}
+            </button>
           </div>
         </ModalWrapper>
       )}
 
-      {/* DELETE CONFIRMATION MODAL */}
+      {/* delete modal */}
       {isDeleteModalOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={closeAllModals} />
@@ -335,17 +643,18 @@ export default function CreateNewManagementPage() {
               </p>
             </div>
             <div className="p-5 flex gap-3 bg-[var(--card)] border-t border-[var(--border)]">
-              <button 
-                onClick={closeAllModals} 
+              <button
+                onClick={closeAllModals}
                 className="flex-1 py-3 text-sm font-bold text-muted-foreground bg-[var(--border)] hover:bg-[var(--border)] rounded-xl transition-colors"
               >
                 Cancel
               </button>
-              <button 
-                onClick={closeAllModals}
-                className="flex-1 py-3 text-sm font-bold text-white bg-rose-500 hover:bg-rose-600 rounded-xl shadow-sm transition-all"
+              <button
+                onClick={handleConfirmDelete}
+                disabled={isDeletingFacility || isDeletingVendor || isDeletingPractice}
+                className="flex-1 py-3 text-sm font-bold text-white bg-rose-500 hover:bg-rose-600 rounded-xl shadow-sm transition-all disabled:opacity-50"
               >
-                Confirm Delete
+                {isDeletingFacility || isDeletingVendor || isDeletingPractice ? 'Deleting...' : 'Confirm Delete'}
               </button>
             </div>
           </div>
@@ -356,14 +665,14 @@ export default function CreateNewManagementPage() {
   );
 }
 
-// ------ HELPER COMPONENTS ------
+// Components
 
 function TabButton({ active, onClick, label }: { active: boolean, onClick: () => void, label: string }) {
   return (
     <button
       onClick={onClick}
       className={cn(
-        "px-6 py-3 text-sm font-bold transition-all relative outline-none",
+        "px-6 py-3 text-sm font-bold transition-all relative outline-none  cursor-pointer",
         active ? "text-primary" : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
       )}
     >
@@ -382,7 +691,7 @@ function ModalWrapper({ title, children, onClose }: { title: string, children: R
       <div className="relative bg-[var(--background)] w-full max-w-lg rounded-2xl border border-[var(--border)] shadow-2xl overflow-hidden animate-in slide-in-from-bottom-8 zoom-in-95 duration-300">
         <div className="flex items-center justify-between p-6 border-b border-[var(--border)] bg-[var(--card)]">
           <h2 className="text-lg font-bold text-foreground">{title}</h2>
-          <button 
+          <button
             onClick={onClose}
             className="p-1.5 rounded-md hover:bg-[var(--border)] text-muted-foreground hover:text-foreground transition-colors"
           >
