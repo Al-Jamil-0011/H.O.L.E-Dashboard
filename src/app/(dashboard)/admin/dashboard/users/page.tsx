@@ -254,7 +254,7 @@ export default function UsersManagementPage() {
       {/* MAIN CONTAINER */}
       <div className="rounded-xl border border-gray-200 dark:border-[#1E293B] dark:bg-[#151B2B] shadow-lg flex flex-col overflow-hidden">
         {/* FILTER BAR */}
-        <div className="p-4 border-b border-border flex flex-col gap-4 bg-muted/40">
+        <div className=" border-b border-border flex flex-col gap-4 bg-muted/40">
 
           <div className="p-4 border-b border-[var(--border)] flex flex-col md:flex-row items-center justify-between gap-4 bg-muted/40">
             <div className="relative w-full md:w-72">

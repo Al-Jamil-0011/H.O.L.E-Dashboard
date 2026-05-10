@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils';
 import { DataTable, StatusBadge } from '@/components/ui/DataTable';
 import { Search, Plus, Filter, Download } from 'lucide-react';
 import Link from 'next/link';
+import { usePurchaseOrderSummary } from '@/hooks/admin/purchase-order';
 
 const mockPurchaseOrders = [
   { id: 'XYZ14324', date: 'Feb 15, 2026', category: 'Bulk Bio', surgeon: 'Dr. Robert Smith', facility: 'City Hospital', type: 'Commission', fee: '$630.00', total: '$4,200.00', status: 'Complete' },
@@ -18,22 +19,23 @@ const mockPurchaseOrders = [
 export default function PurchaseOrdersPage() {
   const [activeTab, setActiveTab] = useState('All');
   const [search, setSearch] = useState('');
+  const { summary, loading: isLoading } = usePurchaseOrderSummary();
 
   const filteredData = mockPurchaseOrders.filter((po) => {
     const matchesTab = activeTab === 'All' || po.status === activeTab;
-    const matchesSearch = 
+    const matchesSearch =
       po.id.toLowerCase().includes(search.toLowerCase()) ||
       po.surgeon.toLowerCase().includes(search.toLowerCase()) ||
       po.facility.toLowerCase().includes(search.toLowerCase());
-    
+
     return matchesTab && matchesSearch;
   });
 
   const columns = [
     { header: "PO NUMBER (SN)", accessorKey: "id" as const, className: "font-bold text-foreground tracking-wider" },
     { header: "DATE", accessorKey: "date" as const, className: "text-muted-foreground" },
-    { 
-      header: "ORDER CATEGORY", 
+    {
+      header: "ORDER CATEGORY",
       render: (item: typeof mockPurchaseOrders[0]) => (
         <span className={cn(
           "px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-md border",
@@ -45,8 +47,8 @@ export default function PurchaseOrdersPage() {
     },
     { header: "SURGEON", accessorKey: "surgeon" as const, className: "font-medium text-muted-foreground" },
     { header: "FACILITY", accessorKey: "facility" as const, className: "text-muted-foreground" },
-    { 
-      header: "TYPE INFO", 
+    {
+      header: "TYPE INFO",
       render: (item: typeof mockPurchaseOrders[0]) => (
         <div className="flex flex-col">
           <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">{item.type}</span>
@@ -55,8 +57,8 @@ export default function PurchaseOrdersPage() {
       )
     },
     { header: "TOTAL VALUE", accessorKey: "total" as const, className: "text-primary font-bold text-sm tracking-wide" },
-    { 
-      header: "STATUS", 
+    {
+      header: "STATUS",
       render: (item: typeof mockPurchaseOrders[0]) => {
         let type: "success" | "warning" | "error" = "success";
         if (item.status === 'Open') type = 'warning';
@@ -100,18 +102,41 @@ export default function PurchaseOrdersPage() {
 
       {/* STAT CARDS */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard title="TOTAL VOLUME" value="$22,300" trend="+15% this month" topBorderColor="border-t-[var(--primary)]" />
-        <StatCard title="COMPLETED" value="23" trend="4 this week" topBorderColor="border-t-emerald-500" />
-        <StatCard title="OPEN POS" value="8" trend="Needs attention" trendColor="text-amber-500" topBorderColor="border-t-amber-500" />
-        <StatCard title="LOST / REJECTED" value="2" trend="-1 from last month" trendColor="text-rose-500" topBorderColor="border-t-rose-500" />
+        <StatCard
+          title="TOTAL VOLUME"
+          value="$22,300"
+          trend="+15% this month"
+          topBorderColor="border-t-[var(--primary)]"
+        />
+        <StatCard
+          title="COMPLETED"
+          value="23"
+          trend="4 this week"
+          topBorderColor="border-t-emerald-500"
+        />
+        <StatCard
+          title="OPEN POS"
+          value="8"
+          trend="Needs attention"
+          trendColor="text-amber-500"
+          topBorderColor="border-t-amber-500"
+        />
+        <StatCard
+          title="LOST / REJECTED"
+          value="2"
+          trend="-1 from last month"
+          trendColor="text-rose-500"
+          topBorderColor="border-t-rose-500"
+        />
+
       </div>
 
       {/* MAIN CONTAINER */}
       <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] shadow-lg flex flex-col overflow-hidden min-h-[500px]">
-        
+
         {/* TOP TABS & SEARCH BAR */}
         <div className="p-4 border-b border-[var(--border)] bg-[var(--muted)] flex flex-col md:flex-row gap-4 items-center justify-between">
-          
+
           <div className="flex items-center gap-1 bg-[var(--background)] p-1 rounded-lg border border-[var(--border)] w-full md:w-auto overflow-x-auto">
             {['All', 'Complete', 'Open', 'Lost'].map(tab => (
               <button
@@ -119,8 +144,8 @@ export default function PurchaseOrdersPage() {
                 onClick={() => setActiveTab(tab)}
                 className={cn(
                   "px-6 py-1.5 text-xs font-bold rounded-md transition-all whitespace-nowrap",
-                  activeTab === tab 
-                    ? "bg-[var(--border)] text-foreground shadow-sm" 
+                  activeTab === tab
+                    ? "bg-[var(--border)] text-foreground shadow-sm"
                     : "text-muted-foreground hover:text-gray-200 hover:bg-[var(--border)]/50"
                 )}
               >
@@ -131,9 +156,9 @@ export default function PurchaseOrdersPage() {
 
           <div className="relative w-full md:w-80">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <input 
-              type="text" 
-              placeholder="Search by PO#, Surgeon, or facility..." 
+            <input
+              type="text"
+              placeholder="Search by PO#, Surgeon, or facility..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full bg-[var(--background)] border border-[var(--border)] rounded-lg py-2 pl-9 pr-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-[var(--primary)] transition-colors"
@@ -144,10 +169,10 @@ export default function PurchaseOrdersPage() {
 
         {/* DATA TABLE */}
         <div className="flex-1 p-0">
-          <DataTable 
-            data={filteredData} 
-            columns={columns} 
-            className="rounded-none border-0 bg-transparent" 
+          <DataTable
+            data={filteredData}
+            columns={columns}
+            className="rounded-none border-0 bg-transparent"
           />
         </div>
       </div>
@@ -155,13 +180,63 @@ export default function PurchaseOrdersPage() {
   );
 }
 
-function StatCard({ title, value, trend, trendColor = "text-primary", topBorderColor }: { title: string, value: string | number, trend: string, trendColor?: string, topBorderColor: string }) {
+// function StatCard({ title, value, trend, trendColor = "text-primary", topBorderColor }: { title: string, value: string | number, trend: string, trendColor?: string, topBorderColor: string }) {
+//   return (
+//     <div className={cn("rounded-xl border border-[var(--border)] border-t-[3px] bg-[var(--card)] p-5 shadow-sm transition-all hover:bg-[var(--muted)]", topBorderColor)}>
+//       <h3 className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase">{title}</h3>
+//       <div className="mt-2 text-3xl font-black tracking-tight text-foreground">{value}</div>
+//       <p className={cn("mt-1 text-xs font-medium", trendColor)}>{trend}</p>
+//     </div>
+//   )
+// }
+
+
+
+function StatCard({
+  title,
+  value,
+  trend,
+  topBorderColor,
+  trendColor = "text-primary",
+  loading = false
+}: {
+  title: string;
+  value: string;
+  trend: string;
+  topBorderColor: string;
+  trendColor?: string;
+  loading?: boolean;
+}) {
   return (
-    <div className={cn("rounded-xl border border-[var(--border)] border-t-[3px] bg-[var(--card)] p-5 shadow-sm transition-all hover:bg-[var(--muted)]", topBorderColor)}>
-      <h3 className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase">{title}</h3>
-      <div className="mt-2 text-3xl font-black tracking-tight text-foreground">{value}</div>
-      <p className={cn("mt-1 text-xs font-medium", trendColor)}>{trend}</p>
+    <div
+      className={cn(
+        "rounded-xl border border-[var(--border)] border-t-[3px] bg-[var(--card)] p-5 shadow-sm transition-all hover:bg-white/[0.02]",
+        topBorderColor
+      )}
+    >
+      <h3 className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase">
+        {title}
+      </h3>
+
+      <div className="mt-3 space-y-2">
+        {loading ? (
+          <div className="h-7 w-24 rounded-md bg-muted animate-pulse" />
+        ) : (
+          <div className="text-2xl font-black tracking-tight text-foreground">
+            {value}
+          </div>
+        )}
+
+        {loading ? (
+          <div className="h-3 w-20 rounded-md bg-muted animate-pulse" />
+        ) : (
+          <p className={cn("mt-2 text-[11px] font-medium", trendColor)}>
+            {trend}
+          </p>
+        )}
+      </div>
     </div>
-  )
+  );
 }
+
 

@@ -138,9 +138,9 @@ export default function SaleDetailsPage() {
         <div className="flex items-center gap-4">
           <button
             onClick={() => router.back()}
-            className="p-2 bg-[#1E293B] hover:bg-[#334155] rounded-lg transition-colors"
+            className="p-2 bg-[#1E293B] hover:bg-[#334155] rounded-lg transition-colors group cursor-pointer"
           >
-            <ChevronLeft className="h-5 w-5 text-gray-400" />
+            <ChevronLeft className="h-5 w-5 text-gray-400 group-hover:text-primary" />
           </button>
           <div>
             <div className="flex items-center gap-3">
