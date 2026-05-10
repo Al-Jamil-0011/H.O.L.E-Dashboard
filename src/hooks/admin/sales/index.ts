@@ -45,9 +45,10 @@ export function useSalesSummary() {
 
                 setError(message);
             } finally {
-                setTimeout(() => {
-                    setLoading(false);
-                }, 400);
+                setLoading(false);
+                // setTimeout(() => {
+                //     setLoading(false);
+                // }, 400);
             }
         }, []);
 
@@ -127,7 +128,7 @@ export function useSales() {
                     await useApi.get<
                         IApiResponse<ISalesResponse>
                     >(
-                        `/sales/get-my?${params.toString()}`
+                        `/sales/get-all?${params.toString()}`
                     );
 
                 setSales(

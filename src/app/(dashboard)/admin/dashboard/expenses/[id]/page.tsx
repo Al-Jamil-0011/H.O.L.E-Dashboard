@@ -6,7 +6,7 @@ export default async function ExpenseDetailPage({ params }: {
 }) {
     const { id } = await params;
 
-    return <div className="bg-background-200/30 h-full rounded-lg p-6">
+    return <div className="bg-background-200/30 h-full rounded-lg">
         <ExpenseDetails expenseId={id} />
     </div>;
 }

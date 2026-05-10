@@ -200,6 +200,12 @@ export interface ISale {
 
     isDeleted?: boolean;
 
+    rejectionNote?: string;
+
+    feedbackNotes?: string;
+
+    additionalNotes?: string;
+    repNotes?: string;
     createdAt?: string;
 
     updatedAt?: string;
@@ -339,7 +345,9 @@ export interface IUpdateSalesPayload {
     isPackingSlipGenerated?: boolean;
 
     attachments?: File[] | string[];
-
+    rejectionNote?: string;
+    feedbackNotes?: string;
+    additionalNotes?: string;
     files?: File[] | string[];
 }
 
