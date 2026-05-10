@@ -1,6 +1,8 @@
 "use client";
 import React, { ReactNode, useState } from "react";
 import { UseFormRegister, FieldErrors, RegisterOptions } from "react-hook-form";
+import { UploadCloud, X } from "lucide-react";
+import Image from "next/image";
 
 export type Option = {
     label: string;
@@ -9,7 +11,7 @@ export type Option = {
 
 export interface FormFieldProps {
     /** The type of input field to render */
-    type?: "text" | "email" | "password" | "number" | "select" | "radio" | "checkbox" | "file" | "textarea";
+    type?: "text" | "email" | "password" | "number" | "select" | "radio" | "checkbox" | "file" | "textarea" | "tel";
     /** The name of the field, used for react-hook-form registration */
     name: string;
     /** The label displayed above the field */
@@ -52,6 +54,43 @@ const FormField: React.FC<FormFieldProps> = ({
     accept,
 }) => {
     const [showPassword, setShowPassword] = useState(false);
+    const [filePreview, setFilePreview] = useState<string | null>(null);
+    const [fileName, setFileName] = useState<string | null>(null);
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            setFileName(file.name);
+            if (file.type.startsWith("image/")) {
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    setFilePreview(reader.result as string);
+                };
+                reader.readAsDataURL(file);
+            } else {
+                setFilePreview(null);
+            }
+        }
+        // Trigger react-hook-form's onChange
+        register(name, validation).onChange(e);
+    };
+
+    const clearFile = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        e.preventDefault();
+        setFileName(null);
+        setFilePreview(null);
+        const input = document.getElementById(`file-input-${name}`) as HTMLInputElement;
+        if (input) {
+            input.value = "";
+            // Trigger a change event so react-hook-form sees it
+            const event = {
+                target: input,
+                type: 'change'
+            } as any;
+            register(name, validation).onChange(event);
+        }
+    };
 
     // Extract the error for this specific field
     const error = errors[name];
@@ -141,15 +180,71 @@ const FormField: React.FC<FormFieldProps> = ({
 
             case "file":
                 return (
-                    <div className="relative">
+                    <div className="w-full">
+                        {label && (
+                            <label className="block text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-2">
+                                {label}
+                                {validation?.required && <span className="text-red-500 ml-1">*</span>}
+                            </label>
+                        )}
                         <input
                             type="file"
+                            id={`file-input-${name}`}
                             multiple={multiple}
                             accept={accept}
                             {...register(name, validation)}
-                            className={`block w-full text-sm text-gray-500 border border-gray-200 dark:border-white/10 rounded-xl cursor-pointer bg-white/50 dark:bg-white/5 focus:outline-none dark:text-gray-400 dark:placeholder-gray-400 shadow-sm
-                            file:mr-4 file:py-3 file:px-4 file:rounded-l-xl file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 dark:file:bg-blue-900/30 dark:file:text-blue-400 transition-all ${hasError ? 'border-red-500 focus:ring-red-500/50' : 'focus:ring-2 focus:ring-blue-500/50'} ${className}`}
+                            onChange={handleFileChange}
+                            className="hidden"
                         />
+
+                        {!fileName ? (
+                            <label
+                                htmlFor={`file-input-${name}`}
+                                className={`w-full h-32 border-2 border-dashed rounded-xl transition-all duration-300 flex flex-col items-center justify-center cursor-pointer group
+                                ${hasError ? 'border-red-500 bg-red-500/5' : 'border-[#334155] bg-[#151B2B] hover:bg-[#1A2234] hover:border-[#4b5563]'}`}
+                            >
+                                <div className="p-3 rounded-full bg-gray-800/50 group-hover:bg-[#00E5FF]/10 transition-colors mb-2">
+                                    <UploadCloud className={`h-6 w-6 transition-colors ${hasError ? 'text-red-500' : 'text-gray-500 group-hover:text-[#00E5FF]'}`} />
+                                </div>
+                                <p className={`text-[11px] font-semibold transition-colors ${hasError ? 'text-red-500' : 'text-gray-400 group-hover:text-white'}`}>
+                                    Drag & drop or <span className="text-[#00E5FF]">browse</span>
+                                </p>
+                                <p className="text-[10px] text-gray-500 mt-1">Supports images, PDF up to 10MB</p>
+                            </label>
+                        ) : (
+                            <div className="relative group/preview w-full h-32 rounded-xl border border-[#334155] bg-[#151B2B] overflow-hidden flex items-center p-3 animate-in fade-in zoom-in-95 duration-300">
+                                {filePreview ? (
+                                    <div className="w-24 h-full rounded-lg overflow-hidden border border-white/10 relative flex-shrink-0">
+                                        <Image
+                                            src={filePreview}
+                                            width={100}
+                                            height={100}
+                                            alt="Preview"
+                                            className="w-full h-full object-cover"
+                                        />
+                                    </div>
+                                ) : (
+                                    <div className="w-24 h-full rounded-lg bg-gray-800 flex items-center justify-center border border-white/10 flex-shrink-0">
+                                        <UploadCloud className="h-8 w-8 text-gray-600" />
+                                    </div>
+                                )}
+
+                                <div className="ml-4 flex-1 min-w-0">
+                                    <p className="text-sm font-bold text-white truncate pr-8">{fileName}</p>
+                                    <p className="text-[10px] text-gray-500 font-medium uppercase tracking-wider mt-1">Ready to upload</p>
+                                </div>
+
+                                <button
+                                    onClick={clearFile}
+                                    className="absolute top-2 right-2 p-1.5 rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500 transition-colors hover:text-white z-10 cursor-pointer"
+                                    title="Remove file"
+                                >
+                                    <X className="h-4 w-4" />
+                                </button>
+
+                                <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover/preview:opacity-100 transition-opacity pointer-events-none" />
+                            </div>
+                        )}
                     </div>
                 );
 
@@ -189,7 +284,7 @@ const FormField: React.FC<FormFieldProps> = ({
     return (
         <div className="w-full flex flex-col mb-5">
             {/* Field Label */}
-            {label && type !== "checkbox" && (
+            {label && type !== "checkbox" && type !== "file" && (
                 <label className="mb-1.5 text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center">
                     {label}
                     {validation?.required && <span className="text-red-500 ml-1">*</span>}

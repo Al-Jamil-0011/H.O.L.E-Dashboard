@@ -43,7 +43,7 @@ export default function CreateNewManagementPage() {
   const { updateVendor, loading: isUpdatingVendor } = useUpdateVendor();
   const { deleteVendor, loading: isDeletingVendor } = useDeleteVendor();
 
-  const { createPractice, loading: isCreatingPractice } = useCreatePractice();
+  const { createPractice, loading: isCreatingPractice, error: practiceError } = useCreatePractice();
   const { updatePractice, loading: isUpdatingPractice } = useUpdatePractice();
   const { deletePractice, loading: isDeletingPractice } = useDeletePractice();
 
@@ -59,31 +59,31 @@ export default function CreateNewManagementPage() {
   const [deleteType, setDeleteType] = useState<'facility' | 'vendor' | 'practice' | null>(null);
 
   // react-hook-form initializations
-  const { 
-    register: registerFacility, 
-    handleSubmit: handleSubmitFacility, 
-    reset: resetFacility, 
-    formState: { errors: errorsFacility } 
+  const {
+    register: registerFacility,
+    handleSubmit: handleSubmitFacility,
+    reset: resetFacility,
+    formState: { errors: errorsFacility }
   } = useForm({
     defaultValues: { name: '', address: '', email: '', phoneNumber: '', contacts: '' }
   });
 
-  const { 
-    register: registerVendor, 
-    handleSubmit: handleSubmitVendor, 
-    reset: resetVendor, 
+  const {
+    register: registerVendor,
+    handleSubmit: handleSubmitVendor,
+    reset: resetVendor,
     setValue: setVendorValue,
     watch: watchVendor,
-    formState: { errors: errorsVendor } 
+    formState: { errors: errorsVendor }
   } = useForm({
     defaultValues: { name: '', companyName: '', email: '', phoneNumber: '', profile: null as any }
   });
 
-  const { 
-    register: registerPractice, 
-    handleSubmit: handleSubmitPractice, 
-    reset: resetPractice, 
-    formState: { errors: errorsPractice } 
+  const {
+    register: registerPractice,
+    handleSubmit: handleSubmitPractice,
+    reset: resetPractice,
+    formState: { errors: errorsPractice }
   } = useForm({
     defaultValues: { practiceName: '', address: '', phone: '', email: '', hours: 0 }
   });
@@ -137,7 +137,7 @@ export default function CreateNewManagementPage() {
     setIsDeleteModalOpen(false);
     setSelectedRecord(null);
     setDeleteType(null);
-    
+
     resetFacility();
     resetVendor();
     resetPractice();
@@ -179,11 +179,16 @@ export default function CreateNewManagementPage() {
   };
 
   const handlePracticeSubmit = async (data: any) => {
+    console.log("data", data)
+    const formData = {
+      ...data,
+      hours: Number(data.hours),
+    }
     let result;
     if (modalMode === 'add') {
-      result = await createPractice(data);
+      result = await createPractice(formData);
     } else {
-      result = await updatePractice(selectedRecord._id, data);
+      result = await updatePractice(selectedRecord._id, formData);
     }
     if (result) {
       toast.success(modalMode === 'add' ? 'Practice added' : 'Practice updated');
@@ -235,10 +240,10 @@ export default function CreateNewManagementPage() {
       header: "ACTIONS",
       render: (item: any) => (
         <div className="flex items-center gap-2">
-          <button onClick={() => handleEdit('facility', item)} className="p-1.5 text-muted-foreground hover:text-primary transition-colors rounded-md hover:bg-primary/10">
+          <button onClick={() => handleEdit('facility', item)} className="p-1.5 text-muted-foreground hover:text-primary transition-colors rounded-md hover:bg-primary/10 cursor-pointer">
             <Edit2 className="h-4 w-4" />
           </button>
-          <button onClick={() => handleDeleteClick('facility', item)} className="p-1.5 text-muted-foreground hover:text-rose-500 transition-colors rounded-md hover:bg-rose-500/10">
+          <button onClick={() => handleDeleteClick('facility', item)} className="p-1.5 text-muted-foreground hover:text-rose-500 transition-colors rounded-md hover:bg-rose-500/10 cursor-pointer">
             <Trash2 className="h-4 w-4" />
           </button>
         </div>
@@ -286,10 +291,10 @@ export default function CreateNewManagementPage() {
       header: "ACTIONS",
       render: (item: any) => (
         <div className="flex items-center gap-2">
-          <button onClick={() => handleEdit('vendor', item)} className="p-1.5 text-muted-foreground hover:text-primary transition-colors rounded-md hover:bg-primary/10">
+          <button onClick={() => handleEdit('vendor', item)} className="p-1.5 text-muted-foreground hover:text-primary transition-colors rounded-md hover:bg-primary/10 cursor-pointer">
             <Edit2 className="h-4 w-4" />
           </button>
-          <button onClick={() => handleDeleteClick('vendor', item)} className="p-1.5 text-muted-foreground hover:text-rose-500 transition-colors rounded-md hover:bg-rose-500/10">
+          <button onClick={() => handleDeleteClick('vendor', item)} className="p-1.5 text-muted-foreground hover:text-rose-500 transition-colors rounded-md hover:bg-rose-500/10 cursor-pointer">
             <Trash2 className="h-4 w-4" />
           </button>
         </div>
@@ -324,10 +329,10 @@ export default function CreateNewManagementPage() {
       header: "ACTIONS",
       render: (item: any) => (
         <div className="flex items-center gap-2">
-          <button onClick={() => handleEdit('practice', item)} className="p-1.5 text-muted-foreground hover:text-primary transition-colors rounded-md hover:bg-primary/10">
+          <button onClick={() => handleEdit('practice', item)} className="p-1.5 text-muted-foreground hover:text-primary transition-colors rounded-md hover:bg-primary/10 cursor-pointer">
             <Edit2 className="h-4 w-4" />
           </button>
-          <button onClick={() => handleDeleteClick('practice', item)} className="p-1.5 text-muted-foreground hover:text-rose-500 transition-colors rounded-md hover:bg-rose-500/10">
+          <button onClick={() => handleDeleteClick('practice', item)} className="p-1.5 text-muted-foreground hover:text-rose-500 transition-colors rounded-md hover:bg-rose-500/10 cursor-pointer">
             <Trash2 className="h-4 w-4" />
           </button>
         </div>
@@ -335,6 +340,7 @@ export default function CreateNewManagementPage() {
     }
   ];
 
+  console.log("practiceError", practiceError)
   return (
     <div className="space-y-6 animate-in fade-in zoom-in duration-500 pb-10">
 
@@ -417,64 +423,64 @@ export default function CreateNewManagementPage() {
       {/* facility modal */}
       {isFacilityModalOpen && (
         <ModalWrapper title={modalMode === 'add' ? 'Add Facility' : 'Edit Facility'} onClose={closeAllModals}>
-          <div className="space-y-4">
-            <div>
-              <label className="block text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-1.5">Facility Name <span className="text-rose-500">*</span></label>
-              <input
-                type="text"
-                value={facilityForm.name}
-                onChange={(e) => setFacilityForm({ ...facilityForm, name: e.target.value })}
-                placeholder="e.g. City General Hospital"
-                className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--primary)] transition-colors"
-              />
-            </div>
-            <div>
-              <label className="block text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-1.5">Address <span className="text-rose-500">*</span></label>
-              <input
-                type="text"
-                value={facilityForm.address}
-                onChange={(e) => setFacilityForm({ ...facilityForm, address: e.target.value })}
-                placeholder="Full street address..."
-                className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--primary)] transition-colors"
-              />
-            </div>
-            <div>
-              <label className="block text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-1.5">Email <span className="text-rose-500">*</span></label>
-              <input
-                type="email"
-                value={facilityForm.email}
-                onChange={(e) => setFacilityForm({ ...facilityForm, email: e.target.value })}
-                placeholder="contact@hospital.org"
-                className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--primary)] transition-colors"
-              />
-            </div>
-            <div>
-              <label className="block text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-1.5">Phone Number <span className="text-rose-500">*</span></label>
-              <input
-                type="tel"
-                value={facilityForm.phoneNumber}
-                onChange={(e) => setFacilityForm({ ...facilityForm, phoneNumber: e.target.value })}
-                placeholder="(555) 000-0000"
-                className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--primary)] transition-colors"
-              />
-            </div>
-            <div>
-              <label className="block text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-1.5">Contacts <span className="text-rose-500">*</span></label>
-              <input
-                type="text"
-                value={facilityForm.contacts}
-                onChange={(e) => setFacilityForm({ ...facilityForm, contacts: e.target.value })}
-                placeholder="Secondary contact or name..."
-                className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--primary)] transition-colors"
-              />
-            </div>
+          <div className="space-y-0">
+            <FormField
+              name="name"
+              label="Facility Name"
+              placeholder="e.g. City General Hospital"
+              icon={<Building2 className="h-5 w-5" />}
+              register={registerFacility}
+              errors={errorsFacility}
+              validation={{ required: "Facility name is required" }}
+            />
+            <FormField
+              name="address"
+              label="Address"
+              placeholder="Full street address..."
+              icon={<MapPin className="h-5 w-5" />}
+              register={registerFacility}
+              errors={errorsFacility}
+              validation={{ required: "Address is required" }}
+            />
+            <FormField
+              type="email"
+              name="email"
+              label="Email"
+              placeholder="contact@hospital.org"
+              icon={<Mail className="h-5 w-5" />}
+              register={registerFacility}
+              errors={errorsFacility}
+              validation={{
+                required: "Email is required",
+                pattern: { value: /\S+@\S+\.\S+/, message: "Invalid email format" }
+              }}
+            />
+            <FormField
+              type="tel"
+              name="phoneNumber"
+              label="Phone Number"
+              placeholder="(555) 000-0000"
+              icon={<Phone className="h-5 w-5" />}
+              register={registerFacility}
+              errors={errorsFacility}
+              validation={{ required: "Phone number is required" }}
+            />
+            <FormField
+              name="contacts"
+              label="Contacts"
+              placeholder="Secondary contact or name..."
+              icon={<Edit2 className="h-5 w-5" />}
+              register={registerFacility}
+              errors={errorsFacility}
+              validation={{ required: "Contact info is required" }}
+            />
           </div>
-          <div className="mt-8 flex gap-3">
-            <button onClick={closeAllModals} className="flex-1 py-2.5 text-sm font-bold text-muted-foreground bg-[var(--muted)] hover:bg-[var(--border)] rounded-xl transition-colors">Cancel</button>
+          <div className="mt-4 flex gap-3">
+            <button onClick={closeAllModals} className="flex-1 py-2.5 text-sm font-bold hover:bg-[var(--border)]/70 hover:text-foreground text-muted-foreground bg-[var(--border)] rounded-xl transition-colors cursor-pointer">Cancel</button>
             <button
-              onClick={handleFacilitySubmit}
+              onClick={handleSubmitFacility(handleFacilitySubmit)}
               disabled={isCreatingFacility || isUpdatingFacility}
-              className="flex-1 py-2.5 text-sm font-bold text-[var(--background)] bg-primary rounded-xl shadow-sm hover:bg-cyan-400 transition-all disabled:opacity-50"
+              className="flex-1 py-2.5 text-sm font-bold text-[var(--background)] bg-primary rounded-xl shadow-sm hover:bg-cyan-400 transition-all disabled:opacity-50 cursor-pointer"
             >
               {isCreatingFacility || isUpdatingFacility ? 'Saving...' : 'Save'}
             </button>
@@ -485,74 +491,65 @@ export default function CreateNewManagementPage() {
       {/* vendor modal */}
       {isVendorModalOpen && (
         <ModalWrapper title={modalMode === 'add' ? 'Add Vendor' : 'Edit Vendor'} onClose={closeAllModals}>
-          <div className="space-y-4">
-            <div>
-              <label className="block text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-2">Vendor Profile Picture</label>
-              <div
-                className="w-full h-24 border-2 border-dashed border-[var(--border)] rounded-xl bg-[var(--card)] hover:bg-[var(--muted)] transition-colors flex flex-col items-center justify-center cursor-pointer group"
-                onClick={() => document.getElementById('vendor-profile')?.click()}
-              >
-                <input
-                  id="vendor-profile"
-                  type="file"
-                  className="hidden"
-                  onChange={(e) => setVendorForm({ ...vendorForm, profile: e.target.files?.[0] || null })}
-                />
-                <UploadCloud className="h-5 w-5 text-muted-foreground group-hover:text-primary mb-1 transition-colors" />
-                <p className="text-[10px] font-medium text-muted-foreground group-hover:text-foreground transition-colors">
-                  {vendorForm.profile ? vendorForm.profile.name : 'Drag & drop or browse'}
-                </p>
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="block text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-1.5">Vendor Name <span className="text-rose-500">*</span></label>
-                <input
-                  type="text"
-                  value={vendorForm.name}
-                  onChange={(e) => setVendorForm({ ...vendorForm, name: e.target.value })}
-                  placeholder="John Doe"
-                  className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--primary)] transition-colors"
-                />
-              </div>
-              <div>
-                <label className="block text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-1.5">Company Name <span className="text-rose-500">*</span></label>
-                <input
-                  type="text"
-                  value={vendorForm.companyName}
-                  onChange={(e) => setVendorForm({ ...vendorForm, companyName: e.target.value })}
-                  placeholder="MedTech Inc."
-                  className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--primary)] transition-colors"
-                />
-              </div>
-            </div>
-            <div>
-              <label className="block text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-1.5">Vendor Email <span className="text-rose-500">*</span></label>
-              <input
-                type="email"
-                value={vendorForm.email}
-                onChange={(e) => setVendorForm({ ...vendorForm, email: e.target.value })}
-                placeholder="vendor@company.com"
-                className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--primary)] transition-colors"
+          <div className="space-y-0">
+            <FormField
+              type="file"
+              name="profile"
+              label="Vendor Profile Picture"
+              accept="image/*"
+              register={registerVendor}
+              errors={errorsVendor}
+            />
+            <div className="grid grid-cols-2 gap-x-4">
+              <FormField
+                name="name"
+                label="Vendor Name"
+                placeholder="John Doe"
+                icon={<Briefcase className="h-5 w-5" />}
+                register={registerVendor}
+                errors={errorsVendor}
+                validation={{ required: "Vendor name is required" }}
+              />
+              <FormField
+                name="companyName"
+                label="Company Name"
+                placeholder="MedTech Inc."
+                icon={<Building2 className="h-5 w-5" />}
+                register={registerVendor}
+                errors={errorsVendor}
+                validation={{ required: "Company name is required" }}
               />
             </div>
-            <div>
-              <label className="block text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-1.5">Vendor Phone <span className="text-rose-500">*</span></label>
-              <input
-                type="tel"
-                value={vendorForm.phoneNumber}
-                onChange={(e) => setVendorForm({ ...vendorForm, phoneNumber: e.target.value })}
-                placeholder="(555) 000-0000"
-                className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--primary)] transition-colors"
-              />
-            </div>
+            <FormField
+              type="email"
+              name="email"
+              label="Vendor Email"
+              placeholder="vendor@company.com"
+              icon={<Mail className="h-5 w-5" />}
+              register={registerVendor}
+              errors={errorsVendor}
+              validation={{
+                required: "Email is required",
+                pattern: { value: /\S+@\S+\.\S+/, message: "Invalid email format" }
+              }}
+            />
+            <FormField
+              type="tel"
+              name="phoneNumber"
+              label="Vendor Phone"
+              placeholder="(555) 000-0000"
+              icon={<Phone className="h-5 w-5" />}
+              register={registerVendor}
+              errors={errorsVendor}
+              validation={{ required: "Phone number is required" }}
+            />
           </div>
-          <div className="mt-8 flex gap-3">
-            <button onClick={closeAllModals} className="flex-1 py-2.5 text-sm font-bold text-muted-foreground bg-[var(--muted)] hover:bg-[var(--border)] rounded-xl transition-colors">Cancel</button>
+          <div className="mt-4 flex gap-3">
+            <button onClick={closeAllModals} className="flex-1 py-2.5 text-sm font-bold hover:bg-[var(--border)]/70 hover:text-foreground text-muted-foreground bg-[var(--border)] rounded-xl transition-colors cursor-pointer">Cancel</button>
             <button
-              onClick={handleVendorSubmit}
+              onClick={handleSubmitVendor(handleVendorSubmit)}
               disabled={isCreatingVendor || isUpdatingVendor}
-              className="flex-1 py-2.5 text-sm font-bold text-[var(--background)] bg-primary rounded-xl shadow-sm hover:bg-cyan-400 transition-all disabled:opacity-50"
+              className="flex-1 py-2.5 text-sm font-bold text-[var(--background)] bg-primary rounded-xl shadow-sm hover:bg-cyan-400 transition-all disabled:opacity-50 cursor-pointer"
             >
               {isCreatingVendor || isUpdatingVendor ? 'Saving...' : 'Save'}
             </button>
@@ -563,64 +560,70 @@ export default function CreateNewManagementPage() {
       {/* practice modal */}
       {isPracticeModalOpen && (
         <ModalWrapper title={modalMode === 'add' ? 'Add Practice' : 'Edit Practice'} onClose={closeAllModals}>
-          <div className="space-y-4">
-            <div>
-              <label className="block text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-1.5">Practice Name <span className="text-rose-500">*</span></label>
-              <input
-                type="text"
-                value={practiceForm.practiceName}
-                onChange={(e) => setPracticeForm({ ...practiceForm, practiceName: e.target.value })}
-                placeholder="Advanced Orthopedics"
-                className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--primary)] transition-colors"
-              />
-            </div>
-            <div>
-              <label className="block text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-1.5">Address <span className="text-rose-500">*</span></label>
-              <input
-                type="text"
-                value={practiceForm.address}
-                onChange={(e) => setPracticeForm({ ...practiceForm, address: e.target.value })}
-                placeholder="Practice street address..."
-                className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--primary)] transition-colors"
-              />
-            </div>
-            <div>
-              <label className="block text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-1.5">Phone Number <span className="text-rose-500">*</span></label>
-              <input
-                type="tel"
-                value={practiceForm.phone}
-                onChange={(e) => setPracticeForm({ ...practiceForm, phone: e.target.value })}
-                placeholder="(555) 000-0000"
-                className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--primary)] transition-colors"
-              />
-            </div>
-            <div>
-              <label className="block text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-1.5">Email <span className="text-rose-500">*</span></label>
-              <input
-                type="email"
-                value={practiceForm.email}
-                onChange={(e) => setPracticeForm({ ...practiceForm, email: e.target.value })}
-                placeholder="contact@practice.com"
-                className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--primary)] transition-colors"
-              />
-            </div>
-            <div>
-              <label className="block text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-1.5">Operating Hours <span className="text-rose-500">*</span></label>
-              <input
-                type="number"
-                value={practiceForm.hours}
-                onChange={(e) => setPracticeForm({ ...practiceForm, hours: parseInt(e.target.value) || 0 })}
-                placeholder="e.g. 8"
-                className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--primary)] transition-colors"
-              />
-            </div>
+          <div className="space-y-0">
+            <FormField
+              name="practiceName"
+              label="Practice Name"
+              placeholder="Advanced Orthopedics"
+              icon={<Stethoscope className="h-5 w-5" />}
+              register={registerPractice}
+              errors={errorsPractice}
+              validation={{ required: "Practice name is required" }}
+            />
+            <FormField
+              name="address"
+              label="Address"
+              placeholder="Practice street address..."
+              icon={<MapPin className="h-5 w-5" />}
+              register={registerPractice}
+              errors={errorsPractice}
+              validation={{ required: "Address is required" }}
+            />
+            <FormField
+              type="tel"
+              name="phone"
+              label="Phone Number"
+              placeholder="(555) 000-0000"
+              icon={<Phone className="h-5 w-5" />}
+              register={registerPractice}
+              errors={errorsPractice}
+              validation={{ required: "Phone number is required" }}
+            />
+            <FormField
+              type="email"
+              name="email"
+              label="Email"
+              placeholder="contact@practice.com"
+              icon={<Mail className="h-5 w-5" />}
+              register={registerPractice}
+              errors={errorsPractice}
+              validation={{
+                required: "Email is required",
+                pattern: { value: /\S+@\S+\.\S+/, message: "Invalid email format" }
+              }}
+            />
+            <FormField
+              type="number"
+              name="hours"
+              label="Operating Hours (max 24)"
+              placeholder="e.g. 8"
+              icon={<Clock className="h-5 w-5" />}
+              register={registerPractice}
+              errors={errorsPractice}
+              validation={{ required: "Operating hours are required" }}
+            />
           </div>
-          <div className="mt-8 flex gap-3">
-            <button onClick={closeAllModals} className="flex-1 py-2.5 text-sm font-bold text-muted-foreground bg-[var(--muted)] hover:bg-[var(--border)] rounded-xl transition-colors">Cancel</button>
+          {practiceError && (
+            <div className="mt-4">
+              <p className="text-red-500 text-sm">{practiceError}</p>
+            </div>
+          )}
+          <div className="mt-4 flex gap-3">
+            <button onClick={closeAllModals} className="flex-1 py-2.5 text-sm font-bold hover:bg-[var(--border)]/70 hover:text-foreground text-muted-foreground bg-[var(--border)] rounded-xl transition-colors cursor-pointer">Cancel</button>
             <button
-              onClick={handlePracticeSubmit}
+              onClick={handleSubmitPractice(handlePracticeSubmit)}
               disabled={isCreatingPractice || isUpdatingPractice}
-              className="flex-1 py-2.5 text-sm font-bold text-[var(--background)] bg-primary rounded-xl shadow-sm hover:bg-cyan-400 transition-all disabled:opacity-50"
+              className="flex-1 py-2.5 text-sm font-bold text-[var(--background)] bg-primary rounded-xl shadow-sm hover:bg-cyan-400 transition-all disabled:opacity-50 cursor-pointer"
             >
               {isCreatingPractice || isUpdatingPractice ? 'Saving...' : 'Save'}
             </button>
@@ -645,14 +648,14 @@ export default function CreateNewManagementPage() {
             <div className="p-5 flex gap-3 bg-[var(--card)] border-t border-[var(--border)]">
               <button
                 onClick={closeAllModals}
-                className="flex-1 py-3 text-sm font-bold text-muted-foreground bg-[var(--border)] hover:bg-[var(--border)] rounded-xl transition-colors"
+                className="flex-1 py-3 text-sm font-bold hover:bg-[var(--border)]/70 hover:text-foreground text-muted-foreground bg-[var(--border)] hover:bg-[var(--border)] rounded-xl transition-colors cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 onClick={handleConfirmDelete}
                 disabled={isDeletingFacility || isDeletingVendor || isDeletingPractice}
-                className="flex-1 py-3 text-sm font-bold text-white bg-rose-500 hover:bg-rose-600 rounded-xl shadow-sm transition-all disabled:opacity-50"
+                className="flex-1 py-3 text-sm font-bold text-white bg-rose-500 hover:bg-rose-600 rounded-xl shadow-sm transition-all disabled:opacity-50 cursor-pointer"
               >
                 {isDeletingFacility || isDeletingVendor || isDeletingPractice ? 'Deleting...' : 'Confirm Delete'}
               </button>
@@ -693,7 +696,7 @@ function ModalWrapper({ title, children, onClose }: { title: string, children: R
           <h2 className="text-lg font-bold text-foreground">{title}</h2>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-md hover:bg-[var(--border)] text-muted-foreground hover:text-foreground transition-colors"
+            className="p-1.5 rounded-md hover:bg-[var(--border)] text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
           >
             <X className="h-5 w-5" />
           </button>
