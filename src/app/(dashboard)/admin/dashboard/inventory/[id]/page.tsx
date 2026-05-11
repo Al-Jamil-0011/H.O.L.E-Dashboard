@@ -86,7 +86,7 @@ export default function InventoryDetailsPage() {
   return (
     <div className="flex justify-center w-full pb-24 animate-in fade-in duration-500">
       {/* Centered container (max-width: 1200px-1400px) */}
-      <div className="w-full max-w-5xl space-y-8">
+      <div className="w-full space-y-8">
 
         {/* HEADER SECTION */}
         <div className="flex items-center gap-4 border-b border-[#1E293B] pb-6">

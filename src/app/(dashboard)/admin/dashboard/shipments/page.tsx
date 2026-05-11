@@ -4,8 +4,8 @@ import { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { DataTable, StatusBadge } from '@/components/ui/DataTable';
 import { Search, Filter, Truck, Package, X, AlertCircle, Navigation, CheckCircle2 } from 'lucide-react';
-import { ShipmentDetailsDrawer } from './components/ShipmentDetailsDrawer';
 import { useShipments, useShipmentSummary } from '@/hooks/admin/shipment';
+import Link from 'next/link';
 
 
 
@@ -16,12 +16,8 @@ export default function ShipmentsPage() {
 
   const { summary, loading: summaryLoading } = useShipmentSummary();
 
-  const { shipments, loading: shipmentsLoading, meta, setQuery, query, refetch: refetchShipments } = useShipments();
+  const { shipments, loading: shipmentsLoading, meta, setQuery } = useShipments();
 
-
-  // Drawer State
-  const [selectedShipment, setSelectedShipment] = useState<any>(null);
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   // SYNC SEARCH & FILTERS
   useEffect(() => {
@@ -36,11 +32,6 @@ export default function ShipmentsPage() {
     }, 500);
     return () => clearTimeout(handler);
   }, [search, statusFilter, methodFilter, setQuery]);
-
-  const handleRowClick = (shipment: any) => {
-    setSelectedShipment(shipment);
-    setIsDrawerOpen(true);
-  };
 
   const columns = [
     {
@@ -126,12 +117,13 @@ export default function ShipmentsPage() {
     {
       header: "ACTIONS",
       render: (item: any) => (
-        <button
-          onClick={(e) => { e.stopPropagation(); handleRowClick(item); }}
-          className="px-3 py-1.5 text-[10px] font-bold text-[#00E5FF] bg-[#00E5FF]/10 border border-[#00E5FF]/20 rounded-md hover:bg-[#00E5FF]/20 transition-colors"
-        >
-          Details
-        </button>
+        <Link href={`/admin/dashboard/shipments/${item._id}`}>
+          <button
+            className="px-3 py-1.5 text-[10px] font-bold text-[#00E5FF] bg-[#00E5FF]/10 border border-[#00E5FF]/20 rounded-md hover:bg-[#00E5FF]/20 transition-colors cursor-pointer"
+          >
+            Details
+          </button>
+        </Link >
       )
     }
   ];
@@ -252,7 +244,7 @@ export default function ShipmentsPage() {
             data={shipments as any}
             columns={columns as any}
             loading={shipmentsLoading}
-            onRowClick={handleRowClick}
+            onRowClick={() => { }}
             className="rounded-none border-0 bg-transparent"
             pagination={meta ? {
               currentPage: meta.currentPage,
@@ -263,14 +255,6 @@ export default function ShipmentsPage() {
           />
         </div>
       </div>
-
-      {/* DETAILS DRAWER */}
-      <ShipmentDetailsDrawer
-        isOpen={isDrawerOpen}
-        onClose={() => setIsDrawerOpen(false)}
-        shipment={selectedShipment}
-      />
-
     </div>
   );
 }
