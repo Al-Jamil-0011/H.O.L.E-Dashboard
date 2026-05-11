@@ -70,6 +70,9 @@ export function useShipments() {
             page: 1,
             limit: 10,
             searchTerm: "",
+            status: "",
+            method: "",
+
         });
 
     const fetchShipments = useCallback(async () => {
@@ -80,10 +83,19 @@ export function useShipments() {
             const params = new URLSearchParams();
 
             params.append("page", String(query.page));
+
             params.append("limit", String(query.limit));
 
             if (query.searchTerm) {
                 params.append("searchTerm", query.searchTerm);
+            }
+
+            if (query.status) {
+                params.append("status", query.status);
+            }
+
+            if (query.method) {
+                params.append("method", query.method);
             }
 
             const response =

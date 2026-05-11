@@ -165,18 +165,23 @@ export function DataTable<T>({
 }
 export function StatusBadge({ status, type = "default" }: {
   status: string,
-  type?: "success" | "warning" | "error" | "default"
+  type?: "success" | "accepted" | "pending" | "rejected" | "picked_up" | "delivered" | "warning" | "error" | "default"
 }) {
   const styles = {
     success: "bg-primary/10 text-primary px-3 py-1 text-[10px] uppercase font-bold tracking-wider rounded-md",
     warning: "bg-amber-500/10 text-amber-500 px-3 py-1 text-[10px] uppercase font-bold tracking-wider rounded-md",
     error: "bg-rose-500/10 text-rose-500 px-3 py-1 text-[10px] uppercase font-bold tracking-wider rounded-md",
+    accepted: "bg-green-500/10 text-green-500 px-3 py-1 text-[10px] uppercase font-bold tracking-wider rounded-md",
+    pending: "bg-yellow-500/10 text-yellow-500 px-3 py-1 text-[10px] uppercase font-bold tracking-wider rounded-md",
+    rejected: "bg-red-500/10 text-red-500 px-3 py-1 text-[10px] uppercase font-bold tracking-wider rounded-md",
+    picked_up: "bg-blue-500/10 text-blue-500 px-3 py-1 text-[10px] uppercase font-bold tracking-wider rounded-md",
+    delivered: "bg-green-500/10 text-green-500 px-3 py-1 text-[10px] uppercase font-bold tracking-wider rounded-md",
     default: "bg-blue-500/10 text-blue-500 px-3 py-1 text-[10px] uppercase font-bold tracking-wider rounded-md"
   };
 
   return (
     <span className={cn(styles[type])}>
-      {status}
+      {status?.split("_")[0]}
     </span>
   );
 }

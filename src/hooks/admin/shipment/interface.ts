@@ -23,6 +23,8 @@ export interface IShipmentQuery {
     page: number;
     limit: number;
     searchTerm?: string;
+    status?: string;
+    method?: string;
 }
 
 export interface IShipmentDetail {

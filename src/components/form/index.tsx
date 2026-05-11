@@ -1,6 +1,6 @@
 "use client";
 import React, { ReactNode, useState } from "react";
-import { UseFormRegister, FieldErrors, RegisterOptions, useFormContext, useWatch, Control } from "react-hook-form";
+import { UseFormRegister, FieldErrors, RegisterOptions, useFormContext } from "react-hook-form";
 import { UploadCloud, X } from "lucide-react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
@@ -116,18 +116,14 @@ const FormField: React.FC<FormFieldProps> = ({
         : `border-gray-200 dark:border-[#1E293B] focus:border-[#00E5FF] focus:ring-2 focus:ring-[#00E5FF]/20 ${colorClass}`;
 
     const formContext = useFormContext();
-    const control = propControl || formContext?.control;
-
-    // Get current value for custom components like select
-    const watchedValue = useWatch({
-        name,
-        control,
-    });
+    // Use watch from form context if available; otherwise undefined.
+    const watchedValue = formContext?.watch ? formContext.watch(name) : undefined;
 
     // Common props spread to all input elements
     const commonProps = {
         ...register(name, validation),
-        value: watchedValue ?? "",
+        // For select inputs we need a value, otherwise let React handle it
+        value: type === "select" ? (watchedValue ?? "") : undefined,
         className: `${baseInputClasses} ${paddingClasses} ${errorClasses} ${className}`,
     };
 
@@ -213,10 +209,10 @@ const FormField: React.FC<FormFieldProps> = ({
                                                 key={idx}
                                                 onClick={() => {
                                                     if (formContext?.setValue) {
-                                                        formContext.setValue(name, opt.value, { 
-                                                            shouldValidate: true, 
+                                                        formContext.setValue(name, opt.value, {
+                                                            shouldValidate: true,
                                                             shouldDirty: true,
-                                                            shouldTouch: true 
+                                                            shouldTouch: true
                                                         });
                                                     } else {
                                                         const event = {
