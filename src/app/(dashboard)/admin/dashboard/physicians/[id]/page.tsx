@@ -59,7 +59,7 @@ export default function PhysicianProfilePage() {
 
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-2 w-full sm:w-auto">
-            <button 
+            <button
               onClick={() => setIsEditModalOpen(true)}
               className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-bold text-black bg-[#00E5FF] rounded-lg hover:bg-cyan-400 transition-colors shadow-[0_0_15px_rgba(0,229,255,0.3)] cursor-pointer"
             >
@@ -87,7 +87,7 @@ export default function PhysicianProfilePage() {
               )} />
               {physician.profileUrl ? (
                 <Image
-                  src={`${process.env.NEXT_PUBLIC_BASE_URL}/${physician.profileUrl}`}
+                  src={physician?.profileUrl || ""}
                   fill className="object-cover"
                   alt={physician.fullName} />
               ) : (
@@ -203,9 +203,9 @@ export default function PhysicianProfilePage() {
         </div>
       </div>
 
-      <AddPhysicianModal 
-        isOpen={isEditModalOpen} 
-        onClose={() => setIsEditModalOpen(false)} 
+      <AddPhysicianModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
         initialData={physician}
       />
     </div>

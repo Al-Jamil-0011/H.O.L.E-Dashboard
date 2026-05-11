@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
-import { Search, Plus, Filter, MoreVertical, Stethoscope, MapPin, Clock, FileText } from 'lucide-react';
+import { Search, Plus, Filter, MoreVertical, Stethoscope, MapPin, Clock, FileText, ChevronLeft, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { DataTable } from '@/components/ui/DataTable';
@@ -15,14 +15,14 @@ export default function PhysiciansAndSurgeriesPage() {
   const [activeTab, setActiveTab] = useState<'physicians' | 'surgeries'>('physicians');
   const [search, setSearch] = useState('');
 
-  const { physicians, loading: isPhysiciansLoading, setQuery, refetch: refetchPhysicians } = usePhysicians();
-  const { surgeries, loading: isSurgeriesLoading, setQuery: setSurgeriesQuery, refetch: refetchSurgeries } = useSurgeries();
+  const { physicians, loading: isPhysiciansLoading, meta: physicianMeta, setQuery: setPhysicianQuery, refetch: refetchPhysicians } = usePhysicians();
+  const { surgeries, loading: isSurgeriesLoading, meta: surgeryMeta, setQuery: setSurgeriesQuery, refetch: refetchSurgeries } = useSurgeries();
 
   // DEBOUNCED SEARCH
   useEffect(() => {
     const handler = setTimeout(() => {
       if (activeTab === 'physicians') {
-        setQuery(prev => {
+        setPhysicianQuery(prev => {
           if (prev.searchTerm === search) return prev;
           return { ...prev, searchTerm: search, page: 1 };
         });
@@ -34,7 +34,7 @@ export default function PhysiciansAndSurgeriesPage() {
       }
     }, 500);
     return () => clearTimeout(handler);
-  }, [search, setQuery, setSurgeriesQuery, activeTab]);
+  }, [search, setPhysicianQuery, setSurgeriesQuery, activeTab]);
 
   // Modals state
   const [isAddPhysicianOpen, setIsAddPhysicianOpen] = useState(false);
@@ -193,7 +193,7 @@ export default function PhysiciansAndSurgeriesPage() {
       </div>
 
       {/* DATA TABLE CONTAINER */}
-      <div className="rounded-2xl border border-[#1E293B] bg-[#151B2B] shadow-xl overflow-hidden min-h-[400px]">
+      <div className="rounded-2xl border border-[#1E293B] bg-[#151B2B] shadow-xl overflow-hidden">
         {activeTab === 'physicians' ? (
           <DataTable
             data={physicians}
@@ -201,6 +201,12 @@ export default function PhysiciansAndSurgeriesPage() {
             loading={isPhysiciansLoading}
             className="rounded-none border-0"
             onRowClick={() => { }}
+            pagination={{
+              currentPage: physicianMeta?.currentPage || 1,
+              totalPage: physicianMeta?.totalPage || 1,
+              totalResult: physicianMeta?.totalResult || 0,
+              onPageChange: (page) => setPhysicianQuery(prev => ({ ...prev, page }))
+            }}
           />
         ) : (
           <DataTable
@@ -209,6 +215,12 @@ export default function PhysiciansAndSurgeriesPage() {
             loading={isSurgeriesLoading}
             className="rounded-none border-0"
             onRowClick={() => { }}
+            pagination={{
+              currentPage: surgeryMeta?.currentPage || 1,
+              totalPage: surgeryMeta?.totalPage || 1,
+              totalResult: surgeryMeta?.totalResult || 0,
+              onPageChange: (page) => setSurgeriesQuery(prev => ({ ...prev, page }))
+            }}
           />
         )}
       </div>
@@ -216,12 +228,10 @@ export default function PhysiciansAndSurgeriesPage() {
       {/* MODALS */}
       <AddPhysicianModal isOpen={isAddPhysicianOpen} onClose={() => {
         setIsAddPhysicianOpen(false);
-        refetchPhysicians();
-      }} />
+      }} refetch={refetchPhysicians} />
       <AddSurgeryModal isOpen={isAddSurgeryOpen} onClose={() => {
         setIsAddSurgeryOpen(false);
-        refetchSurgeries();
-      }} />
+      }} refetch={refetchSurgeries} />
 
     </div>
   );

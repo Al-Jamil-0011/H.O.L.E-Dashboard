@@ -2,6 +2,8 @@
 
 import { cn } from "@/lib/utils";
 import React from "react";
+import ResponsivePagination from 'react-responsive-pagination';
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface Column<T> {
   header: string;
@@ -17,6 +19,12 @@ interface DataTableProps<T> {
   emptyText?: string;
   className?: string;
   onRowClick?: (item: T) => void;
+  pagination?: {
+    currentPage: number;
+    totalPage: number;
+    totalResult: number;
+    onPageChange: (page: number) => void;
+  };
 }
 
 export function DataTable<T>({
@@ -26,6 +34,7 @@ export function DataTable<T>({
   emptyText = "No data available",
   className,
   onRowClick,
+  pagination,
 }: DataTableProps<T>) {
 
   return (
@@ -111,6 +120,44 @@ export function DataTable<T>({
           )}
         </tbody>
       </table>
+
+      {/* PAGINATION SECTION */}
+      {pagination && pagination.totalPage > 1 && (
+        <div className="flex items-center justify-between px-6 py-4 bg-muted/30 border-t border-border">
+          <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest">
+            Showing <span className="text-foreground font-black">{data?.length || 0}</span> of <span className="text-foreground font-black">{pagination.totalResult}</span> Results
+          </p>
+
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <button
+                disabled={pagination.currentPage === 1}
+                onClick={() => pagination.onPageChange(pagination.currentPage - 1)}
+                className="p-2 rounded-lg border border-border text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </button>
+
+              <div className="custom-pagination">
+                <ResponsivePagination
+                  current={pagination.currentPage}
+                  total={pagination.totalPage}
+                  onPageChange={pagination.onPageChange}
+                  maxWidth={400}
+                />
+              </div>
+
+              <button
+                disabled={pagination.currentPage === pagination.totalPage}
+                onClick={() => pagination.onPageChange(pagination.currentPage + 1)}
+                className="p-2 rounded-lg border border-border text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
+              >
+                <ChevronRight className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

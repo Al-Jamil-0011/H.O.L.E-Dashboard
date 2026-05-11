@@ -12,3 +12,19 @@ export interface IApiResponse<T> {
     message: string;
     data: T;
 }
+
+
+export interface IPhysician {
+    _id: string;
+    fullName: string;
+    specialty?: string;
+    profileUrl?: string;
+}
+
+
+export interface IFacility {
+    _id: string;
+    name: string;
+    email?: string;
+    phoneNumber?: string;
+}

@@ -3,31 +3,45 @@
 import { useEffect, useState } from "react";
 import { X, Upload, CheckCircle2, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useCreatePhysician, useUpdatePhysician } from "@/hooks/admin/physicians";
-import { useForm } from "react-hook-form";
+import { useCreatePhysician, useSinglePhysician, useUpdatePhysician } from "@/hooks/admin/physicians";
+import { useForm, FormProvider } from "react-hook-form";
 import FormField from "@/components/form";
 import Loader from "@/components/loader";
+import { usePractices } from "@/hooks/common";
+import toast from "react-hot-toast";
 
 interface AddPhysicianModalProps {
   isOpen: boolean;
   onClose: () => void;
   initialData?: any;
+  refetch?: () => void;
 }
 
-export function AddPhysicianModal({ isOpen, onClose, initialData }: AddPhysicianModalProps) {
+export function AddPhysicianModal({ isOpen, onClose, initialData, refetch }: AddPhysicianModalProps) {
   const isEdit = !!initialData;
   const { createPhysician, loading: isCreating } = useCreatePhysician();
   const { updatePhysician, loading: isUpdating } = useUpdatePhysician();
+  const { refetch: refetchSingle } = useSinglePhysician(initialData?._id);
 
+  const methods = useForm();
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm();
+  } = methods;
 
-  const [specialties, setSpecialties] = useState<string[]>([]);
-  const availableSpecialties = ["Ortho", "Neuro", "Pain", "Spine", "Peds", "DPM"];
+  const { practiceOptions } = usePractices();
+
+  const [specialty, setSpecialty] = useState<string | null>(null);
+  const availableSpecialties = [
+    { label: "Ortho", value: "ortho" },
+    { label: "Neuro", value: "neuro" },
+    { label: "Pain", value: "pain" },
+    { label: "Ortho/Spine", value: "ortho/spine" },
+    { label: "Peds", value: "peds" },
+    { label: "DPM", value: "dmp" }
+  ];
 
   useEffect(() => {
     if (isOpen) {
@@ -42,37 +56,51 @@ export function AddPhysicianModal({ isOpen, onClose, initialData }: AddPhysician
           dateOfBirth: initialData.contactInfo?.dateOfBirth ? new Date(initialData.contactInfo.dateOfBirth).toISOString().split('T')[0] : "",
           noteToSelf: initialData.noteToSelf,
         });
-        setSpecialties(typeof initialData.specialty === 'string' ? initialData.specialty.split(', ') : []);
+        setSpecialty(initialData.specialty || null);
       } else {
         reset({});
-        setSpecialties([]);
+        setSpecialty(null);
       }
     }
   }, [isOpen, initialData, reset]);
 
   const toggleSpecialty = (spec: string) => {
-    setSpecialties(prev =>
-      prev.includes(spec) ? prev.filter(s => s !== spec) : [...prev, spec]
-    );
+    setSpecialty(prev => prev === spec ? null : spec);
   };
 
   const onSubmit = async (data: any) => {
     const payload = {
       ...data,
-      specialty: specialties.join(", "),
+      specialty: specialty,
       profile: data.profile?.[0],
       docs: data.docs ? Array.from(data.docs as FileList) : []
     };
 
     try {
       if (isEdit) {
-        await updatePhysician(initialData._id, payload);
+        const result = await updatePhysician(initialData?._id, payload);
+        if (result?.statusCode === 201) {
+          toast.success(result?.message || "Physician updated successfully");
+          onClose();
+          if (refetch) refetch();
+          if (refetchSingle) refetchSingle();
+        } else {
+          toast.error(result?.message || "Failed to update physician");
+        }
+
       } else {
-        await createPhysician(payload);
+        const result = await createPhysician(payload);
+        if (result?.statusCode === 201) {
+          toast.success(result?.message || "Physician created successfully");
+          onClose();
+          if (refetch) refetch();
+        } else {
+          toast.error(result?.message || "Failed to create physician");
+        }
       }
-      onClose();
-    } catch (err) {
+    } catch (err: any) {
       console.error("Failed to save physician:", err);
+      toast.error(err?.message || "Something went wrong");
     }
   };
 
@@ -94,158 +122,179 @@ export function AddPhysicianModal({ isOpen, onClose, initialData }: AddPhysician
         </div>
 
         {/* BODY */}
-        <form onSubmit={handleSubmit(onSubmit)} className="flex-1 overflow-y-auto flex flex-col">
-          <div className="flex-1 p-6 space-y-8 scrollbar-thin scrollbar-thumb-[#1E293B]">
+        <FormProvider {...methods}>
+          <form onSubmit={handleSubmit(onSubmit)} className="flex-1 overflow-y-auto flex flex-col">
+            <div className="flex-1 p-6 space-y-8 scrollbar-thin scrollbar-thumb-[#1E293B]">
 
-            {/* Basic Information */}
-            <section className="space-y-4">
-              <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest">Basic Information</h3>
+              {/* Basic Information */}
+              <section className="space-y-4">
+                <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest">Basic Information</h3>
 
-              <div className="space-y-4">
-                <FormField
-                  name="fullName"
-                  label="Full Name"
-                  placeholder="Dr. Jane Smith"
-                  register={register}
-                  errors={errors}
-                  validation={{ required: "Full name is required" }}
-                />
+                <div className="space-y-4">
+                  <FormField
+                    name="fullName"
+                    label="Full Name"
+                    placeholder="Dr. Jane Smith"
+                    register={register}
+                    errors={errors}
+                    validation={{ required: "Full name is required" }}
+                  />
 
-                <FormField
-                  name="practice"
-                  label="Practice Name"
-                  placeholder="Central Orthopedics"
-                  register={register}
-                  errors={errors}
-                />
+                  <FormField
+                    name="practice"
+                    label="Practice Name"
+                    type="select"
+                    placeholder="Select Practice..."
+                    options={practiceOptions}
+                    register={register}
+                    errors={errors}
+                    validation={{ required: "Practice name is required" }}
+                  />
 
-                <div>
-                  <label className="block text-xs font-bold text-gray-400 mb-1.5 uppercase tracking-wider">Specialty</label>
-                  <div className="flex flex-wrap gap-2">
-                    {availableSpecialties.map(spec => (
-                      <button
-                        key={spec}
-                        type="button"
-                        onClick={() => toggleSpecialty(spec)}
-                        className={cn(
-                          "px-3 py-1.5 text-xs font-bold rounded-lg border transition-all",
-                          specialties.includes(spec)
-                            ? "bg-[#00E5FF]/20 text-[#00E5FF] border-[#00E5FF]/50 shadow-[0_0_10px_rgba(0,229,255,0.1)]"
-                            : "bg-[#151B2B] text-gray-400 border-[#334155] hover:bg-[#1E293B]"
-                        )}
-                      >
-                        {spec}
-                      </button>
-                    ))}
+                  <div>
+                    <label className="block text-xs font-bold text-gray-400 mb-1.5 uppercase tracking-wider">Specialty</label>
+                    <div className="flex flex-wrap gap-2">
+                      {availableSpecialties.map(spec => (
+                        <button
+                          key={spec.value}
+                          type="button"
+                          onClick={() => toggleSpecialty(spec.value)}
+                          className={cn(
+                            "px-3 py-1.5 text-xs font-bold rounded-lg border transition-all cursor-pointer",
+                            specialty === spec.value
+                              ? "bg-[#00E5FF]/20 text-[#00E5FF] border-[#00E5FF]/50 shadow-[0_0_10px_rgba(0,229,255,0.1)]"
+                              : "bg-[#151B2B] text-gray-400 border-[#334155] hover:bg-[#1E293B]"
+                          )}
+                        >
+                          {spec.label}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </div>
-              </div>
-            </section>
+              </section>
 
-            {/* Contact */}
-            <section className="space-y-4">
-              <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest">Contact</h3>
+              {/* Contact */}
+              <section className="space-y-4">
+                <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest">Contact</h3>
 
-              <div className="space-y-4">
+                <div className="space-y-4">
+                  <FormField
+                    name="phoneNumber"
+                    label="Phone Number"
+                    type="tel"
+                    placeholder="(555) 123-4567"
+                    register={register}
+                    errors={errors}
+                    validation={{ required: "Phone number is required" }}
+                  />
+                  <FormField
+                    name="cellNumber"
+                    label="Cell"
+                    type="tel"
+                    placeholder="(555) 987-6543"
+                    register={register}
+                    errors={errors}
+                    validation={{ required: "Cell number is required" }}
+                  // validation={{
+                  //   pattern: {
+                  //     value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                  //     message: "Invalid cell number"
+                  //   },
+                  //   required: "Cell number is required"
+                  // }}
+                  />
+                  <FormField
+                    name="email"
+                    label="Email Address"
+                    type="email"
+                    placeholder="physician@example.com"
+                    register={register}
+                    errors={errors}
+                    validation={{
+                      pattern: {
+                        value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                        message: "Invalid email address"
+                      },
+                      required: "Email address is required"
+                    }}
+                  />
+                  <FormField
+                    name="dateOfBirth"
+                    label="Date of Birth"
+                    type="date"
+                    register={register}
+                    errors={errors}
+                    className="[color-scheme:dark]"
+                    validation={{ required: "Date of birth is required" }}
+                  />
+                </div>
+              </section>
+
+              {/* Documents */}
+              <section className="space-y-4">
+                <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest">Media (Optional)</h3>
+
+                <div className="space-y-4">
+                  <FormField
+                    name="profile"
+                    label="Profile Picture"
+                    type="file"
+                    accept="image/*"
+                    register={register}
+                    errors={errors}
+                  />
+                  <FormField
+                    name="docs"
+                    label="Business Card / Docs"
+                    type="file"
+                    register={register}
+                    errors={errors}
+                    multiple
+                  />
+                </div>
+              </section>
+
+              {/* Notes */}
+              <section className="space-y-4">
+                <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest">Note</h3>
                 <FormField
-                  name="phoneNumber"
-                  label="Phone Number"
-                  type="tel"
-                  placeholder="(555) 123-4567"
+                  name="noteToSelf"
+                  label="Note to Self"
+                  type="textarea"
+                  placeholder="Add private notes about this physician..."
                   register={register}
                   errors={errors}
                 />
-                <FormField
-                  name="cellNumber"
-                  label="Cell"
-                  type="tel"
-                  placeholder="(555) 987-6543"
-                  register={register}
-                  errors={errors}
-                />
-                <FormField
-                  name="email"
-                  label="Email Address"
-                  type="email"
-                  placeholder="physician@example.com"
-                  register={register}
-                  errors={errors}
-                  validation={{
-                    pattern: {
-                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                      message: "Invalid email address"
-                    }
-                  }}
-                />
-                <FormField
-                  name="dateOfBirth"
-                  label="Date of Birth"
-                  type="date"
-                  register={register}
-                  errors={errors}
-                  className="[color-scheme:dark]"
-                />
-              </div>
-            </section>
+              </section>
 
-            {/* Documents */}
-            <section className="space-y-4">
-              <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest">Media (Optional)</h3>
+            </div>
 
-              <div className="space-y-4">
-                <FormField
-                  name="profile"
-                  label="Profile Picture"
-                  type="file"
-                  accept="image/*"
-                  register={register}
-                  errors={errors}
-                />
-                <FormField
-                  name="docs"
-                  label="Business Card / Docs"
-                  type="file"
-                  register={register}
-                  errors={errors}
-                  multiple
-                />
-              </div>
-            </section>
-
-            {/* Notes */}
-            <section className="space-y-4">
-              <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest">Note</h3>
-              <FormField
-                name="noteToSelf"
-                label="Note to Self"
-                type="textarea"
-                placeholder="Add private notes about this physician..."
-                register={register}
-                errors={errors}
-              />
-            </section>
-
-          </div>
-
-          {/* FOOTER */}
-          <div className="p-6 border-t border-[#1E293B] bg-[#0B101E] space-y-3 mt-auto">
-            <button
-              disabled={isCreating || isUpdating}
-              type="submit"
-              className="w-full py-3 text-sm font-bold text-[#0B101E] bg-[#00E5FF] rounded-xl hover:bg-cyan-400 transition-colors shadow-[0_0_15px_rgba(0,229,255,0.3)] flex items-center justify-center gap-2 disabled:opacity-50"
-            >
-              {(isCreating || isUpdating) ? <Loader size={16} /> : (isEdit ? "Update Physician" : "Save Physician")}
-            </button>
-            <button
-              type="button"
-              disabled={isCreating || isUpdating}
-              onClick={onClose}
-              className="w-full py-3 text-sm font-bold text-gray-300 bg-transparent border border-[#334155] rounded-xl hover:bg-[#1E293B] transition-colors disabled:opacity-50"
-            >
-              Cancel
-            </button>
-          </div>
-        </form>
+            {/* FOOTER */}
+            <div className="p-6 border-t border-[#1E293B] bg-[#0B101E] space-y-3 mt-auto">
+              <button
+                disabled={isCreating || isUpdating}
+                type="submit"
+                className="w-full py-3 text-sm font-bold text-[#0B101E] bg-[#00E5FF] rounded-xl hover:bg-cyan-400 transition-colors shadow-[0_0_15px_rgba(0,229,255,0.3)] flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
+              >
+                {(isCreating || isUpdating) ?
+                  <div className="flex items-center gap-2">
+                    <Loader color="black" size={16} />
+                    <span>Loading...</span>
+                  </div>
+                  : (isEdit ? "Update Physician" : "Save Physician")}
+              </button>
+              <button
+                type="button"
+                disabled={isCreating || isUpdating}
+                onClick={onClose}
+                className="w-full py-3 text-sm font-bold text-gray-300 bg-transparent border border-[#334155] rounded-xl hover:bg-[#1E293B] transition-colors disabled:opacity-50 cursor-pointer"
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        </FormProvider>
 
       </div>
     </>

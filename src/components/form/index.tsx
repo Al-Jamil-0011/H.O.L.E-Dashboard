@@ -1,17 +1,20 @@
 "use client";
 import React, { ReactNode, useState } from "react";
-import { UseFormRegister, FieldErrors, RegisterOptions } from "react-hook-form";
+import { UseFormRegister, FieldErrors, RegisterOptions, useFormContext, useWatch, Control } from "react-hook-form";
 import { UploadCloud, X } from "lucide-react";
 import Image from "next/image";
+import { cn } from "@/lib/utils";
+
 
 export type Option = {
     label: string;
     value: string | number;
+    extraText?: string;
 };
 
 export interface FormFieldProps {
     /** The type of input field to render */
-    type?: "text" | "email" | "password" | "number" | "select" | "radio" | "checkbox" | "file" | "textarea" | "tel";
+    type?: "text" | "email" | "password" | "number" | "select" | "radio" | "checkbox" | "file" | "textarea" | "tel" | "date";
     /** The name of the field, used for react-hook-form registration */
     name: string;
     /** The label displayed above the field */
@@ -36,6 +39,8 @@ export interface FormFieldProps {
     multiple?: boolean;
     /** Accept attribute for file uploads (e.g. 'image/*') */
     accept?: string;
+    /** Optional control object from react-hook-form for custom inputs */
+    control?: Control<any>;
 }
 
 const FormField: React.FC<FormFieldProps> = ({
@@ -52,7 +57,9 @@ const FormField: React.FC<FormFieldProps> = ({
     className = "",
     multiple = false,
     accept,
+    control: propControl,
 }) => {
+    const [isOpen, setIsOpen] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [filePreview, setFilePreview] = useState<string | null>(null);
     const [fileName, setFileName] = useState<string | null>(null);
@@ -108,28 +115,148 @@ const FormField: React.FC<FormFieldProps> = ({
         ? "border-rose-500 bg-rose-50 dark:bg-rose-500/5 text-rose-600 dark:text-rose-400 focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20"
         : `border-gray-200 dark:border-[#1E293B] focus:border-[#00E5FF] focus:ring-2 focus:ring-[#00E5FF]/20 ${colorClass}`;
 
+    const formContext = useFormContext();
+    const control = propControl || formContext?.control;
+
+    // Get current value for custom components like select
+    const watchedValue = useWatch({
+        name,
+        control,
+    });
+
     // Common props spread to all input elements
     const commonProps = {
         ...register(name, validation),
+        value: watchedValue ?? "",
         className: `${baseInputClasses} ${paddingClasses} ${errorClasses} ${className}`,
     };
 
     const renderInput = () => {
         switch (type) {
+            // case "select":
+            //     return (
+            //         <select {...commonProps} className={`${commonProps.className} appearance-none cursor-pointer`}>
+            //             {placeholder && (
+            //                 <option value="" disabled hidden>
+            //                     {placeholder}
+            //                 </option>
+            //             )}
+            //             {options.map((opt, idx) => (
+            //                 <option className="mb-1" key={idx} value={opt.value}>
+            //                     {opt.label}
+            //                 </option>
+            //             ))}
+            //         </select>
+            //     );
             case "select":
+                const selectedOption = options.find(
+                    (opt) => opt.value?.toString() === commonProps.value?.toString()
+                );
+
                 return (
-                    <select {...commonProps} className={`${commonProps.className} appearance-none cursor-pointer`}>
-                        {placeholder && (
-                            <option value="" disabled hidden>
-                                {placeholder}
-                            </option>
+                    <div className="relative">
+                        {/* Hidden input for react-hook-form */}
+                        <input
+                            type="hidden"
+                            {...register(name, validation)}
+                        />
+
+                        {/* Trigger */}
+                        <button
+                            type="button"
+                            onClick={() => setIsOpen(!isOpen)}
+                            className={`${commonProps.className} appearance-none cursor-pointer text-left flex items-center justify-between group`}
+                        >
+                            <div className="flex-1 overflow-hidden">
+                                {selectedOption ? (
+                                    <div className="flex flex-col">
+                                        <span className="font-bold text-gray-900 dark:text-white truncate">
+                                            {selectedOption.label}
+                                        </span>
+
+                                        {selectedOption.extraText && (
+                                            <span className="text-[10px] text-gray-500 dark:text-gray-500 font-medium uppercase tracking-wider">
+                                                {selectedOption.extraText}
+                                            </span>
+                                        )}
+                                    </div>
+                                ) : (
+                                    <span className="text-gray-400 dark:text-gray-600">
+                                        {placeholder}
+                                    </span>
+                                )}
+                            </div>
+                            <svg
+                                className={cn(
+                                    "w-4 h-4 ml-2 transition-transform duration-200 text-gray-400 dark:text-gray-600",
+                                    isOpen && "rotate-180"
+                                )}
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+
+                        {/* Dropdown */}
+                        {isOpen && (
+                            <>
+                                <div
+                                    className="fixed inset-0 z-40"
+                                    onClick={() => setIsOpen(false)}
+                                />
+                                <div className="absolute z-50 mt-2 w-full overflow-hidden rounded-xl border border-gray-200 dark:border-[#1E293B] bg-white dark:bg-[#0B101E] shadow-[0_10px_40px_rgba(0,0,0,0.3)] animate-in fade-in zoom-in-95 duration-200">
+                                    <div className="max-h-60 overflow-y-auto scrollbar-thin scrollbar-thumb-[#1E293B]">
+                                        {options.map((opt, idx) => (
+                                            <div
+                                                key={idx}
+                                                onClick={() => {
+                                                    if (formContext?.setValue) {
+                                                        formContext.setValue(name, opt.value, { 
+                                                            shouldValidate: true, 
+                                                            shouldDirty: true,
+                                                            shouldTouch: true 
+                                                        });
+                                                    } else {
+                                                        const event = {
+                                                            target: {
+                                                                name,
+                                                                value: opt.value,
+                                                            },
+                                                        } as any;
+                                                        register(name, validation).onChange(event);
+                                                    }
+                                                    setIsOpen(false);
+                                                }}
+                                                className={cn(
+                                                    "cursor-pointer px-4 py-3 hover:bg-gray-50 dark:hover:bg-[#151B2B] transition-colors border-b last:border-0 border-gray-100 dark:border-[#1E293B]",
+                                                    opt.value?.toString() === commonProps.value?.toString() && "bg-[#00E5FF]/5 dark:bg-[#00E5FF]/5"
+                                                )}
+                                            >
+                                                <div className="flex flex-col">
+                                                    <span className={cn(
+                                                        "text-sm font-bold transition-colors",
+                                                        opt.value?.toString() === commonProps.value?.toString()
+                                                            ? "text-[#00E5FF]"
+                                                            : "text-gray-900 dark:text-white"
+                                                    )}>
+                                                        {opt.label}
+                                                    </span>
+
+                                                    {opt.extraText && (
+                                                        <span className="text-[10px] text-gray-500 dark:text-gray-500 font-bold uppercase tracking-widest mt-0.5">
+                                                            {opt.extraText}
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </>
                         )}
-                        {options.map((opt, idx) => (
-                            <option key={idx} value={opt.value}>
-                                {opt.label}
-                            </option>
-                        ))}
-                    </select>
+                    </div>
                 );
 
             case "textarea":
@@ -305,14 +432,6 @@ const FormField: React.FC<FormFieldProps> = ({
 
                 {renderInput()}
 
-                {/* Dropdown chevron for select */}
-                {type === "select" && (
-                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-400 dark:text-gray-600">
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
-                        </svg>
-                    </div>
-                )}
             </div>
 
             {/* Error Message */}

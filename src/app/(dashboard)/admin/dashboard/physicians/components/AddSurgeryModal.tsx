@@ -2,30 +2,35 @@
 
 import { useEffect, useState } from "react";
 import { X, Upload, Activity } from "lucide-react";
-import { useCreateSurgery, useUpdateSurgery } from "@/hooks/admin/surgeries";
-import { useForm } from "react-hook-form";
+import { useCreateSurgery, useSingleSurgery, useUpdateSurgery } from "@/hooks/admin/surgeries";
+import { useForm, FormProvider } from "react-hook-form";
 import FormField from "@/components/form";
 import Loader from "@/components/loader";
-import { usePhysicians } from "@/hooks/admin/physicians";
+import { useFacilities, usePhysicians } from "@/hooks/common";
+import toast from "react-hot-toast";
 
 interface AddSurgeryModalProps {
   isOpen: boolean;
   onClose: () => void;
   initialData?: any;
+  refetch?: () => void;
 }
 
-export function AddSurgeryModal({ isOpen, onClose, initialData }: AddSurgeryModalProps) {
+export function AddSurgeryModal({ isOpen, onClose, initialData, refetch }: AddSurgeryModalProps) {
   const isEdit = !!initialData;
   const { createSurgery, loading: isCreating } = useCreateSurgery();
   const { updateSurgery, loading: isUpdating } = useUpdateSurgery();
-  const { physicians } = usePhysicians();
+  const { physicianOptions } = usePhysicians();
+  const { facilityOptions } = useFacilities();
+  const { refetch: refetchSingle } = useSingleSurgery(initialData?._id);
 
+  const methods = useForm();
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm();
+  } = methods;
 
   useEffect(() => {
     if (isOpen) {
@@ -53,6 +58,9 @@ export function AddSurgeryModal({ isOpen, onClose, initialData }: AddSurgeryModa
   const onSubmit = async (data: any) => {
     const payload = {
       ...data,
+      dateOfSurgery: data.dateOfSurgery
+        ? new Date(data.dateOfSurgery).toISOString()
+        : "",
       sticker: data.sticker?.[0] || null,
       appre: data.appre?.[0] || null,
       appost: data.appost?.[0] || null,
@@ -63,22 +71,37 @@ export function AddSurgeryModal({ isOpen, onClose, initialData }: AddSurgeryModa
 
     try {
       if (isEdit) {
-        await updateSurgery(initialData._id, payload);
+        const result = await updateSurgery(initialData?._id, payload);
+        if (result?.statusCode === 201) {
+          onClose();
+          if (refetch) refetch();
+          if (refetchSingle) refetchSingle();
+          toast.success(result?.message || "Surgery updated successfully");
+        } else {
+          toast.error(result?.message || "Failed to update surgery");
+        }
       } else {
-        await createSurgery(payload);
+        const result = await createSurgery(payload);
+        if (result?.statusCode === 201) {
+          onClose();
+          if (refetch) refetch();
+          toast.success(result?.message || "Surgery created successfully");
+        } else {
+          toast.error(result?.message || "Failed to create surgery");
+        }
       }
-      onClose();
-    } catch (err) {
-      console.error("Failed to save surgery:", err);
+    } catch (err: any) {
+      console.error(err);
+      toast.error(err?.message || "Failed to save surgery");
     }
   };
 
   if (!isOpen) return null;
 
-  const physicianOptions = physicians.map(p => ({
-    label: p.fullName,
-    value: p._id
-  }));
+  // const physicianOptions = physicians.map(p => ({
+  //   label: p.fullName,
+  //   value: p._id,
+  // }));
 
   return (
     <>
@@ -88,7 +111,7 @@ export function AddSurgeryModal({ isOpen, onClose, initialData }: AddSurgeryModa
         {/* HEADER */}
         <div className="flex items-center justify-between p-6 border-b border-[#1E293B]">
           <h2 className="text-lg font-bold text-white flex items-center gap-2">
-            <button onClick={onClose} className="p-1 rounded-md text-gray-400 hover:text-white hover:bg-[#1E293B]">
+            <button onClick={onClose} className="p-1 rounded-md text-gray-400 hover:text-white hover:bg-[#1E293B] cursor-pointer">
               <X className="h-5 w-5" />
             </button>
             {isEdit ? "Update Surgery" : "Add Surgery"}
@@ -96,126 +119,138 @@ export function AddSurgeryModal({ isOpen, onClose, initialData }: AddSurgeryModa
         </div>
 
         {/* BODY */}
-        <form onSubmit={handleSubmit(onSubmit)} className="flex-1 overflow-y-auto flex flex-col">
-          <div className="flex-1 p-6 space-y-8 scrollbar-thin scrollbar-thumb-[#1E293B]">
+        <FormProvider {...methods}>
+          <form onSubmit={handleSubmit(onSubmit)} className="flex-1 overflow-y-auto flex flex-col">
+            <div className="flex-1 p-6 space-y-8 scrollbar-thin scrollbar-thumb-[#1E293B]">
 
-            {/* Surgery Info */}
-            <section className="space-y-4">
-              <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest">Surgery Info</h3>
-              <div className="space-y-4">
-                <FormField
-                  name="physician"
-                  label="Physician"
-                  type="select"
-                  placeholder="Select Physician..."
-                  options={physicianOptions}
-                  register={register}
-                  errors={errors}
-                  validation={{ required: "Physician is required" }}
-                />
-                <FormField
-                  name="patientId"
-                  label="Patient Identifier (PT ID)"
-                  placeholder="e.g. PT-123456"
-                  register={register}
-                  errors={errors}
-                  validation={{ required: "Patient ID is required" }}
-                />
-                <FormField
-                  name="facility"
-                  label="Facility"
-                  placeholder="Hospital or Clinic ID/Name"
-                  register={register}
-                  errors={errors}
-                />
-                <FormField
-                  name="dateOfSurgery"
-                  label="Date of Surgery"
-                  type="date"
-                  register={register}
-                  errors={errors}
-                  className="[color-scheme:dark]"
-                />
-                <FormField
-                  name="surgeryType"
-                  label="Surgery Type"
-                  placeholder="Specific procedure name"
-                  register={register}
-                  errors={errors}
-                />
-              </div>
-            </section>
-
-            {/* Surgery Materials */}
-            <section className="space-y-4">
-              <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest">Surgery Materials</h3>
-              <div className="space-y-4">
-                <FormField name="screws" label="Screws" placeholder="Details..." register={register} errors={errors} />
-                <FormField name="plates" label="Plates" placeholder="Details..." register={register} errors={errors} />
-                <FormField name="rodsOrconnectors" label="Rods/Connectors" placeholder="Details..." register={register} errors={errors} />
-                <FormField name="implants" label="Implants" placeholder="Details..." register={register} errors={errors} />
-                <FormField name="biologics" label="Biologics" placeholder="Details..." register={register} errors={errors} />
-              </div>
-            </section>
-
-            {/* Radiology & Clinical Images */}
-            <section className="space-y-4">
-              <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest">Radiology & Clinical Images</h3>
-              <div className="grid grid-cols-2 gap-4">
-                <FormField name="appre" label="AP PRE" type="file" register={register} errors={errors} />
-                <FormField name="appost" label="AP POST" type="file" register={register} errors={errors} />
-                <FormField name="lateralpre" label="LATERAL PRE" type="file" register={register} errors={errors} />
-                <FormField name="lateralpost" label="LATERAL POST" type="file" register={register} errors={errors} />
-                <div className="col-span-2">
-                  <FormField name="sticker" label="PATIENT STICKER" type="file" register={register} errors={errors} />
+              {/* Surgery Info */}
+              <section className="space-y-4">
+                <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest">Surgery Info</h3>
+                <div className="space-y-4">
+                  <FormField
+                    name="physician"
+                    label="Physician"
+                    type="select"
+                    placeholder="Select Physician..."
+                    options={physicianOptions}
+                    register={register}
+                    errors={errors}
+                    validation={{ required: "Physician is required" }}
+                  />
+                  <FormField
+                    name="patientId"
+                    label="Patient Identifier (PT ID)"
+                    placeholder="e.g. PT-123456"
+                    register={register}
+                    errors={errors}
+                    validation={{ required: "Patient ID is required" }}
+                  />
+                  <FormField
+                    name="facility"
+                    label="Facility"
+                    type="select"
+                    placeholder="Select Facility..."
+                    options={facilityOptions}
+                    register={register}
+                    errors={errors}
+                    validation={{ required: "Facility is required" }}
+                  />
+                  <FormField
+                    name="dateOfSurgery"
+                    label="Date of Surgery"
+                    type="date"
+                    register={register}
+                    errors={errors}
+                    className="[color-scheme:dark]"
+                  />
+                  <FormField
+                    name="surgeryType"
+                    label="Surgery Type"
+                    placeholder="Specific procedure name"
+                    register={register}
+                    errors={errors}
+                  />
                 </div>
-              </div>
-            </section>
+              </section>
 
-            {/* Documents & Notes */}
-            <section className="space-y-4">
-              <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest">Documents & Notes</h3>
-              <div className="space-y-4">
-                <FormField
-                  name="notes"
-                  label="Upload Other Files"
-                  type="file"
-                  multiple
-                  register={register}
-                  errors={errors}
-                />
-                <FormField
-                  name="caseNotes"
-                  label="Case Notes"
-                  type="textarea"
-                  placeholder="Enter surgical notes, complications, or specific instructions..."
-                  register={register}
-                  errors={errors}
-                />
-              </div>
-            </section>
+              {/* Surgery Materials */}
+              <section className="space-y-4">
+                <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest">Surgery Materials</h3>
+                <div className="space-y-4">
+                  <FormField name="screws" label="Screws" placeholder="Details..." register={register} errors={errors} />
+                  <FormField name="plates" label="Plates" placeholder="Details..." register={register} errors={errors} />
+                  <FormField name="rodsOrconnectors" label="Rods/Connectors" placeholder="Details..." register={register} errors={errors} />
+                  <FormField name="implants" label="Implants" placeholder="Details..." register={register} errors={errors} />
+                  <FormField name="biologics" label="Biologics" placeholder="Details..." register={register} errors={errors} />
+                </div>
+              </section>
 
-          </div>
+              {/* Radiology & Clinical Images */}
+              <section className="space-y-4">
+                <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest">Radiology & Clinical Images</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField name="appre" label="AP PRE" type="file" register={register} errors={errors} />
+                  <FormField name="appost" label="AP POST" type="file" register={register} errors={errors} />
+                  <FormField name="lateralpre" label="LATERAL PRE" type="file" register={register} errors={errors} />
+                  <FormField name="lateralpost" label="LATERAL POST" type="file" register={register} errors={errors} />
+                  <div className="col-span-2">
+                    <FormField name="sticker" label="PATIENT STICKER" type="file" register={register} errors={errors} />
+                  </div>
+                </div>
+              </section>
 
-          {/* FOOTER */}
-          <div className="p-6 border-t border-[#1E293B] bg-[#0B101E] space-y-3 mt-auto">
-            <button
-              disabled={isCreating || isUpdating}
-              type="submit"
-              className="w-full py-3 text-sm font-bold text-[#0B101E] bg-[#00E5FF] rounded-xl hover:bg-cyan-400 transition-colors shadow-[0_0_15px_rgba(0,229,255,0.3)] flex items-center justify-center gap-2 disabled:opacity-50"
-            >
-              {(isCreating || isUpdating) ? <Loader size={16} /> : (isEdit ? "Update Surgery" : "Save Surgery")}
-            </button>
-            <button
-              type="button"
-              disabled={isCreating || isUpdating}
-              onClick={onClose}
-              className="w-full py-3 text-sm font-bold text-gray-300 bg-transparent border border-[#334155] rounded-xl hover:bg-[#1E293B] transition-colors disabled:opacity-50"
-            >
-              Cancel
-            </button>
-          </div>
-        </form>
+              {/* Documents & Notes */}
+              <section className="space-y-4">
+                <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest">Documents & Notes</h3>
+                <div className="space-y-4">
+                  <FormField
+                    name="notes"
+                    label="Upload Other Files"
+                    type="file"
+                    multiple
+                    register={register}
+                    errors={errors}
+                  />
+                  <FormField
+                    name="caseNotes"
+                    label="Case Notes"
+                    type="textarea"
+                    placeholder="Enter surgical notes, complications, or specific instructions..."
+                    register={register}
+                    errors={errors}
+                  />
+                </div>
+              </section>
+
+            </div>
+
+            {/* FOOTER */}
+            <div className="p-6 border-t border-[#1E293B] bg-[#0B101E] space-y-3 mt-auto">
+              <button
+                disabled={isCreating || isUpdating}
+                type="submit"
+                className="w-full py-3 text-sm font-bold text-[#0B101E] bg-[#00E5FF] rounded-xl hover:bg-cyan-400 transition-colors shadow-[0_0_15px_rgba(0,229,255,0.3)] flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
+              >
+                {(isCreating || isUpdating) ?
+                  <div className="flex items-center gap-2">
+                    <Loader size={16} />
+                    <span>Loading...</span>
+                  </div>
+                  :
+                  (isEdit ? "Update Surgery" : "Save Surgery")
+                }
+              </button>
+              <button
+                type="button"
+                disabled={isCreating || isUpdating}
+                onClick={onClose}
+                className="w-full py-3 text-sm font-bold text-gray-300 bg-transparent border border-[#334155] rounded-xl hover:bg-[#1E293B] transition-colors disabled:opacity-50 cursor-pointer"
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        </FormProvider>
 
       </div>
     </>
