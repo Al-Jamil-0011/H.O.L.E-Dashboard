@@ -133,9 +133,10 @@ export function DataTable<T>({
               <button
                 disabled={pagination.currentPage === 1}
                 onClick={() => pagination.onPageChange(pagination.currentPage - 1)}
-                className="p-2 rounded-lg border border-border text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
+                className="p-2 rounded-lg border border-border text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer flex items-center gap-2"
               >
                 <ChevronLeft className="h-4 w-4" />
+                <span className="text-xs font-semibold">Previous</span>
               </button>
 
               <div className="custom-pagination">
@@ -150,8 +151,9 @@ export function DataTable<T>({
               <button
                 disabled={pagination.currentPage === pagination.totalPage}
                 onClick={() => pagination.onPageChange(pagination.currentPage + 1)}
-                className="p-2 rounded-lg border border-border text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
+                className="p-2 rounded-lg border border-border text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer flex items-center gap-2"
               >
+                <span className="text-xs font-semibold">Next</span>
                 <ChevronRight className="h-4 w-4" />
               </button>
             </div>

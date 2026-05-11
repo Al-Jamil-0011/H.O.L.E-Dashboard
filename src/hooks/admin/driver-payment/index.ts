@@ -75,7 +75,6 @@ export function useCreateOrUpdateShipmentRate() {
 
     const createOrUpdateShipmentRate =
         async (
-            id: string,
             payload: IShipmentRatePayload
         ) => {
             setLoading(true);
@@ -86,7 +85,7 @@ export function useCreateOrUpdateShipmentRate() {
                     await useApi.put<
                         IApiResponse<IShipmentRate>
                     >(
-                        `/shipment-rate/create-or-update/${id}`,
+                        `/shipment-rate/create-or-update`,
                         payload
                     );
 
@@ -112,7 +111,7 @@ export function useCreateOrUpdateShipmentRate() {
 }
 
 
-export function useWithdrawals(
+export function useDriverWithdrawals(
     defaultStatus: string = "pending"
 ) {
     const [withdrawals, setWithdrawals] =

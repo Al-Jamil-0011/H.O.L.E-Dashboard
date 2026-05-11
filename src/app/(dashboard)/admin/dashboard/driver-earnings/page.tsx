@@ -20,98 +20,152 @@ import {
   History,
   TrendingUp
 } from 'lucide-react';
+import { useChangeWithdrawalStatus, useCreateOrUpdateShipmentRate, useDriverWithdrawals, useShipmentRate } from '@/hooks/admin/driver-payment';
+import toast from 'react-hot-toast';
+import { useEffect, useMemo } from 'react';
 
-// MOCK DATA
 
-// Pricing Model (Based on backend Schema)
-const mockPricing = {
-  name: "Standard Logistics Pricing",
-  amountPerKm: 1.5,
-  currency: "USD",
-  priorityCharges: [
-    { priority: "standard", extraCharge: 0, estimatedTime: "2-4 hours" },
-    { priority: "urgent", extraCharge: 5, estimatedTime: "1-2 hours" },
-    { priority: "express", extraCharge: 10, estimatedTime: "30-60 mins" },
-  ]
-};
 
-const mockWithdrawalRequests = [
-  { id: 'WR-001', userId: 'DRV-1029', name: 'Daniel Carter', email: 'daniel.c@invictus.com', requestDate: '2026-04-20', amount: 350.00, status: 'Pending' },
-  { id: 'WR-002', userId: 'DRV-1030', name: 'Sarah Jenkins', email: 'sarah.j@invictus.com', requestDate: '2026-04-21', amount: 120.00, status: 'Pending' },
-  { id: 'WR-003', userId: 'DRV-1031', name: 'Mike Ross', email: 'mike.r@invictus.com', requestDate: '2026-04-21', amount: 450.00, status: 'Pending' },
-];
-
-const mockHistory = [
-  { id: 'WR-000', userId: 'DRV-1025', name: 'John Doe', email: 'john.d@invictus.com', requestDate: '2026-04-18', amount: 200.00, status: 'Paid' },
-  { id: 'WR-00-1', userId: 'DRV-1026', name: 'Alice Smith', email: 'alice.s@invictus.com', requestDate: '2026-04-17', amount: 550.00, status: 'Paid' },
-];
 
 export default function DriverEarningsControlPage() {
   const [activeTab, setActiveTab] = useState<'requests' | 'history'>('requests');
   const [search, setSearch] = useState('');
-  const [pricing, setPricing] = useState(mockPricing);
+
+  // shipment rate hooks
+  const { shipmentRate, loading: shipmentRateLoading, refetch: refetchShipmentRate } = useShipmentRate();
+  const { createOrUpdateShipmentRate, loading: isSavingRate } = useCreateOrUpdateShipmentRate();
+
+  // withdrawal hooks
+  const {
+    withdrawals: pendingRequests,
+    loading: isPendingLoading,
+    meta: pendingMeta,
+    setQuery: setPendingQuery,
+    refetch: refetchPending
+  } = useDriverWithdrawals("pending");
+
+  const {
+    withdrawals: historyData,
+    loading: isHistoryLoading,
+    meta: historyMeta,
+    setQuery: setHistoryQuery,
+    refetch: refetchHistory
+  } = useDriverWithdrawals("paid");
+
+  const { changeWithdrawalStatus, loading: isChangingStatus } = useChangeWithdrawalStatus();
 
   // Modals state
   const [isPricingModalOpen, setIsPricingModalOpen] = useState(false);
   const [isConfirmPayModalOpen, setIsConfirmPayModalOpen] = useState(false);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
 
-  // Data State
-  const [requests, setRequests] = useState(mockWithdrawalRequests);
-  const [history, setHistory] = useState(mockHistory);
-  const [selectedRequest, setSelectedRequest] = useState<typeof mockWithdrawalRequests[0] | null>(null);
+  const [selectedRequest, setSelectedRequest] = useState<any | null>(null);
 
   // Pricing Form State
   const [newPricing, setNewPricing] = useState({
-    amountPerKm: pricing.amountPerKm,
-    urgentExtra: pricing.priorityCharges.find(p => p.priority === 'urgent')?.extraCharge || 0,
-    expressExtra: pricing.priorityCharges.find(p => p.priority === 'express')?.extraCharge || 0
+    amountPerKm: 0,
+    urgentExtra: 0,
+    expressExtra: 0
   });
 
-  const handleSavePricing = () => {
-    setPricing({
-      ...pricing,
-      amountPerKm: newPricing.amountPerKm,
-      priorityCharges: [
-        { priority: "standard", extraCharge: 0, estimatedTime: "2-4 hours" },
-        { priority: "urgent", extraCharge: newPricing.urgentExtra, estimatedTime: "1-2 hours" },
-        { priority: "express", extraCharge: newPricing.expressExtra, estimatedTime: "30-60 mins" }
-      ]
+  // Sync pricing state with fetched data
+  useEffect(() => {
+    if (shipmentRate) {
+      setNewPricing({
+        amountPerKm: shipmentRate.amountPerKm,
+        urgentExtra: shipmentRate.priorityCharges?.find(p => p.priority === 'urgent')?.extraCharge || 0,
+        expressExtra: shipmentRate.priorityCharges?.find(p => p.priority === 'express')?.extraCharge || 0
+      });
+    }
+  }, [shipmentRate]);
+
+  // DEBOUNCED SEARCH
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setPendingQuery(prev => {
+        if (prev.searchTerm === search) return prev;
+        return { ...prev, searchTerm: search, page: 1 };
+      });
+      setHistoryQuery(prev => {
+        if (prev.searchTerm === search) return prev;
+        return { ...prev, searchTerm: search, page: 1 };
+      });
+    }, 500);
+    return () => clearTimeout(handler);
+  }, [search, setPendingQuery, setHistoryQuery]);
+
+  const handleSavePricing = async () => {
+    if (!shipmentRate) {
+      toast.error("No shipment rate found to update");
+      return;
+    }
+
+    // Construct the priorityCharges array by updating existing ones
+    const updatedPriorityCharges = (shipmentRate.priorityCharges || []).map((pc: any) => {
+      if (pc.priority === 'urgent') {
+        return { ...pc, extraCharge: newPricing.urgentExtra };
+      }
+      if (pc.priority === 'express') {
+        return { ...pc, extraCharge: newPricing.expressExtra };
+      }
+      return pc;
     });
-    setIsPricingModalOpen(false);
+
+    const payload = {
+      amountPerKm: newPricing.amountPerKm,
+      priorityCharges: updatedPriorityCharges
+    };
+
+    const result = await createOrUpdateShipmentRate(payload as any);
+    if (result?.success) {
+      toast.success(result?.message || "Shipment rate updated successfully");
+      refetchShipmentRate();
+      setIsPricingModalOpen(false);
+    } else {
+      toast.error(result?.message || "Failed to update shipment rate");
+    }
   };
 
-  const handlePayConfirm = () => {
-    if (selectedRequest) {
-      // Move from requests to history
-      const paidRequest = { ...selectedRequest, status: 'Paid' };
-      setRequests(reqs => reqs.filter(r => r.id !== selectedRequest.id));
-      setHistory(h => [paidRequest, ...h]);
+  const handlePayConfirm = async () => {
+    if (!selectedRequest) return;
+
+    const result = await changeWithdrawalStatus(selectedRequest._id, { status: 'paid' });
+    if (result?.success) {
+      setIsConfirmPayModalOpen(false);
+      setIsSuccessModalOpen(true);
+      refetchPending();
+      refetchHistory();
+      setTimeout(() => setIsSuccessModalOpen(false), 3000);
+    } else {
+      toast.error(result?.message || "Failed to process payment");
     }
-    setIsConfirmPayModalOpen(false);
-    setIsSuccessModalOpen(true);
-    setTimeout(() => setIsSuccessModalOpen(false), 3000);
   };
 
   // Table Columns
   const requestColumns = [
-    { header: "USER ID", accessorKey: "userId" as const },
+    { header: "TRANSACTION ID", accessorKey: "transactionId" as const },
     {
       header: "DRIVER NAME",
-      render: (item: any) => <span className="font-semibold text-white">{item.name}</span>
+      render: (item: any) => <span className="font-semibold text-white">{item.user?.fullName}</span>
     },
-    { header: "EMAIL", accessorKey: "email" as const },
-    { header: "REQUEST DATE", accessorKey: "requestDate" as const, className: "text-gray-400" },
+    {
+      header: "EMAIL",
+      render: (item: any) => <span className="font-semibold text-white">{item.user?.email}</span>
+    },
+    {
+      header: "REQUEST DATE",
+      render: (item: any) => <span className="text-gray-400">{new Date(item.createdAt).toLocaleDateString()}</span>
+    },
     {
       header: "AMOUNT",
-      render: (item: any) => <span className="text-[#00E5FF] font-bold">${item.amount.toFixed(2)}</span>
+      render: (item: any) => <span className="text-[#00E5FF] font-bold">${item.totalAmount?.toFixed(2)}</span>
     },
     {
       header: "ACTION",
       render: (item: any) => (
         <button
           onClick={() => { setSelectedRequest(item); setIsConfirmPayModalOpen(true); }}
-          className="px-4 py-1.5 text-xs font-bold text-[#0B101E] bg-[#00E5FF] hover:bg-cyan-400 rounded-md shadow-sm transition-all"
+          className="px-4 py-1.5 text-xs font-bold text-[#0B101E] bg-primary hover:bg-primary/90 rounded-md shadow-sm transition-all cursor-pointer"
         >
           Pay Now
         </button>
@@ -120,16 +174,22 @@ export default function DriverEarningsControlPage() {
   ];
 
   const historyColumns = [
-    { header: "USER ID", accessorKey: "userId" as const },
+    { header: "TRANSACTION ID", accessorKey: "transactionId" as const },
     {
       header: "DRIVER NAME",
-      render: (item: any) => <span className="font-semibold text-white">{item.name}</span>
+      render: (item: any) => <span className="font-semibold text-white">{item.user?.fullName}</span>
     },
-    { header: "EMAIL", accessorKey: "email" as const },
-    { header: "PAYMENT DATE", accessorKey: "requestDate" as const, className: "text-gray-400" },
+    {
+      header: "EMAIL",
+      render: (item: any) => <span className="font-semibold text-white">{item.user?.email}</span>
+    },
+    {
+      header: "PAYMENT DATE",
+      render: (item: any) => <span className="text-gray-400">{new Date(item.updatedAt).toLocaleDateString()}</span>
+    },
     {
       header: "AMOUNT",
-      render: (item: any) => <span className="text-emerald-400 font-bold">${item.amount.toFixed(2)}</span>
+      render: (item: any) => <span className="text-emerald-400 font-bold">${item.totalAmount?.toFixed(2)}</span>
     },
     {
       header: "STATUS",
@@ -141,11 +201,14 @@ export default function DriverEarningsControlPage() {
     }
   ];
 
-  // Filtering
-  const filteredData = (activeTab === 'requests' ? requests : history).filter(item =>
-    item.name.toLowerCase().includes(search.toLowerCase()) ||
-    item.userId.toLowerCase().includes(search.toLowerCase())
-  );
+  // Stats Calculation
+  const stats = useMemo(() => {
+    return {
+      baseRate: shipmentRate?.amountPerKm || 0,
+      urgentFee: shipmentRate?.priorityCharges?.find(p => p.priority === 'urgent')?.extraCharge || 0,
+      expressFee: shipmentRate?.priorityCharges?.find(p => p.priority === 'express')?.extraCharge || 0,
+    };
+  }, [shipmentRate]);
 
   return (
     <div className="space-y-8 animate-in fade-in zoom-in duration-500 pb-12">
@@ -180,7 +243,7 @@ export default function DriverEarningsControlPage() {
                 </div>
                 <div>
                   <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Base Rate (Per KM)</p>
-                  <p className="text-lg font-black text-white">${pricing.amountPerKm.toFixed(2)}</p>
+                  <p className="text-lg font-black text-white">${stats.baseRate.toFixed(2)}</p>
                 </div>
               </div>
 
@@ -191,7 +254,7 @@ export default function DriverEarningsControlPage() {
                 <div>
                   <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Urgency Fee</p>
                   <p className="text-lg font-black text-white">
-                    +${pricing.priorityCharges.find(p => p.priority === 'urgent')?.extraCharge.toFixed(2) || '0.00'}
+                    +${stats.urgentFee.toFixed(2)}
                   </p>
                 </div>
               </div>
@@ -203,7 +266,7 @@ export default function DriverEarningsControlPage() {
                 <div>
                   <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Express / Rush Fee</p>
                   <p className="text-lg font-black text-white">
-                    +${pricing.priorityCharges.find(p => p.priority === 'express')?.extraCharge.toFixed(2) || '0.00'}
+                    +${stats.expressFee.toFixed(2)}
                   </p>
                 </div>
               </div>
@@ -212,15 +275,9 @@ export default function DriverEarningsControlPage() {
           </div>
 
           <button
-            onClick={() => {
-              setNewPricing({
-                amountPerKm: pricing.amountPerKm,
-                urgentExtra: pricing.priorityCharges.find(p => p.priority === 'urgent')?.extraCharge || 0,
-                expressExtra: pricing.priorityCharges.find(p => p.priority === 'express')?.extraCharge || 0
-              });
-              setIsPricingModalOpen(true);
-            }}
-            className="flex items-center gap-2 px-6 py-3 text-sm font-bold text-[#0B101E] bg-[#00E5FF] rounded-xl shadow-[0_0_15px_rgba(0,229,255,0.3)] transition-all hover:bg-cyan-400 hover:shadow-[0_0_25px_rgba(0,229,255,0.5)] whitespace-nowrap"
+            onClick={() => setIsPricingModalOpen(true)}
+            disabled={isSavingRate || shipmentRateLoading}
+            className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-[var(--background)] bg-primary rounded-lg shadow-sm transition-all hover:bg-primary/90 cursor-pointer"
           >
             <Plus className="h-5 w-5" />
             Add Pricing
@@ -237,7 +294,7 @@ export default function DriverEarningsControlPage() {
             <button
               onClick={() => setActiveTab('requests')}
               className={cn(
-                "flex items-center gap-2 px-5 py-2.5 text-sm font-bold rounded-lg transition-all",
+                "flex items-center gap-2 px-5 py-2.5 text-sm font-bold rounded-lg transition-all cursor-pointer",
                 activeTab === 'requests'
                   ? "bg-[#1E293B] text-white shadow-sm"
                   : "text-gray-500 hover:text-gray-300"
@@ -247,15 +304,15 @@ export default function DriverEarningsControlPage() {
               Total Requests
               <span className={cn(
                 "ml-1.5 px-2 py-0.5 text-[10px] rounded-full",
-                activeTab === 'requests' ? "bg-[#00E5FF]/20 text-[#00E5FF]" : "bg-[#1E293B] text-gray-400"
+                activeTab === 'requests' ? "bg-primary/20 text-primary" : "bg-[#1E293B] text-gray-400"
               )}>
-                {requests.length}
+                {pendingMeta?.totalResult || 0}
               </span>
             </button>
             <button
               onClick={() => setActiveTab('history')}
               className={cn(
-                "flex items-center gap-2 px-5 py-2.5 text-sm font-bold rounded-lg transition-all",
+                "flex items-center gap-2 px-5 py-2.5 text-sm font-bold rounded-lg transition-all cursor-pointer",
                 activeTab === 'history'
                   ? "bg-[#1E293B] text-white shadow-sm"
                   : "text-gray-500 hover:text-gray-300"
@@ -283,26 +340,20 @@ export default function DriverEarningsControlPage() {
         {/* TABLE WRAPPER */}
         <div className="rounded-2xl border border-[#1E293B] bg-[#151B2B] shadow-xl overflow-hidden flex flex-col">
           <DataTable
-            data={filteredData}
+            data={activeTab === 'requests' ? pendingRequests : historyData}
             columns={activeTab === 'requests' ? requestColumns : historyColumns}
+            loading={activeTab === 'requests' ? isPendingLoading : isHistoryLoading}
             className="border-0 rounded-none bg-transparent"
+            pagination={{
+              currentPage: activeTab === 'requests' ? pendingMeta?.currentPage || 1 : historyMeta?.currentPage || 1,
+              totalPage: activeTab === 'requests' ? pendingMeta?.totalPage || 1 : historyMeta?.totalPage || 1,
+              totalResult: activeTab === 'requests' ? pendingMeta?.totalResult || 0 : historyMeta?.totalResult || 0,
+              onPageChange: (page) => {
+                const setQuery = activeTab === 'requests' ? setPendingQuery : setHistoryQuery;
+                setQuery(prev => ({ ...prev, page }));
+              }
+            }}
           />
-
-          {/* PAGINATION */}
-          <div className="px-6 py-4 border-t border-[#1E293B] flex items-center justify-between bg-[#1A2234]">
-            <p className="text-xs font-medium text-gray-500">
-              Showing <span className="text-white font-bold">{filteredData.length}</span> results
-            </p>
-            <div className="flex items-center gap-2">
-              <button className="p-1.5 rounded-md border border-[#334155] text-gray-400 hover:text-white hover:bg-[#334155] transition-colors disabled:opacity-50">
-                <ChevronLeft className="h-4 w-4" />
-              </button>
-              <span className="text-xs font-bold text-white px-2">1</span>
-              <button className="p-1.5 rounded-md border border-[#334155] text-gray-400 hover:text-white hover:bg-[#334155] transition-colors disabled:opacity-50">
-                <ChevronRight className="h-4 w-4" />
-              </button>
-            </div>
-          </div>
         </div>
 
       </div>
@@ -314,7 +365,7 @@ export default function DriverEarningsControlPage() {
           <div className="relative w-full max-w-lg bg-[#0B101E] border border-[#1E293B] rounded-2xl shadow-[0_0_40px_rgba(0,0,0,0.5)] overflow-hidden animate-in zoom-in-95 duration-200">
             <div className="p-6 border-b border-[#1E293B] flex items-center justify-between">
               <h3 className="text-lg font-bold text-white">Create New Pricing</h3>
-              <button onClick={() => setIsPricingModalOpen(false)} className="text-gray-500 hover:text-white transition-colors">
+              <button onClick={() => setIsPricingModalOpen(false)} className="text-gray-500 hover:text-white transition-colors cursor-pointer">
                 <X className="h-5 w-5" />
               </button>
             </div>
@@ -395,7 +446,7 @@ export default function DriverEarningsControlPage() {
                         min="0"
                         value={newPricing.expressExtra}
                         onChange={(e) => setNewPricing({ ...newPricing, expressExtra: parseFloat(e.target.value) || 0 })}
-                        className="w-full bg-[#0B101E] border border-[#334155] rounded-lg py-1.5 pl-8 pr-3 text-sm font-bold text-white focus:outline-none focus:border-amber-500"
+                        className="w-full bg-[#0B101E] border border-[#334155] rounded-lg py-1.5 pl-8 pr-3 text-sm font-bold text-white focus:outline-none focus:border-amber-500 "
                       />
                     </div>
                   </div>
@@ -408,15 +459,16 @@ export default function DriverEarningsControlPage() {
             <div className="p-5 bg-[#151B2B] border-t border-[#1E293B] flex justify-end gap-3">
               <button
                 onClick={() => setIsPricingModalOpen(false)}
-                className="px-5 py-2.5 text-sm font-bold text-gray-300 hover:text-white transition-colors"
+                className="px-5 py-2.5 text-sm font-bold text-gray-300 hover:text-white transition-colors cursor-pointer"
               >
                 Cancel
               </button>
               <button
+                disabled={isSavingRate}
                 onClick={handleSavePricing}
-                className="px-6 py-2.5 text-sm font-bold text-[#0B101E] bg-[#00E5FF] rounded-xl shadow-[0_0_15px_rgba(0,229,255,0.2)] transition-all hover:bg-cyan-400 hover:shadow-[0_0_20px_rgba(0,229,255,0.4)]"
+                className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-[var(--background)] bg-primary rounded-lg shadow-sm transition-all hover:bg-cyan-400 text-sm font-bold cursor-pointer disabled:opacity-50"
               >
-                Save Price
+                {isSavingRate ? "Saving..." : "Save Price"}
               </button>
             </div>
           </div>
@@ -435,22 +487,23 @@ export default function DriverEarningsControlPage() {
               <div>
                 <h3 className="text-xl font-bold text-white mb-2">Process Payment?</h3>
                 <p className="text-sm text-gray-400 leading-relaxed">
-                  Are you sure you want to complete this payment of <b className="text-white">${selectedRequest.amount.toFixed(2)}</b> to <b className="text-[#00E5FF]">{selectedRequest.name}</b>?
+                  Are you sure you want to complete this payment of <b className="text-white">${selectedRequest.totalAmount?.toFixed(2)}</b> to <b className="text-[#00E5FF]">{selectedRequest.user?.fullName}</b>?
                 </p>
               </div>
             </div>
             <div className="p-5 bg-[#151B2B] border-t border-[#1E293B] flex gap-3">
               <button
                 onClick={() => setIsConfirmPayModalOpen(false)}
-                className="flex-1 py-3 text-sm font-bold text-gray-300 bg-[#1E293B] rounded-xl hover:bg-[#334155] transition-colors"
+                className="flex-1 py-3 text-sm font-bold text-gray-300 bg-[#1E293B] rounded-xl hover:bg-[#334155] transition-colors cursor-pointer"
               >
                 Cancel
               </button>
               <button
+                disabled={isChangingStatus}
                 onClick={handlePayConfirm}
-                className="flex-1 py-3 text-sm font-bold text-[#0B101E] bg-[#00E5FF] rounded-xl shadow-sm transition-all hover:bg-cyan-400"
+                className="flex-1 py-3 text-sm font-bold text-[#0B101E] bg-[#00E5FF] rounded-xl shadow-sm transition-all hover:bg-cyan-400 cursor-pointer disabled:opacity-50"
               >
-                Confirm
+                {isChangingStatus ? "Processing..." : "Confirm"}
               </button>
             </div>
           </div>
