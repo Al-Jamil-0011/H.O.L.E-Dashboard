@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils';
 import { DataTable, StatusBadge } from '@/components/ui/DataTable';
 import { Search, Filter, Truck, Package, Clock, CheckCircle2, Navigation, AlertCircle } from 'lucide-react';
 import { ShipmentDetailsDrawer, ShipmentItem } from './components/ShipmentDetailsDrawer';
+import { useShipmentSummary } from '@/hooks/admin/shipment';
 
 // MOCK DATA
 const mockShipments: ShipmentItem[] = [
@@ -187,6 +188,9 @@ export default function ShipmentsPage() {
   const [statusFilter, setStatusFilter] = useState('All');
   const [methodFilter, setMethodFilter] = useState('All');
 
+  const { summary, loading } = useShipmentSummary()
+
+
   // Drawer State
   const [selectedShipment, setSelectedShipment] = useState<ShipmentItem | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -315,10 +319,34 @@ export default function ShipmentsPage() {
 
       {/* OVERVIEW CARDS */}
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard title="TOTAL" value={totalShipments} icon={<Package className="h-4 w-4 text-[#00E5FF]" />} />
-        <StatCard title="PENDING" value={pendingShipments} icon={<AlertCircle className="h-4 w-4 text-rose-500" />} textColor="text-rose-500" highlight />
-        <StatCard title="IN TRANSIT" value={inTransit} icon={<Navigation className="h-4 w-4 text-amber-500" />} textColor="text-amber-500" />
-        <StatCard title="DELIVERED" value={delivered} icon={<CheckCircle2 className="h-4 w-4 text-emerald-500" />} textColor="text-emerald-500" />
+        <StatCard
+          title="TOTAL"
+          value={summary?.total || 0}
+          icon={<Package className="h-4 w-4 text-[#00E5FF]" />}
+          loading={loading}
+        />
+        <StatCard
+          title="PENDING"
+          value={summary?.pending || 0}
+          icon={<AlertCircle className="h-4 w-4 text-rose-500" />}
+          textColor="text-rose-500"
+          highlight
+          loading={loading}
+        />
+        <StatCard
+          title="IN TRANSIT"
+          value={summary?.inTransit || 0}
+          icon={<Navigation className="h-4 w-4 text-amber-500" />}
+          textColor="text-amber-500"
+          loading={loading}
+        />
+        <StatCard
+          title="DELIVERED"
+          value={summary?.delivered || 0}
+          icon={<CheckCircle2 className="h-4 w-4 text-emerald-500" />}
+          textColor="text-emerald-500"
+          loading={loading}
+        />
       </div>
 
       {/* MAIN CONTAINER */}
@@ -384,27 +412,69 @@ export default function ShipmentsPage() {
     </div>
   );
 }
-
-function StatCard({ title, value, icon, textColor = "text-white", highlight = false }: { title: string, value: string | number, icon: React.ReactNode, textColor?: string, highlight?: boolean }) {
+function StatCard({
+  title,
+  value,
+  icon,
+  textColor = "text-white",
+  highlight = false,
+  loading = false, // ✅ add this
+}: {
+  title: string;
+  value: string | number;
+  icon: React.ReactNode;
+  textColor?: string;
+  highlight?: boolean;
+  loading?: boolean;
+}) {
   return (
-    <div className={cn(
-      "relative rounded-xl border border-[#1E293B] bg-[#151B2B] p-4 shadow-sm transition-all hover:bg-[#1A2234] overflow-hidden",
-      highlight && value > 0 && "shadow-[0_0_15px_rgba(244,63,94,0.15)] border-rose-500/30"
-    )}>
+    <div
+      className={cn(
+        "relative rounded-xl border border-[#1E293B] bg-[#151B2B] p-4 shadow-sm transition-all hover:bg-[#1A2234] overflow-hidden",
+        highlight && value > 0 && "shadow-[0_0_15px_rgba(244,63,94,0.15)] border-rose-500/30"
+      )}
+    >
       {highlight && value > 0 && (
         <div className="absolute top-0 right-0 w-24 h-24 bg-rose-500/10 blur-2xl pointer-events-none rounded-full" />
       )}
+
+      {loading && (
+        <div className="absolute inset-0 bg-[#151B2B] animate-pulse p-4">
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center justify-between">
+              <div className="h-8 w-8 rounded-md bg-[#1E293B]" />
+            </div>
+
+            <div className="space-y-2">
+              <div className="h-6 w-20 bg-[#1E293B] rounded" />
+              <div className="h-2 w-24 bg-[#1E293B] rounded" />
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="flex flex-col gap-3">
         <div className="flex items-center justify-between">
           <div className="p-1.5 bg-[#0B101E] rounded-md border border-[#1E293B]">
             {icon}
           </div>
         </div>
+
         <div>
-          <div className={cn("text-2xl font-black tracking-tight", textColor)}>{value}</div>
-          <h3 className="text-[9px] font-bold tracking-widest text-gray-500 uppercase mt-0.5">{title}</h3>
+          <div
+            className={cn(
+              "text-2xl font-black tracking-tight",
+              textColor
+            )}
+          >
+            {value}
+          </div>
+
+          <h3 className="text-[9px] font-bold tracking-widest text-gray-500 uppercase mt-0.5">
+            {title}
+          </h3>
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, ReactNode } from 'react';
 import { cn } from '@/lib/utils';
 import { DataTable } from '@/components/ui/DataTable';
 import {
@@ -236,7 +236,34 @@ export default function DriverEarningsControlPage() {
             </h2>
             <div className="flex flex-wrap items-center gap-3">
 
-              {/* Data Blocks */}
+              <StatInfoCard
+                icon={<DollarSign className="h-5 w-5" />}
+                label="Base Rate (Per KM)"
+                value={stats.baseRate.toFixed(2)}
+                iconClass="bg-[#00E5FF]/10 text-[#00E5FF]"
+                loading={shipmentRateLoading}
+              />
+
+              <StatInfoCard
+                icon={<AlertCircle className="h-5 w-5" />}
+                label="Urgency Fee"
+                value={stats.urgentFee.toFixed(2)}
+                valuePrefix="+$"
+                iconClass="bg-purple-500/10 text-purple-400"
+                loading={shipmentRateLoading}
+              />
+
+              <StatInfoCard
+                icon={<Zap className="h-5 w-5" />}
+                label="Express / Rush Fee"
+                value={stats.expressFee.toFixed(2)}
+                valuePrefix="+$"
+                iconClass="bg-amber-500/10 text-amber-500"
+                loading={shipmentRateLoading}
+              />
+
+            </div>
+            {/* <div className="flex flex-wrap items-center gap-3"> 
               <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/[0.02] border border-white/[0.05] shadow-sm">
                 <div className="p-2 rounded-lg bg-[#00E5FF]/10 text-[#00E5FF]">
                   <DollarSign className="h-5 w-5" />
@@ -271,7 +298,7 @@ export default function DriverEarningsControlPage() {
                 </div>
               </div>
 
-            </div>
+            </div> */}
           </div>
 
           <button
@@ -522,6 +549,61 @@ export default function DriverEarningsControlPage() {
         </div>
       )}
 
+    </div>
+  );
+}
+
+
+
+type StatInfoCardProps = {
+  icon: ReactNode;
+  label: string;
+  value: string | number;
+  valuePrefix?: string;
+  valueSuffix?: string;
+  iconClass?: string;
+  loading?: boolean;
+};
+
+export function StatInfoCard({
+  icon,
+  label,
+  value,
+  valuePrefix = "",
+  valueSuffix = "",
+  iconClass = "",
+  loading = false,
+}: StatInfoCardProps) {
+  return (
+    <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/[0.02] border border-white/[0.05] shadow-sm relative overflow-hidden">
+
+      {loading && (
+        <div className="absolute inset-0 bg-[#151B2B] animate-pulse p-4 flex items-center gap-3">
+          <div className="h-10 w-10 rounded-lg bg-[#1E293B]" />
+          <div className="flex-1 space-y-2">
+            <div className="h-2 w-24 bg-[#1E293B] rounded" />
+            <div className="h-4 w-16 bg-[#1E293B] rounded" />
+          </div>
+        </div>
+      )}
+
+      {/* Icon */}
+      <div className={cn("p-2 rounded-lg", iconClass)}>
+        {icon}
+      </div>
+
+      {/* Content */}
+      <div>
+        <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">
+          {label}
+        </p>
+
+        <p className="text-lg font-black text-white">
+          {valuePrefix}
+          {value}
+          {valueSuffix}
+        </p>
+      </div>
     </div>
   );
 }
