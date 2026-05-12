@@ -42,9 +42,10 @@ export function useAgingReportSummary() {
 
                 setError(message);
             } finally {
-                setTimeout(() => {
-                    setLoading(false);
-                }, 300);
+                setLoading(false);
+                // setTimeout(() => {
+                //     setLoading(false);
+                // }, 300);
             }
         }, []);
 
@@ -81,6 +82,7 @@ export function useAgingReports() {
             page: 1,
             limit: 10,
             searchTerm: "",
+            status: ""
         });
 
     const fetchAgingReports =
@@ -108,6 +110,12 @@ export function useAgingReports() {
                         query.searchTerm
                     );
                 }
+                if (query.status) {
+                    params.append(
+                        "status",
+                        query.status
+                    );
+                }
 
                 const response =
                     await useApi.get<
@@ -132,9 +140,10 @@ export function useAgingReports() {
 
                 setError(message);
             } finally {
-                setTimeout(() => {
-                    setLoading(false);
-                }, 300);
+                setLoading(false);
+                // setTimeout(() => {
+                //     setLoading(false);
+                // }, 300);
             }
         }, [query]);
 

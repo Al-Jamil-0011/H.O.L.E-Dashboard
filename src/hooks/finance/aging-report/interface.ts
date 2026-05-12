@@ -36,6 +36,7 @@ export interface IAgingReportQuery {
     page: number;
     limit: number;
     searchTerm?: string;
+    status?: string;
 }
 
 
