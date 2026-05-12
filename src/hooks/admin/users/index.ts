@@ -200,6 +200,8 @@ export function useMyProfile() {
                 err?.response?.data?.message ||
                 "Failed to fetch profile";
 
+            console.error("useMyProfile Error:", err?.response?.status, message);
+
             setError(message);
         } finally {
             setLoading(false);

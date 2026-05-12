@@ -10,6 +10,7 @@ import { DataTable, StatusBadge } from '@/components/ui/DataTable';
 import dynamic from 'next/dynamic';
 import { useTheme } from 'next-themes';
 import type { ApexOptions } from 'apexcharts';
+import { useMyProfile } from '@/hooks/admin/users';
 
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
@@ -23,6 +24,7 @@ const recentSalesData = [
 export default function Home() {
     const { theme } = useTheme();
     const isDark = theme === 'dark';
+
 
     const lineChartOptions: ApexOptions = {
         chart: {

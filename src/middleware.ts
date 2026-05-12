@@ -6,7 +6,7 @@ export function middleware(req: NextRequest) {
     const { pathname } = req.nextUrl;
     const token = req.cookies.get("token")?.value;
 
-    // 1. Skip static files and API routes
+    //Skip static files and API routes
     if (
         pathname.startsWith("/_next") ||
         pathname.startsWith("/api") ||
@@ -17,7 +17,7 @@ export function middleware(req: NextRequest) {
         return NextResponse.next();
     }
 
-    // 2. Public Routes
+    // Public Routes
     const publicRoutes = ["/auth/login", "/auth/register", "/auth/forgot-password", "/auth/verify-otp", "/auth/reset-password"];
 
     if (!token) {
@@ -29,7 +29,7 @@ export function middleware(req: NextRequest) {
         return NextResponse.redirect(loginUrl);
     }
 
-    // 3. Logged in user handling
+    // Logged in user handling
     try {
         const decoded: any = jwt.decode(token);
 
@@ -51,6 +51,10 @@ export function middleware(req: NextRequest) {
 
         // Prevent access to public routes if logged in
         if (publicRoutes.includes(pathname)) {
+            if (pathname === "/auth/login" && req.nextUrl.searchParams.has("callbackUrl")) {
+                return NextResponse.next();
+            }
+
             const target = isAdmin ? "/admin/dashboard" : isFinance ? "/finance/dashboard" : "/dashboard";
             return NextResponse.redirect(new URL(target, req.url));
         }
