@@ -1,7 +1,7 @@
 'use client'
 import Link from "next/link";
 import { MoveRight, Lock, Mail } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuthService } from "@/hooks/auth";
 import Cookies from "js-cookie";
 import { useForm } from "react-hook-form";
@@ -12,6 +12,8 @@ import toast from "react-hot-toast";
 export default function LoginPage() {
     const router = useRouter();
     const { login, loading, error: authError } = useAuthService();
+    const searchParams = useSearchParams();
+    const callbackUrl = searchParams.get("callbackUrl");
     const { register, handleSubmit, formState: { errors } } = useForm();
 
     // console.log("authError : ", authError);
@@ -34,11 +36,15 @@ export default function LoginPage() {
                     position: "top-center"
                 });
 
-                // Redirect by role
-                if (userData?.role === "admin") {
+                // Redirect by role or callbackUrl
+                if (callbackUrl) {
+                    router.push(callbackUrl);
+                } else if (userData?.role === "admin") {
                     router.push("/admin/dashboard");
                 } else if (userData?.role === "finance") {
-                    router.push("/admin/finance");
+                    router.push("/finance/dashboard");
+                } else {
+                    router.push("/dashboard");
                 }
             }
         } catch (error: any) {

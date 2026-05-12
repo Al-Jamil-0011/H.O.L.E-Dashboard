@@ -41,7 +41,8 @@ useApi.interceptors.response.use(
 
         if (status === 401 || status === 403) {
             Cookies.remove("token");
-            window.location.href = "/auth/login";
+            const currentPath = window.location.pathname;
+            window.location.href = `/auth/login?callbackUrl=${encodeURIComponent(currentPath)}`;
         }
 
         return Promise.reject(error);

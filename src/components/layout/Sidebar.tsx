@@ -63,11 +63,11 @@ const financeNavItems = [
     href: '/finance/dashboard/invoices',
     icon: FileText
   },
-  {
-    name: 'Payments',
-    href: '/finance/dashboard/payments',
-    icon: CreditCard
-  },
+  // {
+  //   name: 'Payments',
+  //   href: '/finance/dashboard/payments',
+  //   icon: CreditCard
+  // },
   {
     name: 'Vendor Payments',
     href: '/finance/dashboard/vendor-payments',
@@ -197,26 +197,50 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
     await logoutUser()
     toast.success("Logout Successfully");
   };
-  const systemNavItems = [
+  const systemAdminNavItems = [
     {
       name: 'Settings',
       icon: Settings,
       subItems: [
         {
           name: 'View Profile',
-          href: '/profile'
+          href: '/admin/settings/view-profile'
         },
         {
           name: 'About Us',
-          href: '/about-us'
+          href: '/admin/settings/about-us'
         },
         {
           name: 'Privacy Policy',
-          href: '/privacy-policy'
+          href: '/admin/settings/privacy-policy'
         },
         {
           name: 'Terms and Service',
-          href: '/terms'
+          href: '/admin/settings/terms-of-service'
+        },
+      ]
+    }
+  ];
+  const systemFinanceNavItems = [
+    {
+      name: 'Settings',
+      icon: Settings,
+      subItems: [
+        {
+          name: 'View Profile',
+          href: '/finance/settings/view-profile'
+        },
+        {
+          name: 'About Us',
+          href: '/finance/settings/about-us'
+        },
+        {
+          name: 'Privacy Policy',
+          href: '/finance/settings/privacy-policy'
+        },
+        {
+          name: 'Terms and Service',
+          href: '/finance/settings/terms-of-service'
         },
       ]
     }
@@ -283,8 +307,12 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
           )}
 
           <div className="mt-auto pt-6">
+            {pathname.startsWith('/admin') ? (
+              <NavSection title="SYSTEM" items={systemAdminNavItems} pathname={pathname} />
+            ) : (
+              <NavSection title="SYSTEM" items={systemFinanceNavItems} pathname={pathname} />
+            )}
 
-            <NavSection title="SYSTEM" items={systemNavItems} pathname={pathname} />
             <button
               onClick={handleLogout}
               className='flex items-center gap-3 w-full px-2 py-2 text-sm font-medium transition-colors text-muted-foreground hover:bg-muted/50 hover:text-foreground cursor-pointer'
@@ -310,7 +338,7 @@ function NavItem({ item, pathname }: { item: any; pathname: string }) {
         <button
           onClick={() => setIsOpen(!isOpen)}
           className={cn(
-            "group flex w-full items-center justify-between rounded-md px-2 py-2 text-sm font-medium transition-colors",
+            "group flex w-full items-center justify-between rounded-md px-2 py-2 text-sm font-medium transition-colors cursor-pointer",
             isActive
               ? "bg-primary/10 text-primary"
               : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"

@@ -3,158 +3,92 @@ import type { NextRequest } from "next/server";
 import jwt from "jsonwebtoken";
 
 export function middleware(req: NextRequest) {
-
     const { pathname } = req.nextUrl;
-
     const token = req.cookies.get("token")?.value;
 
-
-
-    const publicRoutes = [
-        "/auth/login",
-        "/auth/register",
-        "/auth/forgot-password",
-        "/auth/verify-otp",
-        "/auth/reset-password",
-    ];
-
-
-    const blockedWhenLoggedIn = [
-        "/auth/login",
-        "/auth/register",
-    ];
-
-
-
+    // 1. Skip static files and API routes
     if (
         pathname.startsWith("/_next") ||
         pathname.startsWith("/api") ||
-        pathname === "/favicon.ico"
+        pathname.startsWith("/static") ||
+        pathname === "/favicon.ico" ||
+        pathname === "/logo.png"
     ) {
         return NextResponse.next();
     }
 
-    if (!token) {
+    // 2. Public Routes
+    const publicRoutes = ["/auth/login", "/auth/register", "/auth/forgot-password", "/auth/verify-otp", "/auth/reset-password"];
 
-        // allow public routes
+    if (!token) {
         if (publicRoutes.includes(pathname)) {
             return NextResponse.next();
         }
-
-        // otherwise redirect login
-        const loginUrl = req.nextUrl.clone();
-        loginUrl.pathname = "/auth/login";
-
+        const loginUrl = new URL("/auth/login", req.url);
+        loginUrl.searchParams.set("callbackUrl", pathname);
         return NextResponse.redirect(loginUrl);
     }
 
+    // 3. Logged in user handling
     try {
-
         const decoded: any = jwt.decode(token);
 
-        const role = decoded?.role;
+        // Robust role extraction
+        const rawRole = decoded?.role;
+        const roleStr = String(rawRole || "").toLowerCase().trim();
+        const isAdmin = roleStr.includes("admin");
+        const isFinance = roleStr.includes("finance");
+
         const isResetPassword = decoded?.isResetPassword;
 
-        /**
-         * RESET PASSWORD FLOW
-         */
-
+        // Handle password reset
         if (isResetPassword) {
-
-            // allow only recovery pages
-            if (
-                pathname === "/auth/reset-password" ||
-                pathname === "/auth/verify-otp" ||
-                pathname === "/auth/forgot-password"
-            ) {
+            if (["/auth/reset-password", "/auth/verify-otp", "/auth/forgot-password"].includes(pathname)) {
                 return NextResponse.next();
             }
-
-            // force reset-password
-            const resetUrl = req.nextUrl.clone();
-            resetUrl.pathname = "/auth/reset-password";
-
-            return NextResponse.redirect(resetUrl);
+            return NextResponse.redirect(new URL("/auth/reset-password", req.url));
         }
 
-        /**
-         * ROOT ROUTE
-         */
-        if (pathname.startsWith("/admin")) {
-
-            if (role !== "admin") {
-
-                const redirectUrl = req.nextUrl.clone();
-
-                if (role === "finance") {
-                    redirectUrl.pathname = "/finance/dashboard";
-                } else {
-                    redirectUrl.pathname = "/dashboard";
-                }
-
-                return NextResponse.redirect(redirectUrl);
-            }
+        // Prevent access to public routes if logged in
+        if (publicRoutes.includes(pathname)) {
+            const target = isAdmin ? "/admin/dashboard" : isFinance ? "/finance/dashboard" : "/dashboard";
+            return NextResponse.redirect(new URL(target, req.url));
         }
 
-        // finance routes
-        if (pathname.startsWith("/finance")) {
-
-            if (role !== "finance") {
-
-                const redirectUrl = req.nextUrl.clone();
-
-                if (role === "admin") {
-                    redirectUrl.pathname = "/admin/dashboard";
-                } else {
-                    redirectUrl.pathname = "/dashboard";
-                }
-
-                return NextResponse.redirect(redirectUrl);
-            }
-        }
-
+        // Handle root
         if (pathname === "/") {
-
-            const dashboardUrl = req.nextUrl.clone();
-
-            if (role === "admin") {
-                dashboardUrl.pathname = "/admin/dashboard";
-            } else if (role === "finance") {
-                dashboardUrl.pathname = "/finance/dashboard";
-            } else {
-                dashboardUrl.pathname = "/dashboard";
-            }
-
-            return NextResponse.redirect(dashboardUrl);
+            const target = isAdmin ? "/admin/dashboard" : isFinance ? "/finance/dashboard" : "/dashboard";
+            return NextResponse.redirect(new URL(target, req.url));
         }
 
+        // Base redirects for folder roots to point to default pages
+        if (pathname === "/admin" || pathname === "/admin/settings") {
+            return NextResponse.redirect(new URL("/admin/settings/view-profile", req.url));
+        }
+        if (pathname === "/finance" || pathname === "/finance/settings" || pathname === "/finance/settings/") {
+            return NextResponse.redirect(new URL("/finance/settings/view-profile", req.url));
+        }
 
-
-        if (blockedWhenLoggedIn.includes(pathname)) {
-
-            const dashboardUrl = req.nextUrl.clone();
-
-            if (role === "admin") {
-                dashboardUrl.pathname = "/admin/dashboard";
-            } else if (role === "finance") {
-                dashboardUrl.pathname = "/finance/dashboard";
-            } else {
-                dashboardUrl.pathname = "/dashboard";
+        // ROLE PROTECTION
+        if (pathname.startsWith("/admin")) {
+            if (!isAdmin) {
+                const target = isFinance ? "/finance/dashboard" : "/dashboard";
+                return NextResponse.redirect(new URL(target, req.url));
             }
+        }
 
-            return NextResponse.redirect(dashboardUrl);
+        if (pathname.startsWith("/finance")) {
+            if (!isFinance) {
+                const target = isAdmin ? "/admin/dashboard" : "/dashboard";
+                return NextResponse.redirect(new URL(target, req.url));
+            }
         }
 
         return NextResponse.next();
-
     } catch (error) {
-
-        const response = NextResponse.redirect(
-            new URL("/auth/login", req.url)
-        );
-
+        console.error("MIDDLEWARE ERROR:", error);
+        const response = NextResponse.redirect(new URL("/auth/login", req.url));
         response.cookies.delete("token");
-
         return response;
     }
 }

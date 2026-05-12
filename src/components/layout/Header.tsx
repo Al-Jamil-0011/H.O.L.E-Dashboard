@@ -7,6 +7,8 @@ import { ThemeSwitcher } from '@/components/ui/ThemeSwitcher';
 import Link from 'next/link';
 import { useAuthService } from '@/hooks/auth';
 import toast from 'react-hot-toast';
+import Cookies from "js-cookie";
+import jwt from "jsonwebtoken";
 
 
 interface HeaderProps {
@@ -19,6 +21,9 @@ export function Header({ onMenuClick }: HeaderProps) {
 
 
   const { logoutUser } = useAuthService();
+  const token = Cookies.get("token");
+  const decoded: any = token ? jwt.decode(token) : null;
+  const role = decoded?.role?.toLowerCase() || "user";
 
   const handleLogout = async () => {
     await logoutUser()
@@ -96,19 +101,19 @@ export function Header({ onMenuClick }: HeaderProps) {
               </div>
 
               <div className="flex flex-col gap-1">
-                <Link href="/profile" className="flex items-center gap-2 rounded-md px-2 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors">
+                <Link href={`/${role}/settings/view-profile`} className="flex items-center gap-2 rounded-md px-2 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors">
                   <UserCircle className="h-4 w-4" /> View Profile
                 </Link>
-                <Link href="/sales" className="flex items-center gap-2 rounded-md px-2 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors">
+                <Link href={`/${role}/dashboard/sales`} className="flex items-center gap-2 rounded-md px-2 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors">
                   <BarChart4 className="h-4 w-4" /> Sales
                 </Link>
-                <Link href="/invoices" className="flex items-center gap-2 rounded-md px-2 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors">
+                <Link href={`/${role}/dashboard/invoices`} className="flex items-center gap-2 rounded-md px-2 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors">
                   <FileText className="h-4 w-4" /> Invoice
                 </Link>
-                <Link href="/notifications" className="flex items-center gap-2 rounded-md px-2 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors">
+                <Link href={`/${role}/dashboard/notifications`} className="flex items-center gap-2 rounded-md px-2 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors">
                   <Bell className="h-4 w-4" /> Notifications
                 </Link>
-                <Link href="/settings" className="flex items-center gap-2 rounded-md px-2 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors">
+                <Link href={`/${role}/settings`} className="flex items-center gap-2 rounded-md px-2 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors">
                   <Settings className="h-4 w-4" /> Settings
                 </Link>
                 <div className="my-1 border-t border-border"></div>
