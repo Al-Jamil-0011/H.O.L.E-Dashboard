@@ -6,15 +6,18 @@ import { DataTable, StatusBadge } from '@/components/ui/DataTable';
 import { Search, Plus, Filter, AlertTriangle, Box, Activity, Warehouse, ArrowRightLeft } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useAllInventory, useInventorySummary } from '@/hooks/admin/inventory';
+import { useFacilities } from '@/hooks/common';
 
 
 export default function InventoryPage() {
   const [activeTab, setActiveTab] = useState<'All' | 'Implant' | 'Tray' | 'Bio'>('All');
   const [search, setSearch] = useState('');
+  const [selectedFacility, setSelectedFacility] = useState('all');
 
   const router = useRouter();
 
   const { summary, loading: summaryLoading } = useInventorySummary();
+  const { facilityOptions } = useFacilities();
 
   // SYNC FILTERS WITH API
   const { inventory: allInventory, loading: allInventoryLoading, meta, setQuery } = useAllInventory();
@@ -25,11 +28,12 @@ export default function InventoryPage() {
         ...prev,
         searchTerm: search,
         category: activeTab === 'All' ? "" : activeTab as any,
+        facility: selectedFacility === 'all' ? "" : selectedFacility,
         page: 1
       }));
     }, 500);
     return () => clearTimeout(handler);
-  }, [search, activeTab, setQuery]);
+  }, [search, activeTab, selectedFacility, setQuery]);
 
   const handleRowClick = (item: any) => {
     router.push(`/admin/dashboard/inventory/${item._id}`);
@@ -216,7 +220,7 @@ export default function InventoryPage() {
       </div>
 
       {/* MAIN CONTAINER */}
-      <div className="rounded-xl border border-[#1E293B] bg-[#151B2B] shadow-lg flex flex-col overflow-hidden min-h-[500px]">
+      <div className="rounded-xl border border-[#1E293B] bg-[#151B2B] shadow-lg flex flex-col overflow-hidden">
 
         {/* CONTROL BAR */}
         <div className="p-4 border-b border-[#1E293B] bg-[#1A2234] flex flex-col md:flex-row gap-4 items-center justify-between">
@@ -260,10 +264,17 @@ export default function InventoryPage() {
           </div>
 
           <div className="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
-            <select className="w-full sm:w-auto bg-[#0B101E] border border-[#334155] rounded-lg py-2 px-3 text-xs font-bold text-gray-300 focus:outline-none focus:border-[#00E5FF] transition-colors appearance-none">
+            <select
+              value={selectedFacility}
+              onChange={(e) => setSelectedFacility(e.target.value)}
+              className="w-full sm:w-auto bg-[#0B101E] border border-[#334155] rounded-lg py-2 px-3 text-xs font-bold text-gray-300 focus:outline-none focus:border-[#00E5FF] transition-colors appearance-none cursor-pointer select:cursor-pointer"
+            >
               <option value="all">All Facilities</option>
-              <option value="main">Main Warehouse</option>
-              <option value="city">City Hospital</option>
+              {facilityOptions?.length > 0 && facilityOptions?.map((facility) => (
+                <option key={facility.value} value={facility.value}>
+                  {facility.label}
+                </option>
+              ))}
             </select>
             <div className="relative w-full sm:w-64">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-500" />

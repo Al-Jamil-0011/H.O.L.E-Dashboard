@@ -7,6 +7,7 @@ import {
   ArrowRightLeft, CheckCircle2, Box, Truck, UserCircle2
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useSingleShipment } from '@/hooks/admin/shipment';
 
 // MOCK DATA based on exact screenshot requirements
 const mockInventoryData = {
@@ -79,6 +80,8 @@ export default function InventoryDetailsPage() {
   const params = useParams();
   const router = useRouter();
   const id = params.id as string;
+
+  const { shipment, loading, } = useSingleShipment(id);
 
   // Default to Implant if ID not found for demo purposes
   const item = mockInventoryData[id as keyof typeof mockInventoryData] || mockInventoryData['INV-1001'];

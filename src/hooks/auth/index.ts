@@ -78,12 +78,23 @@ export function useAuthService() {
         }
     }, []);
 
-    const logoutUser = () => {
-        // Remove token cookie
-        Cookies.remove("token");
-        // Redirect to login
-        router.push("/auth/login");
-    }
+    const logoutUser = useCallback(async () => {
+        setLoading(true);
+        try {
+            const { data } = await useApi.get("/auth/logout");
+            if (data?.success) {
+                Cookies.remove("token");
+                Cookies.remove("refreshToken");
+                router.push("/auth/login");
+            }
+            return data;
+        } catch (error: any) {
+            setError(error?.response?.data?.message)
+            throw error;
+        } finally {
+            setLoading(false);
+        }
+    }, []);
 
     return { login, forgotPassword, verifyOtp, resetPassword, loading, logoutUser, resendOtp, error };
 }

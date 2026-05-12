@@ -340,7 +340,7 @@ export default function CreateNewManagementPage() {
     }
   ];
 
-  console.log("practiceError", practiceError)
+  // console.log("practiceError", practiceError)
   return (
     <div className="space-y-6 animate-in fade-in zoom-in duration-500 pb-10">
 
@@ -378,7 +378,7 @@ export default function CreateNewManagementPage() {
       </div>
 
       {/* table history view */}
-      <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] shadow-lg flex flex-col overflow-hidden min-h-[500px]">
+      <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] shadow-lg flex flex-col overflow-hidden">
 
         {/* segmented tabs */}
         <div className="flex items-center border-b border-[var(--border)] bg-[var(--muted)] p-1">
@@ -403,17 +403,32 @@ export default function CreateNewManagementPage() {
         <div className="flex-1 p-0">
           {activeTab === 'facilities' && (
             <div className="animate-in fade-in duration-300">
-              <DataTable data={facilities} columns={facilityColumns} loading={isLoadingFacilities} className="rounded-none border-0" />
+              <DataTable
+                data={facilities}
+                columns={facilityColumns}
+                loading={isLoadingFacilities}
+                className="rounded-none border-0"
+              />
             </div>
           )}
           {activeTab === 'vendors' && (
             <div className="animate-in fade-in duration-300">
-              <DataTable data={vendors} columns={vendorColumns} loading={isLoadingVendors} className="rounded-none border-0" />
+              <DataTable
+                data={vendors}
+                columns={vendorColumns}
+                loading={isLoadingVendors}
+                className="rounded-none border-0"
+              />
             </div>
           )}
           {activeTab === 'practices' && (
             <div className="animate-in fade-in duration-300">
-              <DataTable data={practices} columns={practiceColumns} loading={isLoadingPractices} className="rounded-none border-0" />
+              <DataTable
+                data={practices}
+                columns={practiceColumns}
+                loading={isLoadingPractices}
+                className="rounded-none border-0"
+              />
             </div>
           )}
         </div>

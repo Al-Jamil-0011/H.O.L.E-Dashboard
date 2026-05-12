@@ -189,7 +189,7 @@ export default function OtpVerificationPage() {
                         <button
                             type="submit"
                             disabled={loading || resending}
-                            className="group relative w-full flex items-center justify-center py-3 px-4 border border-transparent text-sm font-semibold rounded-xl text-foreground bg-primary hover:bg-primary/80 dark:bg-white text-black! transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] shadow-md disabled:opacity-50 cursor-pointer"
+                            className="group relative w-full flex items-center justify-center py-3 px-4 border border-transparent text-sm font-semibold rounded-xl text-foreground bg-primary! hover:!bg-primary/80 dark:bg-white text-black! transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] shadow-md disabled:opacity-50 cursor-pointer"
                         >
                             {loading ? (
                                 <><VscLoading className="mr-2 h-5 w-5 animate-spin" /> Processing...</>

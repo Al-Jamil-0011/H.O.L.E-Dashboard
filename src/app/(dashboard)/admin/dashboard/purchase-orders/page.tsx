@@ -176,7 +176,7 @@ export default function PurchaseOrdersPage() {
       </div>
 
       {/* MAIN CONTAINER */}
-      <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] shadow-lg flex flex-col overflow-hidden min-h-[500px]">
+      <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] shadow-lg flex flex-col overflow-hidden">
 
         {/* TOP TABS & SEARCH BAR */}
         <div className="p-4 border-b border-[var(--border)] bg-[var(--muted)] flex flex-col md:flex-row gap-4 items-center justify-between">

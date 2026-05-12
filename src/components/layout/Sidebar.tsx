@@ -19,23 +19,38 @@ import {
   Users,
   RefreshCcw,
   Settings,
-  Building2,
   Package,
   ShoppingCart,
-  DollarSign,
   Stethoscope,
-  FileDown,
   Bell,
-  ClipboardList,
   HelpCircle,
   X,
   FolderPlus,
   ChevronDown,
 } from 'lucide-react';
+import toast from "react-hot-toast";
+import { useAuthService } from "@/hooks/auth";
 
-const mainNavItems = [
-  { name: 'Overview', href: '/', icon: LayoutDashboard },
+
+
+
+
+const mainAdminNavItems = [
+  {
+    name: 'Overview',
+    href: '/admin/dashboard',
+    icon: LayoutDashboard
+  },
 ];
+
+const mainFinanceNavItems = [
+  {
+    name: 'Overview',
+    href: '/finance/dashboard',
+    icon: LayoutDashboard
+  },
+];
+
 
 const financeNavItems = [
   {
@@ -176,7 +191,12 @@ interface SidebarProps {
 
 export function Sidebar({ isOpen, onClose }: SidebarProps) {
   const pathname = usePathname();
+  const { logoutUser } = useAuthService();
 
+  const handleLogout = async () => {
+    await logoutUser()
+    toast.success("Logout Successfully");
+  };
   const systemNavItems = [
     {
       name: 'Settings',
@@ -243,7 +263,14 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
         </div>
 
         <div className="flex flex-1 flex-col overflow-y-auto px-4 py-6 gap-6 scrollbar-thin scrollbar-thumb-border">
-          <NavSection title="MAIN" items={mainNavItems} pathname={pathname} />
+
+
+
+          {pathname.startsWith('/admin') ? (
+            <NavSection title="MAIN" items={mainAdminNavItems} pathname={pathname} />
+          ) : (
+            <NavSection title="MAIN" items={mainFinanceNavItems} pathname={pathname} />
+          )}
 
           {pathname.startsWith('/admin') ? (
             <NavSection title="ADMIN" items={adminNavItems} pathname={pathname} />
@@ -256,8 +283,15 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
           )}
 
           <div className="mt-auto pt-6">
+
             <NavSection title="SYSTEM" items={systemNavItems} pathname={pathname} />
-            <button className='flex items-center gap-3 w-full px-2 py-2 text-sm font-medium transition-colors text-muted-foreground hover:bg-muted/50 hover:text-foreground'><MdOutlineLogout />Logout</button>
+            <button
+              onClick={handleLogout}
+              className='flex items-center gap-3 w-full px-2 py-2 text-sm font-medium transition-colors text-muted-foreground hover:bg-muted/50 hover:text-foreground cursor-pointer'
+            >
+              <MdOutlineLogout />
+              Logout
+            </button>
           </div>
         </div>
       </aside>
