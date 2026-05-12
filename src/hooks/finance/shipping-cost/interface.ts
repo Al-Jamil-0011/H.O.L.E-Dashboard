@@ -32,6 +32,7 @@ export interface IShippingCostQuery {
     page: number;
     limit: number;
     searchTerm?: string;
+    type?: string;
 }
 
 

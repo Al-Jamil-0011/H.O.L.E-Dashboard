@@ -116,10 +116,31 @@ export default function AgingReportsPage() {
         <div className="flex items-center justify-between p-5 pb-5">
           <h2 className="text-sm font-bold text-foreground">Aging Invoices</h2>
           <div className="flex gap-2">
-            <FilterPill text="All" active={filter === 'All'} onClick={() => handleFilterChange('All')} />
-            <FilterPill text="Pending" active={filter === 'Pending'} color="bg-amber-500/20 text-amber-500" activeColor="bg-amber-500 text-[var(--background)]" onClick={() => handleFilterChange('pending')} />
-            <FilterPill text="Critical" active={filter === 'Critical'} color="bg-rose-500/20 text-rose-500" activeColor="bg-rose-500 text-[var(--background)]" onClick={() => handleFilterChange('critical')} />
-            <FilterPill text="Overdue" active={filter === 'Overdue'} color="bg-rose-400/20 text-rose-400" activeColor="bg-rose-400 text-[var(--background)]" onClick={() => handleFilterChange('overdue')} />
+            <FilterPill
+              text="All" active={filter === 'All'}
+              onClick={() => handleFilterChange('All')}
+            />
+            <FilterPill
+              text="Pending"
+              active={filter === 'Pending'}
+              color="bg-amber-500/20 text-amber-500"
+              activeColor="bg-amber-500 text-[var(--background)]"
+              onClick={() => handleFilterChange('pending')}
+            />
+            <FilterPill
+              text="Critical"
+              active={filter === 'Critical'}
+              color="bg-rose-500/20 text-rose-500"
+              activeColor="bg-rose-500 text-[var(--background)]"
+              onClick={() => handleFilterChange('critical')}
+            />
+            <FilterPill
+              text="Overdue"
+              active={filter === 'Overdue'}
+              color="bg-rose-400/20 text-rose-400"
+              activeColor="bg-rose-400 text-[var(--background)]"
+              onClick={() => handleFilterChange('overdue')}
+            />
 
           </div>
         </div>

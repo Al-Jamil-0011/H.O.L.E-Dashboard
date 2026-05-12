@@ -82,6 +82,7 @@ export function useShippingCosts() {
             page: 1,
             limit: 10,
             searchTerm: "",
+            type: ""
         });
 
     const fetchShippingCosts =
@@ -107,6 +108,13 @@ export function useShippingCosts() {
                     params.append(
                         "searchTerm",
                         query.searchTerm
+                    );
+                }
+
+                if (query.type) {
+                    params.append(
+                        "type",
+                        query.type
                     );
                 }
 
