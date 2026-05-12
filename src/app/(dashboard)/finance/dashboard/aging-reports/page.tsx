@@ -26,15 +26,15 @@ export default function AgingReportsPage() {
     { header: "HOSPITAL", accessorKey: "hospital" as const },
     { header: "AMOUNT", accessorKey: "amount" as const, className: "text-primary font-medium" },
     { header: "DAYS PENDING", accessorKey: "days" as const },
-    { 
-      header: "STATUS", 
+    {
+      header: "STATUS",
       render: (item: typeof agingData[0]) => {
         let type: "success" | "warning" | "error" = "success";
         if (item.status === 'PENDING') type = 'warning';
         if (item.status === 'OVERDUE') type = 'error';
         if (item.status === 'CRITICAL') type = 'error';
         return <StatusBadge status={item.status} type={type} />;
-      } 
+      }
     }
   ];
 
@@ -93,7 +93,7 @@ function BucketCard({ title, amount, count, borderColor, textColor }: { title: s
 
 function FilterPill({ text, active, onClick, color, activeColor }: { text: string, active: boolean, onClick: () => void, color?: string, activeColor?: string }) {
   const baseClasses = "px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded border border-[var(--border)] transition-all cursor-pointer";
-  
+
   if (active) {
     return (
       <button onClick={onClick} className={cn(baseClasses, activeColor || "bg-[#334155] text-foreground border-[#334155]")}>
@@ -101,7 +101,7 @@ function FilterPill({ text, active, onClick, color, activeColor }: { text: strin
       </button>
     );
   }
-  
+
   if (color) {
     return (
       <button onClick={onClick} className={cn(baseClasses, color, "hover:opacity-80")}>
@@ -109,7 +109,7 @@ function FilterPill({ text, active, onClick, color, activeColor }: { text: strin
       </button>
     )
   }
-  
+
   return (
     <button onClick={onClick} className={cn(baseClasses, "text-muted-foreground hover:text-foreground hover:bg-[var(--border)]/50")}>
       {text}
