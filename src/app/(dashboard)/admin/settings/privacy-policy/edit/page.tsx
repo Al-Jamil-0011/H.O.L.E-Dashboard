@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import Loader from '@/components/loader';
-import { useAboutUs, useUpdateAboutUs } from '@/hooks/settings';
+import { useAboutUs, usePrivacyPolicy, useUpdateAboutUs, useUpdatePrivacyPolicy } from '@/hooks/settings';
 import { useTheme } from 'next-themes';
 import toast from 'react-hot-toast';
 
@@ -17,19 +17,19 @@ const SunEditor = dynamic(() => import('suneditor-react'), {
     ssr: false,
 });
 
-export default function EditAboutUsPage() {
-    const { updateAbout } = useUpdateAboutUs();
-    const { abouts, loading, refetch } = useAboutUs();
+export default function EditPrivacyPolicyPage() {
+    const { updatePolicy } = useUpdatePrivacyPolicy();
+    const { policies, loading, refetch } = usePrivacyPolicy();
     const router = useRouter();
     const [content, setContent] = useState('');
     const [isSaving, setIsSaving] = useState(false);
 
     // Set initial content when data is loaded
     useEffect(() => {
-        if (abouts && abouts.length > 0 && !content) {
-            setContent(abouts[0].content || '');
+        if (policies && policies.length > 0 && !content) {
+            setContent(policies[0].content || '');
         }
-    }, [abouts, content]);
+    }, [policies, content]);
 
     if (loading) {
         return (
@@ -40,17 +40,17 @@ export default function EditAboutUsPage() {
     }
 
     const handleSave = async () => {
-        if (!abouts || abouts.length === 0) return;
+        if (!policies || policies.length === 0) return;
 
         setIsSaving(true);
         const toastId = toast.loading('Saving changes...');
 
         try {
-            const res = await updateAbout(abouts[0]._id!, { content });
+            const res = await updatePolicy(policies[0]._id!, { content });
             if (res) {
                 toast.success('About Us updated successfully', { id: toastId });
                 refetch();
-                router.push('/admin/settings/about-us');
+                router.push('/admin/settings/privacy-policy');
             } else {
                 toast.error('Failed to update About Us', { id: toastId });
             }
@@ -72,10 +72,11 @@ export default function EditAboutUsPage() {
                         <ArrowLeft className="h-5 w-5 text-primary" />
                     </button>
                     <div>
-                        <h1 className="text-2xl font-bold text-foreground">Edit About Us</h1>
-                        <p className="text-sm text-muted-foreground mt-1">Manage the content shown on the public About Us page</p>
+                        <h1 className="text-2xl font-bold text-foreground">Edit Privacy Policy</h1>
+                        <p className="text-sm text-muted-foreground mt-1">Manage the content shown on the public Privacy Policy page</p>
                     </div>
                 </div>
+
                 <button
                     onClick={handleSave}
                     disabled={isSaving}

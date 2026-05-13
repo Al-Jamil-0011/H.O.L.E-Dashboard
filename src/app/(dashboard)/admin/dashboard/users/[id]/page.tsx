@@ -51,7 +51,7 @@ export default function UserDetailsPage() {
         <div className="flex items-start gap-4">
           <button
             onClick={() => router.back()}
-            className="p-2 mt-1 rounded-full bg-[#1E293B] text-gray-400 hover:text-white hover:bg-[#334155] transition-colors cursor-pointer"
+            className="p-2 rounded-full dark:bg-[#1E293B] text-gray-400 hover:text-white dark:hover:bg-[#334155] transition-colors cursor-pointer hover:bg-primary/10"
           >
             <ArrowLeft className="h-5 w-5 text-primary" />
           </button>

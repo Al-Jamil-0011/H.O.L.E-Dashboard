@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import Loader from '@/components/loader';
-import { useAboutUs, useUpdateAboutUs } from '@/hooks/settings';
+import { useAboutUs, useTerms, useUpdateAboutUs, useUpdateTermService } from '@/hooks/settings';
 import { useTheme } from 'next-themes';
 import toast from 'react-hot-toast';
 
@@ -18,41 +18,41 @@ const SunEditor = dynamic(() => import('suneditor-react'), {
 });
 
 export default function EditAboutUsPage() {
-    const { updateAbout } = useUpdateAboutUs();
-    const { abouts, loading, refetch } = useAboutUs();
+    const { updateTerm } = useUpdateTermService();
+    const { terms, loading, refetch } = useTerms();
     const router = useRouter();
     const [content, setContent] = useState('');
     const [isSaving, setIsSaving] = useState(false);
 
     // Set initial content when data is loaded
     useEffect(() => {
-        if (abouts && abouts.length > 0 && !content) {
-            setContent(abouts[0].content || '');
+        if (terms && terms.length > 0 && !content) {
+            setContent(terms[0].content || '');
         }
-    }, [abouts, content]);
+    }, [terms, content]);
 
     if (loading) {
         return (
             <div className="h-[60vh] flex items-center justify-center">
-                <Loader size={40} text='Loading about us...' />
+                <Loader size={40} text='Loading Terms of Service...' />
             </div>
         )
     }
 
     const handleSave = async () => {
-        if (!abouts || abouts.length === 0) return;
+        if (!terms || terms.length === 0) return;
 
         setIsSaving(true);
         const toastId = toast.loading('Saving changes...');
 
         try {
-            const res = await updateAbout(abouts[0]._id!, { content });
+            const res = await updateTerm(terms[0]._id!, { content });
             if (res) {
-                toast.success('About Us updated successfully', { id: toastId });
+                toast.success('Terms of Service updated successfully', { id: toastId });
                 refetch();
-                router.push('/admin/settings/about-us');
+                router.push('/admin/settings/terms-of-service');
             } else {
-                toast.error('Failed to update About Us', { id: toastId });
+                toast.error('Failed to update Terms of Service', { id: toastId });
             }
         } catch (err) {
             toast.error('An error occurred while saving', { id: toastId });
@@ -70,10 +70,9 @@ export default function EditAboutUsPage() {
                         className="p-2 rounded-full dark:bg-[#1E293B] text-gray-400 hover:text-white dark:hover:bg-[#334155] transition-colors cursor-pointer hover:bg-primary/10"
                     >
                         <ArrowLeft className="h-5 w-5 text-primary" />
-                    </button>
-                    <div>
-                        <h1 className="text-2xl font-bold text-foreground">Edit About Us</h1>
-                        <p className="text-sm text-muted-foreground mt-1">Manage the content shown on the public About Us page</p>
+                    </button> <div>
+                        <h1 className="text-2xl font-bold text-foreground">Edit Terms of Service</h1>
+                        <p className="text-sm text-muted-foreground mt-1">Manage the content shown on the public Terms of Service page</p>
                     </div>
                 </div>
                 <button
