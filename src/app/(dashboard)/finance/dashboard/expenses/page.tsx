@@ -1,34 +1,126 @@
 "use client";
 
 import { useState } from 'react';
+import dynamic from 'next/dynamic';
 import { cn } from '@/lib/utils';
 import { DataTable } from '@/components/ui/DataTable';
+import { ExpenseDetailsDrawer, ExpenseItem } from './components/ExpenseDetailsDrawer';
+import { ApproveExpenseModal, RejectExpenseModal } from './components/ExpenseModals';
+import { useExpenses, useExpenseSummary, useUpdateExpenseStatus } from '@/hooks/admin/expense';
+import toast from 'react-hot-toast';
+import Link from 'next/link';
 
-const allExpenseData = [
-  { id: 1, expense: 'FedEx — City Hospital', category: 'SHIPMENT', amount: '$450', date: 'Mar 10, 2026', submittedBy: 'John Smith', status: 'APPROVED' },
-  { id: 2, expense: 'Flight — Chicago Conf.', category: 'TRAVEL', amount: '$820', date: 'Mar 8, 2026', submittedBy: 'Sarah Johnson', status: 'APPROVED' },
-  { id: 3, expense: 'UPS — Metro Hospital', category: 'SHIPMENT', amount: '$380', date: 'Mar 12, 2026', submittedBy: 'Mike Chen', status: 'PENDING' },
-  { id: 4, expense: 'Office Supplies Q1', category: 'OFFICE', amount: '$640', date: 'Mar 1, 2026', submittedBy: 'Admin', status: 'APPROVED' },
-  { id: 5, expense: 'LinkedIn Ads — March', category: 'MARKETING', amount: '$600', date: 'Mar 1, 2026', submittedBy: 'Marketing', status: 'PENDING' },
-];
 
 export default function ExpensesPage() {
-  const [filter, setFilter] = useState({});
+  const [filter, setFilter] = useState('All');
+  const { summary, loading: summaryLoading, refetch: refetchSummary } = useExpenseSummary();
+  const {
+    expenses: apiExpenses,
+    query,
+    setQuery,
+    refetch: refetchExpenses,
+    loading: expensesLoading
+  } = useExpenses();
 
-  const filteredData = allExpenseData.filter(item => {
-    if (filter === 'All') return true;
-    if (filter === 'Approved') return item.status === 'APPROVED';
-    if (filter === 'Pending') return item.status === 'PENDING';
-    return true;
-  });
+  const { updateExpenseStatus } = useUpdateExpenseStatus();
+
+  // Drawer and Modal States
+  const [selectedExpense, setSelectedExpense] = useState<ExpenseItem | null>(null);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+  const [isApproveModalOpen, setIsApproveModalOpen] = useState(false);
+  const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
+  const [actionExpense, setActionExpense] = useState<ExpenseItem | null>(null);
+
+  // Map API data to UI format
+  const expensesData: ExpenseItem[] = apiExpenses.map(exp => ({
+    id: exp._id,
+    expense: `${exp.category} — ${typeof exp.physician === 'object' ? exp.physician?.fullName : 'N/A'}`,
+    category: exp.category,
+    amount: `$${exp.totalAmount.toLocaleString()}`,
+    date: new Date(exp.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+    submittedBy: typeof exp.representative === 'object' ? exp.representative?.fullName : 'Unknown',
+    status: exp.status.toUpperCase() as any,
+    role: (typeof exp.representative === 'object' ? exp.representative?.territory : '') || 'Representative',
+    submittedTime: exp.createdAt ? new Date(exp.createdAt).toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '',
+    physicianClient: typeof exp.physician === 'object' ? exp.physician?.fullName : 'N/A',
+    paidStatus: exp.isPaid ? 'Paid' : 'Unpaid',
+    description: exp.description || '',
+    attachments: (exp.files || []).map(f => ({ name: f.split('/').pop() || 'Attachment', size: 'N/A', type: 'file' }))
+  }));
+
+
+  const openApproveModal = (expense: ExpenseItem) => {
+    setActionExpense(expense);
+    setIsApproveModalOpen(true);
+  };
+
+  const openRejectModal = (expense: ExpenseItem) => {
+    setActionExpense(expense);
+    setIsRejectModalOpen(true);
+  };
+
+  const handleApprove = async () => {
+    if (!actionExpense) return;
+
+    const promise = updateExpenseStatus(actionExpense.id as string | unknown as string, 'approved');
+
+    toast.promise(promise, {
+      loading: 'Approving expense...',
+      success: (data) => {
+        if (!data) throw new Error('Failed to approve');
+        refetchExpenses();
+        refetchSummary();
+        setIsApproveModalOpen(false);
+        if (selectedExpense?.id === actionExpense.id) {
+          setSelectedExpense({ ...selectedExpense, status: 'APPROVED' });
+        }
+        return 'Expense approved successfully';
+      },
+      error: (err) => err?.message || 'Failed to approve expense'
+    });
+  };
+
+  const handleReject = async (reason: string) => {
+    if (!actionExpense) return;
+
+    const promise = updateExpenseStatus(actionExpense.id as string | unknown as string, 'rejected', reason);
+
+    toast.promise(promise, {
+      loading: 'Rejecting expense...',
+      success: (data) => {
+        if (!data) throw new Error('Failed to reject');
+        refetchExpenses();
+        refetchSummary();
+        setIsRejectModalOpen(false);
+        if (selectedExpense?.id === actionExpense.id) {
+          setSelectedExpense({ ...selectedExpense, status: 'REJECTED' });
+        }
+        return 'Expense rejected';
+      },
+      error: (err) => err?.message || 'Failed to reject expense'
+    });
+  };
+
+  const handleFilterChange = (newFilter: string) => {
+    setFilter(newFilter);
+    setQuery({
+      ...query,
+      status: newFilter === 'All' ? '' : newFilter.toLowerCase()
+    });
+  };
 
   const columns = [
-    { header: "EXPENSE", accessorKey: "expense" as const, className: "font-medium text-foreground text-sm" },
+    {
+      header: "EXPENSE",
+      accessorKey: "expense" as const,
+      className: "text-foreground font-medium"
+    },
     {
       header: "CATEGORY",
-      render: (item: typeof allExpenseData[0]) => {
-        let colorClass = "bg-gray-500/10 text-muted-foreground";
-        if (item.category === 'SHIPMENT') colorClass = "bg-primary/10 text-primary";
+      render: (item: ExpenseItem) => {
+        let colorClass = "bg-gray-500/10 text-gray-400";
+        if (item.category === 'SHIPMENT') colorClass = "bg-[#00E5FF]/10 text-[#00E5FF]";
         else if (item.category === 'TRAVEL') colorClass = "bg-purple-500/10 text-purple-400";
         else if (item.category === 'OFFICE') colorClass = "bg-emerald-500/10 text-emerald-400";
         else if (item.category === 'MARKETING') colorClass = "bg-amber-500/10 text-amber-400";
@@ -40,17 +132,29 @@ export default function ExpensesPage() {
         );
       }
     },
-    { header: "AMOUNT", accessorKey: "amount" as const, className: "text-primary font-medium" },
-    { header: "DATE", accessorKey: "date" as const, className: "text-muted-foreground text-sm" },
-    { header: "SUBMITTED BY", accessorKey: "submittedBy" as const, className: "text-muted-foreground text-sm" },
+    {
+      header: "AMOUNT",
+      accessorKey: "amount" as const,
+      className: "text-primary font-medium"
+    },
+    {
+      header: "DATE",
+      accessorKey: "date" as const,
+      className: "text-muted-foreground font-medium"
+    },
+    {
+      header: "SUBMITTED BY",
+      accessorKey: "submittedBy" as const,
+      className: "text-muted-foreground font-medium"
+    },
     {
       header: "STATUS",
-      render: (item: typeof allExpenseData[0]) => {
+      render: (item: ExpenseItem) => {
         const isApproved = item.status === 'APPROVED';
         return (
           <span className={cn(
-            "text-[10px] font-bold tracking-widest uppercase",
-            isApproved ? "text-emerald-500" : "text-amber-500"
+            "text-[10px] font-bold tracking-widest uppercase font-medium ",
+            isApproved ? "text-emerald-500" : item.status === 'PENDING' ? "text-amber-500" : "text-rose-500"
           )}>
             {item.status}
           </span>
@@ -59,30 +163,40 @@ export default function ExpensesPage() {
     },
     {
       header: "ACTIONS",
-      render: (item: typeof allExpenseData[0]) => (
+      render: (item: ExpenseItem) => (
         <div className="flex items-center gap-2">
           {item.status === 'PENDING' ? (
             <>
+              <Link href={`/finance/dashboard/expenses/${item.id}`}>
+                <button
+                  // onClick={(e) => { e.stopPropagation(); openDrawer(item); }}
+                  className="px-4 py-1.5 text-[11px] font-semibold text-gray-300 bg-[#334155]/50 hover:bg-[#334155] rounded transition-colors cursor-pointer"
+                >
+                  View
+                </button>
+              </Link>
               <button
-                onClick={() => console.log('Approve', item.id)}
-                className="px-3 py-1.5 text-[11px] font-bold text-emerald-500 hover:text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/20 rounded transition-colors"
+                onClick={(e) => { e.stopPropagation(); openApproveModal(item); }}
+                className="px-3 py-1.5 text-[11px] font-bold text-emerald-500 hover:text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/20 rounded transition-colors cursor-pointer"
               >
                 Approve
               </button>
               <button
-                onClick={() => console.log('Reject', item.id)}
-                className="px-3 py-1.5 text-[11px] font-bold text-rose-500 hover:text-rose-400 bg-rose-500/10 hover:bg-rose-500/20 rounded transition-colors"
+                onClick={(e) => { e.stopPropagation(); openRejectModal(item); }}
+                className="px-3 py-1.5 text-[11px] font-bold text-rose-500 hover:text-rose-400 bg-rose-500/10 hover:bg-rose-500/20 rounded transition-colors cursor-pointer"
               >
                 Reject
               </button>
             </>
           ) : (
-            <button
-              onClick={() => console.log('View', item.id)}
-              className="px-4 py-1.5 text-[11px] font-semibold text-gray-300 bg-[#334155]/50 hover:bg-[#334155] rounded transition-colors"
-            >
-              View
-            </button>
+            <Link href={`/finance/dashboard/expenses/${item.id}`}>
+              <button
+                // onClick={(e) => { e.stopPropagation(); openDrawer(item); }}
+                className="px-4 py-1.5 text-[11px] font-semibold text-gray-300 bg-[#334155]/50 hover:bg-[#334155] rounded transition-colors cursor-pointer"
+              >
+                View
+              </button>
+            </Link>
           )}
         </div>
       )
@@ -90,7 +204,7 @@ export default function ExpensesPage() {
   ];
 
   return (
-    <div className="space-y-6 animate-in fade-in zoom-in duration-500">
+    <div className="space-y-6 animate-in fade-in zoom-in duration-500 pb-10">
       <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
         <div>
           <h1 className="text-xl font-bold tracking-tight text-foreground mb-1">
@@ -103,57 +217,72 @@ export default function ExpensesPage() {
         <div className="flex items-center gap-3">
           <button
             onClick={() => console.log('Export')}
-            className="px-4 py-2 text-xs font-semibold text-gray-300 bg-[var(--border)]/50 rounded-lg shadow-sm border border-[#334155] transition-colors hover:bg-[var(--border)] hover:text-foreground"
+            className="px-4 py-2 text-xs font-semibold text-muted-foreground bg-[var(--border)]/50 rounded-lg shadow-sm border border-[var(--border)] transition-colors hover:bg-[var(--border)] hover:text-foreground cursor-pointer"
           >
             Export
           </button>
-          <button
+          {/* <button
             onClick={() => console.log('Add Expense')}
             className="px-4 py-2 text-xs font-bold text-[var(--background)] bg-primary rounded-lg shadow-sm transition-all hover:bg-cyan-400"
           >
             + Add Expense
-          </button>
+          </button> */}
         </div>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-4 mb-6">
-        <StatCard title="TOTAL EXPENSES" amount="$12,000" subtitle="+8% this month" subtitleColor="text-blue-500" borderColor="border-t-blue-500" />
-        <StatCard title="PENDING APPROVAL" amount="$2,400" subtitle="4 pending" subtitleColor="text-amber-500" borderColor="border-t-amber-500" />
-        <StatCard title="APPROVED" amount="$9,600" subtitle="12 expenses" subtitleColor="text-emerald-500" borderColor="border-t-emerald-500" />
-        <StatCard title="BUDGET LEFT" amount="$8,000" subtitle="40% remaining" subtitleColor="text-amber-500" borderColor="border-t-blue-500" />
-      </div>
-
-      <div className="grid gap-4 lg:grid-cols-2 mb-6">
-        {/* By Category */}
-        <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-5 shadow-sm">
-          <h2 className="text-sm font-bold text-foreground mb-5 border-b border-[var(--border)] pb-3">By Category</h2>
-          <div className="space-y-4">
-            <ProgressBar label="Shipment" amount="$5,400" percentage={54} color="bg-primary" />
-            <ProgressBar label="Travel" amount="$3,000" percentage={30} color="bg-purple-500" />
-            <ProgressBar label="Office" amount="$1,800" percentage={18} color="bg-emerald-500" />
-            <ProgressBar label="Marketing" amount="$1,200" percentage={12} color="bg-amber-500" />
-            <ProgressBar label="Other" amount="$600" percentage={6} color="bg-gray-500" />
-          </div>
+      <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 mb-6">
+        {/* LEFT: 2x2 Grid */}
+        <div className="xl:col-span-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <StatCard
+            title="TOTAL EXPENSES"
+            amount={`$${summary?.totalExpenses?.amount?.toLocaleString() || '0'}`}
+            subtitle={`${summary?.totalExpenses?.monthlyChange || 0}% this month`}
+            subtitleColor="text-blue-500"
+            borderColor="border-t-blue-500"
+            glowColor="shadow-[0_0_15px_rgba(59,130,246,0.1)]"
+            isLoading={summaryLoading}
+          />
+          <StatCard
+            title="PENDING APPROVAL"
+            amount={`$${summary?.pendingApproval?.amount?.toLocaleString() || '0'}`}
+            subtitle={`${summary?.pendingApproval?.count || 0} pending`}
+            subtitleColor="text-amber-500"
+            borderColor="border-t-amber-500"
+            glowColor="shadow-[0_0_15px_rgba(245,158,11,0.1)]"
+            isLoading={summaryLoading}
+          />
+          <StatCard
+            title="APPROVED"
+            amount={`$${summary?.approved?.amount?.toLocaleString() || '0'}`}
+            subtitle={`${summary?.approved?.count || 0} expenses`}
+            subtitleColor="text-emerald-500"
+            borderColor="border-t-emerald-500"
+            glowColor="shadow-[0_0_15px_rgba(16,185,129,0.1)]"
+            isLoading={summaryLoading}
+          />
+          <StatCard
+            title="REJECTED"
+            amount={`$${summary?.rejected?.amount?.toLocaleString() || '0'}`}
+            subtitle={`${summary?.rejected?.count || 0} rejected`}
+            subtitleColor="text-rose-500"
+            borderColor="border-t-rose-500"
+            glowColor="shadow-[0_0_15px_rgba(244,63,94,0.1)]"
+            isLoading={summaryLoading}
+          />
         </div>
 
-        {/* Budget Utilization */}
-        <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-5 shadow-sm flex flex-col">
-          <h2 className="text-sm font-bold text-foreground mb-5 border-b border-[var(--border)] pb-3">Budget Utilization</h2>
-          <div className="flex-1 flex flex-col items-center justify-center pt-8 pb-4">
-            <div className="text-center mb-6">
-              <span className="text-5xl font-black text-foreground tracking-tight">60%</span>
-              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-2">OF $20,000 BUDGET USED</p>
-            </div>
-
-            <div className="w-full max-w-sm">
-              <div className="h-3 w-full bg-[var(--background)] rounded-full overflow-hidden mb-2">
-                <div className="h-full bg-gradient-to-r from-[#00E5FF] to-purple-500 rounded-full" style={{ width: '60%' }} />
+        {/* RIGHT: Graph */}
+        <div className="xl:col-span-7 rounded-xl border border-[#1E293B] bg-[#151B2B] p-5 shadow-sm flex flex-col min-h-[300px]">
+          <h2 className="text-sm font-bold text-white mb-6">Total Expenses Overview</h2>
+          <div className="flex-1 flex items-center justify-center">
+            {summaryLoading ? (
+              <div className="flex flex-col items-center gap-2">
+                <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest">Loading Chart...</p>
               </div>
-              <div className="flex items-center justify-between text-xs text-muted-foreground font-medium">
-                <span>Used: $12,000</span>
-                <span>Left: $8,000</span>
-              </div>
-            </div>
+            ) : (
+              <CustomLineChart chartData={summary?.chart || []} />
+            )}
           </div>
         </div>
       </div>
@@ -162,39 +291,182 @@ export default function ExpensesPage() {
         <div className="flex items-center justify-between p-5 pb-5">
           <h2 className="text-sm font-bold text-foreground">All Expenses</h2>
           <div className="flex gap-2">
-            <FilterPill text="All" active={filter === 'All'} activeColor="bg-black/80 text-[var(--background)]" onClick={() => setFilter('All')} />
-            <FilterPill text="Approved" active={filter === 'Approved'} color="bg-emerald-500/20 text-emerald-400" activeColor="bg-emerald-500 text-[var(--background)]" onClick={() => setFilter('Approved')} />
-            <FilterPill text="Pending" active={filter === 'Pending'} color="bg-amber-500/20 text-amber-500" activeColor="bg-amber-500 text-[var(--background)]" onClick={() => setFilter('Pending')} />
+            <FilterPill text="All" active={filter === 'All'} activeColor="bg-white text-black" onClick={() => handleFilterChange('All')} />
+            <FilterPill text="Approved" active={filter === 'Approved'} color="bg-emerald-500/20 text-emerald-400" activeColor="bg-emerald-500 text-white" onClick={() => handleFilterChange('Approved')} />
+            <FilterPill text="Pending" active={filter === 'Pending'} color="bg-amber-500/20 text-amber-500" activeColor="bg-amber-500 text-white" onClick={() => handleFilterChange('Pending')} />
           </div>
         </div>
         <div className="flex-1 px-5 pb-5">
-          <DataTable data={filteredData} columns={columns} />
+          <DataTable
+            data={expensesData}
+            columns={columns}
+            loading={expensesLoading}
+            onRowClick={() => { }}
+          />
         </div>
       </div>
+
+      {/* DRAWER */}
+      <ExpenseDetailsDrawer
+        isOpen={isDrawerOpen}
+        onClose={() => setIsDrawerOpen(false)}
+        expense={selectedExpense}
+        onApprove={(exp) => {
+          openApproveModal(exp);
+        }}
+        onReject={(exp) => {
+          openRejectModal(exp);
+        }}
+      />
+
+      {/* MODALS */}
+      <ApproveExpenseModal
+        isOpen={isApproveModalOpen}
+        onClose={() => setIsApproveModalOpen(false)}
+        onConfirm={handleApprove}
+      />
+
+      <RejectExpenseModal
+        isOpen={isRejectModalOpen}
+        onClose={() => setIsRejectModalOpen(false)}
+        onSubmit={handleReject}
+      />
+
     </div>
   );
 }
 
-function StatCard({ title, amount, subtitle, subtitleColor, borderColor }: { title: string, amount: string, subtitle: string, subtitleColor: string, borderColor: string }) {
+function StatCard({
+  title,
+  amount,
+  subtitle,
+  subtitleColor,
+  borderColor,
+  glowColor,
+  isLoading
+}: {
+  title: string,
+  amount: string,
+  subtitle: string,
+  subtitleColor: string,
+  borderColor: string,
+  glowColor?: string,
+  isLoading?: boolean
+}) {
   return (
-    <div className={cn("rounded-xl border border-[var(--border)] border-t-[3px] bg-[var(--card)] p-5 shadow-sm transition-all hover:bg-white/[0.02]", borderColor)}>
-      <h3 className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase">{title}</h3>
-      <div className="mt-2 text-3xl font-black tracking-tight text-foreground">{amount}</div>
-      <p className={cn("mt-1 text-xs font-medium", subtitleColor)}>{subtitle}</p>
+    <div className={cn("rounded-xl border border-[#1E293B] border-t-[3px] bg-[#151B2B] p-5 shadow-sm transition-all hover:bg-white/[0.02]", borderColor, glowColor)}>
+      <h3 className="text-[10px] font-bold tracking-widest text-gray-500 uppercase">{title}</h3>
+      {isLoading ? (
+        <div className="mt-2 space-y-2">
+          <div className="h-8 w-24 bg-gray-800 animate-pulse rounded" />
+          <div className="h-4 w-16 bg-gray-800 animate-pulse rounded" />
+        </div>
+      ) : (
+        <>
+          <div className="mt-2 text-3xl font-black tracking-tight text-white">{amount}</div>
+          <p className={cn("mt-1 text-xs font-medium", subtitleColor)}>{subtitle}</p>
+        </>
+      )}
     </div>
   )
 }
 
-function ProgressBar({ label, amount, percentage, color }: { label: string, amount: string, percentage: number, color: string }) {
+const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
+
+function CustomLineChart({ chartData }: { chartData: { month: string; total: number }[] }) {
+  const data = chartData.length > 0 ? chartData : [
+    { month: 'Oct', total: 0 },
+    { month: 'Nov', total: 0 },
+    { month: 'Dec', total: 0 },
+    { month: 'Jan', total: 0 },
+    { month: 'Feb', total: 0 },
+    { month: 'Mar', total: 0 },
+  ];
+
+  const options: any = {
+    chart: {
+      type: 'area',
+      toolbar: { show: false },
+      zoom: { enabled: false },
+      background: 'transparent',
+      foreColor: '#64748b',
+      sparkline: { enabled: false },
+    },
+    colors: ['#00E5FF'],
+    fill: {
+      type: 'gradient',
+      gradient: {
+        shadeIntensity: 1,
+        opacityFrom: 0.45,
+        opacityTo: 0.05,
+        stops: [0, 100],
+        colorStops: [
+          { offset: 0, color: '#00E5FF', opacity: 0.4 },
+          { offset: 100, color: '#00E5FF', opacity: 0 }
+        ]
+      }
+    },
+    dataLabels: { enabled: false },
+    stroke: {
+      curve: 'smooth',
+      width: 3,
+      colors: ['#00E5FF']
+    },
+    grid: {
+      show: true,
+      borderColor: '#1E293B',
+      strokeDashArray: 4,
+      padding: { left: 10, right: 10, top: 0, bottom: 0 },
+      yaxis: { lines: { show: true } },
+      xaxis: { lines: { show: false } }
+    },
+    xaxis: {
+      categories: data.map(d => d.month),
+      axisBorder: { show: false },
+      axisTicks: { show: false },
+      labels: {
+        style: { colors: '#64748b', fontSize: '10px', fontWeight: 600 }
+      }
+    },
+    yaxis: {
+      labels: {
+        style: { colors: '#64748b', fontSize: '10px', fontWeight: 600 },
+        formatter: (val: number) => `$${Math.round(val / 1000)}k`
+      }
+    },
+    tooltip: {
+      theme: 'dark',
+      x: { show: true },
+      y: {
+        formatter: (val: number) => `$${val.toLocaleString()}`
+      },
+      style: { fontSize: '12px' }
+    },
+    markers: {
+      size: 4,
+      colors: ['#0B101E'],
+      strokeColors: '#00E5FF',
+      strokeWidth: 2,
+      hover: { size: 6 }
+    }
+  };
+
+  const series = [{
+    name: 'Expenses',
+    data: data.map(d => d.total)
+  }];
+
   return (
-    <div className="flex items-center gap-4">
-      <div className="w-20 shrink-0 text-xs font-medium text-muted-foreground">{label}</div>
-      <div className="flex-1 h-2 rounded-full bg-[var(--background)] overflow-hidden">
-        <div className={cn("h-full rounded-full transition-all duration-1000", color)} style={{ width: `${percentage}%` }} />
-      </div>
-      <div className="w-12 shrink-0 text-right text-xs font-bold text-foreground tracking-wide">{amount}</div>
+    <div className="w-full h-full min-h-[250px]">
+      <Chart
+        options={options}
+        series={series}
+        type="area"
+        height="100%"
+        width="100%"
+      />
     </div>
-  )
+  );
 }
 
 function FilterPill({ text, active, onClick, color, activeColor }: { text: string, active: boolean, onClick: () => void, color?: string, activeColor?: string }) {
@@ -202,7 +474,7 @@ function FilterPill({ text, active, onClick, color, activeColor }: { text: strin
 
   if (active) {
     return (
-      <button onClick={onClick} className={cn(baseClasses, activeColor || "bg-[#334155] text-foreground border-[#334155]")}>
+      <button onClick={onClick} className={cn(baseClasses, activeColor || "bg-[var(--border)] text-foreground border-[var(--border)]")}>
         {text}
       </button>
     );

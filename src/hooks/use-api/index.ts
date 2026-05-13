@@ -7,6 +7,7 @@ import axios, {
     AxiosResponse,
 } from "axios";
 import Cookies from "js-cookie";
+import toast from "react-hot-toast";
 
 const useApi: AxiosInstance = axios.create({
     baseURL: process.env.NEXT_PUBLIC_URI,
@@ -43,6 +44,8 @@ useApi.interceptors.response.use(
             Cookies.remove("token");
             const currentPath = window.location.pathname;
             const redirectUrl = `/auth/login?callbackUrl=${encodeURIComponent(currentPath)}`;
+            console.log('🚀 ~ API Error ~ 401/403:', messageText);
+            toast.error(messageText || 'You are not authorized to access this page.');
             window.location.href = redirectUrl;
         }
 

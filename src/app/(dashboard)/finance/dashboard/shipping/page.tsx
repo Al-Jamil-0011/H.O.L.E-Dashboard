@@ -6,6 +6,7 @@ import { DataTable, StatusBadge } from '@/components/ui/DataTable';
 import { useShippingCosts, useShippingCostSummary } from '@/hooks/finance/shipping-cost';
 
 import { IShippingCost } from '@/hooks/finance/shipping-cost/interface';
+import { Package, Truck } from 'lucide-react';
 
 export default function ShippingPage() {
   const [filter, setFilter] = useState('all');
@@ -32,15 +33,40 @@ export default function ShippingPage() {
         </span>
       )
     },
+    // {
+    //   header: "CARRIER",
+    //   render: (item: IShippingCost) => (
+    //     <span className="uppercase">{item.shippingCost?.type || "N/A"}</span>
+    //   )
+    // },
     {
       header: "CARRIER",
       render: (item: IShippingCost) => (
-        <span className="uppercase">{item.shippingCost?.type || "N/A"}</span>
+        <div className="flex items-center gap-2">
+          {item.shippingCost?.type === 'courier' ? (
+            <Truck className="h-4 w-4 text-blue-400" />
+          ) : (
+            <Package className="h-4 w-4 text-amber-500" />
+          )}
+          <span className={cn(
+            "text-xs font-bold capitalize",
+            item.shippingCost?.type === 'courier' ? "text-blue-400" : "text-amber-500"
+          )}>
+            {item.shippingCost?.type || "Courier"}
+          </span>
+        </div>
       )
     },
     {
       header: "REP",
-      render: (item: IShippingCost) => item.createdBy || "N/A"
+      render: (item: IShippingCost) => (
+        <div className='flex flex-col gap-1'>
+          {item.createdBy?.fullName || "N/A"}
+          <p className="text-[11px] text-muted-foreground font-medium">
+            {item.createdBy?.email || "N/A"}
+          </p>
+        </div>
+      )
     },
     {
       header: "COST",

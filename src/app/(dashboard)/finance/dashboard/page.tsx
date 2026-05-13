@@ -11,19 +11,22 @@ import dynamic from 'next/dynamic';
 import { useTheme } from 'next-themes';
 import type { ApexOptions } from 'apexcharts';
 import { useMyProfile } from '@/hooks/admin/users';
+import { useDashboardOverview } from '@/hooks/overview';
+import { IRecentSale } from '@/hooks/overview/interface';
 
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
-// Mock Data
-const recentSalesData = [
-    { id: '#1001', rep: 'John Smith', doctor: 'Dr. Williams', hospital: 'City Hospital', implant: 'Knee 2x', amount: '$18,000', comm: '$1,800', status: 'PAID' },
-    { id: '#1002', rep: 'John Smith', doctor: 'Dr. Smith', hospital: 'City Hospital', implant: 'Hip 1x', amount: '$14,000', comm: '$1,400', status: 'PAID' },
-    { id: '#1003', rep: 'Mike Chan', doctor: 'Dr. Patel', hospital: 'Metro Hospital', implant: 'Knee 1x', amount: '$9,500', comm: '$950', status: 'PENDING' }
-];
+// Recent sales moved to columns render logic using IRecentSale interface
 
 export default function Home() {
     const { theme } = useTheme();
     const isDark = theme === 'dark';
+
+    const { summary: dashboardData, loading: isLoading, refetch } = useDashboardOverview();
+
+    // Chart Data Preparation
+    const monthlyRevenue = dashboardData?.charts?.monthlyRevenue || [];
+    const repPerformance = dashboardData?.charts?.repPerformance || [];
 
 
     const lineChartOptions: ApexOptions = {
@@ -47,7 +50,7 @@ export default function Home() {
         },
         stroke: { curve: 'smooth', width: 2 },
         xaxis: {
-            categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+            categories: monthlyRevenue.map(m => m.month),
             labels: { style: { colors: isDark ? '#a1a1aa' : '#71717a' } },
             axisBorder: { show: false },
             axisTicks: { show: false }
@@ -55,7 +58,7 @@ export default function Home() {
         yaxis: {
             labels: {
                 style: { colors: isDark ? '#a1a1aa' : '#71717a' },
-                formatter: (value) => `$${value / 1000}k`
+                formatter: (value) => `$${value >= 1000 ? (value / 1000).toFixed(1) + 'k' : value}`
             }
         },
         dataLabels: { enabled: false },
@@ -70,8 +73,8 @@ export default function Home() {
     };
 
     const lineChartSeries = [
-        { name: 'Revenue', data: [31000, 40000, 28000, 51000, 42000, 109000] },
-        { name: 'Expenses', data: [11000, 32000, 45000, 32000, 34000, 52000] }
+        { name: 'Revenue', data: monthlyRevenue.map(m => m.revenue) },
+        { name: 'Expenses', data: monthlyRevenue.map(m => m.expenses) }
     ];
 
     const barChartOptions: ApexOptions = {
@@ -92,7 +95,7 @@ export default function Home() {
         },
         colors: ['#00E5FF'],
         xaxis: {
-            categories: ['John', 'Mike', 'Alex', 'Sarah', 'David'],
+            categories: repPerformance.map(r => r.repName),
             labels: { style: { colors: isDark ? '#a1a1aa' : '#71717a' } },
             axisBorder: { show: false },
             axisTicks: { show: false }
@@ -100,7 +103,7 @@ export default function Home() {
         yaxis: {
             labels: {
                 style: { colors: isDark ? '#a1a1aa' : '#71717a' },
-                formatter: (value) => `$${value / 1000}k`
+                formatter: (value) => `$${value >= 1000 ? (value / 1000).toFixed(1) + 'k' : value}`
             }
         },
         dataLabels: { enabled: false },
@@ -115,39 +118,36 @@ export default function Home() {
     };
 
     const barChartSeries = [
-        { name: 'Sales YTD', data: [45000, 38000, 32000, 28000, 21000] }
+        { name: 'Revenue', data: repPerformance.map(r => r.revenue) },
+        { name: 'Sales', data: repPerformance.map(r => r.sales) }
     ];
 
 
     const columns = [
-        { header: "SALE ID", accessorKey: "id" as const, className: "font-medium text-primary" },
+        { 
+            header: "SALE ID", 
+            render: (item: IRecentSale) => <span className="font-medium text-foreground">{item.saleId}</span> 
+        },
         { header: "REP", accessorKey: "rep" as const },
         { header: "DOCTOR", accessorKey: "doctor" as const },
         { header: "HOSPITAL", accessorKey: "hospital" as const },
         { header: "IMPLANT", accessorKey: "implant" as const },
-        { header: "AMOUNT", accessorKey: "amount" as const, className: "text-primary font-medium" },
-        { header: "COMMISSION", accessorKey: "comm" as const, className: "text-emerald-400" },
-        {
-            header: "STATUS",
-            render: (item: typeof recentSalesData[0]) => {
-                let type: "success" | "warning" | "error" = "success";
-                if (item.status === 'PENDING') type = 'warning';
-                if (item.status === 'OVERDUE') type = 'error';
-                return <StatusBadge status={item.status} type={type} />;
-            }
+        { 
+            header: "AMOUNT", 
+            render: (item: IRecentSale) => <span className="text-primary font-medium">${item.amount.toLocaleString()}</span> 
+        },
+        { 
+            header: "COMMISSION", 
+            render: (item: IRecentSale) => <span className="text-emerald-400 font-medium">${item.commission.toLocaleString()}</span> 
         },
         {
-            header: "ACTIONS",
-            render: () => (
-                <div className="flex items-center gap-2">
-                    <button className="px-3 py-1 text-[10px] font-medium text-gray-300 border border-[var(--border)] rounded hover:bg-white/5 transition-colors">
-                        View
-                    </button>
-                    <button className="px-3 py-1 text-[10px] font-medium text-white bg-blue-600 rounded hover:bg-blue-700 transition-colors">
-                        Invoice
-                    </button>
-                </div>
-            )
+            header: "STATUS",
+            render: (item: IRecentSale) => {
+                let type: "success" | "warning" | "error" = "warning";
+                if (item.status === 'paid' || item.status === 'PAID') type = 'success';
+                if (item.status === 'rejected' || item.status === 'REJECTED') type = 'error';
+                return <StatusBadge status={item.status} type={type} />;
+            }
         }
     ];
 
@@ -163,7 +163,10 @@ export default function Home() {
                     </p>
                 </div>
                 <div className="flex items-center gap-3">
-                    <button className="px-4 py-1.5 text-xs font-semibold text-muted-foreground bg-card rounded shadow-sm border border-border transition-colors hover:text-foreground">
+                    <button 
+                        onClick={() => refetch()}
+                        className="px-4 py-1.5 text-xs font-semibold text-muted-foreground bg-card rounded shadow-sm border border-border transition-colors hover:text-foreground cursor-pointer"
+                    >
                         Refresh
                     </button>
                     <button className="px-4 py-1.5 text-xs font-bold text-background bg-primary rounded shadow-sm transition-all hover:opacity-90">
@@ -173,12 +176,54 @@ export default function Home() {
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                <StatCard title="TOTAL REVENUE" value="$245,000" trend="+12.4% this month" trendType="up" topBorderColor="border-t-[#00E5FF]" />
-                <StatCard title="TOTAL SALES" value="83" trend="+7 new this month" trendType="up" topBorderColor="border-t-emerald-500" />
-                <StatCard title="COMMISSION PAID" value="$32,000" trend="12 reps paid out" trendType="neutral" topBorderColor="border-t-rose-500" />
-                <StatCard title="VENDOR PAYMENTS" value="$18,400" trend="3 pending payments" trendType="neutral" topBorderColor="border-t-amber-500" />
-                <StatCard title="TOTAL EXPENSES" value="$12,000" trend="+8% vs last month" trendType="down" topBorderColor="border-t-blue-500" />
-                <StatCard title="NET PROFIT" value="$201,000" trend="82% margin" trendType="up" topBorderColor="border-t-purple-500" />
+                <StatCard
+                    title="TOTAL REVENUE"
+                    value={`$${dashboardData?.stats?.revenue?.totalRevenue?.toLocaleString() || "0"}`}
+                    trend={`${(dashboardData?.stats?.revenue?.thisMonthPercentage ?? 0) > 0 ? '+' : ''}${dashboardData?.stats?.revenue?.thisMonthPercentage ?? 0}% this month`}
+                    trendType={(dashboardData?.stats?.revenue?.thisMonthPercentage ?? 0) >= 0 ? "up" : "down"}
+                    topBorderColor="border-t-[#00E5FF]"
+                    loading={isLoading}
+                />
+                <StatCard
+                    title="TOTAL SALES"
+                    value={dashboardData?.stats?.sales?.totalSales?.toString() || "0"}
+                    trend={`+${dashboardData?.stats?.sales?.thisMonthCount ?? 0} new this month`}
+                    trendType="up"
+                    topBorderColor="border-t-emerald-500"
+                    loading={isLoading}
+                />
+                <StatCard
+                    title="COMMISSION PAID"
+                    value={`$${dashboardData?.stats?.commission?.totalCommissions?.toLocaleString() || "0"}`}
+                    trend={`${dashboardData?.stats?.commission?.reps ?? 0} reps paid out`}
+                    trendType="neutral"
+                    topBorderColor="border-t-rose-500"
+                    loading={isLoading}
+                />
+                <StatCard
+                    title="VENDOR PAYMENTS"
+                    value={`$${dashboardData?.stats?.vendor?.totalVendorPayments?.toLocaleString() || "0"}`}
+                    trend={`${dashboardData?.stats?.vendor?.pendingCount ?? 0} pending payments`}
+                    trendType="neutral"
+                    topBorderColor="border-t-amber-500"
+                    loading={isLoading}
+                />
+                <StatCard
+                    title="TOTAL EXPENSES"
+                    value={`$${dashboardData?.stats?.expense?.totalExpenses?.toLocaleString() || "0"}`}
+                    trend={`${(dashboardData?.stats?.expense?.lastMonthPercentage ?? 0) > 0 ? '+' : ''}${dashboardData?.stats?.expense?.lastMonthPercentage ?? 0}% vs last month`}
+                    trendType={(dashboardData?.stats?.expense?.lastMonthPercentage ?? 0) <= 0 ? "down" : "up"}
+                    topBorderColor="border-t-blue-500"
+                    loading={isLoading}
+                />
+                <StatCard
+                    title="NET PROFIT"
+                    value={`$${dashboardData?.stats?.netProfit?.totalNetProfit?.toLocaleString() || "0"}`}
+                    trend={`${dashboardData?.stats?.netProfit?.margin ?? 0}% margin`}
+                    trendType="up"
+                    topBorderColor="border-t-purple-500"
+                    loading={isLoading}
+                />
             </div>
 
             <div className="grid gap-4 lg:grid-cols-2">
@@ -219,40 +264,64 @@ export default function Home() {
                     </button>
                 </div>
                 <div className="flex-1 px-5 pb-5">
-                    <DataTable data={recentSalesData} columns={columns} />
+                    <DataTable data={dashboardData?.recentSales || []} columns={columns} loading={isLoading} />
                 </div>
             </div>
         </div>
     );
 }
 
+
 function StatCard({
     title,
     value,
     trend,
     trendType,
-    topBorderColor
+    topBorderColor,
+    loading = false
 }: {
     title: string;
     value: string;
     trend: string;
     trendType: 'up' | 'down' | 'neutral';
     topBorderColor: string;
+    loading?: boolean;
 }) {
     return (
         <div className={cn("rounded-xl border border-border border-t-[3px] bg-card p-5 shadow-sm transition-all hover:bg-muted/50", topBorderColor)}>
-            <h3 className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase">
-                {title}
-            </h3>
-            <div className="mt-3">
-                <div className="text-2xl font-black tracking-tight text-foreground">{value}</div>
-                <p className="mt-2 text-[11px] font-medium text-muted-foreground">
-                    {trendType === 'up' && <span className="text-primary font-semibold">{trend}</span>}
-                    {trendType === 'down' && <span className="text-rose-500 font-semibold">{trend}</span>}
-                    {trendType === 'neutral' && <span className="text-emerald-400 font-semibold">{trend}</span>}
-                </p>
-            </div>
+            {loading ? (
+                <div className="animate-pulse">
+                    <div className="h-3 w-24 rounded bg-muted" />
+                    <div className="mt-3 h-8 w-28 rounded bg-muted" />
+                    <div className="mt-2 h-3 w-20 rounded bg-muted" />
+                </div>
+            ) : (
+                <>
+                    <h3 className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase">
+                        {title}
+                    </h3>
+
+                    <div className="mt-3">
+                        <div className="text-2xl font-black tracking-tight text-foreground">
+                            {value}
+                        </div>
+
+                        <p className="mt-2 text-[11px] font-medium text-muted-foreground">
+                            {trendType === 'up' && (
+                                <span className="text-primary font-semibold">{trend}</span>
+                            )}
+
+                            {trendType === 'down' && (
+                                <span className="text-rose-500 font-semibold">{trend}</span>
+                            )}
+
+                            {trendType === 'neutral' && (
+                                <span className="text-emerald-400 font-semibold">{trend}</span>
+                            )}
+                        </p>
+                    </div>
+                </>
+            )}
         </div>
     );
 }
-

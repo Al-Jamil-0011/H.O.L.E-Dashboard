@@ -42,7 +42,11 @@ export interface IShippingCost {
 
     shipmentId?: string;
 
-    createdBy?: string;
+    createdBy?: {
+        _id: string;
+        fullName: string;
+        email: string;
+    };
 
     shippingCost?: {
         shipmentId?: string;
