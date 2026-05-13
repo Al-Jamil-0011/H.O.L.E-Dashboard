@@ -39,8 +39,10 @@ const NotificationItem = ({ notification }: { notification: INotification }) => 
                             className="rounded-full object-cover border-2 border-background shadow-sm"
                         />
                     ) : (
-                        <div className="rounded-full  w-12 h-12 bg-muted flex items-center justify-center border border-border text-primary">
-                            <UserCircle2 className="h-6 w-6" />
+                        <div className="rounded-full w-12 h-12 bg-muted flex items-center justify-center border border-border text-primary font-bold text-sm uppercase">
+                            {sender?.name
+                                ? sender.name.split(" ").map((n: string) => n[0]).join("").slice(0, 2)
+                                : "SY"}
                         </div>
                     )}
 
@@ -154,8 +156,8 @@ export default function Notifications() {
     );
 
     return (
-        <div className="bg-background animate-in fade-in duration-500">
-            <div className="bg-card rounded-3xl border border-border overflow-hidden shadow-xl shadow-black/5 transition-all duration-300">
+        <div className="bg-background pb-8">
+            <div className="bg-card rounded-3xl border border-border overflow-hidden transition-all duration-300">
                 {/* Header Section */}
                 <header className="flex items-center p-6 md:p-8 border-b border-border bg-card/80 backdrop-blur-xl sticky top-0 z-20">
                     <button
