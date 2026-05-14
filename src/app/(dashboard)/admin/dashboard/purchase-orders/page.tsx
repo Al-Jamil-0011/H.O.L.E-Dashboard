@@ -67,7 +67,7 @@ export default function PurchaseOrdersPage() {
       header: "SURGEON",
       render: (item: any) => (
         <span className="font-medium text-muted-foreground">
-          {typeof item.surgery === 'object' ? item.surgery.info?.fullName : 'N/A'}
+          {item.surgery && typeof item.surgery === 'object' ? item.surgery.info?.fullName : 'N/A'}
         </span>
       )
     },
@@ -75,7 +75,7 @@ export default function PurchaseOrdersPage() {
       header: "FACILITY",
       render: (item: any) => (
         <span className="text-muted-foreground truncate max-w-[150px] inline-block">
-          {typeof item.facility === 'object' ? item.facility.address : 'N/A'}
+          {item.facility && typeof item.facility === 'object' ? item.facility.name : 'N/A'}
         </span>
       )
     },

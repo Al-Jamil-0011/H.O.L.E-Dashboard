@@ -40,6 +40,10 @@ export interface IPurchaseOrderFacility {
 
     phoneNumber?: string;
 
+    email?: string;
+
+    name?: string;
+
     contacts?: string;
 }
 
