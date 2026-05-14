@@ -1,6 +1,6 @@
 "use client";
 
-import { Bell, Search, User, Menu, LogOut, FileText, BarChart4, Settings, UserCircle, MessageSquare } from 'lucide-react';
+import { Bell, Search, User, Menu, LogOut, FileText, BarChart4, Settings, UserCircle, MessageSquare, Banknote, Percent, Package } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState, useRef, useEffect } from 'react';
 import { ThemeSwitcher } from '@/components/ui/ThemeSwitcher';
@@ -197,17 +197,33 @@ export function Header({ onMenuClick }: HeaderProps) {
                 <Link href={`/${profile?.role}/settings/view-profile`} className="flex items-center gap-2 rounded-md px-2 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors">
                   <UserCircle className="h-4 w-4" /> View Profile
                 </Link>
-                <Link href={`/${profile?.role}/dashboard/sales`} className="flex items-center gap-2 rounded-md px-2 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors">
-                  <BarChart4 className="h-4 w-4" /> Sales
-                </Link>
-                <Link href={`/${profile?.role}/dashboard/invoices`} className="flex items-center gap-2 rounded-md px-2 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors">
-                  <FileText className="h-4 w-4" /> Invoice
-                </Link>
+                {
+                  profile?.role !== 'admin' ? (
+                    <>
+                      <Link href={`/${profile?.role}/dashboard/sales`} className="flex items-center gap-2 rounded-md px-2 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors">
+                        <BarChart4 className="h-4 w-4" /> Sales
+                      </Link>
+                      <Link href={`/${profile?.role}/dashboard/invoices`} className="flex items-center gap-2 rounded-md px-2 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors">
+                        <FileText className="h-4 w-4" /> Invoice
+                      </Link>
+                    </>
+                  ) : (
+                    <>
+                      <Link href={`/${profile?.role}/dashboard/users`} className="flex items-center gap-2 rounded-md px-2 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors">
+                        <User className="h-4 w-4" /> Users
+                      </Link>
+                      <Link href={`/${profile?.role}/dashboard/sales`} className="flex items-center gap-2 rounded-md px-2 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors">
+                        <BarChart4 className="h-4 w-4" /> Sales
+                      </Link>
+                      <Link href={`/${profile?.role}/dashboard/commissions`} className="flex items-center gap-2 rounded-md px-2 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors">
+                        <Percent className="h-4 w-4" /> Commissions
+                      </Link>
+                    </>
+                  )
+                }
+
                 <Link href={`/${profile?.role}/dashboard/notifications`} className="flex items-center gap-2 rounded-md px-2 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors">
                   <Bell className="h-4 w-4" /> Notifications
-                </Link>
-                <Link href={`/${profile?.role}/settings`} className="flex items-center gap-2 rounded-md px-2 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors">
-                  <Settings className="h-4 w-4" /> Settings
                 </Link>
                 <div className="my-1 border-t border-border"></div>
                 <button onClick={handleLogout} className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm text-rose-500 hover:bg-rose-500/10 transition-colors cursor-pointer">
