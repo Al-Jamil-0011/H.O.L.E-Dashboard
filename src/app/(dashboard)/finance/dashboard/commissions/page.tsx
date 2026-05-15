@@ -178,6 +178,7 @@ export default function CommissionsPage() {
               data={commissions}
               columns={columns}
               loading={commissionLoading}
+              onRowClick={() => { }}
             />
           </div>
         </div>

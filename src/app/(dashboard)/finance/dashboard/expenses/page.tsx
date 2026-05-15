@@ -291,9 +291,26 @@ export default function ExpensesPage() {
         <div className="flex items-center justify-between p-5 pb-5">
           <h2 className="text-sm font-bold text-foreground">All Expenses</h2>
           <div className="flex gap-2">
-            <FilterPill text="All" active={filter === 'All'} activeColor="bg-white text-black" onClick={() => handleFilterChange('All')} />
-            <FilterPill text="Approved" active={filter === 'Approved'} color="bg-emerald-500/20 text-emerald-400" activeColor="bg-emerald-500 text-white" onClick={() => handleFilterChange('Approved')} />
-            <FilterPill text="Pending" active={filter === 'Pending'} color="bg-amber-500/20 text-amber-500" activeColor="bg-amber-500 text-white" onClick={() => handleFilterChange('Pending')} />
+            <FilterPill
+              text="All"
+              active={filter === 'All'}
+              activeColor="bg-white text-black"
+              onClick={() => handleFilterChange('All')}
+            />
+            <FilterPill
+              text="Approved"
+              active={filter === 'Approved'}
+              color="bg-emerald-500/20 text-emerald-400"
+              activeColor="bg-emerald-500 text-white"
+              onClick={() => handleFilterChange('Approved')}
+            />
+            <FilterPill
+              text="Pending"
+              active={filter === 'Pending'}
+              color="bg-amber-500/20 text-amber-500"
+              activeColor="bg-amber-500 text-white"
+              onClick={() => handleFilterChange('Pending')}
+            />
           </div>
         </div>
         <div className="flex-1 px-5 pb-5">

@@ -4,7 +4,7 @@ import { useState, useMemo } from 'react';
 import { cn } from '@/lib/utils';
 import { DataTable } from '@/components/ui/DataTable';
 import { useRepAccounts, useRepAccountsSummary } from '@/hooks/finance/rep-accounts';
-import { Loader2, Wallet, Download, Search, } from 'lucide-react';
+import { Wallet, Download, Search } from 'lucide-react';
 import Image from 'next/image';
 
 export default function RepAccountsPage() {
@@ -28,20 +28,19 @@ export default function RepAccountsPage() {
   const columns = [
     {
       header: "REPRESENTATIVE",
-      accessorKey: "fullName" as const,
-      cell: (info: any) => (
+      render: (item: any) => (
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xs border border-primary/20 overflow-hidden relative">
-            {info.row.original.profileUrl ? (
-              <Image src={info.row.original.profileUrl} alt={info.row.original.fullName} fill className="object-cover" />
+            {item.profileUrl ? (
+              <Image src={item.profileUrl} alt={item.fullName} fill className="object-cover" />
             ) : (
-              info.getValue()?.charAt(0) || 'R'
+              item.fullName?.charAt(0) || 'R'
             )}
           </div>
           <div className="flex flex-col">
-            <span className="font-semibold text-foreground text-sm tracking-tight">{info.getValue()}</span>
+            <span className="font-semibold text-foreground text-sm tracking-tight">{item.fullName}</span>
             <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-tighter opacity-70">
-              {info.row.original.email || 'No email provided'}
+              {item.email || 'No email provided'}
             </span>
           </div>
         </div>
@@ -49,46 +48,42 @@ export default function RepAccountsPage() {
     },
     {
       header: "TOTAL SALES",
-      accessorKey: "totalSales" as const,
-      cell: (info: any) => (
+      render: (item: any) => (
         <span className="font-mono font-medium text-foreground">
-          ${(info.getValue() || 0).toLocaleString()}
+          ${(item.totalSales || 0).toLocaleString()}
         </span>
       )
     },
     {
       header: "EARNED",
-      accessorKey: "commissionEarned" as const,
       className: "text-primary",
-      cell: (info: any) => (
+      render: (item: any) => (
         <span className="font-mono font-bold text-primary">
-          ${(info.getValue() || 0).toLocaleString()}
+          ${(item.commissionEarned || 0).toLocaleString()}
         </span>
       )
     },
     {
       header: "PAID",
-      accessorKey: "commissionPaid" as const,
       className: "text-emerald-400",
-      cell: (info: any) => (
+      render: (item: any) => (
         <span className="font-mono font-medium text-emerald-400/90">
-          ${(info.getValue() || 0).toLocaleString()}
+          ${(item.commissionPaid || 0).toLocaleString()}
         </span>
       )
     },
     {
       header: "PENDING",
-      accessorKey: "pendingBalance" as const,
       className: "text-rose-400 font-medium",
-      cell: (info: any) => (
+      render: (item: any) => (
         <div className="flex items-center gap-1.5">
           <span className={cn(
             "font-mono font-bold",
-            (info.getValue() || 0) > 0 ? "text-rose-400" : "text-muted-foreground/40"
+            (item.pendingBalance || 0) > 0 ? "text-rose-400" : "text-muted-foreground/40"
           )}>
-            ${(info.getValue() || 0).toLocaleString()}
+            ${(item.pendingBalance || 0).toLocaleString()}
           </span>
-          {(info.getValue() || 0) > 0 && <span className="w-1.5 h-1.5 rounded-full bg-rose-400 animate-pulse" />}
+          {(item.pendingBalance || 0) > 0 && <span className="w-1.5 h-1.5 rounded-full bg-rose-400 animate-pulse" />}
         </div>
       )
     },
@@ -171,20 +166,35 @@ export default function RepAccountsPage() {
             </span>
           </div>
           <div className="flex items-center gap-2 p-1 bg-muted/50 rounded-xl border border-[var(--border)]">
-            <FilterPill text="All" active={filter === 'All'} activeColor="bg-primary text-white dark:text-black" onClick={() => setFilter('All')} />
-            <FilterPill text="Top Performers" active={filter === 'Top Performers'} color="text-emerald-400 hover:bg-emerald-500/10" activeColor="bg-emerald-500 text-white" onClick={() => setFilter('Top Performers')} />
-            <FilterPill text="Needs Payment" active={filter === 'Needs Payment'} color="text-rose-400 hover:bg-rose-500/10" activeColor="bg-rose-500 text-white" onClick={() => setFilter('Needs Payment')} />
+            <FilterPill
+              text="All"
+              active={filter === 'All'}
+              activeColor="bg-primary text-white dark:text-black"
+              onClick={() => setFilter('All')}
+            />
+            <FilterPill
+              text="Top Performers"
+              active={filter === 'Top Performers'}
+              color="text-emerald-400 hover:bg-emerald-500/10"
+              activeColor="bg-emerald-500 text-white"
+              onClick={() => setFilter('Top Performers')}
+            />
+            <FilterPill
+              text="Needs Payment"
+              active={filter === 'Needs Payment'}
+              color="text-rose-400 hover:bg-rose-500/10"
+              activeColor="bg-rose-500 text-white"
+              onClick={() => setFilter('Needs Payment')}
+            />
           </div>
         </div>
         <div className="flex-1 px-6 pb-6 pt-2">
-          {loading ? (
-            <div className="flex flex-col items-center justify-center py-20 gap-4">
-              <Loader2 className="w-10 h-10 text-primary animate-spin opacity-50" />
-              <p className="text-xs font-bold tracking-widest text-muted-foreground uppercase animate-pulse">Syncing representative data...</p>
-            </div>
-          ) : (
-            <DataTable data={filteredData} columns={columns} />
-          )}
+          <DataTable
+            data={filteredData}
+            columns={columns}
+            loading={loading}
+            onRowClick={() => { }}
+          />
         </div>
       </div>
     </div>

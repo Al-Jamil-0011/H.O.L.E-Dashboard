@@ -96,11 +96,11 @@ const analyticsNavItems = [
     href: '/finance/dashboard/aging-reports',
     icon: Clock
   },
-  {
-    name: 'Financial Reports',
-    href: '/finance/dashboard/reports',
-    icon: PieChart
-  },
+  // {
+  //   name: 'Financial Reports',
+  //   href: '/finance/dashboard/reports',
+  //   icon: PieChart
+  // },
   {
     name: 'Rep Accounts',
     href: '/finance/dashboard/rep-accounts',
