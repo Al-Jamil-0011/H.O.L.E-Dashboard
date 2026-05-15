@@ -3,11 +3,11 @@
 
 import { useCallback, useEffect, useState } from "react";
 import useApi from "@/hooks/use-api";
-import { IAgingReport, IAgingReportQuery, IAgingReportResponse, IAgingReportSummary, IApiResponse, IPaginationMeta } from "./interface";
+import { IApiResponse, IAgingReportSummary, IPaginationMeta, IRepAccount, IRepAccountsQuery, IRepAccountsResponse } from "./interface";
 
 
 
-export function useAgingReportSummary() {
+export function useRepAccountsSummary() {
     const [summary, setSummary] =
         useState<IAgingReportSummary | null>(
             null
@@ -19,7 +19,7 @@ export function useAgingReportSummary() {
     const [error, setError] =
         useState<string | null>(null);
 
-    const fetchSummary =
+    const fetchRepSummary =
         useCallback(async () => {
             setLoading(true);
             setError(null);
@@ -29,7 +29,7 @@ export function useAgingReportSummary() {
                     await useApi.get<
                         IApiResponse<IAgingReportSummary>
                     >(
-                        `/commission/aging-report/overview`
+                        `/rep-accounts/summary`
                     );
 
                 setSummary(
@@ -38,7 +38,7 @@ export function useAgingReportSummary() {
             } catch (err: any) {
                 const message =
                     err?.response?.data?.message ||
-                    "Failed to fetch aging report summary";
+                    "Failed to fetch rep accounts summary";
 
                 setError(message);
             } finally {
@@ -50,21 +50,21 @@ export function useAgingReportSummary() {
         }, []);
 
     useEffect(() => {
-        fetchSummary();
-    }, [fetchSummary]); // eslint-disable-line react-hooks/exhaustive-deps
+        fetchRepSummary();
+    }, [fetchRepSummary]); // eslint-disable-line react-hooks/exhaustive-deps
 
     return {
         summary,
         loading,
         error,
-        refetch: fetchSummary,
+        refetch: fetchRepSummary,
     };
 }
 
 
-export function useAgingReports() {
-    const [agingReports, setAgingReports] =
-        useState<IAgingReport[]>([]);
+export function useRepAccounts() {
+    const [repAccounts, setRepAccounts] =
+        useState<IRepAccount[]>([]);
 
     const [meta, setMeta] =
         useState<IPaginationMeta | null>(
@@ -78,14 +78,14 @@ export function useAgingReports() {
         useState<string | null>(null);
 
     const [query, setQuery] =
-        useState<IAgingReportQuery>({
+        useState<IRepAccountsQuery>({
             page: 1,
             limit: 10,
             searchTerm: "",
             status: ""
         });
 
-    const fetchAgingReports =
+    const fetchRepAccounts =
         useCallback(async () => {
             setLoading(true);
             setError(null);
@@ -119,12 +119,12 @@ export function useAgingReports() {
 
                 const response =
                     await useApi.get<
-                        IApiResponse<IAgingReportResponse>
+                        IApiResponse<IRepAccountsResponse>
                     >(
-                        `/commission/aging-report?${params.toString()}`
+                        `/rep-accounts/representatives?${params.toString()}`
                     );
 
-                setAgingReports(
+                setRepAccounts(
                     response?.data?.data?.results ||
                     []
                 );
@@ -136,7 +136,7 @@ export function useAgingReports() {
             } catch (err: any) {
                 const message =
                     err?.response?.data?.message ||
-                    "Failed to fetch aging reports";
+                    "Failed to fetch rep accounts";
 
                 setError(message);
             } finally {
@@ -148,11 +148,11 @@ export function useAgingReports() {
         }, [query]);
 
     useEffect(() => {
-        fetchAgingReports();
-    }, [fetchAgingReports]); // eslint-disable-line react-hooks/exhaustive-deps
+        fetchRepAccounts();
+    }, [fetchRepAccounts]); // eslint-disable-line react-hooks/exhaustive-deps
 
     return {
-        agingReports,
+        repAccounts,
         meta,
 
         loading,
@@ -161,6 +161,6 @@ export function useAgingReports() {
         query,
         setQuery,
 
-        refetch: fetchAgingReports,
+        refetch: fetchRepAccounts,
     };
 }

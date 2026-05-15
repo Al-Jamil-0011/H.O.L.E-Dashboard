@@ -101,7 +101,7 @@ export function EditProfileModal({ isOpen, onClose, profile, onSuccess }: EditPr
                     </div>
                     <button
                         onClick={onClose}
-                        className="p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted transition-all"
+                        className="p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted transition-all cursor-pointer"
                     >
                         <X className="w-5 h-5" />
                     </button>
@@ -193,7 +193,7 @@ export function EditProfileModal({ isOpen, onClose, profile, onSuccess }: EditPr
                         type="submit"
                         form="edit-profile-form"
                         disabled={loading}
-                        className="flex-1 px-4 py-3 rounded-xl bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 disabled:opacity-50 transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/20 cursor-pointer"
+                        className="flex-1 px-4 py-3 rounded-xl bg-primary text-primary-foreground text-white dark:text-black text-sm font-semibold hover:opacity-90 disabled:opacity-50 transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/20 cursor-pointer"
                     >
                         {loading ? <div className="flex items-center gap-2">
                             <Loader2 className="w-4 h-4 animate-spin" />

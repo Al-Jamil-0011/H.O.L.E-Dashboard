@@ -1,112 +1,254 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { cn } from '@/lib/utils';
 import { DataTable } from '@/components/ui/DataTable';
-
-const repData = [
-  { rep: 'John Doe', sales: '$120,000', earned: '$12,000', paid: '$8,000', pending: '$4,000' },
-  { rep: 'Sarah Smith', sales: '$85,000', earned: '$8,500', paid: '$8,500', pending: '$0' },
-  { rep: 'Mike Johnson', sales: '$224,000', earned: '$33,600', paid: '$30,000', pending: '$3,600' },
-];
+import { useRepAccounts, useRepAccountsSummary } from '@/hooks/finance/rep-accounts';
+import { Loader2, Wallet, Download, Search, } from 'lucide-react';
+import Image from 'next/image';
 
 export default function RepAccountsPage() {
   const [filter, setFilter] = useState('All');
+  const { repAccounts, meta, loading, query, setQuery } = useRepAccounts();
+  const { summary, loading: summaryLoading } = useRepAccountsSummary();
 
-  const filteredData = repData.filter(item => {
-    if (filter === 'All') return true;
-    if (filter === 'Top Performers') {
-      const salesNum = parseInt(item.sales.replace(/[^0-9.-]+/g, ""));
-      return salesNum >= 100000;
-    }
-    if (filter === 'Needs Payment') {
-      const pendingNum = parseInt(item.pending.replace(/[^0-9.-]+/g, ""));
-      return pendingNum > 0;
-    }
-    return true;
-  });
+  const filteredData = useMemo(() => {
+    return repAccounts.filter(item => {
+      if (filter === 'All') return true;
+      if (filter === 'Top Performers') {
+        return (item.totalSales || 0) >= 10000; // Threshold for top performers
+      }
+      if (filter === 'Needs Payment') {
+        return (item.pendingBalance || 0) > 0;
+      }
+      return true;
+    });
+  }, [repAccounts, filter]);
 
   const columns = [
-    { header: "REP NAME", accessorKey: "rep" as const, className: "font-medium text-foreground" },
-    { header: "TOTAL SALES", accessorKey: "sales" as const },
-    { header: "COMMISSION EARNED", accessorKey: "earned" as const, className: "text-primary" },
-    { header: "COMMISSION PAID", accessorKey: "paid" as const, className: "text-emerald-400" },
-    { header: "PENDING BALANCE", accessorKey: "pending" as const, className: "text-rose-400 font-medium" },
+    {
+      header: "REPRESENTATIVE",
+      accessorKey: "fullName" as const,
+      cell: (info: any) => (
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xs border border-primary/20 overflow-hidden relative">
+            {info.row.original.profileUrl ? (
+              <Image src={info.row.original.profileUrl} alt={info.row.original.fullName} fill className="object-cover" />
+            ) : (
+              info.getValue()?.charAt(0) || 'R'
+            )}
+          </div>
+          <div className="flex flex-col">
+            <span className="font-semibold text-foreground text-sm tracking-tight">{info.getValue()}</span>
+            <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-tighter opacity-70">
+              {info.row.original.email || 'No email provided'}
+            </span>
+          </div>
+        </div>
+      )
+    },
+    {
+      header: "TOTAL SALES",
+      accessorKey: "totalSales" as const,
+      cell: (info: any) => (
+        <span className="font-mono font-medium text-foreground">
+          ${(info.getValue() || 0).toLocaleString()}
+        </span>
+      )
+    },
+    {
+      header: "EARNED",
+      accessorKey: "commissionEarned" as const,
+      className: "text-primary",
+      cell: (info: any) => (
+        <span className="font-mono font-bold text-primary">
+          ${(info.getValue() || 0).toLocaleString()}
+        </span>
+      )
+    },
+    {
+      header: "PAID",
+      accessorKey: "commissionPaid" as const,
+      className: "text-emerald-400",
+      cell: (info: any) => (
+        <span className="font-mono font-medium text-emerald-400/90">
+          ${(info.getValue() || 0).toLocaleString()}
+        </span>
+      )
+    },
+    {
+      header: "PENDING",
+      accessorKey: "pendingBalance" as const,
+      className: "text-rose-400 font-medium",
+      cell: (info: any) => (
+        <div className="flex items-center gap-1.5">
+          <span className={cn(
+            "font-mono font-bold",
+            (info.getValue() || 0) > 0 ? "text-rose-400" : "text-muted-foreground/40"
+          )}>
+            ${(info.getValue() || 0).toLocaleString()}
+          </span>
+          {(info.getValue() || 0) > 0 && <span className="w-1.5 h-1.5 rounded-full bg-rose-400 animate-pulse" />}
+        </div>
+      )
+    },
   ];
 
   return (
-    <div className="space-y-6 animate-in fade-in zoom-in duration-500">
-      <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+    <div className="space-y-8 animate-in fade-in zoom-in duration-700">
+      <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div>
-          <h1 className="text-xl font-bold tracking-tight text-foreground mb-1">
-            Rep Accounts
-          </h1>
-          <p className="text-[11px] text-muted-foreground font-medium uppercase tracking-wider">
-            Financial summary and balances for all sales representatives
+          <div className="flex items-center gap-2 mb-2">
+            <div className="p-2 bg-primary/10 rounded-lg">
+              <Wallet className="w-5 h-5 text-primary" />
+            </div>
+            <h1 className="text-2xl font-black tracking-tight text-foreground uppercase italic">
+              Rep Accounts <span className="text-primary not-italic font-light">Hub</span>
+            </h1>
+          </div>
+          <p className="text-xs text-muted-foreground font-medium max-w-md leading-relaxed">
+            Monitor representative performance, track commissions earned, and manage pending balances with real-time financial data.
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <button className="px-4 py-1.5 text-xs font-semibold text-muted-foreground bg-[var(--card)] rounded shadow-sm border border-[var(--border)] transition-colors hover:text-foreground">
-            Export Data
+          <div className="relative group">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground transition-colors group-focus-within:text-primary" />
+            <input
+              type="text"
+              placeholder="Search reps..."
+              className="pl-9 pr-4 py-2 text-xs bg-[var(--card)] border border-[var(--border)] rounded-lg w-48 focus:outline-none focus:ring-1 focus:ring-primary/30 transition-all placeholder:text-muted-foreground/50"
+              value={query.searchTerm}
+              onChange={(e) => setQuery({ ...query, searchTerm: e.target.value })}
+            />
+          </div>
+          <button className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-foreground bg-[var(--card)] rounded-lg shadow-sm border border-[var(--border)] transition-all hover:border-primary/50 hover:bg-primary/5 group">
+            <Download className="w-3.5 h-3.5 transition-transform group-hover:-translate-y-0.5" />
+            EXPORT
           </button>
         </div>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-3 mb-6">
-        <SummaryCard title="TOTAL REP SALES" amount="$429,000" color="text-primary" />
-        <SummaryCard title="TOTAL COMMISSIONS" amount="$54,100" color="text-purple-400" />
-        <SummaryCard title="TOTAL PENDING PAYABLE" amount="$7,600" color="text-rose-400" />
+      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <SummaryCard
+          title="Total Rep Sales"
+          value={summary?.totalRepSales}
+          loading={summaryLoading}
+          color="text-primary"
+          borderColor="border-t-primary"
+        />
+        <SummaryCard
+          title="Total Commissions"
+          value={summary?.totalCommissions}
+          loading={summaryLoading}
+          color="text-indigo-400"
+          borderColor="border-t-indigo-400"
+        />
+        <SummaryCard
+          title="Pending Payable"
+          value={summary?.totalPendingPayable}
+          loading={summaryLoading}
+          color="text-rose-400"
+          isAlert={(summary?.totalPendingPayable || 0) > 0}
+          borderColor="border-t-rose-400"
+        />
+        <SummaryCard
+          title="Representatives"
+          value={summary?.representativeCount}
+          loading={summaryLoading}
+          color="text-emerald-400"
+          isNumber
+          borderColor="border-t-emerald-400"
+        />
       </div>
 
-      <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] shadow-sm transition-all overflow-hidden flex flex-col">
-        <div className="flex items-center justify-between p-5 pb-5">
-          <h2 className="text-sm font-bold text-foreground">All Representatives</h2>
-          <div className="flex gap-2">
-            <FilterPill text="All" active={filter === 'All'} onClick={() => setFilter('All')} />
-            <FilterPill text="Top Performers" active={filter === 'Top Performers'} color="bg-emerald-500/20 text-emerald-400" activeColor="bg-emerald-500 text-[var(--background)]" onClick={() => setFilter('Top Performers')} />
-            <FilterPill text="Needs Payment" active={filter === 'Needs Payment'} color="bg-rose-500/20 text-rose-500" activeColor="bg-rose-500 text-[var(--background)]" onClick={() => setFilter('Needs Payment')} />
+      <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] shadow-xl shadow-black/5 transition-all overflow-hidden flex flex-col backdrop-blur-sm">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-6 gap-4 border-b border-[var(--border)] bg-white/[0.01]">
+          <div className="flex items-center gap-3">
+            <div className="w-1.5 h-6 bg-primary rounded-full" />
+            <h2 className="text-base font-black text-foreground tracking-tight uppercase">Representatives List</h2>
+            <span className="px-2 py-0.5 bg-muted rounded text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+              {meta?.totalResult || 0} TOTAL
+            </span>
+          </div>
+          <div className="flex items-center gap-2 p-1 bg-muted/50 rounded-xl border border-[var(--border)]">
+            <FilterPill text="All" active={filter === 'All'} activeColor="bg-primary text-white dark:text-black" onClick={() => setFilter('All')} />
+            <FilterPill text="Top Performers" active={filter === 'Top Performers'} color="text-emerald-400 hover:bg-emerald-500/10" activeColor="bg-emerald-500 text-white" onClick={() => setFilter('Top Performers')} />
+            <FilterPill text="Needs Payment" active={filter === 'Needs Payment'} color="text-rose-400 hover:bg-rose-500/10" activeColor="bg-rose-500 text-white" onClick={() => setFilter('Needs Payment')} />
           </div>
         </div>
-        <div className="flex-1 px-5 pb-5">
-          <DataTable data={filteredData} columns={columns} />
+        <div className="flex-1 px-6 pb-6 pt-2">
+          {loading ? (
+            <div className="flex flex-col items-center justify-center py-20 gap-4">
+              <Loader2 className="w-10 h-10 text-primary animate-spin opacity-50" />
+              <p className="text-xs font-bold tracking-widest text-muted-foreground uppercase animate-pulse">Syncing representative data...</p>
+            </div>
+          ) : (
+            <DataTable data={filteredData} columns={columns} />
+          )}
         </div>
       </div>
     </div>
   );
 }
 
-function SummaryCard({ title, amount, color }: { title: string, amount: string, color: string }) {
+interface SummaryCardProps {
+  title: string;
+  value?: number;
+  loading: boolean;
+  color: string;
+  isAlert?: boolean;
+  isNumber?: boolean;
+  borderColor?: string;
+}
+
+function SummaryCard({ title, value, loading, color, isAlert, isNumber, borderColor }: SummaryCardProps) {
   return (
-    <div className="rounded-xl border border-[var(--border)] border-t-[3px] border-t-[var(--border)] bg-[var(--card)] p-5 shadow-sm transition-all hover:bg-white/[0.02]">
-      <h3 className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase">{title}</h3>
-      <div className={cn("mt-2 text-3xl font-black tracking-tight", color)}>{amount}</div>
+    <div
+      className={cn(
+        "rounded-xl border border-[var(--border)] border-t-[3px] bg-[var(--card)] p-5 shadow-sm transition-all hover:bg-white/[0.02]",
+        borderColor
+      )}
+    >
+      {/* Background Glow */}
+      <div className={cn("absolute -right-4 -top-4 w-24 h-24 blur-3xl opacity-5 rounded-full transition-opacity group-hover:opacity-10", color.replace('text-', 'bg-'))} />
+
+      <h3 className="text-[10px] font-bold tracking-[0.2em] text-muted-foreground uppercase opacity-60 mb-2">{title}</h3>
+
+      {loading ? (
+        <div className="h-9 w-24 bg-muted/50 rounded-md animate-pulse" />
+      ) : (
+        <div className={cn("text-3xl font-black tracking-tight flex items-baseline gap-1", color)}>
+          {!isNumber && <span className="text-lg font-light opacity-50">$</span>}
+          {(value || 0).toLocaleString()}
+        </div>
+      )}
+
+      {isAlert && !loading && (
+        <div className="mt-3 flex items-center gap-2">
+          <div className="w-2 h-2 rounded-full bg-rose-500 animate-ping" />
+          <span className="text-[9px] font-bold text-rose-500 uppercase tracking-wider">Action Required</span>
+        </div>
+      )}
     </div>
   )
 }
 
 function FilterPill({ text, active, onClick, color, activeColor }: { text: string, active: boolean, onClick: () => void, color?: string, activeColor?: string }) {
-  const baseClasses = "px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded border border-[var(--border)] transition-all cursor-pointer";
+  const baseClasses = "px-4 py-1.5 text-[10px] font-black uppercase tracking-wider rounded-lg transition-all duration-200 cursor-pointer border border-transparent";
 
   if (active) {
     return (
-      <button onClick={onClick} className={cn(baseClasses, activeColor || "bg-[#334155] text-foreground border-[#334155]")}>
+      <button onClick={onClick} className={cn(baseClasses, activeColor || "bg-primary text-primary-foreground shadow-lg shadow-primary/20 scale-105")}>
         {text}
       </button>
     );
   }
 
-  if (color) {
-    return (
-      <button onClick={onClick} className={cn(baseClasses, color, "hover:opacity-80")}>
-        {text}
-      </button>
-    )
-  }
-
   return (
-    <button onClick={onClick} className={cn(baseClasses, "text-muted-foreground hover:text-foreground hover:bg-[var(--border)]/50")}>
+    <button onClick={onClick} className={cn(baseClasses, color || "text-muted-foreground hover:text-foreground hover:bg-[var(--border)]/30")}>
       {text}
     </button>
   )
 }
+
 
