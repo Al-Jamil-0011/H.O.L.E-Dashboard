@@ -4,7 +4,7 @@ import { useState, useMemo } from 'react';
 import { cn } from '@/lib/utils';
 import { DataTable, StatusBadge } from '@/components/ui/DataTable';
 import { useVendorPayments, useVendorPaymentsSummary } from '@/hooks/admin/vendor-payment';
-import { Landmark, Download, Search, FileText } from 'lucide-react';
+import { Download, FileText } from 'lucide-react';
 import { ConfirmPaymentModal } from '@/components/modals/ConfirmPaymentModal';
 
 export default function VendorPaymentsPage() {
@@ -244,7 +244,7 @@ function StatCard({
   return (
     <div
       className={cn(
-        "relative rounded-xl border border-[var(--border)] border-t-[3px] bg-[var(--card)] p-5 shadow-sm transition-all hover:bg-white/[0.02] hover:-translate-y-1 duration-300",
+        "relative rounded-xl border border-[var(--border)] border-t-[3px] bg-[var(--card)] p-5 shadow-sm transition-all hover:bg-white/[0.02]",
         topBorderColor
       )}
     >
