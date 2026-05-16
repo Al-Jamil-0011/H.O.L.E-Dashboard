@@ -1,18 +1,13 @@
 "use client";
 
-import {
-    ArrowUpRight,
-    ArrowDownRight,
-    ChevronDown
-} from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { DataTable, StatusBadge } from '@/components/ui/DataTable';
 import dynamic from 'next/dynamic';
 import { useTheme } from 'next-themes';
 import type { ApexOptions } from 'apexcharts';
-import { useMyProfile } from '@/hooks/admin/users';
 import { useDashboardOverview } from '@/hooks/overview';
 import { IRecentSale } from '@/hooks/overview/interface';
+import { DashboardStatCard } from '@/components/stats-card';
 
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
@@ -124,21 +119,21 @@ export default function Home() {
 
 
     const columns = [
-        { 
-            header: "SALE ID", 
-            render: (item: IRecentSale) => <span className="font-medium text-foreground">{item.saleId}</span> 
+        {
+            header: "SALE ID",
+            render: (item: IRecentSale) => <span className="font-medium text-foreground">{item.saleId}</span>
         },
         { header: "REP", accessorKey: "rep" as const },
         { header: "DOCTOR", accessorKey: "doctor" as const },
         { header: "HOSPITAL", accessorKey: "hospital" as const },
         { header: "IMPLANT", accessorKey: "implant" as const },
-        { 
-            header: "AMOUNT", 
-            render: (item: IRecentSale) => <span className="text-primary font-medium">${item.amount.toLocaleString()}</span> 
+        {
+            header: "AMOUNT",
+            render: (item: IRecentSale) => <span className="text-primary font-medium">${item.amount.toLocaleString()}</span>
         },
-        { 
-            header: "COMMISSION", 
-            render: (item: IRecentSale) => <span className="text-emerald-400 font-medium">${item.commission.toLocaleString()}</span> 
+        {
+            header: "COMMISSION",
+            render: (item: IRecentSale) => <span className="text-emerald-400 font-medium">${item.commission.toLocaleString()}</span>
         },
         {
             header: "STATUS",
@@ -163,7 +158,7 @@ export default function Home() {
                     </p>
                 </div>
                 <div className="flex items-center gap-3">
-                    <button 
+                    <button
                         onClick={() => refetch()}
                         className="px-4 py-1.5 text-xs font-semibold text-muted-foreground bg-card rounded shadow-sm border border-border transition-colors hover:text-foreground cursor-pointer"
                     >
@@ -176,7 +171,7 @@ export default function Home() {
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                <StatCard
+                <DashboardStatCard
                     title="TOTAL REVENUE"
                     value={`$${dashboardData?.stats?.revenue?.totalRevenue?.toLocaleString() || "0"}`}
                     trend={`${(dashboardData?.stats?.revenue?.thisMonthPercentage ?? 0) > 0 ? '+' : ''}${dashboardData?.stats?.revenue?.thisMonthPercentage ?? 0}% this month`}
@@ -184,7 +179,7 @@ export default function Home() {
                     topBorderColor="border-t-[#00E5FF]"
                     loading={isLoading}
                 />
-                <StatCard
+                <DashboardStatCard
                     title="TOTAL SALES"
                     value={dashboardData?.stats?.sales?.totalSales?.toString() || "0"}
                     trend={`+${dashboardData?.stats?.sales?.thisMonthCount ?? 0} new this month`}
@@ -192,7 +187,7 @@ export default function Home() {
                     topBorderColor="border-t-emerald-500"
                     loading={isLoading}
                 />
-                <StatCard
+                <DashboardStatCard
                     title="COMMISSION PAID"
                     value={`$${dashboardData?.stats?.commission?.totalCommissions?.toLocaleString() || "0"}`}
                     trend={`${dashboardData?.stats?.commission?.reps ?? 0} reps paid out`}
@@ -200,7 +195,7 @@ export default function Home() {
                     topBorderColor="border-t-rose-500"
                     loading={isLoading}
                 />
-                <StatCard
+                <DashboardStatCard
                     title="VENDOR PAYMENTS"
                     value={`$${dashboardData?.stats?.vendor?.totalVendorPayments?.toLocaleString() || "0"}`}
                     trend={`${dashboardData?.stats?.vendor?.pendingCount ?? 0} pending payments`}
@@ -208,7 +203,7 @@ export default function Home() {
                     topBorderColor="border-t-amber-500"
                     loading={isLoading}
                 />
-                <StatCard
+                <DashboardStatCard
                     title="TOTAL EXPENSES"
                     value={`$${dashboardData?.stats?.expense?.totalExpenses?.toLocaleString() || "0"}`}
                     trend={`${(dashboardData?.stats?.expense?.lastMonthPercentage ?? 0) > 0 ? '+' : ''}${dashboardData?.stats?.expense?.lastMonthPercentage ?? 0}% vs last month`}
@@ -216,7 +211,7 @@ export default function Home() {
                     topBorderColor="border-t-blue-500"
                     loading={isLoading}
                 />
-                <StatCard
+                <DashboardStatCard
                     title="NET PROFIT"
                     value={`$${dashboardData?.stats?.netProfit?.totalNetProfit?.toLocaleString() || "0"}`}
                     trend={`${dashboardData?.stats?.netProfit?.margin ?? 0}% margin`}
