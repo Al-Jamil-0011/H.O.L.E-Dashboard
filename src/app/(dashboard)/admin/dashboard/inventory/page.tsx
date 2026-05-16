@@ -196,7 +196,7 @@ export default function InventoryPage() {
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <button className="flex items-center gap-2 px-4 py-2 text-xs font-semibold text-muted-foreground bg-card rounded-lg shadow-sm border border-border transition-colors hover:text-foreground hover:bg-muted">
+          <button className="flex items-center gap-2 px-4 py-2 text-xs font-semibold text-muted-foreground bg-card rounded-lg dark:shadow-sm border border-border transition-colors hover:text-foreground hover:bg-muted cursor-pointer">
             <Filter className="h-4 w-4" /> Export CSV
           </button>
         </div>
@@ -237,23 +237,23 @@ export default function InventoryPage() {
       </div>
 
       {/* MAIN CONTAINER */}
-      <div className="rounded-xl border border-border bg-card dark:shadow-lg flex flex-col overflow-hidden">
+      <div className="rounded-xl border border-border bg-[var(--card)] dark:shadow-lg flex flex-col overflow-hidden">
 
         {/* CONTROL BAR */}
-        <div className="p-4 border-b border-border bg-muted/40 flex flex-col md:flex-row gap-4 items-center justify-between">
+        <div className="p-4 border-b border-border bg-[var(--muted)] flex flex-col md:flex-row gap-4 items-center justify-between">
 
           <div className="flex flex-col sm:flex-row items-center gap-4 w-full md:w-auto">
             {/* Type Tabs */}
-            <div className="flex items-center bg-muted p-1 rounded-lg border border-border w-full sm:w-auto overflow-x-auto">
+            <div className="flex items-center bg-[var(--background)] p-1 rounded-lg border border-border w-full sm:w-auto overflow-x-auto">
               {['All', 'Implant', 'Tray', 'Bio'].map(tab => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab as any)}
                   className={cn(
-                    "px-4 py-1.5 text-xs font-bold rounded-md transition-all whitespace-nowrap cursor-pointer",
+                    "px-6 py-1.5 text-xs font-bold rounded-md transition-all whitespace-nowrap cursor-pointer",
                     activeTab === tab
-                      ? "bg-card text-foreground dark:shadow-sm"
-                      : "text-muted-foreground hover:text-foreground hover:bg-card/50"
+                      ? "bg-[var(--border)] text-foreground dark:shadow-sm"
+                      : "text-muted-foreground dark:hover:text-gray-200 hover:bg-[var(--border)]/50"
                   )}
                 >
                   {tab}

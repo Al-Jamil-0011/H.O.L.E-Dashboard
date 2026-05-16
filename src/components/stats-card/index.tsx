@@ -321,3 +321,52 @@ export function InventoryStatCard({
         </div>
     );
 }
+
+export function PurchaseOrderStatCard({
+    title,
+    value,
+    trend,
+    topBorderColor,
+    trendColor = "text-primary",
+    loading = false
+}: {
+    title: string;
+    value: string;
+    trend: string;
+    topBorderColor: string;
+    trendColor?: string;
+    loading?: boolean;
+}) {
+    return (
+        <div
+            className={cn(
+                "rounded-xl border border-[var(--border)] border-t-[3px] bg-[var(--card)] p-5 dark:shadow-sm transition-all hover:bg-white/[0.02]",
+                topBorderColor
+            )}
+        >
+            <h3 className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase">
+                {title}
+            </h3>
+
+            <div className="mt-3 space-y-2">
+                {loading ? (
+                    <div className="h-7 w-24 rounded-md bg-muted animate-pulse" />
+                ) : (
+                    <div className="text-2xl font-black tracking-tight text-foreground">
+                        {value}
+                    </div>
+                )}
+
+                {loading ? (
+                    <div className="h-3 w-20 rounded-md bg-muted animate-pulse" />
+                ) : (
+                    <p className={cn("mt-2 text-[11px] font-medium", trendColor)}>
+                        {trend}
+                    </p>
+                )}
+            </div>
+        </div>
+    );
+}
+
+

@@ -37,18 +37,18 @@ export default function ShipmentsPage() {
     {
       header: "SHIPMENT ID",
       render: (item: any) => (
-        <span className="font-bold text-[#00E5FF] tracking-wider">
+        <span className="font-bold text-primary tracking-wider">
           {item.shipmentId || item._id?.slice(-8).toUpperCase()}
         </span>
       ),
-      className: "font-bold text-[#00E5FF] tracking-wider"
+      className: "font-bold text-primary tracking-wider"
     },
     {
       header: "PACKAGE / REP",
       render: (item: any) => (
         <div className="flex flex-col">
-          <span className="font-bold text-white capitalize">{item.shipmentInfo?.type || "Package"}</span>
-          <span className="text-[10px] text-gray-500 font-medium">{item.createdBy?.fullName || "System"}</span>
+          <span className="font-bold text-foreground capitalize">{item.shipmentInfo?.type || "Package"}</span>
+          <span className="text-[10px] text-muted-foreground font-medium">{item.createdBy?.fullName || "System"}</span>
         </div>
       )
     },
@@ -58,11 +58,11 @@ export default function ShipmentsPage() {
         <div className="flex flex-col gap-0.5">
           <div className="flex items-center gap-1.5 text-[11px]">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
-            <span className="text-gray-300 truncate max-w-[150px] capitalize">{item.pickupInfo?.address || item.pickupInfo?.facility || "-"}</span>
+            <span className="text-muted-foreground truncate max-w-[150px] capitalize">{item.pickupInfo?.address || item.pickupInfo?.facility || "-"}</span>
           </div>
           <div className="flex items-center gap-1.5 text-[11px]">
             <span className="w-1.5 h-1.5 rounded-full bg-rose-500 shrink-0" />
-            <span className="text-gray-400 truncate max-w-[150px] capitalize">{item.dropoffInfo?.address || item.dropoffInfo?.facility || "-"}</span>
+            <span className="text-muted-foreground/80 truncate max-w-[150px] capitalize">{item.dropoffInfo?.address || item.dropoffInfo?.facility || "-"}</span>
           </div>
         </div>
       )
@@ -109,7 +109,7 @@ export default function ShipmentsPage() {
     {
       header: "CREATED DATE",
       render: (item: any) => (
-        <span className="text-gray-400 text-[11px]">
+        <span className="text-muted-foreground text-[11px]">
           {item.createdAt ? new Date(item.createdAt).toLocaleDateString() : "-"}
         </span>
       )
@@ -119,7 +119,7 @@ export default function ShipmentsPage() {
       render: (item: any) => (
         <Link href={`/admin/dashboard/shipments/${item._id}`}>
           <button
-            className="px-3 py-1.5 text-[10px] font-bold text-[#00E5FF] bg-[#00E5FF]/10 border border-[#00E5FF]/20 rounded-md hover:bg-[#00E5FF]/20 transition-colors cursor-pointer"
+            className="px-3 py-1.5 text-[10px] font-bold text-primary bg-primary/10 border border-primary/20 rounded-md hover:bg-primary/20 transition-colors cursor-pointer"
           >
             Details
           </button>
@@ -134,10 +134,10 @@ export default function ShipmentsPage() {
       {/* HEADER SECTION */}
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-xl font-bold tracking-tight text-white mb-1">
+          <h1 className="text-xl font-bold tracking-tight text-foreground mb-1">
             Shipment Management
           </h1>
-          <p className="text-[11px] text-gray-500 font-medium uppercase tracking-wider">
+          <p className="text-[11px] text-muted-foreground font-medium uppercase tracking-wider">
             Monitor internal driver deliveries and external courier shipments
           </p>
         </div>
@@ -148,7 +148,7 @@ export default function ShipmentsPage() {
         <StatCard
           title="TOTAL"
           value={summary?.total || 0}
-          icon={<Package className="h-4 w-4 text-[#00E5FF]" />}
+          icon={<Package className="h-4 w-4 text-primary" />}
           loading={summaryLoading}
         />
         <StatCard
@@ -176,16 +176,16 @@ export default function ShipmentsPage() {
       </div>
 
       {/* MAIN CONTAINER */}
-      <div className="rounded-xl border border-[#1E293B] bg-[#151B2B] shadow-lg flex flex-col overflow-hidden">
+      <div className="rounded-xl border border-border bg-card dark:shadow-sm flex flex-col overflow-hidden">
 
         {/* CONTROL BAR */}
-        <div className="p-4 border-b border-[#1E293B] bg-[#1A2234] flex flex-col md:flex-row gap-4 items-center justify-between">
+        <div className="p-4 border-b border-border bg-muted/50 flex flex-col md:flex-row gap-4 items-center justify-between">
 
           <div className="flex flex-wrap items-center gap-3">
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="bg-[#0B101E] border border-[#334155] rounded-lg py-2 px-3 text-xs font-bold text-gray-300 focus:outline-none focus:border-[#00E5FF] transition-colors appearance-none"
+              className="bg-background border border-border rounded-lg py-2 px-3 text-xs font-bold text-foreground focus:outline-none focus:border-primary transition-colors appearance-none"
             >
               <option value="All">All Statuses</option>
               <option value="Pending">Pending</option>
@@ -196,7 +196,7 @@ export default function ShipmentsPage() {
             <select
               value={methodFilter}
               onChange={(e) => setMethodFilter(e.target.value)}
-              className="bg-[#0B101E] border border-[#334155] rounded-lg py-2 px-3 text-xs font-bold text-gray-300 focus:outline-none focus:border-[#00E5FF] transition-colors appearance-none"
+              className="bg-background border border-border rounded-lg py-2 px-3 text-xs font-bold text-foreground focus:outline-none focus:border-primary transition-colors appearance-none"
             >
               <option value="All">All Methods</option>
               <option value="courier">COURIER</option>
@@ -213,7 +213,7 @@ export default function ShipmentsPage() {
                   setStatusFilter('All');
                   setMethodFilter('All');
                 }}
-                className="text-[10px] font-bold text-gray-500 hover:text-white uppercase tracking-widest transition-colors flex items-center gap-1 shrink-0 cursor-pointer"
+                className="text-[10px] font-bold text-muted-foreground hover:text-foreground uppercase tracking-widest transition-colors flex items-center gap-1 shrink-0 cursor-pointer"
               >
                 <X className="h-3 w-3" />
                 Clear Filters
@@ -222,17 +222,17 @@ export default function ShipmentsPage() {
           </div>
 
           <div className="relative w-full md:w-80">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-500" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
             <input
               type="text"
               placeholder="Search by ID, Rep, or Facility..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full bg-[#0B101E] border border-[#334155] rounded-lg py-2 pl-9 pr-10 text-xs font-bold text-white placeholder:text-gray-600 focus:outline-none focus:border-[#00E5FF] transition-colors"
+              className="w-full bg-background border border-border rounded-lg py-2 pl-9 pr-10 text-xs font-bold text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:border-primary transition-colors"
             />
             {shipmentsLoading && (
               <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                <div className="h-3 w-3 border-2 border-[#00E5FF] border-t-transparent rounded-full animate-spin" />
+                <div className="h-3 w-3 border-2 border-primary border-t-transparent rounded-full animate-spin" />
               </div>
             )}
           </div>
@@ -257,14 +257,13 @@ export default function ShipmentsPage() {
       </div>
     </div>
   );
-}
-function StatCard({
+}function StatCard({
   title,
   value,
   icon,
-  textColor = "text-white",
+  textColor = "text-foreground",
   highlight = false,
-  loading = false, // ✅ add this
+  loading = false,
 }: {
   title: string;
   value: string | number;
@@ -276,24 +275,24 @@ function StatCard({
   return (
     <div
       className={cn(
-        "relative rounded-xl border border-[#1E293B] bg-[#151B2B] p-4 shadow-sm transition-all hover:bg-[#1A2234] overflow-hidden",
-        highlight && value > 0 && "shadow-[0_0_15px_rgba(244,63,94,0.15)] border-rose-500/30"
+        "relative rounded-xl border border-border bg-card p-4 dark:shadow-sm transition-all hover:bg-muted/30 overflow-hidden",
+        highlight && value > 0 && "shadow-[0_0_15px_rgba(244,63,94,0.1)] border-rose-500/30"
       )}
     >
       {highlight && value > 0 && (
-        <div className="absolute top-0 right-0 w-24 h-24 bg-rose-500/10 blur-2xl pointer-events-none rounded-full" />
+        <div className="absolute top-0 right-0 w-24 h-24 bg-rose-500/5 blur-2xl pointer-events-none rounded-full" />
       )}
 
       {loading && (
-        <div className="absolute inset-0 bg-[#151B2B] animate-pulse p-4">
+        <div className="absolute inset-0 bg-card animate-pulse p-4">
           <div className="flex flex-col gap-3">
             <div className="flex items-center justify-between">
-              <div className="h-8 w-8 rounded-md bg-[#1E293B]" />
+              <div className="h-8 w-8 rounded-md bg-muted" />
             </div>
 
             <div className="space-y-2">
-              <div className="h-6 w-20 bg-[#1E293B] rounded" />
-              <div className="h-2 w-24 bg-[#1E293B] rounded" />
+              <div className="h-6 w-20 bg-muted rounded" />
+              <div className="h-2 w-24 bg-muted rounded" />
             </div>
           </div>
         </div>
@@ -301,7 +300,7 @@ function StatCard({
 
       <div className="flex flex-col gap-3">
         <div className="flex items-center justify-between">
-          <div className="p-1.5 bg-[#0B101E] rounded-md border border-[#1E293B]">
+          <div className="p-1.5 bg-background rounded-md border border-border">
             {icon}
           </div>
         </div>
@@ -316,7 +315,7 @@ function StatCard({
             {value}
           </div>
 
-          <h3 className="text-[9px] font-bold tracking-widest text-gray-500 uppercase mt-0.5">
+          <h3 className="text-[9px] font-bold tracking-widest text-muted-foreground uppercase mt-0.5">
             {title}
           </h3>
         </div>

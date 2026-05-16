@@ -45,11 +45,11 @@ export default function PurchaseOrderDetailPage({ params }: { params: Promise<{ 
   const productColumns = [
     { header: "PRODUCT NAME", accessorKey: "productName" as const, className: "font-semibold text-foreground" },
     { header: "PRODUCT ID", accessorKey: "productId" as const, className: "text-muted-foreground font-mono" },
-    { 
-      header: "ITEMS", 
+    {
+      header: "ITEMS",
       render: (item: any) => (
         <span className="text-muted-foreground">{item.listOfItems?.length || 0} items</span>
-      ) 
+      )
     },
   ];
 
@@ -64,9 +64,9 @@ export default function PurchaseOrderDetailPage({ params }: { params: Promise<{ 
           </Link>
           <div className="flex flex-wrap items-center gap-4">
             <h1 className="text-2xl font-black tracking-tight text-foreground">Purchase Order #{purchaseOrder.purchaseOrderNumber}</h1>
-            <StatusBadge 
-              status={purchaseOrder.status} 
-              type={purchaseOrder.status === 'complete' ? 'success' : purchaseOrder.status === 'open' ? 'warning' : 'error'} 
+            <StatusBadge
+              status={purchaseOrder.status}
+              type={purchaseOrder.status === 'complete' ? 'success' : purchaseOrder.status === 'open' ? 'warning' : 'error'}
             />
             <span className={cn(
               "px-3 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider border",
@@ -88,14 +88,14 @@ export default function PurchaseOrderDetailPage({ params }: { params: Promise<{ 
         <div className="lg:col-span-8 space-y-6">
 
           {/* HERO SUMMARY CARD */}
-          <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] shadow-xl overflow-hidden flex flex-col relative group">
+          <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] dark:shadow-lg overflow-hidden flex flex-col relative group">
             <div className="h-32 w-full bg-cover bg-center relative" style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?q=80&w=2000&auto=format&fit=crop")' }}>
               <div className="absolute inset-0 bg-gradient-to-t from-[var(--card)] to-transparent" />
             </div>
 
             <div className="p-6 md:p-8 pt-0 relative z-10 -mt-10">
               <div className="flex items-end justify-between mb-8">
-                <div className="h-20 w-20 rounded-2xl bg-[var(--background)] border-4 border-[var(--card)] flex items-center justify-center shadow-lg">
+                <div className="h-20 w-20 rounded-2xl bg-[var(--background)] border-4 border-[var(--card)] flex items-center justify-center dark:shadow-lg">
                   <Building2 className="h-8 w-8 text-primary" />
                 </div>
                 <div className="text-right">
@@ -119,7 +119,7 @@ export default function PurchaseOrderDetailPage({ params }: { params: Promise<{ 
 
           {/* PRODUCT LIST TABLE */}
           {purchaseOrder.products && purchaseOrder.products.length > 0 && (
-            <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] shadow-xl overflow-hidden animate-in slide-in-from-bottom-4 duration-300">
+            <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] dark:shadow-xl overflow-hidden animate-in slide-in-from-bottom-4 duration-300">
               <div className="p-6 border-b border-[var(--border)]">
                 <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
                   <FileText className="w-4 h-4 text-primary" /> Line Items
@@ -145,7 +145,7 @@ export default function PurchaseOrderDetailPage({ params }: { params: Promise<{ 
 
           {/* DOCUMENTS SECTION */}
           {purchaseOrder.documents && purchaseOrder.documents.length > 0 && (
-            <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] shadow-xl p-6">
+            <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] dark:shadow-xl p-6">
               <h3 className="text-sm font-bold text-foreground flex items-center gap-2 mb-6">
                 <FileText className="w-4 h-4 text-primary" /> Associated Documents
               </h3>
@@ -163,9 +163,9 @@ export default function PurchaseOrderDetailPage({ params }: { params: Promise<{ 
                         </p>
                       </div>
                     </div>
-                    <a 
-                      href={doc} 
-                      target="_blank" 
+                    <a
+                      href={doc}
+                      target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-muted-foreground bg-[var(--card)] rounded-lg border border-[var(--border)] hover:text-foreground hover:border-gray-500 transition-colors"
                     >
@@ -184,7 +184,7 @@ export default function PurchaseOrderDetailPage({ params }: { params: Promise<{ 
         <div className="lg:col-span-4 space-y-6 lg:sticky lg:top-8">
 
           {/* QUICK SUMMARY MINI CARD */}
-          <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] shadow-xl p-6 relative overflow-hidden">
+          <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] dark:shadow-xl p-6 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl" />
             <h3 className="text-[11px] font-bold tracking-widest text-muted-foreground uppercase mb-5">Financial Summary</h3>
             <div className="space-y-4">
@@ -200,34 +200,34 @@ export default function PurchaseOrderDetailPage({ params }: { params: Promise<{ 
           </div>
 
           {/* TIMELINE CARD */}
-          <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] shadow-xl p-6">
+          <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] dark:shadow-xl p-6">
             <h3 className="text-[11px] font-bold tracking-widest text-muted-foreground uppercase mb-6">Status Timeline</h3>
 
             <div className="space-y-6 relative before:absolute before:inset-0 before:ml-2.5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-[var(--primary)] before:to-[var(--border)]">
-              <TimelineStep 
-                title="PO Created" 
-                date={purchaseOrder.createdAt ? new Date(purchaseOrder.createdAt).toLocaleString() : 'N/A'} 
-                active 
-                completed 
+              <TimelineStep
+                title="PO Created"
+                date={purchaseOrder.createdAt ? new Date(purchaseOrder.createdAt).toLocaleString() : 'N/A'}
+                active
+                completed
               />
-              <TimelineStep 
-                title="Sent to Vendor" 
-                date={purchaseOrder.isSentToVendor ? 'Completed' : 'Pending'} 
-                active={purchaseOrder.isSentToVendor} 
-                completed={purchaseOrder.isSentToVendor} 
+              <TimelineStep
+                title="Sent to Vendor"
+                date={purchaseOrder.isSentToVendor ? 'Completed' : 'Pending'}
+                active={purchaseOrder.isSentToVendor}
+                completed={purchaseOrder.isSentToVendor}
               />
-              <TimelineStep 
-                title="Final Status" 
-                date={purchaseOrder.status.toUpperCase()} 
-                active={purchaseOrder.status === 'complete'} 
-                completed={purchaseOrder.status === 'complete'} 
+              <TimelineStep
+                title="Final Status"
+                date={purchaseOrder.status.toUpperCase()}
+                active={purchaseOrder.status === 'complete'}
+                completed={purchaseOrder.status === 'complete'}
                 isCurrent={purchaseOrder.status !== 'complete'}
               />
             </div>
           </div>
 
           {/* QUICK ACTIONS CARD */}
-          <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] shadow-xl p-6 space-y-3">
+          <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] dark:shadow-xl p-6 space-y-3">
             <h3 className="text-[11px] font-bold tracking-widest text-muted-foreground uppercase mb-3">Quick Actions</h3>
 
             <ActionBtn icon={<Building2 />} label="Facility Info" />
@@ -241,9 +241,6 @@ export default function PurchaseOrderDetailPage({ params }: { params: Promise<{ 
   );
 }
 
-// -------------------------------------------------------------
-// HELPER COMPONENTS
-// -------------------------------------------------------------
 
 function ToolButton({ icon, label }: { icon: React.ReactNode, label: string }) {
   return (
@@ -272,7 +269,7 @@ function TimelineStep({ title, date, active, completed, isCurrent }: { title: st
     <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
       {/* Icon Node */}
       <div className={cn(
-        "flex items-center justify-center w-5 h-5 rounded-full border-2 shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow-sm z-10",
+        "flex items-center justify-center w-5 h-5 rounded-full border-2 shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 dark:shadow-sm z-10",
         completed ? "bg-primary border-[var(--primary)]" : isCurrent ? "bg-[var(--background)] border-[var(--primary)]" : "bg-[var(--border)] border-[var(--border)]"
       )}>
         {completed && <CheckCircle2 className="w-3 h-3 text-[var(--background)]" />}

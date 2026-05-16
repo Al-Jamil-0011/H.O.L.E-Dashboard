@@ -6,6 +6,7 @@ import { DataTable, StatusBadge } from '@/components/ui/DataTable';
 import { Search, Plus, Filter, Download } from 'lucide-react';
 import Link from 'next/link';
 import { usePurchaseOrders, usePurchaseOrderSummary } from '@/hooks/admin/purchase-order';
+import { PurchaseOrderStatCard } from '@/components/stats-card';
 
 export default function PurchaseOrdersPage() {
   const [activeTab, setActiveTab] = useState('All');
@@ -130,25 +131,22 @@ export default function PurchaseOrdersPage() {
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <button className="flex items-center gap-2 px-4 py-2 text-xs font-semibold text-muted-foreground bg-[var(--card)] rounded-lg shadow-sm border border-[var(--border)] transition-colors hover:text-foreground hover:bg-[var(--border)] cursor-pointer">
+          <button className="flex items-center gap-2 px-4 py-2 text-xs font-semibold text-muted-foreground bg-card rounded-lg dark:shadow-sm border border-border transition-colors hover:text-foreground hover:bg-muted cursor-pointer">
             <Download className="h-4 w-4" /> Export
           </button>
-          {/* <button className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-[var(--background)] bg-primary rounded-lg shadow-sm transition-all hover:bg-cyan-400">
-            <Plus className="h-4 w-4" /> Create PO
-          </button> */}
         </div>
       </div>
 
       {/* STAT CARDS */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard
+        <PurchaseOrderStatCard
           title="TOTAL VOLUME"
           value={`$${summary?.totalVolume?.amount?.toLocaleString() || '0'}`}
           trend={`+ ${summary?.totalVolume?.changePercent}% this month`}
           topBorderColor="border-t-[var(--primary)]"
           loading={isLoading}
         />
-        <StatCard
+        <PurchaseOrderStatCard
           title="COMPLETED"
           value={summary?.completed?.count?.toLocaleString() || '0'}
           trend={`${summary?.completed?.thisWeek} this week`}
@@ -156,7 +154,7 @@ export default function PurchaseOrdersPage() {
           topBorderColor="border-t-emerald-500"
           loading={isLoading}
         />
-        <StatCard
+        <PurchaseOrderStatCard
           title="OPEN POS"
           value={summary?.openPOs?.count?.toLocaleString() || '0'}
           trend={summary?.openPOs?.needsAttention ? 'Needs attention' : 'No attention needed'}
@@ -164,7 +162,7 @@ export default function PurchaseOrdersPage() {
           topBorderColor="border-t-amber-500"
           loading={isLoading}
         />
-        <StatCard
+        <PurchaseOrderStatCard
           title="LOST / REJECTED"
           value={summary?.lostRejected?.count?.toLocaleString() || '0'}
           trend={`${summary?.lostRejected?.diffFromLastMonth} from last month`}
@@ -176,7 +174,7 @@ export default function PurchaseOrdersPage() {
       </div>
 
       {/* MAIN CONTAINER */}
-      <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] shadow-lg flex flex-col overflow-hidden">
+      <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] dark:shadow-sm flex flex-col overflow-hidden">
 
         {/* TOP TABS & SEARCH BAR */}
         <div className="p-4 border-b border-[var(--border)] bg-[var(--muted)] flex flex-col md:flex-row gap-4 items-center justify-between">
@@ -189,8 +187,8 @@ export default function PurchaseOrdersPage() {
                 className={cn(
                   "px-6 py-1.5 text-xs font-bold rounded-md transition-all whitespace-nowrap cursor-pointer",
                   activeTab === tab
-                    ? "bg-[var(--border)] text-foreground shadow-sm"
-                    : "text-muted-foreground hover:text-gray-200 hover:bg-[var(--border)]/50"
+                    ? "bg-[var(--border)] text-foreground dark:shadow-sm"
+                    : "text-muted-foreground dark:hover:text-gray-200 hover:bg-[var(--border)]/50"
                 )}
               >
                 {tab}
@@ -218,70 +216,10 @@ export default function PurchaseOrdersPage() {
             columns={columns}
             loading={isPurchaseOrdersLoading}
             className="rounded-none border-0 bg-transparent"
+            onRowClick={() => { }}
           />
         </div>
       </div>
     </div>
   );
 }
-
-// function StatCard({ title, value, trend, trendColor = "text-primary", topBorderColor }: { title: string, value: string | number, trend: string, trendColor?: string, topBorderColor: string }) {
-//   return (
-//     <div className={cn("rounded-xl border border-[var(--border)] border-t-[3px] bg-[var(--card)] p-5 shadow-sm transition-all hover:bg-[var(--muted)]", topBorderColor)}>
-//       <h3 className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase">{title}</h3>
-//       <div className="mt-2 text-3xl font-black tracking-tight text-foreground">{value}</div>
-//       <p className={cn("mt-1 text-xs font-medium", trendColor)}>{trend}</p>
-//     </div>
-//   )
-// }
-
-
-
-function StatCard({
-  title,
-  value,
-  trend,
-  topBorderColor,
-  trendColor = "text-primary",
-  loading = false
-}: {
-  title: string;
-  value: string;
-  trend: string;
-  topBorderColor: string;
-  trendColor?: string;
-  loading?: boolean;
-}) {
-  return (
-    <div
-      className={cn(
-        "rounded-xl border border-[var(--border)] border-t-[3px] bg-[var(--card)] p-5 shadow-sm transition-all hover:bg-white/[0.02]",
-        topBorderColor
-      )}
-    >
-      <h3 className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase">
-        {title}
-      </h3>
-
-      <div className="mt-3 space-y-2">
-        {loading ? (
-          <div className="h-7 w-24 rounded-md bg-muted animate-pulse" />
-        ) : (
-          <div className="text-2xl font-black tracking-tight text-foreground">
-            {value}
-          </div>
-        )}
-
-        {loading ? (
-          <div className="h-3 w-20 rounded-md bg-muted animate-pulse" />
-        ) : (
-          <p className={cn("mt-2 text-[11px] font-medium", trendColor)}>
-            {trend}
-          </p>
-        )}
-      </div>
-    </div>
-  );
-}
-
-

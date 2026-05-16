@@ -2,9 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
-import { Search, Plus, Filter, MoreVertical, Stethoscope, MapPin, Clock, FileText, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Search, Plus, Filter, Stethoscope, MapPin, Clock, FileText } from 'lucide-react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { DataTable } from '@/components/ui/DataTable';
 import { AddPhysicianModal } from './components/AddPhysicianModal';
 import { AddSurgeryModal } from './components/AddSurgeryModal';
