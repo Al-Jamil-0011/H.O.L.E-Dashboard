@@ -39,7 +39,11 @@ export interface IInventoryApiResponse {
 export interface IInventoryItem {
     _id: string;
     createdBy: string;
-    facility: string;
+    facility: string | {
+        _id: string;
+        name: string;
+        address: string;
+    };
 
     vendor: {
         _id: string;
@@ -91,6 +95,20 @@ export interface IInventoryItem {
     receiveTray?: {
         initialPhoto?: string;
         brokenFiles?: string[];
+    };
+
+    // Bio fields
+    itemName?: string;
+    lotNumber?: string;
+    quantity?: string;
+    expiryDate?: string;
+
+    createdBy: string | {
+        _id: string;
+        fullName: string;
+        email: string;
+        role: string;
+        profileUrl?: string;
     };
 }
 

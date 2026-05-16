@@ -43,7 +43,7 @@ export function InventoryDetailsDrawer({ isOpen, onClose, item }: InventoryDetai
     <>
       <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm transition-opacity" onClick={onClose} />
       <div className="fixed inset-y-0 right-0 z-50 w-full max-w-lg bg-[#0B101E] border-l border-[#1E293B] shadow-2xl flex flex-col animate-in slide-in-from-right duration-300">
-        
+
         {/* HEADER */}
         <div className="flex items-center justify-between p-6 border-b border-[#1E293B] bg-[#151B2B]">
           <div className="flex items-center gap-3">
@@ -59,8 +59,8 @@ export function InventoryDetailsDrawer({ isOpen, onClose, item }: InventoryDetai
                 <span className={cn(
                   "px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded border",
                   item.status === 'Available' ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" :
-                  item.status === 'Assigned' ? "bg-blue-500/10 text-blue-400 border-blue-500/20" :
-                  "bg-gray-500/10 text-gray-400 border-gray-500/20"
+                    item.status === 'Assigned' ? "bg-blue-500/10 text-blue-400 border-blue-500/20" :
+                      "bg-gray-500/10 text-gray-400 border-gray-500/20"
                 )}>
                   {item.status}
                 </span>
@@ -71,13 +71,13 @@ export function InventoryDetailsDrawer({ isOpen, onClose, item }: InventoryDetai
 
         {/* BODY */}
         <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-[#1E293B] p-6 space-y-8">
-          
+
           {/* GENERAL INFO */}
           <section className="space-y-4">
             <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest flex items-center gap-2">
               <Box className="h-4 w-4" /> General Information
             </h3>
-            
+
             <div className="bg-[#151B2B] border border-[#1E293B] rounded-xl p-5 grid grid-cols-2 gap-4">
               {item.type !== 'Bio' && (
                 <>
@@ -127,12 +127,12 @@ export function InventoryDetailsDrawer({ isOpen, onClose, item }: InventoryDetai
                 <span className="text-[11px] font-bold text-gray-500 uppercase tracking-widest">Current Location</span>
                 <span className="text-sm font-bold text-white">{item.facility || 'Warehouse'}</span>
               </div>
-              
+
               {item.type === 'Bio' && item.expiryDate && (
                 <div className="flex items-center justify-between border-t border-[#1E293B] pt-4 mt-2">
                   <span className="text-[11px] font-bold text-gray-500 uppercase tracking-widest">Expiry Date</span>
                   <span className={cn(
-                    "text-sm font-bold", 
+                    "text-sm font-bold",
                     new Date(item.expiryDate) < new Date() ? "text-rose-500" : "text-amber-500"
                   )}>
                     {item.expiryDate}
@@ -171,21 +171,21 @@ export function InventoryDetailsDrawer({ isOpen, onClose, item }: InventoryDetai
               <ArrowRightLeft className="h-4 w-4" /> Movement History
             </h3>
             <div className="bg-[#151B2B] border border-[#1E293B] rounded-xl p-5 pl-6 relative">
-              
+
               {/* Timeline Line */}
               <div className="absolute left-[31px] top-8 bottom-8 w-px bg-[#1E293B]" />
 
               <div className="space-y-6 relative">
                 {item.history.map((event, idx) => (
                   <div key={event.id} className="flex gap-4">
-                    
+
                     {/* Icon / Node */}
                     <div className="relative z-10 w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5 bg-[#0B101E] border border-[#334155]">
                       {event.type === 'added' ? <CheckCircle2 className="h-3 w-3 text-emerald-500" /> :
-                       event.type === 'shipped' ? <Truck className="h-3 w-3 text-blue-500" /> :
-                       event.type === 'assigned' ? <UserCircle2 className="h-3 w-3 text-purple-500" /> :
-                       event.type === 'used' ? <Box className="h-3 w-3 text-amber-500" /> :
-                       <ArrowRightLeft className="h-3 w-3 text-gray-400" />}
+                        event.type === 'shipped' ? <Truck className="h-3 w-3 text-blue-500" /> :
+                          event.type === 'assigned' ? <UserCircle2 className="h-3 w-3 text-purple-500" /> :
+                            event.type === 'used' ? <Box className="h-3 w-3 text-amber-500" /> :
+                              <ArrowRightLeft className="h-3 w-3 text-gray-400" />}
                     </div>
 
                     <div className="space-y-1 pb-2">

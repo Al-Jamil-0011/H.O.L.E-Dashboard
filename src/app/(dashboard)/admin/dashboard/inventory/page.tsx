@@ -47,7 +47,7 @@ export default function InventoryPage() {
       header: "ITEM NAME",
       render: (item: any) => (
         <div className="flex items-center gap-2">
-          {item.productType === 'Bio' && (item.quantity ?? 0) < 5 && item.productStatus !== 'Used' && (
+          {/* {item.productType === 'Bio' && (item.quantity ?? 0) < 5 && item.productStatus !== 'Used' && (
             <AlertTriangle className="h-4 w-4 text-rose-500" />
           )}
           <span className={cn(
@@ -55,7 +55,20 @@ export default function InventoryPage() {
             item.productType === 'Bio' && (item.quantity ?? 0) < 5 && item.productStatus !== 'Used' ? "text-rose-400" : "text-white"
           )}>
             {item.title || item.name || 'N/A'}
-          </span>
+          </span> */}
+          {
+            item?.productType === 'Bio' ?
+              <span className={cn(
+                "font-bold",
+                item.productType === 'Bio' && (item.quantity ?? 0) < 5 && item.productStatus !== 'Used' ? "text-rose-400" : "dark:text-white text-black"
+              )}>
+                {item?.itemName || 'N/A'}
+              </span> :
+              <span className={cn(
+                "font-bold")}>
+                {item.title || item.serialNumber || 'N/A'}
+              </span>
+          }
         </div>
       )
     },
@@ -75,7 +88,7 @@ export default function InventoryPage() {
     {
       header: "SERIAL / LOT NO.",
       render: (item: any) => (
-        <span className="font-medium text-gray-300">
+        <span className="font-medium text-muted-foreground">
           {item.serialNumber || item.lotNumber || '-'}
         </span>
       )
@@ -99,7 +112,10 @@ export default function InventoryPage() {
         return <StatusBadge status={status} type={type} />;
       }
     },
-    { header: "LOCATION", accessorKey: "facility" as const, className: "text-gray-400" },
+    {
+      header: "LOCATION",
+      render: (item: any) => <span className="text-muted-foreground">{item.facility?.name || 'N/A'}</span>
+    },
     {
       header: "EXPIRY DATE",
       render: (item: any) => {
@@ -234,9 +250,9 @@ export default function InventoryPage() {
                   key={tab}
                   onClick={() => setActiveTab(tab as any)}
                   className={cn(
-                    "px-4 py-1.5 text-xs font-bold rounded-md transition-all whitespace-nowrap",
+                    "px-4 py-1.5 text-xs font-bold rounded-md transition-all whitespace-nowrap cursor-pointer",
                     activeTab === tab
-                      ? "bg-card text-foreground shadow-sm"
+                      ? "bg-card text-foreground dark:shadow-sm"
                       : "text-muted-foreground hover:text-foreground hover:bg-card/50"
                   )}
                 >

@@ -135,3 +135,39 @@ export function useAllInventory() {
         refetch: fetchInventory,
     };
 }
+
+export function useSingleInventory(id: string) {
+    const [inventory, setInventory] = useState<IInventoryItem | null>(null);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
+
+    const fetchInventory = useCallback(async () => {
+        setLoading(true);
+        setError(null);
+
+        try {
+            const response = await useApi.get<IApiResponse<IInventoryItem>>(`/meta/inventory/find/${id}`);
+
+            setInventory(response?.data?.data || null);
+        } catch (err: any) {
+            const message =
+                err?.response?.data?.message ||
+                "Failed to fetch inventory";
+
+            setError(message);
+        } finally {
+            setLoading(false);
+        }
+    }, [id]);
+
+    useEffect(() => {
+        fetchInventory();
+    }, [fetchInventory]);
+
+    return {
+        inventory,
+        loading,
+        error,
+        refetch: fetchInventory,
+    };
+}
