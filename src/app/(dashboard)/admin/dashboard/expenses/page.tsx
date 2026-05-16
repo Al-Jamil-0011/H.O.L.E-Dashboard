@@ -4,11 +4,13 @@ import { useState } from 'react';
 import dynamic from 'next/dynamic';
 import { cn } from '@/lib/utils';
 import { DataTable } from '@/components/ui/DataTable';
-import { ExpenseDetailsDrawer, ExpenseItem } from './components/ExpenseDetailsDrawer';
+import { ExpenseItem } from './components/ExpenseDetailsDrawer';
 import { ApproveExpenseModal, RejectExpenseModal } from './components/ExpenseModals';
 import { useExpenses, useExpenseSummary, useUpdateExpenseStatus } from '@/hooks/admin/expense';
 import toast from 'react-hot-toast';
 import Link from 'next/link';
+import { useTheme } from 'next-themes';
+import { ExpensesStatCard } from '@/components/stats-card';
 
 
 export default function ExpensesPage() {
@@ -35,7 +37,7 @@ export default function ExpensesPage() {
   // Map API data to UI format
   const expensesData: ExpenseItem[] = apiExpenses.map(exp => ({
     id: exp._id,
-    expense: `${exp.category} — ${typeof exp.physician === 'object' ? exp.physician?.fullName : 'N/A'}`,
+    physician: typeof exp.physician === 'object' ? exp.physician?.fullName : 'N/A',
     category: exp.category,
     amount: `$${exp.totalAmount.toLocaleString()}`,
     date: new Date(exp.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
@@ -76,7 +78,7 @@ export default function ExpensesPage() {
         refetchExpenses();
         refetchSummary();
         setIsApproveModalOpen(false);
-        if (selectedExpense?.id === actionExpense.id) {
+        if (selectedExpense && selectedExpense.id === actionExpense.id) {
           setSelectedExpense({ ...selectedExpense, status: 'APPROVED' });
         }
         return 'Expense approved successfully';
@@ -97,7 +99,7 @@ export default function ExpensesPage() {
         refetchExpenses();
         refetchSummary();
         setIsRejectModalOpen(false);
-        if (selectedExpense?.id === actionExpense.id) {
+        if (selectedExpense && selectedExpense.id === actionExpense.id) {
           setSelectedExpense({ ...selectedExpense, status: 'REJECTED' });
         }
         return 'Expense rejected';
@@ -116,8 +118,8 @@ export default function ExpensesPage() {
 
   const columns = [
     {
-      header: "EXPENSE",
-      accessorKey: "expense" as const,
+      header: "PHYSICIAN",
+      accessorKey: "physician" as const,
       className: "text-foreground font-medium"
     },
     {
@@ -130,7 +132,7 @@ export default function ExpensesPage() {
         else if (item.category === 'MARKETING') colorClass = "bg-amber-500/10 text-amber-400";
 
         return (
-          <span className={cn("px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded border border-transparent shadow-sm", colorClass)}>
+          <span className={cn("px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded border border-transparent dark:shadow-sm", colorClass)}>
             {item.category}
           </span>
         );
@@ -173,7 +175,6 @@ export default function ExpensesPage() {
             <>
               <Link href={`/admin/dashboard/expenses/${item.id}`}>
                 <button
-                  // onClick={(e) => { e.stopPropagation(); openDrawer(item); }}
                   className="px-4 py-1.5 text-[11px] font-semibold text-gray-300 bg-[#334155]/50 hover:bg-[#334155] rounded transition-colors cursor-pointer"
                 >
                   View
@@ -237,7 +238,7 @@ export default function ExpensesPage() {
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 mb-6">
         {/* LEFT: 2x2 Grid */}
         <div className="xl:col-span-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <StatCard
+          <ExpensesStatCard
             title="TOTAL EXPENSES"
             amount={`$${summary?.totalExpenses?.amount?.toLocaleString() || '0'}`}
             subtitle={`${summary?.totalExpenses?.monthlyChange || 0}% this month`}
@@ -246,7 +247,7 @@ export default function ExpensesPage() {
             glowColor="shadow-[0_0_15px_rgba(59,130,246,0.1)]"
             isLoading={summaryLoading}
           />
-          <StatCard
+          <ExpensesStatCard
             title="PENDING APPROVAL"
             amount={`$${summary?.pendingApproval?.amount?.toLocaleString() || '0'}`}
             subtitle={`${summary?.pendingApproval?.count || 0} pending`}
@@ -255,7 +256,7 @@ export default function ExpensesPage() {
             glowColor="shadow-[0_0_15px_rgba(245,158,11,0.1)]"
             isLoading={summaryLoading}
           />
-          <StatCard
+          <ExpensesStatCard
             title="APPROVED"
             amount={`$${summary?.approved?.amount?.toLocaleString() || '0'}`}
             subtitle={`${summary?.approved?.count || 0} expenses`}
@@ -264,7 +265,7 @@ export default function ExpensesPage() {
             glowColor="shadow-[0_0_15px_rgba(16,185,129,0.1)]"
             isLoading={summaryLoading}
           />
-          <StatCard
+          <ExpensesStatCard
             title="REJECTED"
             amount={`$${summary?.rejected?.amount?.toLocaleString() || '0'}`}
             subtitle={`${summary?.rejected?.count || 0} rejected`}
@@ -276,8 +277,8 @@ export default function ExpensesPage() {
         </div>
 
         {/* RIGHT: Graph */}
-        <div className="xl:col-span-7 rounded-xl border border-[#1E293B] bg-[#151B2B] p-5 shadow-sm flex flex-col min-h-[300px]">
-          <h2 className="text-sm font-bold text-white mb-6">Total Expenses Overview</h2>
+        <div className="xl:col-span-7 rounded-xl border border-border bg-card p-5 dark:shadow-sm flex flex-col min-h-[300px]">
+          <h2 className="text-sm font-bold text-foreground mb-6">Total Expenses Overview</h2>
           <div className="flex-1 flex items-center justify-center">
             {summaryLoading ? (
               <div className="flex flex-col items-center gap-2">
@@ -291,13 +292,13 @@ export default function ExpensesPage() {
         </div>
       </div>
 
-      <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] shadow-sm transition-all overflow-hidden flex flex-col">
+      <div className="rounded-xl border border-border bg-card dark:shadow-sm transition-all overflow-hidden flex flex-col">
         <div className="flex items-center justify-between p-5 pb-5">
           <h2 className="text-sm font-bold text-foreground">All Expenses</h2>
           <div className="flex gap-2">
-            <FilterPill text="All" active={filter === 'All'} activeColor="bg-white text-black" onClick={() => handleFilterChange('All')} />
-            <FilterPill text="Approved" active={filter === 'Approved'} color="bg-emerald-500/20 text-emerald-400" activeColor="bg-emerald-500 text-white" onClick={() => handleFilterChange('Approved')} />
-            <FilterPill text="Pending" active={filter === 'Pending'} color="bg-amber-500/20 text-amber-500" activeColor="bg-amber-500 text-white" onClick={() => handleFilterChange('Pending')} />
+            <FilterPill text="All" active={filter === 'All'} activeColor="bg-foreground text-background" onClick={() => handleFilterChange('All')} />
+            <FilterPill text="Approved" active={filter === 'Approved'} color="bg-emerald-500/10 text-emerald-500" activeColor="bg-emerald-500 text-white" onClick={() => handleFilterChange('Approved')} />
+            <FilterPill text="Pending" active={filter === 'Pending'} color="bg-amber-500/10 text-amber-500" activeColor="bg-amber-500 text-white" onClick={() => handleFilterChange('Pending')} />
           </div>
         </div>
         <div className="flex-1 px-5 pb-5">
@@ -310,18 +311,6 @@ export default function ExpensesPage() {
         </div>
       </div>
 
-      {/* DRAWER */}
-      <ExpenseDetailsDrawer
-        isOpen={isDrawerOpen}
-        onClose={() => setIsDrawerOpen(false)}
-        expense={selectedExpense}
-        onApprove={(exp) => {
-          openApproveModal(exp);
-        }}
-        onReject={(exp) => {
-          openRejectModal(exp);
-        }}
-      />
 
       {/* MODALS */}
       <ApproveExpenseModal
@@ -340,44 +329,12 @@ export default function ExpensesPage() {
   );
 }
 
-function StatCard({
-  title,
-  amount,
-  subtitle,
-  subtitleColor,
-  borderColor,
-  glowColor,
-  isLoading
-}: {
-  title: string,
-  amount: string,
-  subtitle: string,
-  subtitleColor: string,
-  borderColor: string,
-  glowColor?: string,
-  isLoading?: boolean
-}) {
-  return (
-    <div className={cn("rounded-xl border border-[#1E293B] border-t-[3px] bg-[#151B2B] p-5 shadow-sm transition-all hover:bg-white/[0.02]", borderColor, glowColor)}>
-      <h3 className="text-[10px] font-bold tracking-widest text-gray-500 uppercase">{title}</h3>
-      {isLoading ? (
-        <div className="mt-2 space-y-2">
-          <div className="h-8 w-24 bg-gray-800 animate-pulse rounded" />
-          <div className="h-4 w-16 bg-gray-800 animate-pulse rounded" />
-        </div>
-      ) : (
-        <>
-          <div className="mt-2 text-3xl font-black tracking-tight text-white">{amount}</div>
-          <p className={cn("mt-1 text-xs font-medium", subtitleColor)}>{subtitle}</p>
-        </>
-      )}
-    </div>
-  )
-}
-
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 function CustomLineChart({ chartData }: { chartData: { month: string; total: number }[] }) {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+
   const data = chartData.length > 0 ? chartData : [
     { month: 'Oct', total: 0 },
     { month: 'Nov', total: 0 },
@@ -393,7 +350,7 @@ function CustomLineChart({ chartData }: { chartData: { month: string; total: num
       toolbar: { show: false },
       zoom: { enabled: false },
       background: 'transparent',
-      foreColor: '#64748b',
+      foreColor: isDark ? '#a1a1aa' : '#71717a',
       sparkline: { enabled: false },
     },
     colors: ['#00E5FF'],
@@ -418,7 +375,7 @@ function CustomLineChart({ chartData }: { chartData: { month: string; total: num
     },
     grid: {
       show: true,
-      borderColor: '#1E293B',
+      borderColor: isDark ? '#1E293B' : '#e2e8f0',
       strokeDashArray: 4,
       padding: { left: 10, right: 10, top: 0, bottom: 0 },
       yaxis: { lines: { show: true } },
@@ -429,17 +386,17 @@ function CustomLineChart({ chartData }: { chartData: { month: string; total: num
       axisBorder: { show: false },
       axisTicks: { show: false },
       labels: {
-        style: { colors: '#64748b', fontSize: '10px', fontWeight: 600 }
+        style: { colors: isDark ? '#a1a1aa' : '#71717a', fontSize: '10px', fontWeight: 600 }
       }
     },
     yaxis: {
       labels: {
-        style: { colors: '#64748b', fontSize: '10px', fontWeight: 600 },
+        style: { colors: isDark ? '#a1a1aa' : '#71717a', fontSize: '10px', fontWeight: 600 },
         formatter: (val: number) => `$${Math.round(val / 1000)}k`
       }
     },
     tooltip: {
-      theme: 'dark',
+      theme: isDark ? 'dark' : 'light',
       x: { show: true },
       y: {
         formatter: (val: number) => `$${val.toLocaleString()}`
@@ -448,7 +405,7 @@ function CustomLineChart({ chartData }: { chartData: { month: string; total: num
     },
     markers: {
       size: 4,
-      colors: ['#0B101E'],
+      colors: [isDark ? '#0B101E' : '#ffffff'],
       strokeColors: '#00E5FF',
       strokeWidth: 2,
       hover: { size: 6 }

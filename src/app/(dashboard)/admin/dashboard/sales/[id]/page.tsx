@@ -1,15 +1,15 @@
 "use client";
 
-import { useEffect, useState } from 'react'; 
+import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import {
   ChevronLeft, CheckCircle2, FileText, Download, Eye, Plus,
-  MessageSquare,  Building2,  UserCircle2,
+  MessageSquare, Building2, UserCircle2,
   Activity, DollarSign, Stethoscope, Briefcase, MapPin,
   AlertCircle, UploadCloud, Clock,
   X
 } from 'lucide-react';
-import { cn } from '@/lib/utils'; 
+import { cn } from '@/lib/utils';
 import { useSingleSale, useUpdateSale, useUpdateSaleStatus } from '@/hooks/admin/sales';
 import Loader from '@/components/loader';
 import toast from 'react-hot-toast';
@@ -28,7 +28,7 @@ export default function SaleDetailsPage() {
 
   const { sale, loading: salesLoading, refetch } = useSingleSale(params.id as string);
   const { updateSaleStatus, loading: isUpdatingStatus } = useUpdateSaleStatus();
-  const { updateSale, loading: updateLoading, error: updateError } = useUpdateSale();
+  const { updateSale } = useUpdateSale();
 
   const [adminNote, setAdminNote] = useState("");
 
@@ -87,7 +87,7 @@ export default function SaleDetailsPage() {
     <div className="space-y-6 pb-24 animate-in fade-in zoom-in duration-500">
 
       {/* HEADER SECTION */}
-      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between bg-card p-5 rounded-xl border border-border shadow-sm">
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between bg-card p-5 rounded-xl border border-border dark:shadow-sm">
         <div className="flex items-center gap-4">
           <button
             onClick={() => router.back()}
@@ -136,7 +136,7 @@ export default function SaleDetailsPage() {
           {saleStatus !== 'APPROVED' && (
             <button
               onClick={() => setShowApproveModal(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-primary text-background hover:opacity-90 rounded-lg transition-all text-sm font-bold shadow-[0_0_15px_rgba(var(--primary),0.3)] cursor-pointer disabled:opacity-50"
+              className="flex items-center gap-2 px-4 py-2 bg-primary text-background hover:opacity-90 rounded-lg transition-all text-sm font-bold dark:shadow-[0_0_15px_rgba(var(--primary),0.3)] cursor-pointer disabled:opacity-50"
               disabled={isUpdatingStatus}
             >
               <CheckCircle2 className="h-4 w-4" />
@@ -155,11 +155,11 @@ export default function SaleDetailsPage() {
               <div className="h-12 w-12 rounded-full bg-muted flex items-center justify-center border border-border text-primary">
                 {sale?.createdBy?.profileUrl ? (
                   <Image
-                    src={sale.createdBy?.profileUrl}
-                    alt={sale?.createdBy?.fullName}
+                    src={sale.createdBy.profileUrl}
+                    alt={sale.createdBy.fullName || 'User'}
                     width={48}
                     height={48}
-                    className="h-full w-full rounded-full object-cover" 
+                    className="h-full w-full rounded-full object-cover"
                   />
                 ) : (
                   <UserCircle2 className="h-6 w-6" />
@@ -168,7 +168,7 @@ export default function SaleDetailsPage() {
               <div>
                 <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-0.5">Created by</p>
                 <p className="text-base font-bold text-foreground">
-                  {typeof sale?.createdBy === 'object' ? sale.createdBy.fullName : 'N/A'}
+                  {sale?.createdBy?.fullName || 'N/A'}
                 </p>
               </div>
             </div>
@@ -198,7 +198,11 @@ export default function SaleDetailsPage() {
                 <div className="flex items-center gap-3">
                   <div className="h-10 w-10 rounded bg-muted flex items-center justify-center shrink-0 border border-border">
                     {sale.physician?.profileUrl ? (
-                      <img src={sale.physician.profileUrl} className="h-full w-full rounded object-cover" alt="" />
+                      <Image
+                        src={sale.physician.profileUrl}
+                        width={0}
+                        height={0}
+                        className="h-full w-full rounded object-cover" alt="" />
                     ) : (
                       <Stethoscope className="h-5 w-5 text-purple-400" />
                     )}
@@ -254,7 +258,12 @@ export default function SaleDetailsPage() {
                   <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest mb-1">Vendor / Partner</p>
                   <div className="flex items-center gap-2">
                     {typeof sale.billing?.vendor === 'object' && sale.billing.vendor.profileUrl && (
-                      <img src={sale.billing.vendor.profileUrl} className="h-5 w-5 rounded-full" alt="" />
+                      <Image
+                        src={sale.billing.vendor.profileUrl}
+                        width={20}
+                        height={20}
+                        className="h-5 w-5 rounded-full"
+                        alt="vendor-image" />
                     )}
                     <p className="text-sm font-bold text-foreground">{typeof sale.billing?.vendor === 'object' ? sale.billing.vendor.name : 'N/A'}</p>
                   </div>
@@ -363,7 +372,7 @@ export default function SaleDetailsPage() {
                 <button
                   onClick={handleSubmitNote}
                   disabled={isSubmittingNote}
-                  className="px-6 py-2.5 rounded-lg text-xs font-bold transition-all cursor-pointer bg-primary text-background hover:opacity-90 shadow-lg disabled:opacity-50 flex items-center gap-2"
+                  className="px-6 py-2.5 rounded-lg text-xs font-bold transition-all cursor-pointer bg-primary text-background hover:opacity-90 dark:shadow-lg disabled:opacity-50 flex items-center gap-2"
                 >
                   {isSubmittingNote && <div className="h-3 w-3 border-2 border-background border-t-transparent rounded-full animate-spin" />}
                   {sale?.feedbackNotes ? 'Update Feedback' : 'Send Feedback'}
@@ -395,7 +404,7 @@ export default function SaleDetailsPage() {
                     </div>
                     <div className="min-w-0">
                       <p className="text-xs font-bold text-foreground truncate max-w-[120px]">
-                        {typeof user.representative === 'object' ? user.representative.fullName : 'Unknown'}
+                        {user.representative?.fullName || 'Unknown'}
                       </p>
                       <p className="text-[9px] text-muted-foreground uppercase font-bold">{user.assignRole}</p>
                     </div>
@@ -492,7 +501,7 @@ export default function SaleDetailsPage() {
 
             <div className="relative pl-6 space-y-8 before:absolute before:inset-0 before:ml-[11px] before:-translate-x-px before:h-full before:w-0.5 before:bg-muted">
               <div className="relative flex items-start">
-                <div className="absolute left-[-22px] flex items-center justify-center w-6 h-6 rounded-full border-2 border-card shrink-0 bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.2)]">
+                <div className="absolute left-[-22px] flex items-center justify-center w-6 h-6 rounded-full border-2 border-card shrink-0 bg-emerald-500 dark:shadow-[0_0_10px_rgba(16,185,129,0.2)]">
                   <CheckCircle2 className="h-3 w-3 text-background" />
                 </div>
                 <div className="space-y-1">
@@ -530,7 +539,7 @@ export default function SaleDetailsPage() {
             </button>
             <button
               onClick={() => setShowApproveModal(true)}
-              className="px-8 py-2.5 text-sm font-bold text-background bg-primary hover:opacity-90 rounded-lg transition-all shadow-[0_0_15px_rgba(var(--primary),0.3)] flex items-center gap-2 cursor-pointer disabled:opacity-50"
+              className="px-8 py-2.5 text-sm font-bold text-background bg-primary hover:opacity-90 rounded-lg transition-all dark:shadow-[0_0_15px_rgba(var(--primary),0.3)] flex items-center gap-2 cursor-pointer disabled:opacity-50"
               disabled={isUpdatingStatus}
             >
               <CheckCircle2 className="h-4 w-4" />
@@ -544,7 +553,7 @@ export default function SaleDetailsPage() {
       {
         showRepNote && (
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-            <div className="bg-card border border-border rounded-2xl w-full max-w-md overflow-hidden animate-in zoom-in duration-300 shadow-2xl">
+            <div className="bg-card border border-border rounded-2xl w-full max-w-md overflow-hidden animate-in zoom-in duration-300 dark:shadow-2xl">
               <div className="p-5 border-b border-border flex items-center justify-between">
                 <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
                   <MessageSquare className="h-4 w-4 text-primary" />
@@ -579,9 +588,9 @@ export default function SaleDetailsPage() {
       {
         showApproveModal && (
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-            <div className="bg-card border border-border rounded-2xl w-full max-w-md overflow-hidden animate-in zoom-in duration-300 shadow-2xl">
+            <div className="bg-card border border-border rounded-2xl w-full max-w-md overflow-hidden animate-in zoom-in duration-300 dark:shadow-2xl">
               <div className="p-8 text-center">
-                <div className="h-20 w-20 rounded-full bg-emerald-500/10 flex items-center justify-center mx-auto mb-6 border border-emerald-500/20 shadow-[0_0_20px_rgba(16,185,129,0.1)]">
+                <div className="h-20 w-20 rounded-full bg-emerald-500/10 flex items-center justify-center mx-auto mb-6 border border-emerald-500/20 dark:shadow-[0_0_20px_rgba(16,185,129,0.1)]">
                   <CheckCircle2 className="h-10 w-10 text-emerald-500" />
                 </div>
                 <h3 className="text-xl font-bold text-foreground mb-3">Approve Sale</h3>
@@ -599,7 +608,7 @@ export default function SaleDetailsPage() {
                   <button
                     onClick={handleApprove}
                     disabled={isUpdatingStatus}
-                    className="flex-1 py-3 bg-primary hover:opacity-90 text-background rounded-xl text-sm font-bold transition-all shadow-[0_0_15px_rgba(var(--primary),0.3)] cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2"
+                    className="flex-1 py-3 bg-primary hover:opacity-90 text-background rounded-xl text-sm font-bold transition-all dark:shadow-[0_0_15px_rgba(var(--primary),0.3)] cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2"
                   >
                     {isUpdatingStatus && <div className="h-4 w-4 border-2 border-background border-t-transparent rounded-full animate-spin" />}
                     Confirm Approval

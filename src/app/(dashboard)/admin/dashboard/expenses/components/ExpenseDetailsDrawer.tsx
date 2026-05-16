@@ -5,8 +5,8 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 
 export interface ExpenseItem {
-  id: number;
-  expense: string;
+  id: any;
+  physician: string;
   category: string;
   amount: string;
   date: string;

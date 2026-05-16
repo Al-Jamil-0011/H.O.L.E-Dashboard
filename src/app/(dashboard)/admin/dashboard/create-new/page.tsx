@@ -9,7 +9,6 @@ import {
   Building2,
   Briefcase,
   Stethoscope,
-  UploadCloud,
   X,
   Edit2,
   Trash2,
@@ -72,8 +71,6 @@ export default function CreateNewManagementPage() {
     register: registerVendor,
     handleSubmit: handleSubmitVendor,
     reset: resetVendor,
-    setValue: setVendorValue,
-    watch: watchVendor,
     formState: { errors: errorsVendor }
   } = useForm({
     defaultValues: { name: '', companyName: '', email: '', phoneNumber: '', profile: null as any }
@@ -358,19 +355,19 @@ export default function CreateNewManagementPage() {
         <div className="flex flex-wrap items-center gap-3">
           <button
             onClick={() => { setModalMode('add'); setIsFacilityModalOpen(true); }}
-            className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-[var(--background)] bg-primary rounded-lg shadow-sm transition-all hover:bg-cyan-400 cursor-pointer"
+            className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-[var(--background)] bg-primary rounded-lg shadow-sm transition-all hover:bg-primary/90 cursor-pointer"
           >
             <Building2 className="h-4 w-4" /> Add Facility
           </button>
           <button
             onClick={() => { setModalMode('add'); setIsVendorModalOpen(true); }}
-            className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-[var(--background)] bg-primary rounded-lg shadow-sm transition-all hover:bg-cyan-400  cursor-pointer"
+            className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-[var(--background)] bg-primary rounded-lg shadow-sm transition-all hover:bg-primary/90  cursor-pointer"
           >
             <Briefcase className="h-4 w-4" /> Add Vendor
           </button>
           <button
             onClick={() => { setModalMode('add'); setIsPracticeModalOpen(true); }}
-            className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-[var(--background)] bg-primary rounded-lg shadow-sm transition-all hover:bg-cyan-400  cursor-pointer"
+            className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-[var(--background)] bg-primary rounded-lg shadow-sm transition-all hover:bg-primary/90  cursor-pointer"
           >
             <Stethoscope className="h-4 w-4" /> Add Practice
           </button>
@@ -378,7 +375,7 @@ export default function CreateNewManagementPage() {
       </div>
 
       {/* table history view */}
-      <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] shadow-lg flex flex-col overflow-hidden">
+      <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] dark:shadow-lg flex flex-col overflow-hidden">
 
         {/* segmented tabs */}
         <div className="flex items-center border-b border-[var(--border)] bg-[var(--muted)] p-1">
@@ -408,6 +405,7 @@ export default function CreateNewManagementPage() {
                 columns={facilityColumns}
                 loading={isLoadingFacilities}
                 className="rounded-none border-0"
+                onRowClick={() => { }}
               />
             </div>
           )}
@@ -418,6 +416,7 @@ export default function CreateNewManagementPage() {
                 columns={vendorColumns}
                 loading={isLoadingVendors}
                 className="rounded-none border-0"
+                onRowClick={() => { }}
               />
             </div>
           )}
@@ -428,6 +427,7 @@ export default function CreateNewManagementPage() {
                 columns={practiceColumns}
                 loading={isLoadingPractices}
                 className="rounded-none border-0"
+                onRowClick={() => { }}
               />
             </div>
           )}
@@ -495,7 +495,7 @@ export default function CreateNewManagementPage() {
             <button
               onClick={handleSubmitFacility(handleFacilitySubmit)}
               disabled={isCreatingFacility || isUpdatingFacility}
-              className="flex-1 py-2.5 text-sm font-bold text-[var(--background)] bg-primary rounded-xl shadow-sm hover:bg-cyan-400 transition-all disabled:opacity-50 cursor-pointer"
+              className="flex-1 py-2.5 text-sm font-bold text-[var(--background)] bg-primary rounded-xl shadow-sm hover:bg-primary/90 transition-all disabled:opacity-50 cursor-pointer"
             >
               {isCreatingFacility || isUpdatingFacility ? 'Saving...' : 'Save'}
             </button>
@@ -564,7 +564,7 @@ export default function CreateNewManagementPage() {
             <button
               onClick={handleSubmitVendor(handleVendorSubmit)}
               disabled={isCreatingVendor || isUpdatingVendor}
-              className="flex-1 py-2.5 text-sm font-bold text-[var(--background)] bg-primary rounded-xl shadow-sm hover:bg-cyan-400 transition-all disabled:opacity-50 cursor-pointer"
+              className="flex-1 py-2.5 text-sm font-bold text-[var(--background)] bg-primary rounded-xl shadow-sm hover:bg-primary/90 transition-all disabled:opacity-50 cursor-pointer"
             >
               {isCreatingVendor || isUpdatingVendor ? 'Saving...' : 'Save'}
             </button>
@@ -638,7 +638,7 @@ export default function CreateNewManagementPage() {
             <button
               onClick={handleSubmitPractice(handlePracticeSubmit)}
               disabled={isCreatingPractice || isUpdatingPractice}
-              className="flex-1 py-2.5 text-sm font-bold text-[var(--background)] bg-primary rounded-xl shadow-sm hover:bg-cyan-400 transition-all disabled:opacity-50 cursor-pointer"
+              className="flex-1 py-2.5 text-sm font-bold text-[var(--background)] bg-primary rounded-xl shadow-sm hover:bg-primary/90 transition-all disabled:opacity-50 cursor-pointer"
             >
               {isCreatingPractice || isUpdatingPractice ? 'Saving...' : 'Save'}
             </button>

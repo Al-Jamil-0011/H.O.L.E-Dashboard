@@ -104,8 +104,7 @@ const FormField: React.FC<FormFieldProps> = ({
     const hasError = !!error;
 
     // Premium base styling matching the dashboard's design system
-    // Premium base styling matching the dashboard's design system
-    const baseInputClasses = "block w-full border rounded-xl leading-5 bg-gray-50 dark:bg-[#151B2B] text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none transition-all duration-300 sm:text-sm shadow-sm";
+    const baseInputClasses = "block w-full border rounded-xl leading-5 bg-gray-50 dark:bg-[#151B2B] text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none transition-all duration-300 sm:text-sm dark:shadow-sm";
 
     // Adjust padding if an icon is present, and add right padding for password toggle
     const paddingClasses = `${icon ? "pl-10" : "pl-4"} py-3 ${type === "password" ? "pr-11" : "pr-4"}`;

@@ -5,24 +5,29 @@ import { cn } from '@/lib/utils';
 import { DataTable } from '@/components/ui/DataTable';
 import {
   Search,
-  MapPin,
   DollarSign,
   Zap,
   Clock,
   AlertCircle,
   Plus,
   CheckCircle2,
-  ChevronLeft,
-  ChevronRight,
-  Download,
   X,
   CreditCard,
   History,
-  TrendingUp
+  TrendingUp,
+  Mail,
+  User,
+  Calendar,
+  Hash,
+  Activity,
+  Eye,
+  EyeOff
 } from 'lucide-react';
 import { useChangeWithdrawalStatus, useCreateOrUpdateShipmentRate, useDriverWithdrawals, useShipmentRate } from '@/hooks/admin/driver-payment';
 import toast from 'react-hot-toast';
 import { useEffect, useMemo } from 'react';
+import { StatInfoCard } from '@/components/stats-card';
+import { FaEye } from 'react-icons/fa';
 
 
 
@@ -44,6 +49,8 @@ export default function DriverEarningsControlPage() {
     refetch: refetchPending
   } = useDriverWithdrawals("pending");
 
+  console.log("pendingRequests", pendingRequests)
+
   const {
     withdrawals: historyData,
     loading: isHistoryLoading,
@@ -54,12 +61,14 @@ export default function DriverEarningsControlPage() {
 
   const { changeWithdrawalStatus, loading: isChangingStatus } = useChangeWithdrawalStatus();
 
-  // Modals state
   const [isPricingModalOpen, setIsPricingModalOpen] = useState(false);
   const [isConfirmPayModalOpen, setIsConfirmPayModalOpen] = useState(false);
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
 
   const [selectedRequest, setSelectedRequest] = useState<any | null>(null);
+  const [selectedRequestDetails, setSelectedRequestDetails] = useState<any | null>(null);
+  const [showFullCardNumber, setShowFullCardNumber] = useState(false);
 
   // Pricing Form State
   const [newPricing, setNewPricing] = useState({
@@ -146,29 +155,41 @@ export default function DriverEarningsControlPage() {
     { header: "TRANSACTION ID", accessorKey: "transactionId" as const },
     {
       header: "DRIVER NAME",
-      render: (item: any) => <span className="font-semibold text-white">{item.user?.fullName}</span>
+      render: (item: any) => <span className="font-semibold text-foreground">{item.user?.fullName}</span>
     },
     {
       header: "EMAIL",
-      render: (item: any) => <span className="font-semibold text-white">{item.user?.email}</span>
+      render: (item: any) => <span className="font-semibold text-foreground">{item.user?.email}</span>
     },
     {
       header: "REQUEST DATE",
-      render: (item: any) => <span className="text-gray-400">{new Date(item.createdAt).toLocaleDateString()}</span>
+      render: (item: any) => <span className="text-muted-foreground">{new Date(item.createdAt).toLocaleDateString()}</span>
     },
     {
       header: "AMOUNT",
-      render: (item: any) => <span className="text-[#00E5FF] font-bold">${item.totalAmount?.toFixed(2)}</span>
+      render: (item: any) => <span className="text-primary font-bold">${item.totalAmount?.toFixed(2)}</span>
     },
     {
       header: "ACTION",
       render: (item: any) => (
-        <button
-          onClick={() => { setSelectedRequest(item); setIsConfirmPayModalOpen(true); }}
-          className="px-4 py-1.5 text-xs font-bold text-[#0B101E] bg-primary hover:bg-primary/90 rounded-md shadow-sm transition-all cursor-pointer"
-        >
-          Pay Now
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => { setSelectedRequest(item); setIsConfirmPayModalOpen(true); }}
+            className="px-4 py-1.5 text-xs font-bold text-background bg-primary hover:bg-primary/90 rounded-md shadow-sm transition-all cursor-pointer"
+          >
+            Pay Now
+          </button>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setSelectedRequestDetails(item);
+              setIsDetailsModalOpen(true);
+              setShowFullCardNumber(false);
+            }}
+            className="px-3 flex items-center gap-2 py-1 font-bold text-primary dark:text-[#00E5FF]/80 dark:bg-[#00E5FF]/10 rounded dark:hover:bg-[#00E5FF]/20 hover:bg-primary/10 transition-colors cursor-pointer">
+            <FaEye /> Details
+          </button>
+        </div>
       )
     }
   ];
@@ -177,26 +198,38 @@ export default function DriverEarningsControlPage() {
     { header: "TRANSACTION ID", accessorKey: "transactionId" as const },
     {
       header: "DRIVER NAME",
-      render: (item: any) => <span className="font-semibold text-white">{item.user?.fullName}</span>
+      render: (item: any) => <span className="font-semibold text-foreground">{item.user?.fullName}</span>
     },
     {
       header: "EMAIL",
-      render: (item: any) => <span className="font-semibold text-white">{item.user?.email}</span>
+      render: (item: any) => <span className="font-semibold text-foreground">{item.user?.email}</span>
     },
     {
       header: "PAYMENT DATE",
-      render: (item: any) => <span className="text-gray-400">{new Date(item.updatedAt).toLocaleDateString()}</span>
+      render: (item: any) => <span className="text-muted-foreground">{new Date(item.updatedAt).toLocaleDateString()}</span>
     },
     {
       header: "AMOUNT",
-      render: (item: any) => <span className="text-emerald-400 font-bold">${item.totalAmount?.toFixed(2)}</span>
+      render: (item: any) => <span className="text-emerald-500 font-bold">${item.totalAmount?.toFixed(2)}</span>
     },
     {
       header: "STATUS",
       render: (item: any) => (
-        <span className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 rounded-md">
-          Paid
-        </span>
+        <div className="flex items-center justify-between gap-4">
+          <span className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-emerald-500 bg-emerald-500/10 border border-emerald-500/20 rounded-md">
+            Paid
+          </span>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setSelectedRequestDetails(item);
+              setIsDetailsModalOpen(true);
+              setShowFullCardNumber(false);
+            }}
+            className="px-3 flex items-center gap-2 py-1 font-bold text-primary dark:text-[#00E5FF]/80 dark:bg-[#00E5FF]/10 rounded dark:hover:bg-[#00E5FF]/20 hover:bg-primary/10 transition-colors cursor-pointer">
+            <FaEye /> Details
+          </button>
+        </div>
       )
     }
   ];
@@ -215,23 +248,23 @@ export default function DriverEarningsControlPage() {
 
       {/* PAGE HEADER */}
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-white mb-1">
+        <h1 className="text-2xl font-bold tracking-tight text-foreground mb-1">
           Driver Earnings Control
         </h1>
-        <p className="text-[12px] text-gray-500 font-medium uppercase tracking-wider">
+        <p className="text-[12px] text-muted-foreground font-medium uppercase tracking-wider">
           Manage global logistic pricing and driver withdrawal payouts
         </p>
       </div>
 
       {/* TOP SECTION - GLOBAL PRICING SUMMARY */}
-      <div className="relative rounded-2xl border border-[#00E5FF]/30 bg-gradient-to-br from-[#0B101E] to-[#151B2B] p-6 shadow-[0_0_20px_rgba(0,229,255,0.05)] overflow-hidden">
+      <div className="relative rounded-2xl border border-primary/30 bg-card p-6 dark:shadow-lg dark:shadow-[0_0_20px_rgba(0,229,255,0.05)] overflow-hidden">
         {/* Glow effect */}
-        <div className="absolute -top-10 -right-10 w-40 h-40 bg-[#00E5FF]/10 blur-3xl rounded-full pointer-events-none" />
+        <div className="absolute -top-10 -right-10 w-40 h-40 bg-primary/10 blur-3xl rounded-full pointer-events-none" />
 
         <div className="flex flex-col xl:flex-row items-start xl:items-center justify-between gap-6 relative z-10">
           <div>
-            <h2 className="text-lg font-bold text-white flex items-center gap-2 mb-4">
-              <TrendingUp className="h-5 w-5 text-[#00E5FF]" />
+            <h2 className="text-lg font-bold text-foreground flex items-center gap-2 mb-4">
+              <TrendingUp className="h-5 w-5 text-primary" />
               Global Pricing Summary
             </h2>
             <div className="flex flex-wrap items-center gap-3">
@@ -240,7 +273,7 @@ export default function DriverEarningsControlPage() {
                 icon={<DollarSign className="h-5 w-5" />}
                 label="Base Rate (Per KM)"
                 value={stats.baseRate.toFixed(2)}
-                iconClass="bg-[#00E5FF]/10 text-[#00E5FF]"
+                iconClass="bg-primary/10 text-primary"
                 loading={shipmentRateLoading}
               />
 
@@ -304,7 +337,7 @@ export default function DriverEarningsControlPage() {
           <button
             onClick={() => setIsPricingModalOpen(true)}
             disabled={isSavingRate || shipmentRateLoading}
-            className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-[var(--background)] bg-primary rounded-lg shadow-sm transition-all hover:bg-primary/90 cursor-pointer"
+            className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-[var(--background)] bg-primary rounded-lg dark:shadow-sm transition-all hover:bg-primary/90 cursor-pointer"
           >
             <Plus className="h-5 w-5" />
             Add Pricing
@@ -317,21 +350,21 @@ export default function DriverEarningsControlPage() {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
 
           {/* Tab Switcher */}
-          <div className="inline-flex items-center bg-[#151B2B] p-1 rounded-xl border border-[#1E293B]">
+          <div className="inline-flex items-center bg-muted/50 p-1 rounded-xl border border-border">
             <button
               onClick={() => setActiveTab('requests')}
               className={cn(
-                "flex items-center gap-2 px-5 py-2.5 text-sm font-bold rounded-lg transition-all cursor-pointer",
+                "flex items-center gap-2 px-5 py-2.5 text-sm font-bold rounded-lg transition-all dark:shadow-sm cursor-pointer",
                 activeTab === 'requests'
-                  ? "bg-[#1E293B] text-white shadow-sm"
-                  : "text-gray-500 hover:text-gray-300"
+                  ? "bg-card text-foreground"
+                  : "text-muted-foreground hover:text-foreground"
               )}
             >
               <CreditCard className="h-4 w-4" />
               Total Requests
               <span className={cn(
                 "ml-1.5 px-2 py-0.5 text-[10px] rounded-full",
-                activeTab === 'requests' ? "bg-primary/20 text-primary" : "bg-[#1E293B] text-gray-400"
+                activeTab === 'requests' ? "bg-primary/20 text-primary" : "bg-muted text-muted-foreground"
               )}>
                 {pendingMeta?.totalResult || 0}
               </span>
@@ -339,10 +372,10 @@ export default function DriverEarningsControlPage() {
             <button
               onClick={() => setActiveTab('history')}
               className={cn(
-                "flex items-center gap-2 px-5 py-2.5 text-sm font-bold rounded-lg transition-all cursor-pointer",
+                "flex items-center gap-2 px-5 py-2.5 text-sm font-bold rounded-lg transition-all dark:shadow-sm cursor-pointer",
                 activeTab === 'history'
-                  ? "bg-[#1E293B] text-white shadow-sm"
-                  : "text-gray-500 hover:text-gray-300"
+                  ? "bg-card text-foreground"
+                  : "text-muted-foreground hover:text-foreground"
               )}
             >
               <History className="h-4 w-4" />
@@ -352,24 +385,25 @@ export default function DriverEarningsControlPage() {
 
           {/* Search Bar */}
           <div className="relative w-full md:w-72 flex items-center group">
-            <Search className="absolute left-3 h-4 w-4 text-gray-500 group-focus-within:text-[#00E5FF] transition-colors" />
+            <Search className="absolute left-3 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
             <input
               type="text"
               placeholder="Search by ID or Name..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full bg-[#151B2B] border border-[#1E293B] rounded-xl py-2.5 pl-10 pr-4 text-sm text-white placeholder:text-gray-600 focus:outline-none focus:border-[#00E5FF] focus:ring-1 focus:ring-[#00E5FF]/20 transition-all shadow-sm"
+              className="w-full bg-background border border-border rounded-xl py-2.5 pl-10 pr-4 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all dark:shadow-sm"
             />
           </div>
 
         </div>
 
         {/* TABLE WRAPPER */}
-        <div className="rounded-2xl border border-[#1E293B] bg-[#151B2B] shadow-xl overflow-hidden flex flex-col">
+        <div className="rounded-2xl border border-border bg-card dark:shadow-xl overflow-hidden flex flex-col">
           <DataTable
             data={activeTab === 'requests' ? pendingRequests : historyData}
             columns={activeTab === 'requests' ? requestColumns : historyColumns}
             loading={activeTab === 'requests' ? isPendingLoading : isHistoryLoading}
+            onRowClick={() => { }}
             className="border-0 rounded-none bg-transparent"
             pagination={{
               currentPage: activeTab === 'requests' ? pendingMeta?.currentPage || 1 : historyMeta?.currentPage || 1,
@@ -389,10 +423,10 @@ export default function DriverEarningsControlPage() {
       {isPricingModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsPricingModalOpen(false)} />
-          <div className="relative w-full max-w-lg bg-[#0B101E] border border-[#1E293B] rounded-2xl shadow-[0_0_40px_rgba(0,0,0,0.5)] overflow-hidden animate-in zoom-in-95 duration-200">
-            <div className="p-6 border-b border-[#1E293B] flex items-center justify-between">
-              <h3 className="text-lg font-bold text-white">Create New Pricing</h3>
-              <button onClick={() => setIsPricingModalOpen(false)} className="text-gray-500 hover:text-white transition-colors cursor-pointer">
+          <div className="relative w-full max-w-lg bg-card border border-border rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="p-6 border-b border-border flex items-center justify-between">
+              <h3 className="text-lg font-bold text-foreground">Create New Pricing</h3>
+              <button onClick={() => setIsPricingModalOpen(false)} className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
                 <X className="h-5 w-5" />
               </button>
             </div>
@@ -400,80 +434,80 @@ export default function DriverEarningsControlPage() {
             <div className="p-6 space-y-6">
 
               <div className="space-y-4">
-                <h4 className="text-xs font-bold text-[#00E5FF] uppercase tracking-widest">Base Rate configuration</h4>
+                <h4 className="text-xs font-bold text-primary uppercase tracking-widest">Base Rate configuration</h4>
 
                 <div className="grid gap-4">
                   <div>
-                    <label className="block text-xs font-bold text-gray-400 mb-1.5">Amount Per KM ($)</label>
+                    <label className="block text-xs font-bold text-muted-foreground mb-1.5">Amount Per KM ($)</label>
                     <div className="relative">
-                      <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
+                      <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                       <input
                         type="number"
                         min="0"
                         step="0.1"
                         value={newPricing.amountPerKm}
                         onChange={(e) => setNewPricing({ ...newPricing, amountPerKm: parseFloat(e.target.value) || 0 })}
-                        className="w-full bg-[#151B2B] border border-[#334155] rounded-xl py-3 pl-10 pr-4 text-sm text-white font-bold focus:outline-none focus:border-[#00E5FF] transition-all"
+                        className="w-full bg-muted border border-border rounded-xl py-3 pl-10 pr-4 text-sm text-foreground font-bold focus:outline-none focus:border-primary transition-all"
                       />
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div className="h-px bg-[#1E293B]" />
+              <div className="h-px bg-border" />
 
               <div className="space-y-4">
                 <h4 className="text-xs font-bold text-amber-500 uppercase tracking-widest">Priority Settings (Extra Fee)</h4>
 
                 <div className="space-y-3">
 
-                  <div className="flex items-center justify-between p-3 rounded-xl border border-[#1E293B] bg-[#151B2B]">
-                    <div className="flex items-center gap-3 text-gray-300">
-                      <Clock className="h-4 w-4 text-gray-500" />
+                  <div className="flex items-center justify-between p-3 rounded-xl border border-border bg-muted/30">
+                    <div className="flex items-center gap-3 text-foreground">
+                      <Clock className="h-4 w-4 text-muted-foreground" />
                       <div>
                         <p className="text-sm font-bold">Standard</p>
-                        <p className="text-[10px] text-gray-500">Default Priority</p>
+                        <p className="text-[10px] text-muted-foreground">Default Priority</p>
                       </div>
                     </div>
-                    <span className="text-xs font-bold text-gray-500 bg-[#1E293B] px-3 py-1.5 rounded-lg">No Extra Fee</span>
+                    <span className="text-xs font-bold text-muted-foreground bg-muted px-3 py-1.5 rounded-lg">No Extra Fee</span>
                   </div>
 
-                  <div className="flex items-center justify-between p-3 rounded-xl border border-[#1E293B] bg-[#151B2B] focus-within:border-purple-500/50 transition-colors">
-                    <div className="flex items-center gap-3 text-gray-300">
+                  <div className="flex items-center justify-between p-3 rounded-xl border border-border bg-muted/30 focus-within:border-purple-500/50 transition-colors">
+                    <div className="flex items-center gap-3 text-foreground">
                       <AlertCircle className="h-4 w-4 text-purple-400" />
                       <div>
                         <p className="text-sm font-bold text-purple-400">Urgency</p>
-                        <p className="text-[10px] text-gray-500">1-2 hours delivery</p>
+                        <p className="text-[10px] text-muted-foreground">1-2 hours delivery</p>
                       </div>
                     </div>
                     <div className="relative w-28">
-                      <DollarSign className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-500" />
+                      <DollarSign className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
                       <input
                         type="number"
                         min="0"
                         value={newPricing.urgentExtra}
                         onChange={(e) => setNewPricing({ ...newPricing, urgentExtra: parseFloat(e.target.value) || 0 })}
-                        className="w-full bg-[#0B101E] border border-[#334155] rounded-lg py-1.5 pl-8 pr-3 text-sm font-bold text-white focus:outline-none focus:border-purple-500"
+                        className="w-full bg-background border border-border rounded-lg py-1.5 pl-8 pr-3 text-sm font-bold text-foreground focus:outline-none focus:border-purple-500"
                       />
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between p-3 rounded-xl border border-[#1E293B] bg-[#151B2B] focus-within:border-amber-500/50 transition-colors">
-                    <div className="flex items-center gap-3 text-gray-300">
+                  <div className="flex items-center justify-between p-3 rounded-xl border border-border bg-muted/30 focus-within:border-amber-500/50 transition-colors">
+                    <div className="flex items-center gap-3 text-foreground">
                       <Zap className="h-4 w-4 text-amber-500" />
                       <div>
                         <p className="text-sm font-bold text-amber-500">Express / Rush</p>
-                        <p className="text-[10px] text-gray-500">30-60 mins delivery</p>
+                        <p className="text-[10px] text-muted-foreground">30-60 mins delivery</p>
                       </div>
                     </div>
                     <div className="relative w-28">
-                      <DollarSign className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-500" />
+                      <DollarSign className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
                       <input
                         type="number"
                         min="0"
                         value={newPricing.expressExtra}
                         onChange={(e) => setNewPricing({ ...newPricing, expressExtra: parseFloat(e.target.value) || 0 })}
-                        className="w-full bg-[#0B101E] border border-[#334155] rounded-lg py-1.5 pl-8 pr-3 text-sm font-bold text-white focus:outline-none focus:border-amber-500 "
+                        className="w-full bg-background border border-border rounded-lg py-1.5 pl-8 pr-3 text-sm font-bold text-foreground focus:outline-none focus:border-amber-500 "
                       />
                     </div>
                   </div>
@@ -483,17 +517,17 @@ export default function DriverEarningsControlPage() {
 
             </div>
 
-            <div className="p-5 bg-[#151B2B] border-t border-[#1E293B] flex justify-end gap-3">
+            <div className="p-5 bg-muted/40 border-t border-border flex justify-end gap-3">
               <button
                 onClick={() => setIsPricingModalOpen(false)}
-                className="px-5 py-2.5 text-sm font-bold text-gray-300 hover:text-white transition-colors cursor-pointer"
+                className="px-5 py-2.5 text-sm font-bold text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 disabled={isSavingRate}
                 onClick={handleSavePricing}
-                className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-[var(--background)] bg-primary rounded-lg shadow-sm transition-all hover:bg-cyan-400 text-sm font-bold cursor-pointer disabled:opacity-50"
+                className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-background bg-primary rounded-lg shadow-sm transition-all hover:bg-primary/90 text-sm font-bold cursor-pointer disabled:opacity-50"
               >
                 {isSavingRate ? "Saving..." : "Save Price"}
               </button>
@@ -506,31 +540,174 @@ export default function DriverEarningsControlPage() {
       {isConfirmPayModalOpen && selectedRequest && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsConfirmPayModalOpen(false)} />
-          <div className="relative w-full max-w-sm bg-[#0B101E] border border-[#1E293B] rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+          <div className="relative w-full max-w-sm bg-card border border-border rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
             <div className="p-8 text-center space-y-4">
-              <div className="w-16 h-16 bg-[#00E5FF]/10 text-[#00E5FF] rounded-full flex items-center justify-center mx-auto">
+              <div className="w-16 h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto">
                 <CreditCard size={32} />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-white mb-2">Process Payment?</h3>
-                <p className="text-sm text-gray-400 leading-relaxed">
-                  Are you sure you want to complete this payment of <b className="text-white">${selectedRequest.totalAmount?.toFixed(2)}</b> to <b className="text-[#00E5FF]">{selectedRequest.user?.fullName}</b>?
+                <h3 className="text-xl font-bold text-foreground mb-2">Process Payment?</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  Are you sure you want to complete this payment of <b className="text-foreground">${selectedRequest.totalAmount?.toFixed(2)}</b> to <b className="text-primary">{selectedRequest.user?.fullName}</b>?
                 </p>
               </div>
             </div>
-            <div className="p-5 bg-[#151B2B] border-t border-[#1E293B] flex gap-3">
+            <div className="p-5 bg-muted/40 border-t border-border flex gap-3">
               <button
                 onClick={() => setIsConfirmPayModalOpen(false)}
-                className="flex-1 py-3 text-sm font-bold text-gray-300 bg-[#1E293B] rounded-xl hover:bg-[#334155] transition-colors cursor-pointer"
+                className="flex-1 py-3 text-sm font-bold text-muted-foreground bg-muted rounded-xl hover:bg-muted/80 transition-colors cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 disabled={isChangingStatus}
                 onClick={handlePayConfirm}
-                className="flex-1 py-3 text-sm font-bold text-[#0B101E] bg-[#00E5FF] rounded-xl shadow-sm transition-all hover:bg-cyan-400 cursor-pointer disabled:opacity-50"
+                className="flex-1 py-3 text-sm font-bold text-background bg-primary rounded-xl shadow-sm transition-all hover:bg-primary/90 cursor-pointer disabled:opacity-50"
               >
                 {isChangingStatus ? "Processing..." : "Confirm"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* --- DETAILS MODAL --- */}
+      {isDetailsModalOpen && selectedRequestDetails && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsDetailsModalOpen(false)} />
+          <div className="relative w-full max-w-lg bg-card border border-border rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+            {/* Header */}
+            <div className="p-6 border-b border-border flex items-center justify-between bg-muted/20">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-primary/10 text-primary">
+                  <CreditCard className="h-5 w-5" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-foreground">Withdrawal Details</h3>
+                  <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest">{selectedRequestDetails.transactionId}</p>
+                </div>
+              </div>
+              <button onClick={() => setIsDetailsModalOpen(false)} className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            {/* Content */}
+            <div className="p-6 space-y-6 max-h-[70vh] overflow-y-auto custom-scrollbar">
+
+              {/* Driver Info Section */}
+              <div className="space-y-3">
+                <h4 className="text-[10px] font-bold text-primary uppercase tracking-widest flex items-center gap-2">
+                  <User className="h-3 w-3" /> Driver Information
+                </h4>
+                <div className="grid grid-cols-2 gap-4 p-4 rounded-xl bg-muted/30 border border-border">
+                  <div>
+                    <p className="text-[10px] text-muted-foreground uppercase font-bold">Full Name</p>
+                    <p className="text-sm font-bold text-foreground">{selectedRequestDetails.user?.fullName}</p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] text-muted-foreground uppercase font-bold">Email Address</p>
+                    <p className="text-sm font-bold text-foreground truncate">{selectedRequestDetails.user?.email}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Payment Details Section */}
+              <div className="space-y-3">
+                <h4 className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest flex items-center gap-2">
+                  <DollarSign className="h-3 w-3" /> Financial breakdown
+                </h4>
+                <div className="grid grid-cols-3 gap-3">
+                  <div className="p-3 rounded-xl bg-muted/30 border border-border text-center">
+                    <p className="text-[10px] text-muted-foreground uppercase font-bold mb-1">Total Amount</p>
+                    <p className="text-lg font-black text-foreground">${selectedRequestDetails.totalAmount?.toFixed(2)}</p>
+                  </div>
+                  <div className="p-3 rounded-xl bg-muted/30 border border-border text-center">
+                    <p className="text-[10px] text-muted-foreground uppercase font-bold mb-1">Due Amount</p>
+                    <p className="text-lg font-black text-emerald-500">${selectedRequestDetails.dueAmount?.toFixed(2)}</p>
+                  </div>
+                  <div className="p-3 rounded-xl bg-muted/30 border border-border text-center">
+                    <p className="text-[10px] text-muted-foreground uppercase font-bold mb-1">Platform Fee</p>
+                    <p className="text-lg font-black text-rose-500">${selectedRequestDetails.platformFee?.toFixed(2)}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Transaction & Card Section */}
+              <div className="space-y-3">
+                <h4 className="text-[10px] font-bold text-amber-500 uppercase tracking-widest flex items-center gap-2">
+                  <Activity className="h-3 w-3" /> Transaction Security
+                </h4>
+                <div className="space-y-3 p-4 rounded-xl bg-muted/30 border border-border">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Hash className="h-4 w-4 text-muted-foreground" />
+                      <p className="text-sm font-bold text-muted-foreground">Transaction ID</p>
+                    </div>
+                    <p className="text-sm font-black text-foreground">{selectedRequestDetails.transactionId}</p>
+                  </div>
+
+                  <div className="h-px bg-border/50" />
+
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <CreditCard className="h-4 w-4 text-muted-foreground" />
+                      <p className="text-sm font-bold text-muted-foreground">Card Number</p>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <p className="text-sm font-black text-foreground tracking-wider font-mono">
+                        {showFullCardNumber
+                          ? selectedRequestDetails.cardNumber?.toString().replace(/(\d{4})/g, '$1 ').trim()
+                          : `${selectedRequestDetails.cardNumber?.toString().slice(0, 2)}** **** **** ${selectedRequestDetails.cardNumber?.toString().slice(-4)}`
+                        }
+                      </p>
+                      <button
+                        onClick={() => setShowFullCardNumber(!showFullCardNumber)}
+                        className="p-1.5 rounded-lg bg-background border border-border hover:text-primary transition-colors cursor-pointer"
+                      >
+                        {showFullCardNumber ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="h-px bg-border/50" />
+
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Calendar className="h-4 w-4 text-muted-foreground" />
+                      <p className="text-sm font-bold text-muted-foreground">Requested On</p>
+                    </div>
+                    <p className="text-sm font-black text-foreground">{new Date(selectedRequestDetails.createdAt).toLocaleString()}</p>
+                  </div>
+
+                  <div className="h-px bg-border/50" />
+
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Clock className="h-4 w-4 text-muted-foreground" />
+                      <p className="text-sm font-bold text-muted-foreground">Status</p>
+                    </div>
+                    <span className={cn(
+                      "px-3 py-1 text-[10px] font-bold uppercase rounded-md",
+                      selectedRequestDetails.status === 'paid'
+                        ? "bg-emerald-500/10 text-emerald-500 border border-emerald-500/20"
+                        : "bg-amber-500/10 text-amber-500 border border-amber-500/20"
+                    )}>
+                      {selectedRequestDetails.status}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            {/* Footer */}
+            <div className="p-5 bg-muted/20 border-t border-border flex justify-end">
+              <button
+                onClick={() => setIsDetailsModalOpen(false)}
+                className="px-6 py-2.5 text-sm font-bold text-background bg-primary rounded-xl shadow-lg hover:bg-primary/90 transition-all cursor-pointer"
+              >
+                Close Details
               </button>
             </div>
           </div>
@@ -554,56 +731,3 @@ export default function DriverEarningsControlPage() {
 }
 
 
-
-type StatInfoCardProps = {
-  icon: ReactNode;
-  label: string;
-  value: string | number;
-  valuePrefix?: string;
-  valueSuffix?: string;
-  iconClass?: string;
-  loading?: boolean;
-};
-
-export function StatInfoCard({
-  icon,
-  label,
-  value,
-  valuePrefix = "",
-  valueSuffix = "",
-  iconClass = "",
-  loading = false,
-}: StatInfoCardProps) {
-  return (
-    <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/[0.02] border border-white/[0.05] shadow-sm relative overflow-hidden">
-
-      {loading && (
-        <div className="absolute inset-0 bg-[#151B2B] animate-pulse p-4 flex items-center gap-3">
-          <div className="h-10 w-10 rounded-lg bg-[#1E293B]" />
-          <div className="flex-1 space-y-2">
-            <div className="h-2 w-24 bg-[#1E293B] rounded" />
-            <div className="h-4 w-16 bg-[#1E293B] rounded" />
-          </div>
-        </div>
-      )}
-
-      {/* Icon */}
-      <div className={cn("p-2 rounded-lg", iconClass)}>
-        {icon}
-      </div>
-
-      {/* Content */}
-      <div>
-        <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">
-          {label}
-        </p>
-
-        <p className="text-lg font-black text-white">
-          {valuePrefix}
-          {value}
-          {valueSuffix}
-        </p>
-      </div>
-    </div>
-  );
-}

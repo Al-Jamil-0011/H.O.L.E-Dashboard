@@ -1,5 +1,4 @@
 "use client";
-
 import { cn } from '@/lib/utils';
 import { DataTable, StatusBadge } from '@/components/ui/DataTable';
 import dynamic from 'next/dynamic';
@@ -8,6 +7,8 @@ import type { ApexOptions } from 'apexcharts';
 import { useDashboardOverview } from '@/hooks/overview';
 import { IRecentSale } from '@/hooks/overview/interface';
 import { DashboardStatCard } from '@/components/stats-card';
+import Link from 'next/link';
+import { useMyProfile } from '@/hooks/admin/users';
 
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
@@ -16,7 +17,9 @@ const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 export default function Home() {
     const { theme } = useTheme();
     const isDark = theme === 'dark';
+    const { profile } = useMyProfile();
 
+    console.log("profile", profile)
     const { summary: dashboardData, loading: isLoading, refetch } = useDashboardOverview();
 
     // Chart Data Preparation
@@ -147,7 +150,7 @@ export default function Home() {
     ];
 
     return (
-        <div className="space-y-6 animate-in fade-in zoom-in duration-500">
+        <div className="space-y-6 animate-in fade-in zoom-in duration-500 pb-8">
             <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
                 <div>
                     <h1 className="text-xl font-bold tracking-tight text-foreground mb-1">
@@ -160,11 +163,11 @@ export default function Home() {
                 <div className="flex items-center gap-3">
                     <button
                         onClick={() => refetch()}
-                        className="px-4 py-1.5 text-xs font-semibold text-muted-foreground bg-card rounded shadow-sm border border-border transition-colors hover:text-foreground cursor-pointer"
+                        className="px-4 py-1.5 text-xs font-semibold text-muted-foreground bg-card rounded dark:shadow-sm border border-border transition-colors hover:text-foreground cursor-pointer"
                     >
                         Refresh
                     </button>
-                    <button className="px-4 py-1.5 text-xs font-bold text-background bg-primary rounded shadow-sm transition-all hover:opacity-90">
+                    <button className="px-4 py-1.5 text-xs font-bold text-background bg-primary rounded shadow-sm transition-all hover:opacity-90 cursor-pointer">
                         Generate Report
                     </button>
                 </div>
@@ -222,7 +225,7 @@ export default function Home() {
             </div>
 
             <div className="grid gap-4 lg:grid-cols-2">
-                <div className="rounded-xl border border-border bg-card shadow-sm lg:col-span-1 transition-all h-[320px] flex flex-col">
+                <div className="rounded-xl border border-border bg-card dark:shadow-sm lg:col-span-1 transition-all h-[320px] flex flex-col">
                     <div className="flex items-center justify-between p-5 pb-0 z-10 relative">
                         <div>
                             <h2 className="text-sm font-bold text-foreground">Monthly Revenue</h2>
@@ -234,11 +237,17 @@ export default function Home() {
                         </div>
                     </div>
                     <div className="flex-1 min-h-0 w-full pl-2 pb-2">
-                        <Chart options={lineChartOptions} series={lineChartSeries} type="area" height="100%" width="100%" />
+                        <Chart
+                            options={lineChartOptions}
+                            series={lineChartSeries}
+                            type="area"
+                            height="100%"
+                            width="100%"
+                        />
                     </div>
                 </div>
 
-                <div className="rounded-xl border border-border bg-card shadow-sm lg:col-span-1 transition-all h-[320px] flex flex-col">
+                <div className="rounded-xl border border-border bg-card dark:shadow-sm lg:col-span-1 transition-all h-[320px] flex flex-col">
                     <div className="flex items-center justify-between p-5 pb-0 z-10 relative">
                         <div>
                             <h2 className="text-sm font-bold text-foreground">Rep Performance</h2>
@@ -251,15 +260,22 @@ export default function Home() {
                 </div>
             </div>
 
-            <div className="rounded-xl border border-border bg-card shadow-sm transition-all overflow-hidden flex flex-col">
+            <div className="rounded-xl border border-border bg-card dark:shadow-sm transition-all overflow-hidden flex flex-col">
                 <div className="flex items-center justify-between p-5">
                     <h2 className="text-sm font-bold text-foreground">Recent Sales</h2>
-                    <button className="px-3 py-1 text-[10px] font-medium text-muted-foreground border border-border rounded hover:text-foreground transition-colors">
-                        View All
-                    </button>
+                    <Link href={`/${profile?.role}/dashboard/sales`}>
+                        <button className="px-3 py-1 text-[10px] font-medium text-muted-foreground border border-border rounded hover:text-foreground transition-colors cursor-pointer">
+                            View All
+                        </button>
+                    </Link>
                 </div>
                 <div className="flex-1 px-5 pb-5">
-                    <DataTable data={dashboardData?.recentSales || []} columns={columns} loading={isLoading} />
+                    <DataTable
+                        data={dashboardData?.recentSales || []}
+                        columns={columns}
+                        loading={isLoading}
+                        onRowClick={() => { }}
+                    />
                 </div>
             </div>
         </div>
@@ -267,56 +283,3 @@ export default function Home() {
 }
 
 
-function StatCard({
-    title,
-    value,
-    trend,
-    trendType,
-    topBorderColor,
-    loading = false
-}: {
-    title: string;
-    value: string;
-    trend: string;
-    trendType: 'up' | 'down' | 'neutral';
-    topBorderColor: string;
-    loading?: boolean;
-}) {
-    return (
-        <div className={cn("rounded-xl border border-border border-t-[3px] bg-card p-5 shadow-sm transition-all hover:bg-muted/50", topBorderColor)}>
-            {loading ? (
-                <div className="animate-pulse">
-                    <div className="h-3 w-24 rounded bg-muted" />
-                    <div className="mt-3 h-8 w-28 rounded bg-muted" />
-                    <div className="mt-2 h-3 w-20 rounded bg-muted" />
-                </div>
-            ) : (
-                <>
-                    <h3 className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase">
-                        {title}
-                    </h3>
-
-                    <div className="mt-3">
-                        <div className="text-2xl font-black tracking-tight text-foreground">
-                            {value}
-                        </div>
-
-                        <p className="mt-2 text-[11px] font-medium text-muted-foreground">
-                            {trendType === 'up' && (
-                                <span className="text-primary font-semibold">{trend}</span>
-                            )}
-
-                            {trendType === 'down' && (
-                                <span className="text-rose-500 font-semibold">{trend}</span>
-                            )}
-
-                            {trendType === 'neutral' && (
-                                <span className="text-emerald-400 font-semibold">{trend}</span>
-                            )}
-                        </p>
-                    </div>
-                </>
-            )}
-        </div>
-    );
-}

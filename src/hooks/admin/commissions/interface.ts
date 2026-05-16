@@ -127,7 +127,7 @@ export interface ICommission {
 
     sale: ICommissionSale;
 
-    createdBy: string;
+    createdBy: string | { _id: string; fullName: string, email: string, profileUrl?: string };
 
     status: ICommissionStatus;
 

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { ArrowLeft, AlertTriangle, Mail, Phone, MapPin, Calendar, User, FileText, CreditCard, Car, Download, Eye, File, Image as ImageIcon, Backpack } from 'lucide-react';
+import { ArrowLeft, AlertTriangle, Mail, Phone, MapPin, Calendar, User, FileText, CreditCard, Car, Download, Eye, File, Image as ImageIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import { useChangeUserStatus, useSingleUser } from '@/hooks/admin/users';
@@ -19,10 +19,7 @@ export default function UserDetailsPage() {
   const params = useParams();
   const [isDeactivateModalOpen, setIsDeactivateModalOpen] = useState(false);
   const { changeUserStatus, loading: changingStatus } = useChangeUserStatus();
-  const { user, loading: userLoading, error, refetch } = useSingleUser(params.id as string);
-
-  console.log(user);
-
+  const { user, loading: userLoading, refetch } = useSingleUser(params.id as string);
 
 
 
@@ -103,7 +100,7 @@ export default function UserDetailsPage() {
           <button
             onClick={() => setIsDeactivateModalOpen(true)}
             disabled={changingStatus}
-            className={cn(`flex items-center gap-2 px-4 py-2 text-xs font-bold text-rose-400 bg-rose-500/10 border border-rose-500/20 rounded-lg shadow-sm transition-colors hover:bg-rose-500 hover:text-white cursor-pointer`,
+            className={cn(`flex items-center gap-2 px-4 py-2 text-xs font-bold text-rose-400 bg-rose-500/10 border border-rose-500/20 rounded-lg dark:shadow-sm transition-colors hover:bg-rose-500 hover:text-white cursor-pointer`,
               user?.status === 'inactive' && 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500 hover:text-white'
             )}
           >
@@ -117,14 +114,14 @@ export default function UserDetailsPage() {
         {/* LEFT SIDE (Main Info Card) */}
         <div className="lg:col-span-1 xl:col-span-1 space-y-6">
 
-          <div className="rounded-xl border border-border bg-card p-5 shadow-sm">
+          <div className="rounded-xl border border-border bg-card p-5 dark:shadow-sm">
             <h3 className="text-xs font-bold tracking-widest text-primary uppercase mb-4">Bio</h3>
             <p className="text-sm text-muted-foreground leading-relaxed">
               {user?.bio}
             </p>
           </div>
 
-          <div className="rounded-xl border border-border bg-card p-5 shadow-sm space-y-5">
+          <div className="rounded-xl border border-border bg-card p-5 dark:shadow-sm space-y-5">
             <h3 className="text-xs font-bold tracking-widest text-primary uppercase mb-2">Driver Information</h3>
 
             <InfoRow icon={<Mail className="h-4 w-4" />} label="Email Address" value={user?.email || 'N/A'} />
@@ -142,7 +139,7 @@ export default function UserDetailsPage() {
 
         {/* RIGHT SIDE (Documents Section) */}
         <div className="lg:col-span-2 xl:col-span-2 space-y-6">
-          <div className="rounded-xl border border-border bg-card shadow-sm overflow-hidden flex flex-col h-full">
+          <div className="rounded-xl border border-border bg-card dark:shadow-sm overflow-hidden flex flex-col h-full">
             <div className="p-5 border-b border-border flex items-center justify-between">
               <div>
                 <h2 className="text-lg font-bold text-foreground tracking-tight">All Documents</h2>
@@ -197,7 +194,7 @@ export default function UserDetailsPage() {
       {isDeactivateModalOpen && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsDeactivateModalOpen(false)} />
-          <div className="relative bg-background w-full max-w-md rounded-xl border border-rose-500/50 shadow-2xl shadow-rose-900/20 overflow-hidden animate-in zoom-in-95 duration-200">
+          <div className="relative bg-background w-full max-w-md rounded-xl border border-rose-500/50 dark:shadow-2xl dark:shadow-rose-900/20 overflow-hidden animate-in zoom-in-95 duration-200">
             <div className="p-8 text-center space-y-4">
               <div className="w-16 h-16 bg-rose-500/10 text-rose-500 rounded-full flex items-center justify-center mx-auto">
                 <AlertTriangle size={32} />
@@ -219,7 +216,7 @@ export default function UserDetailsPage() {
               </button>
               <button
                 onClick={() => toggleStatus()}
-                className={cn("flex-1 py-3 text-sm font-bold text-white bg-rose-500 rounded-lg shadow-sm transition-all hover:bg-rose-600 cursor-pointer", changingStatus && "opacity-50 cursor-not-allowed")}
+                className={cn("flex-1 py-3 text-sm font-bold text-white bg-rose-500 rounded-lg dark:shadow-sm transition-all hover:bg-rose-600 cursor-pointer", changingStatus && "opacity-50 cursor-not-allowed")}
               >
                 {changingStatus ? "Changing..." : "Confirm"}
               </button>

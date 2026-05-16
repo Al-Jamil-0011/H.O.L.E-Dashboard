@@ -21,10 +21,11 @@ import {
 } from 'lucide-react';
 import { useUsers, useUserSummary, useChangeUserStatus } from '@/hooks/admin/users';
 import { IUser } from '@/hooks/admin/users/interface';
-import { IDetailRowProps, IStatCardProps } from './interface';
 import Image from 'next/image';
 import { FaEye } from 'react-icons/fa';
 import { VerifyBadge } from '@/components/verify-bedge';
+import { UserStatCard } from '@/components/stats-card';
+import { IDetailRowProps } from '@/components/stats-card/interface';
 
 const getInitials = (name: string) => {
   if (!name) return 'NA';
@@ -39,7 +40,7 @@ export default function UsersManagementPage() {
   const [statusFilter, setStatusFilter] = useState('All');
   const [territoryFilter, setTerritoryFilter] = useState('All');
 
-  const { users: allUsers, loading: usersLoading, refetch, query, setQuery, meta } = useUsers();
+  const { users: allUsers, loading: usersLoading, refetch, setQuery } = useUsers();
   const { summary, loading: statLoading, refetch: summaryRefetch } = useUserSummary();
   const { changeUserStatus, loading: changingStatus } = useChangeUserStatus();
 
@@ -189,7 +190,7 @@ export default function UsersManagementPage() {
           {
             item?.role === "driver" ? (
               <Link href={`/admin/dashboard/users/${item._id}`} onClick={(e) => e.stopPropagation()}>
-                <button className="px-3 flex items-center gap-2 py-1 font-bold text-[#00E5FF] bg-[#00E5FF]/10 rounded hover:bg-[#00E5FF]/20 transition-colors cursor-pointer">
+                <button className="px-3 flex items-center gap-2 py-1 font-bold text-primary dark:text-[#00E5FF]/80 dark:bg-[#00E5FF]/10 rounded dark:hover:bg-[#00E5FF]/20 hover:bg-primary/10 transition-colors cursor-pointer">
                   <FaEye /> Details
                 </button>
               </Link>
@@ -199,7 +200,7 @@ export default function UsersManagementPage() {
                 setSelectedUser(item);
                 setIsDetailsDrawerOpen(true);
               }}
-              className="px-3 flex items-center gap-2 py-1 font-bold text-[#00E5FF] bg-[#00E5FF]/10 rounded hover:bg-[#00E5FF]/20 transition-colors cursor-pointer">
+              className="px-3 flex items-center gap-2 py-1 font-bold text-primary dark:text-[#00E5FF]/80 dark:bg-[#00E5FF]/10 rounded dark:hover:bg-[#00E5FF]/20 hover:bg-primary/10 transition-colors cursor-pointer">
               <FaEye /> Details
             </button>
           }
@@ -224,28 +225,28 @@ export default function UsersManagementPage() {
 
       {/* OVERVIEW CARDS */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard
+        <UserStatCard
           title="TOTAL USERS"
           value={summary?.totalUsers}
           loading={statLoading}
           topBorderColor="border-t-[var(--primary)]"
         />
 
-        <StatCard
+        <UserStatCard
           title="ACTIVE USERS"
           value={summary?.activeUsers}
           loading={statLoading}
           topBorderColor="border-t-emerald-500"
         />
 
-        <StatCard
+        <UserStatCard
           title="INACTIVE USERS"
           value={summary?.inactiveUsers}
           loading={statLoading}
           topBorderColor="border-t-red-500"
         />
 
-        <StatCard
+        <UserStatCard
           title="THIS MONTH USERS"
           value={summary?.thisMonthUsers}
           trendColor="text-amber-500"
@@ -255,9 +256,9 @@ export default function UsersManagementPage() {
       </div>
 
       {/* MAIN CONTAINER */}
-      <div className="rounded-xl border border-gray-200 dark:border-[#1E293B] dark:bg-[#151B2B] shadow-lg flex flex-col overflow-hidden">
+      <div className="rounded-xl border border-gray-200 dark:border-[#1E293B] dark:bg-[#151B2B] dark:shadow-lg flex flex-col overflow-hidden">
         {/* FILTER BAR */}
-        <div className=" border-b border-border flex flex-col gap-4 bg-muted/40">
+        <div className="flex flex-col gap-4 bg-muted/40">
 
           <div className="p-4 border-b border-[var(--border)] flex flex-col md:flex-row items-center justify-between gap-4 bg-muted/40">
             <div className="relative w-full md:w-72">
@@ -319,6 +320,7 @@ export default function UsersManagementPage() {
               data={allUsers}
               columns={columns}
               loading={usersLoading}
+              className='border-none dark:border dark:border-border'
               onRowClick={() => { }}
             />
           </div>
@@ -374,10 +376,27 @@ export default function UsersManagementPage() {
 
               {/* Info grid */}
               <div className="space-y-4 mb-8 border border-border bg-card rounded-xl p-4">
-                <DetailRow icon={<Mail size={14} />} label="Email Address" value={selectedUser.email} />
-                <DetailRow icon={<Phone size={14} />} label="Phone Number" value={selectedUser.phoneNumber || 'N/A'} />
-                <DetailRow icon={<Calendar size={14} />} label="Registration Date" value={selectedUser.createdAt ? new Date(selectedUser.createdAt).toLocaleDateString() : 'N/A'} />
-                <DetailRow icon={<MapPin size={14} />} label="Territory" value={selectedUser.territory || 'Pending'} highlight={!selectedUser.territory} />
+                <DetailRow
+                  icon={<Mail size={14} />}
+                  label="Email Address"
+                  value={selectedUser.email}
+                />
+                <DetailRow
+                  icon={<Phone size={14} />}
+                  label="Phone Number"
+                  value={selectedUser.phoneNumber || 'N/A'}
+                />
+                <DetailRow
+                  icon={<Calendar size={14} />}
+                  label="Registration Date"
+                  value={selectedUser.createdAt ? new Date(selectedUser.createdAt).toLocaleDateString() : 'N/A'}
+                />
+                <DetailRow
+                  icon={<MapPin size={14} />}
+                  label="Territory"
+                  value={selectedUser.territory || 'Pending'}
+                  highlight={!selectedUser.territory}
+                />
               </div>
 
               {/* Account Actions Section */}
@@ -630,35 +649,7 @@ export default function UsersManagementPage() {
   )
 }
 
-function StatCard({
-  title,
-  value,
-  topBorderColor,
-  loading = false,
-}: IStatCardProps) {
-  return (
-    <div
-      className={cn(
-        "rounded-xl border border-border border-t-[3px] bg-card p-5 shadow-sm transition-all hover:bg-muted/30",
-        topBorderColor
-      )}
-    >
-      <h3 className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase">
-        {title}
-      </h3>
 
-      <div className="mt-2 flex items-center justify-between">
-        {loading ? (
-          <div className="h-9 w-full animate-pulse rounded-md bg-muted" />
-        ) : (
-          <div className="text-3xl font-black tracking-tight text-foreground">
-            {value}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
 
 function DetailRow({ icon, label, value, highlight }: IDetailRowProps) {
   return (
