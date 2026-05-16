@@ -9,13 +9,11 @@ import {
   Calendar,
   Building2,
   Stethoscope,
-  Activity,
   PenSquare,
   Package,
   Layers,
   Link2,
   Syringe,
-  Box,
   Eye
 } from "lucide-react";
 import Link from "next/link";
@@ -56,32 +54,32 @@ export default function SurgeryDetailsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <Link
           href="/admin/dashboard/physicians"
-          className="flex items-center gap-2 text-sm font-bold text-gray-400 hover:text-white transition-colors"
+          className="flex items-center gap-2 text-sm font-bold text-muted-foreground hover:text-foreground transition-colors"
         >
           <ChevronLeft className="h-4 w-4" />
           Surgery Details
         </Link>
 
         <div className="flex items-center gap-2 w-full sm:w-auto">
-          <button 
+          <button
             onClick={() => setIsEditModalOpen(true)}
-            className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-bold text-black bg-[#00E5FF] rounded-lg hover:bg-cyan-400 transition-colors shadow-[0_0_15px_rgba(0,229,255,0.3)] cursor-pointer"
+            className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-bold text-white bg-primary rounded-lg hover:opacity-90 transition-all shadow-lg shadow-primary/20 cursor-pointer"
           >
             <PenSquare className="h-4 w-4" /> Edit Surgery
           </button>
-          <button className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-bold text-gray-300 bg-[#151B2B] border border-[#1E293B] rounded-lg hover:text-white hover:bg-[#1E293B] transition-colors cursor-pointer">
+          <button className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-bold text-muted-foreground bg-card border border-border rounded-lg hover:text-foreground hover:bg-muted transition-colors cursor-pointer">
             <Download className="h-4 w-4" /> Download PDF
           </button>
         </div>
       </div>
 
-      <div className="bg-[#151B2B] border border-[#1E293B] rounded-2xl shadow-xl overflow-hidden">
+      <div className="bg-card border border-border rounded-2xl dark:shadow-sm overflow-hidden">
 
         {/* HEADER */}
-        <div className="relative border-b border-[#1E293B]">
-          <div className="absolute top-0 w-full h-32 bg-gradient-to-b from-[#00E5FF]/5 to-transparent pointer-events-none" />
+        <div className="relative border-b border-border">
+          <div className="absolute top-0 w-full h-32 bg-gradient-to-b from-primary/5 to-transparent pointer-events-none" />
           <div className="relative flex items-center gap-4 z-10 p-8">
-            <div className="h-20 w-20 rounded-full bg-[#1E293B] border-4 border-[#0B101E] shadow-xl overflow-hidden relative">
+            <div className="h-20 w-20 rounded-full bg-muted border-4 border-card shadow-xl overflow-hidden relative">
               {surgery.info?.profileUrl ? (
                 <Image
                   src={surgery.info?.profileUrl}
@@ -90,13 +88,13 @@ export default function SurgeryDetailsPage() {
                   className="object-cover"
                 />
               ) : (
-                <UserCircle2 className="h-10 w-10 text-gray-400" />
+                <UserCircle2 className="h-10 w-10 text-muted-foreground" />
               )}
             </div>
             <div className="flex flex-col gap-3">
-              <h1 className="text-2xl font-black text-white tracking-tight">{surgery.info?.fullName}</h1>
+              <h1 className="text-2xl font-black text-foreground tracking-tight">{surgery.info?.fullName}</h1>
               <span className={cn(
-                "w-max px-3 py-1 bg-green-500/10 text-green-500 text-[10px] font-bold uppercase tracking-widest rounded-full border border-green-500/20",
+                "w-max px-3 py-1 bg-emerald-500/10 text-emerald-500 text-[10px] font-bold uppercase tracking-widest rounded-full border border-emerald-500/20",
                 surgery.isDeleted && "bg-rose-500/10 text-rose-500 border-rose-500/20"
               )}>
                 {surgery.isDeleted ? "Inactive" : "Active"}
@@ -113,63 +111,63 @@ export default function SurgeryDetailsPage() {
 
             {/* Surgery Info */}
             <section className="space-y-4">
-              <h3 className="text-xs font-bold text-[#00E5FF] uppercase tracking-widest flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#00E5FF]" /> Surgery Info
+              <h3 className="text-xs font-bold text-primary uppercase tracking-widest flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-primary" /> Surgery Info
               </h3>
 
-              <div className="bg-[#0B101E] border border-[#1E293B] rounded-xl p-5 space-y-4">
+              <div className="bg-muted/50 border border-border rounded-xl p-5 space-y-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-medium text-gray-500">Physician</span>
-                  <span className="text-sm font-bold text-white flex items-center gap-2 text-right">
-                    <Stethoscope className="h-4 w-4 text-gray-400" /> {typeof surgery.info?.physician === 'object' ? surgery.info.physician.fullName : surgery.info?.physician}
+                  <span className="text-xs font-medium text-muted-foreground">Physician</span>
+                  <span className="text-sm font-bold text-foreground flex items-center gap-2 text-right">
+                    <Stethoscope className="h-4 w-4 text-muted-foreground" /> {typeof surgery.info?.physician === 'object' ? surgery.info.physician.fullName : surgery.info?.physician}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-medium text-gray-500">PT ID</span>
-                  <span className="text-sm font-bold text-white">{surgery.info?.patientId}</span>
+                  <span className="text-xs font-medium text-muted-foreground">PT ID</span>
+                  <span className="text-sm font-bold text-foreground">{surgery.info?.patientId}</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-medium text-gray-500">Facility</span>
-                  <span className="text-sm font-bold text-white flex items-center gap-2 text-right">
-                    <Building2 className="h-4 w-4 text-gray-400" /> {typeof surgery.info?.facility === 'object' ? surgery.info.facility.name : surgery.info?.facility}
+                  <span className="text-xs font-medium text-muted-foreground">Facility</span>
+                  <span className="text-sm font-bold text-foreground flex items-center gap-2 text-right">
+                    <Building2 className="h-4 w-4 text-muted-foreground" /> {typeof surgery.info?.facility === 'object' ? surgery.info.facility.name : surgery.info?.facility}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-medium text-gray-500">Date of Surgery</span>
-                  <span className="text-sm font-bold text-white flex items-center gap-2">
-                    <Calendar className="h-4 w-4 text-gray-400" /> {surgery.info?.dateOfSurgery ? new Date(surgery.info.dateOfSurgery).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : 'N/A'}
+                  <span className="text-xs font-medium text-muted-foreground">Date of Surgery</span>
+                  <span className="text-sm font-bold text-foreground flex items-center gap-2">
+                    <Calendar className="h-4 w-4 text-muted-foreground" /> {surgery.info?.dateOfSurgery ? new Date(surgery.info.dateOfSurgery).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : 'N/A'}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-medium text-gray-500">Surgery Type</span>
-                  <span className="text-sm font-bold text-white">{surgery.info?.surgeryType}</span>
+                  <span className="text-xs font-medium text-muted-foreground">Surgery Type</span>
+                  <span className="text-sm font-bold text-foreground">{surgery.info?.surgeryType}</span>
                 </div>
               </div>
             </section>
 
             {/* Attachments */}
             <section className="space-y-4">
-              <h3 className="text-xs font-bold text-[#00E5FF] uppercase tracking-widest flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#00E5FF]" /> Attachments
+              <h3 className="text-xs font-bold text-primary uppercase tracking-widest flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-primary" /> Attachments
               </h3>
 
               <div className="space-y-3">
                 {surgery.docAndNotes?.files && surgery.docAndNotes.files.length > 0 ? (
                   surgery.docAndNotes.files.map((file, idx) => (
-                    <div key={idx} className="flex items-center justify-between p-4 bg-[#0B101E] border border-[#1E293B] rounded-xl hover:border-[#334155] transition-colors cursor-pointer group">
+                    <div key={idx} className="flex items-center justify-between p-4 bg-muted/30 border border-border rounded-xl hover:border-primary/30 transition-colors cursor-pointer group">
                       <div className="flex items-center gap-3">
                         <div className="p-2 rounded-lg flex items-center justify-center bg-blue-500/10 text-blue-500">
                           <FileText className="h-5 w-5" />
                         </div>
-                        <span className="text-sm font-bold text-gray-300 group-hover:text-white transition-colors truncate w-48">{file.split('/').pop()}</span>
+                        <span className="text-sm font-bold text-muted-foreground group-hover:text-foreground transition-colors truncate w-48">{file.split('/').pop()}</span>
                       </div>
                       <a href={file} target="_blank" rel="noopener noreferrer" className="p-1.5">
-                        <Download className="h-4 w-4 text-gray-500 group-hover:text-[#00E5FF] transition-colors" />
+                        <Download className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
                       </a>
                     </div>
                   ))
                 ) : (
-                  <div className="py-4 text-center border border-dashed border-[#1E293B] rounded-xl text-gray-600 text-xs italic">
+                  <div className="py-4 text-center border border-dashed border-border rounded-xl text-muted-foreground text-xs italic">
                     No attachments.
                   </div>
                 )}
@@ -177,9 +175,9 @@ export default function SurgeryDetailsPage() {
             </section>
 
             {/* Radiology Images Grid */}
-            <section className="space-y-4 pt-4 border-t border-[#1E293B]">
-              <h3 className="text-xs font-bold text-[#00E5FF] uppercase tracking-widest flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#00E5FF]" /> Radiology Images
+            <section className="space-y-4 pt-4 border-t border-border">
+              <h3 className="text-xs font-bold text-primary uppercase tracking-widest flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-primary" /> Radiology Images
               </h3>
 
               <div className="grid grid-cols-2 gap-4">
@@ -190,7 +188,7 @@ export default function SurgeryDetailsPage() {
                   { type: 'PRE-OP LATERAL', url: surgery.radiologyClinicalFile?.preOpLateral },
                   { type: 'POST-OP LATERAL', url: surgery.radiologyClinicalFile?.postOpLateral }
                 ].filter(img => img.url).map((img, idx) => (
-                  <div key={idx} className="relative aspect-square bg-[#0B101E] border border-[#1E293B] rounded-xl overflow-hidden group">
+                  <div key={idx} className="relative aspect-square bg-muted border border-border rounded-xl overflow-hidden group">
                     <Image src={img.url!} fill className="object-cover transition-transform duration-500 group-hover:scale-110" alt={img.type} />
 
                     {/* Hover Overlay */}
@@ -199,26 +197,26 @@ export default function SurgeryDetailsPage() {
                         href={img.url!}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-2 px-3 py-1.5 border border-[#00E5FF]/20 bg-[#00E5FF]/10 text-white text-[10px] font-bold  transition-all scale-90 group-hover:scale-100 duration-300 hover:bg-[#00E5FF]/20 hover:border-[#00E5FF] rounded-full"
+                        className="flex items-center gap-2 px-3 py-1.5 border border-primary/20 bg-primary/10 text-white text-[10px] font-bold  transition-all scale-90 group-hover:scale-100 duration-300 hover:bg-primary/20 hover:border-primary rounded-full"
                       >
                         <Eye className="h-3.5 w-3.5" /> Preview
                       </a>
                     </div>
 
                     <div className="absolute bottom-0 inset-x-0 p-2 bg-black/60 backdrop-blur-sm z-20">
-                      <p className="text-[10px] font-bold text-center text-[#00E5FF] tracking-widest">{img.type}</p>
+                      <p className="text-[10px] font-bold text-center text-primary tracking-widest">{img.type}</p>
                     </div>
                   </div>
                 ))}
               </div>
 
               {surgery.docAndNotes?.caseNotes && (
-                <section className="space-y-4 pt-6 border-t border-[#1E293B]">
-                  <h3 className="text-xs font-bold text-[#00E5FF] uppercase tracking-widest flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#00E5FF]" /> Case Notes
+                <section className="space-y-4 pt-6 border-t border-border">
+                  <h3 className="text-xs font-bold text-primary uppercase tracking-widest flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-primary" /> Case Notes
                   </h3>
-                  <div className="bg-[#0B101E] border border-[#1E293B] rounded-xl p-5">
-                    <p className="text-sm text-gray-400 leading-relaxed italic">{surgery.docAndNotes.caseNotes}</p>
+                  <div className="bg-muted/50 border border-border rounded-xl p-5">
+                    <p className="text-sm text-muted-foreground leading-relaxed italic">{surgery.docAndNotes.caseNotes}</p>
                   </div>
                 </section>
               )}
@@ -229,66 +227,66 @@ export default function SurgeryDetailsPage() {
           {/* RIGHT COLUMN: Materials */}
           <div className="space-y-6">
             <div className="flex items-center justify-between">
-              <h3 className="text-xs font-bold text-[#00E5FF] uppercase tracking-widest flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#00E5FF]" /> Surgery Materials
+              <h3 className="text-xs font-bold text-primary uppercase tracking-widest flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-primary" /> Surgery Materials
               </h3>
-              <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest bg-[#0B101E] px-2 py-1 rounded-md border border-[#1E293B]">5 ITEMS LOGGED</span>
+              <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest bg-muted px-2 py-1 rounded-md border border-border">5 ITEMS LOGGED</span>
             </div>
 
             <div className="space-y-4">
 
               {/* Screws */}
-              <div className="bg-[#0B101E] border border-[#1E293B] rounded-xl overflow-hidden">
-                <div className="px-4 py-3 bg-[#151B2B] border-b border-[#1E293B] flex items-center gap-2">
-                  <Link2 className="h-4 w-4 text-[#00E5FF]" />
-                  <span className="text-[11px] font-bold text-[#00E5FF] uppercase tracking-widest">Screws</span>
+              <div className="bg-card border border-border rounded-xl overflow-hidden">
+                <div className="px-4 py-3 bg-muted/50 border-b border-border flex items-center gap-2">
+                  <Link2 className="h-4 w-4 text-primary" />
+                  <span className="text-[11px] font-bold text-primary uppercase tracking-widest">Screws</span>
                 </div>
                 <div className="p-4 space-y-2">
-                  <div className="text-sm font-medium text-gray-300">{surgery.surgeryMaterial?.screws || "N/A"}</div>
+                  <div className="text-sm font-medium text-muted-foreground">{surgery.surgeryMaterial?.screws || "N/A"}</div>
                 </div>
               </div>
 
               {/* Rods / Connectors */}
-              <div className="bg-[#0B101E] border border-[#1E293B] rounded-xl overflow-hidden">
-                <div className="px-4 py-3 bg-[#151B2B] border-b border-[#1E293B] flex items-center gap-2">
-                  <Layers className="h-4 w-4 text-[#00E5FF]" />
-                  <span className="text-[11px] font-bold text-[#00E5FF] uppercase tracking-widest">Rods / Connectors</span>
+              <div className="bg-card border border-border rounded-xl overflow-hidden">
+                <div className="px-4 py-3 bg-muted/50 border-b border-border flex items-center gap-2">
+                  <Layers className="h-4 w-4 text-primary" />
+                  <span className="text-[11px] font-bold text-primary uppercase tracking-widest">Rods / Connectors</span>
                 </div>
                 <div className="p-4 space-y-2">
-                  <div className="text-sm font-medium text-gray-300">{surgery.surgeryMaterial?.rodsOrconnectors || "N/A"}</div>
+                  <div className="text-sm font-medium text-muted-foreground">{surgery.surgeryMaterial?.rodsOrconnectors || "N/A"}</div>
                 </div>
               </div>
 
               {/* Plates */}
-              <div className="bg-[#0B101E] border border-[#1E293B] rounded-xl overflow-hidden">
-                <div className="px-4 py-3 bg-[#151B2B] border-b border-[#1E293B] flex items-center gap-2">
-                  <Layers className="h-4 w-4 text-[#00E5FF]" />
-                  <span className="text-[11px] font-bold text-[#00E5FF] uppercase tracking-widest">Plates</span>
+              <div className="bg-card border border-border rounded-xl overflow-hidden">
+                <div className="px-4 py-3 bg-muted/50 border-b border-border flex items-center gap-2">
+                  <Layers className="h-4 w-4 text-primary" />
+                  <span className="text-[11px] font-bold text-primary uppercase tracking-widest">Plates</span>
                 </div>
                 <div className="p-4 space-y-2">
-                  <div className="text-sm font-medium text-gray-300">{surgery.surgeryMaterial?.plates || "N/A"}</div>
+                  <div className="text-sm font-medium text-muted-foreground">{surgery.surgeryMaterial?.plates || "N/A"}</div>
                 </div>
               </div>
 
               {/* Implants */}
-              <div className="bg-[#0B101E] border border-[#1E293B] rounded-xl overflow-hidden">
-                <div className="px-4 py-3 bg-[#151B2B] border-b border-[#1E293B] flex items-center gap-2">
-                  <Package className="h-4 w-4 text-[#00E5FF]" />
-                  <span className="text-[11px] font-bold text-[#00E5FF] uppercase tracking-widest">Implants</span>
+              <div className="bg-card border border-border rounded-xl overflow-hidden">
+                <div className="px-4 py-3 bg-muted/50 border-b border-border flex items-center gap-2">
+                  <Package className="h-4 w-4 text-primary" />
+                  <span className="text-[11px] font-bold text-primary uppercase tracking-widest">Implants</span>
                 </div>
                 <div className="p-4 space-y-2">
-                  <div className="text-sm font-medium text-gray-300">{surgery.surgeryMaterial?.implants || "N/A"}</div>
+                  <div className="text-sm font-medium text-muted-foreground">{surgery.surgeryMaterial?.implants || "N/A"}</div>
                 </div>
               </div>
 
               {/* Biologics */}
-              <div className="bg-[#0B101E] border border-[#1E293B] rounded-xl overflow-hidden">
-                <div className="px-4 py-3 bg-[#151B2B] border-b border-[#1E293B] flex items-center gap-2">
-                  <Syringe className="h-4 w-4 text-[#00E5FF]" />
-                  <span className="text-[11px] font-bold text-[#00E5FF] uppercase tracking-widest">Biologics</span>
+              <div className="bg-card border border-border rounded-xl overflow-hidden">
+                <div className="px-4 py-3 bg-muted/50 border-b border-border flex items-center gap-2">
+                  <Syringe className="h-4 w-4 text-primary" />
+                  <span className="text-[11px] font-bold text-primary uppercase tracking-widest">Biologics</span>
                 </div>
                 <div className="p-4 space-y-2">
-                  <div className="text-sm font-medium text-gray-300">{surgery.surgeryMaterial?.biologics || "N/A"}</div>
+                  <div className="text-sm font-medium text-muted-foreground">{surgery.surgeryMaterial?.biologics || "N/A"}</div>
                 </div>
               </div>
 
@@ -300,14 +298,14 @@ export default function SurgeryDetailsPage() {
       </div>
 
       <div className="flex justify-end">
-        <button className="flex items-center gap-2 px-6 py-3 text-sm font-bold text-[#0B101E] bg-[#00E5FF] rounded-xl hover:bg-cyan-400 transition-colors shadow-[0_0_20px_rgba(0,229,255,0.3)]">
-          Send to Doctor Email <span className="text-[10px]">▶</span>
+        <button className="flex items-center gap-2 px-6 py-3 text-sm font-bold text-white bg-primary rounded-xl hover:opacity-90 transition-all shadow-lg shadow-primary/20 cursor-pointer">
+          Send to Doctor Email
         </button>
       </div>
 
-      <AddSurgeryModal 
-        isOpen={isEditModalOpen} 
-        onClose={() => setIsEditModalOpen(false)} 
+      <AddSurgeryModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
         initialData={surgery}
       />
     </div>

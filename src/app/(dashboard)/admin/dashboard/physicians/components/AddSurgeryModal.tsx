@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { X, Upload, Activity } from "lucide-react";
+import { useEffect } from "react";
+import { X, } from "lucide-react";
 import { useCreateSurgery, useSingleSurgery, useUpdateSurgery } from "@/hooks/admin/surgeries";
 import { useForm, FormProvider } from "react-hook-form";
 import FormField from "@/components/form";
