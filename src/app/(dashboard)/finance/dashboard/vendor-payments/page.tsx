@@ -119,34 +119,17 @@ export default function VendorPaymentsPage() {
     <div className="space-y-8 animate-in fade-in zoom-in duration-700">
       <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div>
-          <div className="flex items-center gap-2.5 mb-2">
-            <div className="p-2 bg-amber-500/10 rounded-xl">
-              <Landmark className="w-5 h-5 text-amber-500" />
-            </div>
-            <h1 className="text-2xl font-black tracking-tight text-foreground uppercase italic">
-              Vendor <span className="text-amber-500 not-italic font-light">Disbursements</span>
-            </h1>
-          </div>
+          <h1 className="text-2xl font-black tracking-tight text-foreground">
+            Vendor Payments
+          </h1>
           <p className="text-xs text-muted-foreground font-medium max-w-md leading-relaxed">
             Manage implant costs, authorized supply payments, and track vendor disbursement statuses across all active sales.
           </p>
         </div>
-        <div className="flex items-center gap-3">
-          <div className="relative group">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground transition-colors group-focus-within:text-amber-500" />
-            <input
-              type="text"
-              placeholder="Search invoices..."
-              className="pl-9 pr-4 py-2 text-xs bg-[var(--card)] border border-[var(--border)] rounded-xl w-52 focus:outline-none focus:ring-1 focus:ring-amber-500/30 transition-all placeholder:text-muted-foreground/50"
-              value={query.searchTerm}
-              onChange={(e) => setQuery({ ...query, searchTerm: e.target.value })}
-            />
-          </div>
-          <button className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-foreground bg-[var(--card)] rounded-xl shadow-sm border border-[var(--border)] transition-all hover:border-amber-500/50 hover:bg-amber-500/5 group">
-            <Download className="w-3.5 h-3.5 transition-transform group-hover:-translate-y-0.5" />
-            EXPORT
-          </button>
-        </div>
+        <button className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-foreground bg-[var(--card)] rounded-xl shadow-sm border border-[var(--border)] transition-all hover:bg-amber-500/5 group w-max cursor-pointer">
+          <Download className="w-3.5 h-3.5" />
+          EXPORT
+        </button>
       </div>
 
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
@@ -290,26 +273,6 @@ function StatCard({
     </div>
   );
 }
-
-
-// function FilterPill({ text, active, onClick, color, activeColor }: { text: string, active: boolean, onClick: () => void, color?: string, activeColor?: string }) {
-//   const baseClasses = "px-4 py-1.5 text-[10px] font-black uppercase tracking-wider rounded-lg transition-all duration-200 cursor-pointer border border-transparent";
-
-//   if (active) {
-//     return (
-//       <button onClick={onClick} className={cn(baseClasses, activeColor || "bg-amber-500 text-[#0B101E] shadow-lg shadow-amber-500/20 scale-105")}>
-//         {text}
-//       </button>
-//     );
-//   }
-
-//   return (
-//     <button onClick={onClick} className={cn(baseClasses, color || "text-muted-foreground hover:text-foreground hover:bg-[var(--border)]/30")}>
-//       {text}
-//     </button>
-//   )
-// }
-
 
 function FilterPill({ text, active, onClick, color, activeColor }: { text: string, active: boolean, onClick: () => void, color?: string, activeColor?: string }) {
   const baseClasses = "px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded border border-[var(--border)] transition-all cursor-pointer";

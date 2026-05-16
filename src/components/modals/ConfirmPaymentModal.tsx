@@ -3,6 +3,8 @@
 import { X, CheckCircle2, AlertCircle, DollarSign, Calendar, Landmark } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'react-hot-toast';
+import { useTheme } from "next-themes";
+
 
 interface ConfirmPaymentModalProps {
   isOpen: boolean;
@@ -17,16 +19,19 @@ interface ConfirmPaymentModalProps {
 }
 
 export function ConfirmPaymentModal({ isOpen, onClose, paymentData, onConfirm }: ConfirmPaymentModalProps) {
+  const { resolvedTheme } = useTheme();
+
   if (!isOpen || !paymentData) return null;
+
 
   const handleConfirm = () => {
     // Simulating API call
     toast.success(`Payment for ${paymentData.invoiceNumber} processed successfully!`, {
       style: {
         borderRadius: '10px',
-        background: '#0F172A',
-        color: '#fff',
-        border: '1px solid rgba(255,255,255,0.1)'
+        background: resolvedTheme === 'dark' ? '#0F172A' : '#fff',
+        color: resolvedTheme === 'dark' ? '#fff' : '#0F172A',
+        border: resolvedTheme === 'dark' ? '1px solid rgba(255,255,255,0.1)' : '1px solid rgba(0,0,0,0.1)'
       },
       iconTheme: {
         primary: '#10B981',
@@ -40,14 +45,14 @@ export function ConfirmPaymentModal({ isOpen, onClose, paymentData, onConfirm }:
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 animate-in fade-in duration-300">
       {/* Backdrop */}
-      <div 
+      <div
         className="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity"
         onClick={onClose}
       />
-      
+
       {/* Modal Content */}
       <div className="relative w-full max-w-md bg-[#0F1423] rounded-2xl shadow-2xl border border-white/5 overflow-hidden animate-in zoom-in-95 duration-300">
-        
+
         {/* Decorative background glow */}
         <div className="absolute -top-24 -right-24 w-48 h-48 bg-amber-500/10 blur-[80px] rounded-full pointer-events-none" />
         <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-primary/10 blur-[80px] rounded-full pointer-events-none" />
@@ -56,14 +61,14 @@ export function ConfirmPaymentModal({ isOpen, onClose, paymentData, onConfirm }:
         <div className="flex items-center justify-between px-6 py-5 border-b border-white/5 bg-white/[0.02]">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-amber-500/10 rounded-lg">
-              <Landmark className="w-5 h-5 text-amber-500" />
+              <Landmark className="w-5 h-5 text-primary" />
             </div>
             <div>
               <h2 className="text-base font-bold text-white tracking-tight">Confirm Payment</h2>
               <p className="text-[10px] text-gray-500 font-medium uppercase tracking-wider">Vendor Disbursement</p>
             </div>
           </div>
-          <button 
+          <button
             onClick={onClose}
             className="p-1.5 rounded-full text-gray-400 hover:text-white hover:bg-white/5 transition-all"
           >
@@ -84,9 +89,8 @@ export function ConfirmPaymentModal({ isOpen, onClose, paymentData, onConfirm }:
             </div>
             <div className="pt-3 border-t border-white/5 flex justify-between items-end">
               <span className="text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-1">Total Amount</span>
-              <div className="text-2xl font-black text-amber-500 tracking-tight">
-                <span className="text-sm font-light opacity-60 mr-0.5">$</span>
-                {paymentData.amount.toLocaleString()}
+              <div className="text-2xl font-black text-primary tracking-tight">
+                ${paymentData.amount.toLocaleString()}
               </div>
             </div>
           </div>
@@ -101,15 +105,15 @@ export function ConfirmPaymentModal({ isOpen, onClose, paymentData, onConfirm }:
 
         {/* Footer */}
         <div className="p-6 pt-0 flex gap-3">
-          <button 
+          <button
             onClick={onClose}
-            className="flex-1 px-4 py-3 text-xs font-bold text-gray-400 bg-white/5 hover:bg-white/10 rounded-xl border border-white/5 transition-all"
+            className="flex-1 px-4 py-3 text-xs font-bold text-gray-400 bg-white/5 hover:bg-white/10 rounded-xl border border-white/5 transition-all cursor-pointer "
           >
             CANCEL
           </button>
-          <button 
+          <button
             onClick={handleConfirm}
-            className="flex-[2] px-4 py-3 text-xs font-bold text-[#0B101E] bg-amber-500 hover:bg-amber-400 rounded-xl shadow-lg shadow-amber-500/20 transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2"
+            className="flex-[2] px-4 py-3 text-xs font-bold text-[#0B101E] bg-primary hover:bg-primary/90 rounded-xl flex items-center justify-center gap-2 cursor-pointer "
           >
             <CheckCircle2 className="w-4 h-4" />
             CONFIRM PAYMENT
