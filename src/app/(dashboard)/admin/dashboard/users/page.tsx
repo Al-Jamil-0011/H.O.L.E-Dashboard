@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { DataTable, StatusBadge } from '@/components/ui/DataTable';
@@ -44,6 +44,7 @@ export default function UsersManagementPage() {
   const { changeUserStatus, loading: changingStatus } = useChangeUserStatus();
 
   const [selectedUser, setSelectedUser] = useState<IUser | null>(null);
+  const [isDetailsDrawerOpen, setIsDetailsDrawerOpen] = useState(false);
   const [isTerritoryModalOpen, setIsTerritoryModalOpen] = useState(false);
   const [isDeactivateModalOpen, setIsDeactivateModalOpen] = useState(false);
   const [isRepModalOpen, setIsRepModalOpen] = useState(false);
@@ -82,6 +83,7 @@ export default function UsersManagementPage() {
 
   const handleToggleStatus = (user: IUser, currentStatus: string) => {
     setSelectedUser(user);
+    setIsDetailsDrawerOpen(false);
     if (currentStatus === 'active') {
       setIsDeactivateModalOpen(true);
     } else {
@@ -159,7 +161,7 @@ export default function UsersManagementPage() {
     {
       header: "STATUS",
       render: (item: IUser) => (
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
           <button
             onClick={(e) => { e.stopPropagation(); handleToggleStatus(item, item.status); }}
             className={cn(
@@ -195,6 +197,7 @@ export default function UsersManagementPage() {
               onClick={(e) => {
                 e.stopPropagation();
                 setSelectedUser(item);
+                setIsDetailsDrawerOpen(true);
               }}
               className="px-3 flex items-center gap-2 py-1 font-bold text-[#00E5FF] bg-[#00E5FF]/10 rounded hover:bg-[#00E5FF]/20 transition-colors cursor-pointer">
               <FaEye /> Details
@@ -323,12 +326,12 @@ export default function UsersManagementPage() {
       </div>
 
       {/* RIGHT SIDE DRAWER */}
-      {selectedUser && (
+      {selectedUser && isDetailsDrawerOpen && (
         <div className="relative z-50">
           {/* Backdrop */}
           <div
             className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
-            onClick={() => setSelectedUser(null)}
+            onClick={() => { setSelectedUser(null); setIsDetailsDrawerOpen(false); }}
           />
 
           {/* Drawer Content */}
@@ -337,7 +340,7 @@ export default function UsersManagementPage() {
             <div className="flex items-center justify-between p-6 border-b border-border">
               <h2 className="text-lg font-bold text-foreground">User Profile Details</h2>
               <button
-                onClick={() => setSelectedUser(null)}
+                onClick={() => { setSelectedUser(null); setIsDetailsDrawerOpen(false); }}
                 className="p-1.5 rounded-md hover:bg-[var(--border)] text-muted-foreground hover:text-foreground transition-colors"
               >
                 <X className="h-5 w-5" />
@@ -434,7 +437,7 @@ export default function UsersManagementPage() {
             {/* Drawer Footer */}
             <div className="p-6 border-t border-border bg-card mt-auto">
               <button
-                onClick={() => setSelectedUser(null)}
+                onClick={() => { setSelectedUser(null); setIsDetailsDrawerOpen(false); }}
                 className="w-full cursor-pointer py-2.5 text-sm font-bold text-[var(--background)] bg-primary rounded-lg shadow-sm transition-all hover:bg-cyan-400"
               >
                 Done
@@ -501,14 +504,14 @@ export default function UsersManagementPage() {
             <div className="p-4 bg-card border-t border-border flex gap-3">
               <button
                 onClick={() => setIsDeactivateModalOpen(false)}
-                className="flex-1 py-2 text-xs font-bold text-muted-foreground bg-muted rounded-lg hover:bg-muted/80 transition-colors"
+                className="flex-1 py-2 text-xs font-bold text-muted-foreground bg-muted rounded-lg hover:bg-muted/80 transition-colors cursor-pointer"
                 disabled={changingStatus}
               >
                 Cancel
               </button>
               <button
                 onClick={() => selectedUser && updateUserStatus('inactive', selectedUser._id)}
-                className="flex-1 py-2 text-xs font-bold text-white bg-rose-500 rounded-lg shadow-sm transition-all hover:bg-rose-600 disabled:opacity-50"
+                className="flex-1 py-2 text-xs font-bold text-white bg-rose-500 rounded-lg shadow-sm transition-all hover:bg-rose-600 disabled:opacity-50 cursor-pointer"
                 disabled={changingStatus}
               >
                 {changingStatus ? 'Processing...' : 'Confirm'}
