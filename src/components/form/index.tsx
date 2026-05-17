@@ -170,7 +170,7 @@ const FormField: React.FC<FormFieldProps> = ({
                                         </span>
 
                                         {selectedOption.extraText && (
-                                            <span className="text-[10px] text-gray-500 dark:text-gray-500 font-medium uppercase tracking-wider">
+                                            <span className="text-[10px] text-gray-500 dark:text-gray-500 font-medium">
                                                 {selectedOption.extraText}
                                             </span>
                                         )}
@@ -201,7 +201,7 @@ const FormField: React.FC<FormFieldProps> = ({
                                     className="fixed inset-0 z-40"
                                     onClick={() => setIsOpen(false)}
                                 />
-                                <div className="absolute z-50 mt-2 w-full overflow-hidden rounded-xl border border-gray-200 dark:border-[#1E293B] bg-white dark:bg-[#0B101E] shadow-[0_10px_40px_rgba(0,0,0,0.3)] animate-in fade-in zoom-in-95 duration-200">
+                                <div className="absolute z-50 mt-2 w-full overflow-hidden rounded-xl border border-gray-200 dark:border-[#1E293B] bg-white dark:bg-[#0B101E] dark:shadow-[0_10px_40px_rgba(0,0,0,0.3)] animate-in fade-in zoom-in-95 duration-200">
                                     <div className="max-h-60 overflow-y-auto scrollbar-thin scrollbar-thumb-[#1E293B]">
                                         {options.map((opt, idx) => (
                                             <div
@@ -240,7 +240,7 @@ const FormField: React.FC<FormFieldProps> = ({
                                                     </span>
 
                                                     {opt.extraText && (
-                                                        <span className="text-[10px] text-gray-500 dark:text-gray-500 font-bold uppercase tracking-widest mt-0.5">
+                                                        <span className="text-[10px] text-gray-500 dark:text-gray-500 font-bold mt-0.5">
                                                             {opt.extraText}
                                                         </span>
                                                     )}
@@ -305,7 +305,7 @@ const FormField: React.FC<FormFieldProps> = ({
                 return (
                     <div className="w-full">
                         {label && (
-                            <label className="block text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-2">
+                            <label className="block text-[11px] font-bold text-gray-400 mb-2">
                                 {label}
                                 {validation?.required && <span className="text-red-500 ml-1">*</span>}
                             </label>
@@ -356,7 +356,7 @@ const FormField: React.FC<FormFieldProps> = ({
 
                                 <div className="ml-4 flex-1 min-w-0">
                                     <p className="text-sm font-bold text-gray-900 dark:text-white truncate pr-8">{fileName}</p>
-                                    <p className="text-[10px] text-gray-500 font-medium uppercase tracking-wider mt-1">Ready to upload</p>
+                                    <p className="text-[10px] text-gray-500 font-medium mt-1">Ready to upload</p>
                                 </div>
 
                                 <button
@@ -410,7 +410,7 @@ const FormField: React.FC<FormFieldProps> = ({
         <div className="w-full flex flex-col mb-5">
             {/* Field Label */}
             {label && type !== "checkbox" && type !== "file" && (
-                <label className="mb-1.5 text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-widest ml-1">
+                <label className="mb-1.5 text-xs font-bold text-gray-600 dark:text-gray-400 ml-1">
                     {label}
                     {validation?.required && <span className="text-rose-500 ml-1">*</span>}
                 </label>
@@ -431,7 +431,7 @@ const FormField: React.FC<FormFieldProps> = ({
 
             {/* Error Message */}
             {hasError && (
-                <div className="mt-1.5 ml-1 flex items-start text-rose-500 text-[10px] font-bold uppercase tracking-wider animate-in fade-in slide-in-from-top-1">
+                <div className="mt-1.5 ml-1 flex items-start text-rose-500 text-xs font-bold  animate-in fade-in slide-in-from-top-1">
                     <svg className="w-3.5 h-3.5 mr-1 mt-px flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                     </svg>

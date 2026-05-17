@@ -370,3 +370,75 @@ export function PurchaseOrderStatCard({
 }
 
 
+export function SupportStatCard({
+    title,
+    value,
+    icon,
+    color,
+    loading,
+}: {
+    title: string;
+    value: number | string;
+    icon: React.ReactNode;
+    color: "primary" | "emerald" | "purple";
+    loading?: boolean;
+}) {
+    const colors = {
+        primary:
+            "text-primary bg-primary/10 border-primary/20",
+        emerald:
+            "text-emerald-500 bg-emerald-500/10 border-emerald-500/20",
+        purple:
+            "text-purple-500 bg-purple-500/10 border-purple-500/20",
+    };
+
+    return (
+        <div className="relative overflow-hidden bg-card border border-border rounded-2xl p-6 hover:bg-muted/10 transition-all group">
+            {/* glow */}
+            <div
+                className={cn(
+                    "absolute top-0 right-0 w-24 h-24 blur-3xl rounded-full -mr-12 -mt-12 opacity-20",
+                    color === "primary"
+                        ? "bg-primary"
+                        : color === "emerald"
+                            ? "bg-emerald-500"
+                            : "bg-purple-500"
+                )}
+            />
+
+            <div className="flex items-center justify-between relative z-10">
+                <div>
+                    <p className="text-sm font-medium text-muted-foreground mb-1">
+                        {title}
+                    </p>
+
+                    {loading ? (
+                        <div className="h-9 w-24 rounded-md bg-muted/50 animate-pulse" />
+                    ) : (
+                        <h3 className="text-3xl font-black text-foreground">
+                            {typeof value === "number"
+                                ? value.toLocaleString()
+                                : value}
+                        </h3>
+                    )}
+                </div>
+
+                {loading ? (
+                    <div className="h-12 w-12 rounded-xl bg-muted/50 animate-pulse" />
+                ) : (
+                    <div
+                        className={cn(
+                            "p-3 rounded-xl border transition-transform",
+                            colors[color]
+                        )}
+                    >
+                        {icon}
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+}
+
+
+

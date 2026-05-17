@@ -20,7 +20,7 @@ const NotificationItem = ({ notification }: { notification: INotification }) => 
 
     return (
         <div
-            className={`flex items-start p-5 border-b border-border transition duration-200 hover:bg-muted/50 group relative animate-in fade-in slide-in-from-bottom-2 duration-300 ${!isActuallyRead ? "bg-primary/5 dark:bg-primary/10" : "bg-card"
+            className={`flex items-start p-5 transition duration-200 hover:bg-muted/50 group relative animate-in fade-in slide-in-from-bottom-2 duration-300 ${!isActuallyRead ? "bg-primary/5 dark:bg-primary/10" : "bg-card"
                 }`}
         >
             {!isActuallyRead && (
@@ -36,7 +36,7 @@ const NotificationItem = ({ notification }: { notification: INotification }) => 
                             src={sender?.profileUrl}
                             alt={sender?.name || "User"}
                             fill
-                            className="rounded-full object-cover border-2 border-background shadow-sm"
+                            className="rounded-full object-cover border border-background dark:shadow-sm"
                         />
                     ) : (
                         <div className="rounded-full w-12 h-12 bg-muted flex items-center justify-center border border-border text-primary font-bold text-sm uppercase">
@@ -47,7 +47,7 @@ const NotificationItem = ({ notification }: { notification: INotification }) => 
                     )}
 
                 </div>
-                <div className="absolute -bottom-1 -right-1 bg-primary rounded-full p-1 border-2 border-background shadow-sm">
+                <div className="absolute -bottom-1 -right-1 bg-primary rounded-full p-1 border border-background dark:ow-sm">
                     <FaBell className="w-2.5 h-2.5 text-white" />
                 </div>
             </div>
@@ -72,10 +72,10 @@ const NotificationItem = ({ notification }: { notification: INotification }) => 
                     </p>
                 </div>
             </div>
-
+            {/* 
             <button className="opacity-0 group-hover:opacity-100 p-2 rounded-lg hover:bg-background transition-all absolute top-4 right-4 text-muted-foreground hover:text-foreground">
                 <MoreHorizontal className="w-5 h-5" />
-            </button>
+            </button> */}
         </div>
     );
 };
@@ -162,10 +162,10 @@ export default function Notifications() {
                 <header className="flex items-center p-6 md:p-8 border-b border-border bg-card/80 backdrop-blur-xl sticky top-0 z-20">
                     <button
                         onClick={() => router.back()}
-                        className="p-3 rounded-2xl dark:bg-muted text-muted-foreground hover:text-foreground dark:hover:bg-muted/80 transition-all cursor-pointer hover:bg-primary/10 group"
+                        className="p-2 rounded-full dark:bg-muted text-muted-foreground hover:text-foreground dark:hover:bg-muted/80 transition-all cursor-pointer hover:bg-primary/10 group"
                         aria-label="Go back"
                     >
-                        <ArrowLeft className="h-5 w-5 text-primary group-hover:-translate-x-1 transition-transform" />
+                        <ArrowLeft className="h-5 w-5 text-primary" />
                     </button>
 
                     <div className="ml-5">

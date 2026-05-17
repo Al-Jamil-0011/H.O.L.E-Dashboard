@@ -109,12 +109,12 @@ export function AddPhysicianModal({ isOpen, onClose, initialData, refetch }: Add
   return (
     <>
       <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm" onClick={onClose} />
-      <div className="fixed inset-y-0 right-0 z-[60] w-full max-w-md bg-[#0B101E] border-l border-[#1E293B] shadow-2xl flex flex-col animate-in slide-in-from-right duration-300">
+      <div className="fixed inset-y-0 right-0 z-[60] w-full max-w-md bg-white dark:bg-[#0B101E] border-l border-gray-200 dark:border-[#1E293B] dark:shadow-2xl flex flex-col animate-in slide-in-from-right duration-300">
 
         {/* HEADER */}
-        <div className="flex items-center justify-between p-6 border-b border-[#1E293B]">
-          <h2 className="text-lg font-bold text-white flex items-center gap-2">
-            <button onClick={onClose} className="p-1 rounded-md text-gray-400 hover:text-white hover:bg-[#1E293B]">
+        <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-[#1E293B]">
+          <h2 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+            <button onClick={onClose} className="p-1 rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-[#1E293B]">
               <X className="h-5 w-5" />
             </button>
             {isEdit ? "Update Physician" : "Add Physician"}
@@ -124,11 +124,11 @@ export function AddPhysicianModal({ isOpen, onClose, initialData, refetch }: Add
         {/* BODY */}
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)} className="flex-1 overflow-y-auto flex flex-col">
-            <div className="flex-1 p-6 space-y-8 scrollbar-thin scrollbar-thumb-[#1E293B]">
+            <div className="flex-1 p-6 space-y-8 scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-[#1E293B]">
 
               {/* Basic Information */}
               <section className="space-y-4">
-                <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest">Basic Information</h3>
+                <h3 className="text-xs font-bold text-gray-600 dark:text-gray-500 uppercase tracking-widest">Basic Information</h3>
 
                 <div className="space-y-4">
                   <FormField
@@ -152,7 +152,7 @@ export function AddPhysicianModal({ isOpen, onClose, initialData, refetch }: Add
                   />
 
                   <div>
-                    <label className="block text-xs font-bold text-gray-400 mb-1.5 uppercase tracking-wider">Specialty</label>
+                    <label className="block text-xs font-bold text-gray-700 dark:text-gray-400 mb-1.5 uppercase tracking-wider">Specialty</label>
                     <div className="flex flex-wrap gap-2">
                       {availableSpecialties.map(spec => (
                         <button
@@ -162,8 +162,8 @@ export function AddPhysicianModal({ isOpen, onClose, initialData, refetch }: Add
                           className={cn(
                             "px-3 py-1.5 text-xs font-bold rounded-lg border transition-all cursor-pointer",
                             specialty === spec.value
-                              ? "bg-[#00E5FF]/20 text-[#00E5FF] border-[#00E5FF]/50 shadow-[0_0_10px_rgba(0,229,255,0.1)]"
-                              : "bg-[#151B2B] text-gray-400 border-[#334155] hover:bg-[#1E293B]"
+                              ? "bg-[#309488]/10 dark:bg-[#00E5FF]/20 text-[#309488] dark:text-[#00E5FF] border-[#309488]/30 dark:border-[#00E5FF]/50 dark:shadow-[0_0_10px_rgba(48,148,136,0.1)] dark:shadow-[0_0_10px_rgba(0,229,255,0.1)]"
+                              : "bg-gray-50 dark:bg-[#151B2B] text-gray-600 dark:text-gray-400 border-gray-200 dark:border-[#334155] hover:bg-gray-100 dark:hover:bg-[#1E293B]"
                           )}
                         >
                           {spec.label}
@@ -176,7 +176,7 @@ export function AddPhysicianModal({ isOpen, onClose, initialData, refetch }: Add
 
               {/* Contact */}
               <section className="space-y-4">
-                <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest">Contact</h3>
+                <h3 className="text-xs font-bold text-gray-600 dark:text-gray-500 uppercase tracking-widest">Contact</h3>
 
                 <div className="space-y-4">
                   <FormField
@@ -225,7 +225,7 @@ export function AddPhysicianModal({ isOpen, onClose, initialData, refetch }: Add
                     type="date"
                     register={register}
                     errors={errors}
-                    className="[color-scheme:dark]"
+                    className="dark:[color-scheme:dark]"
                     validation={{ required: "Date of birth is required" }}
                   />
                 </div>
@@ -233,7 +233,7 @@ export function AddPhysicianModal({ isOpen, onClose, initialData, refetch }: Add
 
               {/* Documents */}
               <section className="space-y-4">
-                <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest">Media (Optional)</h3>
+                <h3 className="text-xs font-bold text-gray-600 dark:text-gray-500 uppercase tracking-widest">Media (Optional)</h3>
 
                 <div className="space-y-4">
                   <FormField
@@ -257,7 +257,7 @@ export function AddPhysicianModal({ isOpen, onClose, initialData, refetch }: Add
 
               {/* Notes */}
               <section className="space-y-4">
-                <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest">Note</h3>
+                <h3 className="text-xs font-bold text-gray-600 dark:text-gray-500 uppercase tracking-widest">Note</h3>
                 <FormField
                   name="noteToSelf"
                   label="Note to Self"
@@ -271,15 +271,15 @@ export function AddPhysicianModal({ isOpen, onClose, initialData, refetch }: Add
             </div>
 
             {/* FOOTER */}
-            <div className="p-6 border-t border-[#1E293B] bg-[#0B101E] space-y-3 mt-auto">
+            <div className="p-6 border-t border-gray-200 dark:border-[#1E293B] bg-gray-50 dark:bg-[#0B101E] space-y-3 mt-auto">
               <button
                 disabled={isCreating || isUpdating}
                 type="submit"
-                className="w-full py-3 text-sm font-bold text-[#0B101E] bg-[#00E5FF] rounded-xl hover:bg-cyan-400 transition-colors shadow-[0_0_15px_rgba(0,229,255,0.3)] flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
+                className="w-full py-3 text-sm font-bold text-white dark:text-[#0B101E] bg-[#309488] dark:bg-[#00E5FF] rounded-xl hover:bg-[#277a70] dark:hover:bg-cyan-400 transition-colors dark:shadow-[0_0_15px_rgba(48,148,136,0.3)] dark:shadow-[0_0_15px_rgba(0,229,255,0.3)] flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
               >
                 {(isCreating || isUpdating) ?
                   <div className="flex items-center gap-2">
-                    <Loader color="black" size={16} />
+                    <Loader color="currentColor" size={16} />
                     <span>Loading...</span>
                   </div>
                   : (isEdit ? "Update Physician" : "Save Physician")}
@@ -288,7 +288,7 @@ export function AddPhysicianModal({ isOpen, onClose, initialData, refetch }: Add
                 type="button"
                 disabled={isCreating || isUpdating}
                 onClick={onClose}
-                className="w-full py-3 text-sm font-bold text-gray-300 bg-transparent border border-[#334155] rounded-xl hover:bg-[#1E293B] transition-colors disabled:opacity-50 cursor-pointer"
+                className="w-full py-3 text-sm font-bold text-gray-700 dark:text-gray-300 bg-transparent border border-gray-300 dark:border-[#334155] rounded-xl hover:bg-gray-100 dark:hover:bg-[#1E293B] transition-colors disabled:opacity-50 cursor-pointer"
               >
                 Cancel
               </button>

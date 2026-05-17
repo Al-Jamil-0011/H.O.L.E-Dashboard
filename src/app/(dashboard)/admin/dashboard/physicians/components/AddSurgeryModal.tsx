@@ -106,12 +106,12 @@ export function AddSurgeryModal({ isOpen, onClose, initialData, refetch }: AddSu
   return (
     <>
       <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm" onClick={onClose} />
-      <div className="fixed inset-y-0 right-0 z-[60] w-full max-w-md bg-[#0B101E] border-l border-[#1E293B] shadow-2xl flex flex-col animate-in slide-in-from-right duration-300">
+      <div className="fixed inset-y-0 right-0 z-[60] w-full max-w-md bg-white dark:bg-[#0B101E] border-l border-gray-200 dark:border-[#1E293B] dark:shadow-2xl flex flex-col animate-in slide-in-from-right duration-300">
 
         {/* HEADER */}
-        <div className="flex items-center justify-between p-6 border-b border-[#1E293B]">
-          <h2 className="text-lg font-bold text-white flex items-center gap-2">
-            <button onClick={onClose} className="p-1 rounded-md text-gray-400 hover:text-white hover:bg-[#1E293B] cursor-pointer">
+        <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-[#1E293B]">
+          <h2 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+            <button onClick={onClose} className="p-1 rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-[#1E293B] cursor-pointer">
               <X className="h-5 w-5" />
             </button>
             {isEdit ? "Update Surgery" : "Add Surgery"}
@@ -121,11 +121,11 @@ export function AddSurgeryModal({ isOpen, onClose, initialData, refetch }: AddSu
         {/* BODY */}
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)} className="flex-1 overflow-y-auto flex flex-col">
-            <div className="flex-1 p-6 space-y-8 scrollbar-thin scrollbar-thumb-[#1E293B]">
+            <div className="flex-1 p-6 space-y-8 scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-[#1E293B]">
 
               {/* Surgery Info */}
               <section className="space-y-4">
-                <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest">Surgery Info</h3>
+                <h3 className="text-xs font-bold text-gray-600 dark:text-gray-500 uppercase tracking-widest">Surgery Info</h3>
                 <div className="space-y-4">
                   <FormField
                     name="physician"
@@ -161,7 +161,7 @@ export function AddSurgeryModal({ isOpen, onClose, initialData, refetch }: AddSu
                     type="date"
                     register={register}
                     errors={errors}
-                    className="[color-scheme:dark]"
+                    className="dark:[color-scheme:dark]"
                   />
                   <FormField
                     name="surgeryType"
@@ -175,7 +175,7 @@ export function AddSurgeryModal({ isOpen, onClose, initialData, refetch }: AddSu
 
               {/* Surgery Materials */}
               <section className="space-y-4">
-                <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest">Surgery Materials</h3>
+                <h3 className="text-xs font-bold text-gray-600 dark:text-gray-500 uppercase tracking-widest">Surgery Materials</h3>
                 <div className="space-y-4">
                   <FormField name="screws" label="Screws" placeholder="Details..." register={register} errors={errors} />
                   <FormField name="plates" label="Plates" placeholder="Details..." register={register} errors={errors} />
@@ -187,7 +187,7 @@ export function AddSurgeryModal({ isOpen, onClose, initialData, refetch }: AddSu
 
               {/* Radiology & Clinical Images */}
               <section className="space-y-4">
-                <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest">Radiology & Clinical Images</h3>
+                <h3 className="text-xs font-bold text-gray-600 dark:text-gray-500 uppercase tracking-widest">Radiology & Clinical Images</h3>
                 <div className="grid grid-cols-2 gap-4">
                   <FormField name="appre" label="AP PRE" type="file" register={register} errors={errors} />
                   <FormField name="appost" label="AP POST" type="file" register={register} errors={errors} />
@@ -201,7 +201,7 @@ export function AddSurgeryModal({ isOpen, onClose, initialData, refetch }: AddSu
 
               {/* Documents & Notes */}
               <section className="space-y-4">
-                <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest">Documents & Notes</h3>
+                <h3 className="text-xs font-bold text-gray-600 dark:text-gray-500 uppercase tracking-widest">Documents & Notes</h3>
                 <div className="space-y-4">
                   <FormField
                     name="notes"
@@ -225,15 +225,15 @@ export function AddSurgeryModal({ isOpen, onClose, initialData, refetch }: AddSu
             </div>
 
             {/* FOOTER */}
-            <div className="p-6 border-t border-[#1E293B] bg-[#0B101E] space-y-3 mt-auto">
+            <div className="p-6 border-t border-gray-200 dark:border-[#1E293B] bg-gray-50 dark:bg-[#0B101E] space-y-3 mt-auto">
               <button
                 disabled={isCreating || isUpdating}
                 type="submit"
-                className="w-full py-3 text-sm font-bold text-[#0B101E] bg-[#00E5FF] rounded-xl hover:bg-cyan-400 transition-colors shadow-[0_0_15px_rgba(0,229,255,0.3)] flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
+                className="w-full py-3 text-sm font-bold text-white dark:text-[#0B101E] bg-[#309488] dark:bg-[#00E5FF] rounded-xl hover:bg-[#277a70] dark:hover:bg-cyan-400 transition-colors dark:shadow-[0_0_15px_rgba(48,148,136,0.3)] dark:shadow-[0_0_15px_rgba(0,229,255,0.3)] flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
               >
                 {(isCreating || isUpdating) ?
                   <div className="flex items-center gap-2">
-                    <Loader size={16} />
+                    <Loader color="currentColor" size={16} />
                     <span>Loading...</span>
                   </div>
                   :
@@ -244,7 +244,7 @@ export function AddSurgeryModal({ isOpen, onClose, initialData, refetch }: AddSu
                 type="button"
                 disabled={isCreating || isUpdating}
                 onClick={onClose}
-                className="w-full py-3 text-sm font-bold text-gray-300 bg-transparent border border-[#334155] rounded-xl hover:bg-[#1E293B] transition-colors disabled:opacity-50 cursor-pointer"
+                className="w-full py-3 text-sm font-bold text-gray-700 dark:text-gray-300 bg-transparent border border-gray-300 dark:border-[#334155] rounded-xl hover:bg-gray-100 dark:hover:bg-[#1E293B] transition-colors disabled:opacity-50 cursor-pointer"
               >
                 Cancel
               </button>

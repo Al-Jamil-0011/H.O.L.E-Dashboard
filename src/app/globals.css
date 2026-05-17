@@ -108,11 +108,16 @@ select>option {
   border-color: var(--border);
 }
 
+
 .custom-pagination .active .page-link {
   background: var(--primary) !important;
-  color: #0B101E !important;
+  color: #FFFFFF !important;
   box-shadow: 0 0 10px rgba(0, 229, 255, 0.3);
   border-color: var(--primary);
+}
+
+.dark .custom-pagination .active .page-link {
+  color: #0B101E !important;
 }
 
 .custom-pagination .disabled .page-link {
