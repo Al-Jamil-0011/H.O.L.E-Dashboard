@@ -31,7 +31,7 @@ function deg2rad(deg: number): number {
 
 export default function ShipmentDetailsPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = React.use(params);
-    const { shipment, loading: isLoading, error } = useSingleShipment(id);
+    const { shipment, loading: isLoading } = useSingleShipment(id);
 
     const { isLoaded } = useJsApiLoader({
         id: 'google-map-script',
@@ -39,9 +39,9 @@ export default function ShipmentDetailsPage({ params }: { params: Promise<{ id: 
     });
 
     const liveDistance = React.useMemo(() => {
-        if (shipment?.pickupInfo?.location?.coordinates && shipment?.assigneeDriver?.currentLocation?.coordinates) {
+        if (shipment?.pickupInfo?.location?.coordinates && (shipment?.assigneeDriver as any)?.currentLocation?.coordinates) {
             const [pickupLon, pickupLat] = shipment.pickupInfo.location.coordinates;
-            const [driverLon, driverLat] = shipment.assigneeDriver.currentLocation.coordinates;
+            const [driverLon, driverLat] = (shipment?.assigneeDriver as any)?.currentLocation.coordinates;
             return calculateDistance(pickupLat, pickupLon, driverLat, driverLon);
         }
         return null;
@@ -58,10 +58,10 @@ export default function ShipmentDetailsPage({ params }: { params: Promise<{ id: 
     }, [shipment]);
 
     const driverLocation = React.useMemo(() => {
-        if (shipment?.assigneeDriver?.currentLocation?.coordinates) {
+        if ((shipment?.assigneeDriver as any)?.currentLocation?.coordinates) {
             return {
-                lat: shipment.assigneeDriver.currentLocation.coordinates[1],
-                lng: shipment.assigneeDriver.currentLocation.coordinates[0]
+                lat: (shipment?.assigneeDriver as any)?.currentLocation.coordinates[1],
+                lng: (shipment?.assigneeDriver as any)?.currentLocation.coordinates[0]
             };
         }
         return null;
@@ -411,12 +411,12 @@ export default function ShipmentDetailsPage({ params }: { params: Promise<{ id: 
                         <div className="space-y-3 mb-5">
                             <div className="flex items-center justify-between text-sm font-medium">
                                 <span className="text-muted-foreground">Base Rate</span>
-                                <span className="text-foreground">${shipment.shippingCost?.baseRate || '0.00'}</span>
+                                <span className="text-foreground">${(shipment as any)?.shippingCost?.baseRate || '0.00'}</span>
                             </div>
-                            {(shipment.shippingCost?.priorityCharge || 0) > 0 && (
+                            {((shipment as any)?.shippingCost?.priorityCharge || 0) > 0 && (
                                 <div className="flex items-center justify-between text-sm font-medium">
-                                    <span className="text-muted-foreground capitalize">Priority Charge ({shipment.shippingCost.priority})</span>
-                                    <span className="text-foreground">${shipment.shippingCost.priorityCharge}</span>
+                                    <span className="text-muted-foreground capitalize">Priority Charge ({(shipment as any)?.shippingCost?.priority})</span>
+                                    <span className="text-foreground">${(shipment as any)?.shippingCost?.priorityCharge}</span>
                                 </div>
                             )}
                         </div>

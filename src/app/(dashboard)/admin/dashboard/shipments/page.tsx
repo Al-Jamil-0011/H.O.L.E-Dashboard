@@ -278,10 +278,10 @@ function StatCard({
     <div
       className={cn(
         "relative rounded-xl border border-border bg-card p-4 dark:shadow-sm transition-all hover:bg-muted/30 overflow-hidden",
-        highlight && value > 0 && "shadow-[0_0_15px_rgba(244,63,94,0.1)] border-rose-500/30"
+        highlight && Number(value) > 0 && "shadow-[0_0_15px_rgba(244,63,94,0.1)] border-rose-500/30"
       )}
     >
-      {highlight && value > 0 && (
+      {highlight && Number(value) > 0 && (
         <div className="absolute top-0 right-0 w-24 h-24 bg-rose-500/5 blur-2xl pointer-events-none rounded-full" />
       )}
 

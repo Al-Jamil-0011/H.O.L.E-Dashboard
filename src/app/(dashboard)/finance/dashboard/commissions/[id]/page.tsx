@@ -168,7 +168,7 @@ export default function CommissionDetailsPage() {
                                         <p className="text-[10px] text-muted-foreground font-medium">
                                             Rep ID: {' '}
                                             {
-                                                typeof primaryRep?.representative === 'object' ? primaryRep.representative._id : 'N/A'
+                                                typeof primaryRep?.representative === 'object' ? (primaryRep?.representative as any)?._id : 'N/A'
                                             }
                                         </p>
                                     </div>

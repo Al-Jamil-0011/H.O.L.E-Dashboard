@@ -49,7 +49,7 @@ export default function ExpensesPage() {
     physicianClient: typeof exp.physician === 'object' ? exp.physician?.fullName : 'N/A',
     paidStatus: exp.isPaid ? 'Paid' : 'Unpaid',
     description: exp.description || '',
-    attachments: (exp.files || []).map(f => ({ name: f.split('/').pop() || 'Attachment', size: 'N/A', type: 'file' }))
+    attachments: (exp.files || []).map(f => ({ name: f.split('/').pop() || 'Attachment', size: 'N/A', type: 'file' as any }))
   }));
 
   const openDrawer = (expense: ExpenseItem) => {

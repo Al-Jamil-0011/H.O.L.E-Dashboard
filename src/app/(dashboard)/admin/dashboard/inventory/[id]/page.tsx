@@ -318,7 +318,7 @@ export default function InventoryDetailsPage() {
           )}
 
 
-          {(inventory.inboundFiles?.length > 0 || inventory.brokenFiles?.length > 0) && (
+          {((inventory?.inboundFiles?.length ?? 0) > 0 || (inventory?.brokenFiles?.length ?? 0) > 0) && (
             <div className="bg-card rounded-2xl border border-border p-8 dark:shadow-sm">
               <h2 className="text-lg font-bold text-foreground uppercase tracking-tight mb-8">Evidence & Documents</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">

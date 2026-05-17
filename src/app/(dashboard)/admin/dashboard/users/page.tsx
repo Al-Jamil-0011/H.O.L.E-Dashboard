@@ -95,11 +95,11 @@ export default function UsersManagementPage() {
 
   const updateUserStatus = async (newStatus: "active" | "inactive" | "blocked", userId: string) => {
     const success = await changeUserStatus(userId, newStatus);
-    console.log("success", success);
+
     if (success) {
       refetch();
       summaryRefetch();
-      toast.success(status?.message || 'User status updated successfully');
+      toast.success(success?.message || 'User status updated successfully');
       if (selectedUser?._id === userId) {
         setSelectedUser({ ...selectedUser, status: newStatus });
       }

@@ -15,7 +15,7 @@ import Loader from '@/components/loader';
 export default function PurchaseOrderDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = React.use(params);
 
-  const { purchaseOrder, loading: isLoading, error } = useSinglePurchaseOrder(id);
+  const { purchaseOrder, loading: isLoading } = useSinglePurchaseOrder(id);
 
   if (isLoading) {
     return (
@@ -213,8 +213,8 @@ export default function PurchaseOrderDetailPage({ params }: { params: Promise<{ 
               <TimelineStep
                 title="Sent to Vendor"
                 date={purchaseOrder.isSentToVendor ? 'Completed' : 'Pending'}
-                active={purchaseOrder.isSentToVendor}
-                completed={purchaseOrder.isSentToVendor}
+                active={!!purchaseOrder.isSentToVendor}
+                completed={!!purchaseOrder.isSentToVendor}
               />
               <TimelineStep
                 title="Final Status"

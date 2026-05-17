@@ -19,7 +19,7 @@ import {
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import Image from "next/image";
-import { useSingleSurgery, useUpdateSurgery } from "@/hooks/admin/surgeries";
+import { useSingleSurgery } from "@/hooks/admin/surgeries";
 import Loader from "@/components/loader";
 import { useState } from "react";
 import { AddSurgeryModal } from "../../components/AddSurgeryModal";
@@ -32,10 +32,6 @@ export default function SurgeryDetailsPage() {
 
   const { surgery, loading: isLoading } = useSingleSurgery(id);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-
-  console.log(surgery);
-
-  const { updateSurgery, loading: isUpdating, error: updateError } = useUpdateSurgery();
 
 
 
@@ -80,10 +76,10 @@ export default function SurgeryDetailsPage() {
           <div className="absolute top-0 w-full h-32 bg-gradient-to-b from-primary/5 to-transparent pointer-events-none" />
           <div className="relative flex items-center gap-4 z-10 p-8">
             <div className="h-20 w-20 rounded-full bg-muted border-4 border-card shadow-xl overflow-hidden relative">
-              {surgery.info?.profileUrl ? (
+              {surgery?.info?.profileUrl ? (
                 <Image
-                  src={surgery.info?.profileUrl || ""}
-                  alt={surgery.info?.fullName || ""}
+                  src={surgery?.info?.profileUrl || ""}
+                  alt={surgery?.info?.fullName || ""}
                   fill
                   className="object-cover"
                 />
@@ -92,12 +88,12 @@ export default function SurgeryDetailsPage() {
               )}
             </div>
             <div className="flex flex-col gap-3">
-              <h1 className="text-2xl font-black text-foreground tracking-tight">{surgery.info?.fullName}</h1>
+              <h1 className="text-2xl font-black text-foreground tracking-tight">{surgery?.info?.fullName}</h1>
               <span className={cn(
                 "w-max px-3 py-1 bg-emerald-500/10 text-emerald-500 text-[10px] font-bold uppercase tracking-widest rounded-full border border-emerald-500/20",
-                surgery.isDeleted && "bg-rose-500/10 text-rose-500 border-rose-500/20"
+                surgery?.isDeleted && "bg-rose-500/10 text-rose-500 border-rose-500/20"
               )}>
-                {surgery.isDeleted ? "Inactive" : "Active"}
+                {surgery?.isDeleted ? "Inactive" : "Active"}
               </span>
             </div>
           </div>
@@ -119,28 +115,28 @@ export default function SurgeryDetailsPage() {
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-medium text-muted-foreground">Physician</span>
                   <span className="text-sm font-bold text-foreground flex items-center gap-2 text-right">
-                    <Stethoscope className="h-4 w-4 text-muted-foreground" /> {typeof surgery.info?.physician === 'object' ? surgery.info.physician.fullName : surgery.info?.physician}
+                    <Stethoscope className="h-4 w-4 text-muted-foreground" /> {typeof surgery?.info?.physician === 'object' ? surgery?.info?.physician?.fullName : surgery?.info?.physician}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-medium text-muted-foreground">PT ID</span>
-                  <span className="text-sm font-bold text-foreground">{surgery.info?.patientId}</span>
+                  <span className="text-sm font-bold text-foreground">{surgery?.info?.patientId}</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-medium text-muted-foreground">Facility</span>
                   <span className="text-sm font-bold text-foreground flex items-center gap-2 text-right">
-                    <Building2 className="h-4 w-4 text-muted-foreground" /> {typeof surgery.info?.facility === 'object' ? surgery.info.facility.name : surgery.info?.facility}
+                    <Building2 className="h-4 w-4 text-muted-foreground" /> {typeof surgery?.info?.facility === 'object' ? surgery?.info?.facility.name : surgery?.info?.facility}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-medium text-muted-foreground">Date of Surgery</span>
                   <span className="text-sm font-bold text-foreground flex items-center gap-2">
-                    <Calendar className="h-4 w-4 text-muted-foreground" /> {surgery.info?.dateOfSurgery ? new Date(surgery.info.dateOfSurgery).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : 'N/A'}
+                    <Calendar className="h-4 w-4 text-muted-foreground" /> {surgery?.info?.dateOfSurgery ? new Date(surgery?.info?.dateOfSurgery).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : 'N/A'}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-medium text-muted-foreground">Surgery Type</span>
-                  <span className="text-sm font-bold text-foreground">{surgery.info?.surgeryType}</span>
+                  <span className="text-sm font-bold text-foreground">{surgery?.info?.surgeryType}</span>
                 </div>
               </div>
             </section>
@@ -152,8 +148,8 @@ export default function SurgeryDetailsPage() {
               </h3>
 
               <div className="space-y-3">
-                {surgery.docAndNotes?.files && surgery.docAndNotes.files.length > 0 ? (
-                  surgery.docAndNotes.files.map((file, idx) => (
+                {surgery?.docAndNotes?.files && surgery?.docAndNotes?.files?.length > 0 ? (
+                  surgery?.docAndNotes?.files?.map((file, idx) => (
                     <div key={idx} className="flex items-center justify-between p-4 bg-muted/30 border border-border rounded-xl hover:border-primary/30 transition-colors cursor-pointer group">
                       <div className="flex items-center gap-3">
                         <div className="p-2 rounded-lg flex items-center justify-center bg-blue-500/10 text-blue-500">
@@ -182,11 +178,11 @@ export default function SurgeryDetailsPage() {
 
               <div className="grid grid-cols-2 gap-4">
                 {[
-                  { type: 'PT STICKER', url: surgery.radiologyClinicalFile?.patientSticker },
-                  { type: 'PRE-OP AP', url: surgery.radiologyClinicalFile?.preOpAP },
-                  { type: 'POST-OP AP', url: surgery.radiologyClinicalFile?.postOpAP },
-                  { type: 'PRE-OP LATERAL', url: surgery.radiologyClinicalFile?.preOpLateral },
-                  { type: 'POST-OP LATERAL', url: surgery.radiologyClinicalFile?.postOpLateral }
+                  { type: 'PT STICKER', url: surgery?.radiologyClinicalFile?.patientSticker },
+                  { type: 'PRE-OP AP', url: surgery?.radiologyClinicalFile?.preOpAP },
+                  { type: 'POST-OP AP', url: surgery?.radiologyClinicalFile?.postOpAP },
+                  { type: 'PRE-OP LATERAL', url: surgery?.radiologyClinicalFile?.preOpLateral },
+                  { type: 'POST-OP LATERAL', url: surgery?.radiologyClinicalFile?.postOpLateral }
                 ].filter(img => img.url).map((img, idx) => (
                   <div key={idx} className="relative aspect-square bg-muted border border-border rounded-xl overflow-hidden group">
                     <Image src={img.url!} fill className="object-cover transition-transform duration-500 group-hover:scale-110" alt={img.type} />
@@ -210,13 +206,13 @@ export default function SurgeryDetailsPage() {
                 ))}
               </div>
 
-              {surgery.docAndNotes?.caseNotes && (
+              {surgery?.docAndNotes?.caseNotes && (
                 <section className="space-y-4 pt-6 border-t border-border">
                   <h3 className="text-xs font-bold text-primary uppercase tracking-widest flex items-center gap-2">
                     <span className="w-1.5 h-1.5 rounded-full bg-primary" /> Case Notes
                   </h3>
                   <div className="bg-muted/50 border border-border rounded-xl p-5">
-                    <p className="text-sm text-muted-foreground leading-relaxed italic">{surgery.docAndNotes.caseNotes}</p>
+                    <p className="text-sm text-muted-foreground leading-relaxed italic">{surgery?.docAndNotes?.caseNotes}</p>
                   </div>
                 </section>
               )}
@@ -242,7 +238,7 @@ export default function SurgeryDetailsPage() {
                   <span className="text-[11px] font-bold text-primary uppercase tracking-widest">Screws</span>
                 </div>
                 <div className="p-4 space-y-2">
-                  <div className="text-sm font-medium text-muted-foreground">{surgery.surgeryMaterial?.screws || "N/A"}</div>
+                  <div className="text-sm font-medium text-muted-foreground">{surgery?.surgeryMaterial?.screws || "N/A"}</div>
                 </div>
               </div>
 
@@ -253,7 +249,7 @@ export default function SurgeryDetailsPage() {
                   <span className="text-[11px] font-bold text-primary uppercase tracking-widest">Rods / Connectors</span>
                 </div>
                 <div className="p-4 space-y-2">
-                  <div className="text-sm font-medium text-muted-foreground">{surgery.surgeryMaterial?.rodsOrconnectors || "N/A"}</div>
+                  <div className="text-sm font-medium text-muted-foreground">{surgery?.surgeryMaterial?.rodsOrconnectors || "N/A"}</div>
                 </div>
               </div>
 
@@ -264,7 +260,7 @@ export default function SurgeryDetailsPage() {
                   <span className="text-[11px] font-bold text-primary uppercase tracking-widest">Plates</span>
                 </div>
                 <div className="p-4 space-y-2">
-                  <div className="text-sm font-medium text-muted-foreground">{surgery.surgeryMaterial?.plates || "N/A"}</div>
+                  <div className="text-sm font-medium text-muted-foreground">{surgery?.surgeryMaterial?.plates || "N/A"}</div>
                 </div>
               </div>
 
@@ -275,7 +271,7 @@ export default function SurgeryDetailsPage() {
                   <span className="text-[11px] font-bold text-primary uppercase tracking-widest">Implants</span>
                 </div>
                 <div className="p-4 space-y-2">
-                  <div className="text-sm font-medium text-muted-foreground">{surgery.surgeryMaterial?.implants || "N/A"}</div>
+                  <div className="text-sm font-medium text-muted-foreground">{surgery?.surgeryMaterial?.implants || "N/A"}</div>
                 </div>
               </div>
 
@@ -286,7 +282,7 @@ export default function SurgeryDetailsPage() {
                   <span className="text-[11px] font-bold text-primary uppercase tracking-widest">Biologics</span>
                 </div>
                 <div className="p-4 space-y-2">
-                  <div className="text-sm font-medium text-muted-foreground">{surgery.surgeryMaterial?.biologics || "N/A"}</div>
+                  <div className="text-sm font-medium text-muted-foreground">{surgery?.surgeryMaterial?.biologics || "N/A"}</div>
                 </div>
               </div>
 

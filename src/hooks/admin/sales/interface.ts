@@ -134,11 +134,12 @@ export interface ISalesPhysician {
 
     fullName: string;
 
+    profileUrl?: string;
+
     specialty?: string;
 
     noteToSelf?: string;
 
-    profileUrl?: string;
 }
 
 export interface ISalesFacility {

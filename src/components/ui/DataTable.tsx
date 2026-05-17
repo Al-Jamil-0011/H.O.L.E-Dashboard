@@ -165,7 +165,7 @@ export function DataTable<T>({
 }
 export function StatusBadge({ status, type = "default" }: {
   status: string,
-  type?: "success" | "accepted" | "pending" | "rejected" | "picked_up" | "delivered" | "warning" | "error" | "default"
+  type?: "success" | "accepted" | "pending" | "rejected" | "picked_up" | "delivered" | "warning" | "error" | "default" | "inventory"
 }) {
   const styles = {
     success: "bg-primary/10 text-primary px-3 py-1 text-[10px] uppercase font-bold tracking-wider rounded-md",
@@ -176,7 +176,8 @@ export function StatusBadge({ status, type = "default" }: {
     rejected: "bg-red-500/10 text-red-500 px-3 py-1 text-[10px] uppercase font-bold tracking-wider rounded-md",
     picked_up: "bg-blue-500/10 text-blue-500 px-3 py-1 text-[10px] uppercase font-bold tracking-wider rounded-md",
     delivered: "bg-green-500/10 text-green-500 px-3 py-1 text-[10px] uppercase font-bold tracking-wider rounded-md",
-    default: "bg-blue-500/10 text-blue-500 px-3 py-1 text-[10px] uppercase font-bold tracking-wider rounded-md"
+    default: "bg-blue-500/10 text-blue-500 px-3 py-1 text-[10px] uppercase font-bold tracking-wider rounded-md",
+    inventory: "bg-purple-500/10 text-purple-500 px-3 py-1 text-[10px] uppercase font-bold tracking-wider rounded-md"
   };
 
   return (

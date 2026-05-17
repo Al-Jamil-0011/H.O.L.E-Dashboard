@@ -38,7 +38,7 @@ export interface IInventoryApiResponse {
 
 export interface IInventoryItem {
     _id: string;
-    createdBy: string;
+    location?: string;
     facility: string | {
         _id: string;
         name: string;

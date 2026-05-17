@@ -46,6 +46,8 @@ export interface ISurgeryMaterial {
     rodsOrconnectors?: string;
 
     implants?: string;
+
+    biologics?: string;
 }
 
 export interface ISurgeryRadiologyClinicalFile {
@@ -68,6 +70,8 @@ export interface ISurgeryDocAndNotes {
 
 export interface ISurgeryPhysician {
     _id: string;
+
+    fullName?: string;
 
     practice?: string;
 

@@ -124,5 +124,5 @@ export interface IWithdrawalQuery {
 }
 
 export interface IWithdrawalStatusPayload {
-    status: "approved" | "rejected";
+    status: "approved" | "rejected" | "paid";
 }

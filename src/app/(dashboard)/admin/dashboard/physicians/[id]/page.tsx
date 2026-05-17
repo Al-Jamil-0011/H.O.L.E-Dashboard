@@ -76,9 +76,9 @@ export default function PhysicianProfilePage() {
             <div className="h-24 w-24 rounded-full bg-muted flex items-center justify-center border-4 border-card shadow-xl mx-auto mb-4 overflow-hidden relative">
               <div className={cn(
                 "absolute bottom-1 right-1 w-4 h-4 border-2 border-card rounded-full z-20",
-                physician.isDeleted ? "bg-rose-500" : "bg-emerald-500"
+                physician?.isDeleted ? "bg-rose-500" : "bg-emerald-500"
               )} />
-              {physician.profileUrl ? (
+              {physician?.profileUrl ? (
                 <Image
                   src={physician?.profileUrl || ""}
                   fill className="object-cover"
@@ -88,10 +88,10 @@ export default function PhysicianProfilePage() {
               )}
             </div>
             <div className="flex flex-col gap-1">
-              <h1 className="text-2xl font-black text-foreground tracking-tight mb-2">{physician.fullName}</h1>
+              <h1 className="text-2xl font-black text-foreground tracking-tight mb-2">{physician?.fullName}</h1>
               <div className="flex items-center gap-2">
                 <span className="px-3 py-1 bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-widest rounded-full border border-primary/20">
-                  {physician.specialty}
+                  {physician?.specialty}
                 </span>
               </div>
             </div>
@@ -112,7 +112,7 @@ export default function PhysicianProfilePage() {
                 <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-1">Practice Name</p>
                 <div className="flex items-center gap-2 text-sm font-medium text-foreground">
                   <Building2 className="h-4 w-4 text-muted-foreground" />
-                  {physician.practice}
+                  {physician?.practice}
                 </div>
               </div>
 
@@ -120,7 +120,7 @@ export default function PhysicianProfilePage() {
                 <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-1">Phone</p>
                 <div className="flex items-center gap-2 text-sm font-medium text-foreground">
                   <Phone className="h-4 w-4 text-muted-foreground" />
-                  {physician.contactInfo?.phoneNumber}
+                  {physician?.contactInfo?.phoneNumber}
                 </div>
               </div>
 
@@ -128,7 +128,7 @@ export default function PhysicianProfilePage() {
                 <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-1">Cell</p>
                 <div className="flex items-center gap-2 text-sm font-medium text-foreground">
                   <Phone className="h-4 w-4 text-muted-foreground" />
-                  {physician.contactInfo?.cellNumber}
+                  {physician?.contactInfo?.cellNumber}
                 </div>
               </div>
 
@@ -136,7 +136,7 @@ export default function PhysicianProfilePage() {
                 <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-1">Email Address</p>
                 <div className="flex items-center gap-2 text-sm font-medium text-primary">
                   <Mail className="h-4 w-4 text-primary/70" />
-                  <a href={`mailto:${physician.contactInfo?.email}`} className="hover:underline">{physician.contactInfo?.email}</a>
+                  <a href={`mailto:${physician?.contactInfo?.email}`} className="hover:underline">{physician?.contactInfo?.email}</a>
                 </div>
               </div>
 
@@ -144,7 +144,7 @@ export default function PhysicianProfilePage() {
                 <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-1">Birthday</p>
                 <div className="flex items-center gap-2 text-sm font-medium text-foreground">
                   <Calendar className="h-4 w-4 text-muted-foreground" />
-                  {physician.contactInfo?.dateOfBirth ? new Date(physician.contactInfo.dateOfBirth).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : 'N/A'}
+                  {physician?.contactInfo?.dateOfBirth ? new Date(physician?.contactInfo?.dateOfBirth).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : 'N/A'}
                 </div>
               </div>
             </div>
@@ -157,7 +157,7 @@ export default function PhysicianProfilePage() {
             </h3>
             <div className="bg-muted/50 border border-border rounded-xl p-5">
               <p className="text-sm text-muted-foreground leading-relaxed font-medium">
-                {physician.noteToSelf || "No notes available."}
+                {physician?.noteToSelf || "No notes available."}
               </p>
             </div>
           </section>
@@ -168,8 +168,8 @@ export default function PhysicianProfilePage() {
               <span className="w-1.5 h-1.5 rounded-full bg-primary" /> Documents
             </h3>
             <div className="grid gap-3">
-              {physician.documents && physician.documents.length > 0 ? (
-                physician.documents.map((doc, idx) => (
+              {physician?.documents && physician?.documents.length > 0 ? (
+                physician?.documents?.map((doc, idx) => (
                   <div key={idx} className="flex items-center justify-between p-4 bg-muted/30 border border-border rounded-xl group hover:border-primary/30 transition-colors">
                     <div className="flex items-center gap-3">
                       <div className="p-2 rounded-lg flex items-center justify-center bg-blue-500/10 text-blue-500">

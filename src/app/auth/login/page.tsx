@@ -1,4 +1,5 @@
 'use client'
+import { Suspense } from "react";
 import Link from "next/link";
 import { MoveRight, Lock, Mail } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -8,8 +9,9 @@ import { useForm } from "react-hook-form";
 import FormField from "@/components/form";
 import { VscLoading } from "react-icons/vsc";
 import toast from "react-hot-toast";
+import Loader from "@/components/loader";
 
-export default function LoginPage() {
+function LoginContent() {
     const router = useRouter();
     const { login, loading, error: authError } = useAuthService();
     const searchParams = useSearchParams();
@@ -172,6 +174,18 @@ export default function LoginPage() {
                 </div>
             </div>
         </div>
+    );
+}
+
+export default function LoginPage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen flex items-center justify-center bg-background font-sans w-full">
+                <Loader size={40} text="Please wait..." />
+            </div>
+        }>
+            <LoginContent />
+        </Suspense>
     );
 }
 

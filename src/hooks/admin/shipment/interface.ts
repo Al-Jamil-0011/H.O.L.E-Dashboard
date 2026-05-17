@@ -32,7 +32,7 @@ export interface IShipmentDetail {
     createdBy: string;
 
     shipmentInfo: IShipmentInfo;
-
+    shipmentId?: string;
     products: IShipmentProduct[];
 
     packageInfo: IPackageInfo;

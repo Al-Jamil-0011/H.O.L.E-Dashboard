@@ -1,6 +1,6 @@
 "use client";
 import React, { ReactNode, useState } from "react";
-import { UseFormRegister, FieldErrors, RegisterOptions, useFormContext } from "react-hook-form";
+import { UseFormRegister, FieldErrors, RegisterOptions, useFormContext, Control } from "react-hook-form";
 import { UploadCloud, X } from "lucide-react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";

@@ -197,9 +197,9 @@ export default function SaleDetailsPage() {
                 <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest mb-2">Physician</p>
                 <div className="flex items-center gap-3">
                   <div className="h-10 w-10 rounded bg-muted flex items-center justify-center shrink-0 border border-border">
-                    {sale.physician?.profileUrl ? (
+                    {(sale.physician as any)?.profileUrl ? (
                       <Image
-                        src={sale.physician.profileUrl}
+                        src={(sale.physician as any)?.profileUrl}
                         width={0}
                         height={0}
                         className="h-full w-full rounded object-cover" alt="" />
@@ -208,8 +208,8 @@ export default function SaleDetailsPage() {
                     )}
                   </div>
                   <div className="min-w-0">
-                    <p className="text-xs font-bold text-foreground truncate">{sale.physician?.fullName || 'N/A'}</p>
-                    <p className="text-[9px] text-muted-foreground font-medium uppercase truncate">{sale.physician?.specialty || 'General'}</p>
+                    <p className="text-xs font-bold text-foreground truncate">{(sale.physician as any)?.fullName || 'N/A'}</p>
+                    <p className="text-[9px] text-muted-foreground font-medium uppercase truncate">{(sale.physician as any)?.specialty || 'General'}</p>
                   </div>
                 </div>
               </div>
@@ -221,8 +221,8 @@ export default function SaleDetailsPage() {
                     <Building2 className="h-5 w-5 text-emerald-400" />
                   </div>
                   <div className="min-w-0">
-                    <p className="text-xs font-bold text-foreground truncate">{sale.facility?.address || 'N/A'}</p>
-                    <p className="text-[9px] text-muted-foreground font-medium uppercase truncate">{sale.facility?.phoneNumber || 'N/A'}</p>
+                    <p className="text-xs font-bold text-foreground truncate">{(sale.facility as any)?.address || 'N/A'}</p>
+                    <p className="text-[9px] text-muted-foreground font-medium uppercase truncate">{(sale.facility as any)?.phoneNumber || 'N/A'}</p>
                   </div>
                 </div>
               </div>
@@ -304,7 +304,7 @@ export default function SaleDetailsPage() {
                     </div>
                     <div>
                       <p className="text-xs font-bold text-foreground">{item.productType}</p>
-                      <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-tighter">Product Ref: {typeof item.product === 'object' ? (item.product?.systemType || item.product?.serialNumber || item.product?._id) : item.product}</p>
+                      <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-tighter">Product Ref: {typeof item.product === 'object' ? ((item.product as any)?.systemType || (item.product as any)?.serialNumber || (item.product as any)?._id) : item.product}</p>
                     </div>
                   </div>
                   <div className="text-right">
@@ -404,7 +404,7 @@ export default function SaleDetailsPage() {
                     </div>
                     <div className="min-w-0">
                       <p className="text-xs font-bold text-foreground truncate max-w-[120px]">
-                        {user.representative?.fullName || 'Unknown'}
+                        {(user.representative as any)?.fullName || 'Unknown'}
                       </p>
                       <p className="text-[9px] text-muted-foreground uppercase font-bold">{user.assignRole}</p>
                     </div>
