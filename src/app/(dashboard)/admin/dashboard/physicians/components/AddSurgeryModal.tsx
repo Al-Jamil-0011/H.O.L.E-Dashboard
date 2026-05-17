@@ -162,6 +162,7 @@ export function AddSurgeryModal({ isOpen, onClose, initialData, refetch }: AddSu
                     register={register}
                     errors={errors}
                     className="dark:[color-scheme:dark]"
+                    validation={{ required: "Date of Surgery is required" }}
                   />
                   <FormField
                     name="surgeryType"
@@ -169,6 +170,7 @@ export function AddSurgeryModal({ isOpen, onClose, initialData, refetch }: AddSu
                     placeholder="Specific procedure name"
                     register={register}
                     errors={errors}
+                    validation={{ required: "Surgery Type is required" }}
                   />
                 </div>
               </section>
@@ -177,11 +179,46 @@ export function AddSurgeryModal({ isOpen, onClose, initialData, refetch }: AddSu
               <section className="space-y-4">
                 <h3 className="text-xs font-bold text-gray-600 dark:text-gray-500 uppercase tracking-widest">Surgery Materials</h3>
                 <div className="space-y-4">
-                  <FormField name="screws" label="Screws" placeholder="Details..." register={register} errors={errors} />
-                  <FormField name="plates" label="Plates" placeholder="Details..." register={register} errors={errors} />
-                  <FormField name="rodsOrconnectors" label="Rods/Connectors" placeholder="Details..." register={register} errors={errors} />
-                  <FormField name="implants" label="Implants" placeholder="Details..." register={register} errors={errors} />
-                  <FormField name="biologics" label="Biologics" placeholder="Details..." register={register} errors={errors} />
+                  <FormField
+                    name="screws"
+                    label="Screws"
+                    placeholder="Details..."
+                    register={register}
+                    errors={errors}
+                    validation={{ required: "Screws is required" }}
+                  />
+                  <FormField
+                    name="plates"
+                    label="Plates"
+                    placeholder="Details..."
+                    register={register}
+                    errors={errors}
+                    validation={{ required: "Plates is required" }}
+                  />
+                  <FormField
+                    name="rodsOrconnectors"
+                    label="Rods/Connectors"
+                    placeholder="Details..."
+                    register={register}
+                    errors={errors}
+                    validation={{ required: "Rods/Connectors is required" }}
+                  />
+                  <FormField
+                    name="implants"
+                    label="Implants"
+                    placeholder="Details..."
+                    register={register}
+                    errors={errors}
+                    validation={{ required: "Implants is required" }}
+                  />
+                  <FormField
+                    name="biologics"
+                    label="Biologics"
+                    placeholder="Details..."
+                    register={register}
+                    errors={errors}
+                    validation={{ required: "Biologics is required" }}
+                  />
                 </div>
               </section>
 
@@ -218,6 +255,7 @@ export function AddSurgeryModal({ isOpen, onClose, initialData, refetch }: AddSu
                     placeholder="Enter surgical notes, complications, or specific instructions..."
                     register={register}
                     errors={errors}
+                    validation={{ required: "Case Notes is required" }}
                   />
                 </div>
               </section>
