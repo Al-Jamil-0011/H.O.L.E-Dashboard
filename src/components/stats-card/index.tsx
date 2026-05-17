@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { IUserStatCardProps, StatInfoCardProps } from "./interface";
+import { IRepAccountsStatsCardProps, IUserStatCardProps, IStatInfoCardProps } from "./interface";
 
 export function DashboardStatCard({
     title,
@@ -63,7 +63,7 @@ export function StatInfoCard({
     valueSuffix = "",
     iconClass = "",
     loading = false,
-}: StatInfoCardProps) {
+}: IStatInfoCardProps) {
     return (
         <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-muted/20 border border-border dark:shadow-sm relative overflow-hidden group hover:bg-muted/30 transition-colors">
 
@@ -84,7 +84,7 @@ export function StatInfoCard({
 
             {/* Content */}
             <div>
-                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                <p className="text-[10px] font-bold text-muted-foreground uppercase">
                     {label}
                 </p>
 
@@ -441,4 +441,193 @@ export function SupportStatCard({
 }
 
 
+export function VendorPaymentStatCard({
+    title,
+    value,
+    trend,
+    loading,
+    trendColor = "text-[#00E5FF]",
+    topBorderColor,
+}: {
+    title: string;
+    value?: string | number;
+    trend: string;
+    loading?: boolean;
+    trendColor?: string;
+    topBorderColor: string;
+}) {
+    return (
+        <div
+            className={cn(
+                "relative rounded-xl border border-[var(--border)] border-t-[3px] bg-[var(--card)] p-5 dark:shadow-sm transition-all hover:bg-white/[0.02]",
+                topBorderColor
+            )}
+        >
+            <h3 className="text-[10px] font-bold tracking-[0.2em] text-muted-foreground uppercase opacity-60">
+                {title}
+            </h3>
 
+            <div className="mt-4">
+                {loading ? (
+                    <>
+                        <div className="h-8 w-28 bg-muted/50 rounded-md animate-pulse" />
+                        <div className="mt-2 h-3 w-20 bg-muted/40 rounded animate-pulse" />
+                    </>
+                ) : (
+                    <>
+                        <div className="text-3xl font-black tracking-tight text-foreground flex items-baseline gap-1">
+                            $ {(value || 0).toLocaleString()}
+                        </div>
+
+                        <p className={cn("mt-2 text-[10px] font-bold ", trendColor)}>
+                            {trend}
+                        </p>
+                    </>
+                )}
+            </div>
+        </div>
+    );
+}
+
+export function ShippingStatCard({
+    title,
+    amount,
+    color,
+    topBorderColor,
+    loading = false
+}: {
+    title: string,
+    amount: string,
+    color: string,
+    topBorderColor?: string,
+    loading?: boolean
+}) {
+    return (
+        <div className={cn("rounded-xl border border-[var(--border)] bg-[var(--card)] p-5 dark:shadow-sm transition-all hover:bg-white/[0.02]", topBorderColor)}>
+            <h3 className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase">
+                {title}
+            </h3>
+
+            {loading ? (
+                <div className="mt-2 h-9 w-24 animate-pulse rounded-md bg-white/10" />
+            ) : (
+                <div className={cn("mt-2 text-3xl font-black tracking-tight", color)}>
+                    {amount}
+                </div>
+            )}
+        </div>
+    )
+}
+
+export function CommonFilterPill({ text, active, onClick, color, activeColor }: { text: string, active: boolean, onClick: () => void, color?: string, activeColor?: string }) {
+    const baseClasses = "px-3 py-1.5 text-[10px] font-bold  rounded border border-[var(--border)] transition-all cursor-pointer uppercase";
+
+    if (active) {
+        return (
+            <button onClick={onClick} className={cn(baseClasses, activeColor || "bg-[var(--border)] text-foreground border-[var(--border)]")}>
+                {text}
+            </button>
+        );
+    }
+
+    if (color) {
+        return (
+            <button onClick={onClick} className={cn(baseClasses, color, "hover:opacity-80")}>
+                {text}
+            </button>
+        )
+    }
+
+    return (
+        <button onClick={onClick} className={cn(baseClasses, "text-muted-foreground hover:text-foreground hover:bg-[var(--border)]/50")}>
+            {text}
+        </button>
+    )
+}
+
+
+export function BucketStatsCard({
+    title,
+    amount,
+    count,
+    borderColor,
+    textColor,
+    loading = false,
+}: {
+    title: string,
+    amount: string,
+    count: string,
+    borderColor: string,
+    textColor: string,
+    loading?: boolean,
+}) {
+    return (
+        <div
+            className={cn(
+                "rounded-xl border border-[var(--border)] border-t-[3px] bg-[var(--card)] p-5 dark:shadow-sm transition-all hover:bg-white/[0.02]",
+                borderColor
+            )}
+        >
+            {loading ? (
+                <>
+                    <div className="h-3 w-20 rounded bg-[var(--border)] animate-pulse" />
+
+                    <div className="mt-3 h-8 w-24 rounded bg-[var(--border)] animate-pulse" />
+
+                    <div className="mt-3 h-3 w-16 rounded bg-[var(--border)] animate-pulse" />
+                </>
+            ) : (
+                <>
+                    <h3 className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase">
+                        {title}
+                    </h3>
+
+                    <div
+                        className={cn(
+                            "mt-2 text-3xl font-black tracking-tight",
+                            textColor
+                        )}
+                    >
+                        {amount}
+                    </div>
+
+                    <p className="mt-1 text-[11px] font-medium text-muted-foreground">
+                        {count}
+                    </p>
+                </>
+            )}
+        </div>
+    );
+}
+
+export function RepAccountsStatsCard({ title, value, loading, color, isAlert, isNumber, borderColor }: IRepAccountsStatsCardProps) {
+    return (
+        <div
+            className={cn(
+                "relative rounded-xl border border-[var(--border)] border-t-[3px] bg-[var(--card)] p-5 dark:shadow-sm transition-all hover:bg-white/[0.02]",
+                borderColor
+            )}
+        >
+            {/* Background Glow */}
+            <div className={cn("absolute -right-4 -top-4 w-24 h-24 blur-3xl opacity-5 rounded-full transition-opacity group-hover:opacity-10", color.replace('text-', 'bg-'))} />
+
+            <h3 className="text-[10px] font-bold tracking-[0.2em] text-muted-foreground uppercase opacity-60 mb-2">{title}</h3>
+
+            {loading ? (
+                <div className="h-9 w-24 bg-muted/50 rounded-md animate-pulse" />
+            ) : (
+                <div className={cn("text-3xl font-black tracking-tight flex items-baseline gap-1", color)}>
+                    {!isNumber && <span className="text-lg font-light opacity-50">$</span>}
+                    {(value || 0).toLocaleString()}
+                </div>
+            )}
+
+            {isAlert && !loading && (
+                <div className="mt-3 flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-rose-500 animate-ping" />
+                    <span className="text-[9px] font-bold text-rose-500 ">Action Required</span>
+                </div>
+            )}
+        </div>
+    )
+}

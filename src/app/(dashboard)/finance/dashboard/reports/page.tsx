@@ -31,14 +31,14 @@ export default function ReportsPage() {
       header: "ACTIONS",
       render: () => (
         <div className="flex items-center gap-2">
-          <button className="px-3 py-1 text-[10px] font-bold text-[var(--background)] bg-primary rounded hover:bg-cyan-400 transition-colors">
+          <button className="px-3 py-1 text-[10px] font-medium text-[var(--background)] bg-primary rounded hover:bg-cyan-400 transition-colors">
             Generate New
           </button>
           <button className="px-3 py-1 text-[10px] font-medium text-muted-foreground border border-[var(--border)] rounded hover:text-foreground transition-colors">
             PDF
           </button>
           <button className="px-3 py-1 text-[10px] font-medium text-muted-foreground border border-[var(--border)] rounded hover:text-foreground transition-colors">
-             Excel
+            Excel
           </button>
         </div>
       )
@@ -46,13 +46,13 @@ export default function ReportsPage() {
   ];
 
   return (
-    <div className="space-y-6 animate-in fade-in zoom-in duration-500">
+    <div className="space-y-6 animate-in fade-in zoom-in duration-500 pb-8">
       <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
         <div>
           <h1 className="text-xl font-bold tracking-tight text-foreground mb-1">
             Financial Reports
           </h1>
-          <p className="text-[11px] text-muted-foreground font-medium uppercase tracking-wider">
+          <p className="text-[11px] text-muted-foreground font-medium ">
             Generate and export critical business reports
           </p>
         </div>
@@ -77,8 +77,8 @@ export default function ReportsPage() {
 }
 
 function FilterPill({ text, active, onClick, color, activeColor }: { text: string, active: boolean, onClick: () => void, color?: string, activeColor?: string }) {
-  const baseClasses = "px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded border border-[var(--border)] transition-all cursor-pointer";
-  
+  const baseClasses = "px-3 py-1.5 text-[10px] font-bold  rounded border border-[var(--border)] transition-all cursor-pointer";
+
   if (active) {
     return (
       <button onClick={onClick} className={cn(baseClasses, activeColor || "bg-[#334155] text-foreground border-[#334155]")}>
@@ -86,7 +86,7 @@ function FilterPill({ text, active, onClick, color, activeColor }: { text: strin
       </button>
     );
   }
-  
+
   if (color) {
     return (
       <button onClick={onClick} className={cn(baseClasses, color, "hover:opacity-80")}>
@@ -94,7 +94,7 @@ function FilterPill({ text, active, onClick, color, activeColor }: { text: strin
       </button>
     )
   }
-  
+
   return (
     <button onClick={onClick} className={cn(baseClasses, "text-muted-foreground hover:text-foreground hover:bg-[var(--border)]/50")}>
       {text}

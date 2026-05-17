@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils';
 import { DataTable, StatusBadge } from '@/components/ui/DataTable';
 import { CreateSaleModal } from '@/components/modals/CreateSaleModal';
 import { useSales, useSalesSummary } from '@/hooks/admin/sales';
-import { SalesStatCard } from '@/components/stats-card';
+import { CommonFilterPill, SalesStatCard } from '@/components/stats-card';
 
 
 export default function SalesPage() {
@@ -14,7 +14,7 @@ export default function SalesPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { summary, loading: isLoading } = useSalesSummary();
 
-  const { sales, loading: salesLoading, setQuery } = useSales();
+  const { sales, loading: salesLoading, setQuery, meta } = useSales();
 
   const handleFilterChange = (status: string) => {
     setFilter(status);
@@ -30,38 +30,55 @@ export default function SalesPage() {
       header: "SALE ID",
       accessorKey: "saleId" as const,
       className: "font-medium text-primary",
-      render: (item: any) => <span>#{item.saleId}</span>
+      render: (item: any) => {
+        const val = typeof item.saleId === 'object' ? (item.saleId?.saleId || item.saleId?._id || '') : item.saleId;
+        return <span>#{String(val || '')}</span>;
+      }
     },
     {
       header: "REP",
       render: (item: any) => {
         const primaryRep = item.representatives?.users?.find((u: any) => u.assignRole === 'primary')?.representative;
-        return <span>{primaryRep?.fullName || 'N/A'}</span>;
+        const name = typeof primaryRep?.fullName === 'object' ? '' : primaryRep?.fullName;
+        return <span>{name || 'N/A'}</span>;
       }
     },
     {
       header: "DOCTOR",
-      render: (item: any) => <span>{item.physician?.fullName || 'N/A'}</span>
+      render: (item: any) => {
+        const name = typeof item.physician?.fullName === 'object' ? '' : item.physician?.fullName;
+        return <span>{name || 'N/A'}</span>;
+      }
     },
     {
       header: "HOSPITAL",
       render: (item: any) => {
         const facility = typeof item.facility === 'object' ? item.facility : null;
-        return <span className="truncate max-w-[150px] inline-block">{facility?.address || 'N/A'}</span>;
+        let addr = facility?.address;
+        if (typeof addr === 'object') {
+          addr = addr?.street || addr?.city || 'N/A';
+        }
+        return <span className="truncate max-w-[150px] inline-block">{String(addr || 'N/A')}</span>;
       }
     },
     {
       header: "AMOUNT",
-      render: (item: any) => <span className="text-[#00E5FF] font-medium">${item.billing?.totalAmount?.toLocaleString()}</span>
+      render: (item: any) => {
+        const amount = typeof item.billing?.totalAmount === 'object' ? 0 : Number(item.billing?.totalAmount || 0);
+        return <span className="text-[#00E5FF] font-medium">${amount.toLocaleString()}</span>;
+      }
     },
     {
       header: "COMMISSION",
-      render: (item: any) => <span className="text-emerald-400 font-medium">${item.representatives?.totalCommission?.toLocaleString()}</span>
+      render: (item: any) => {
+        const comm = typeof item.representatives?.totalCommission === 'object' ? 0 : Number(item.representatives?.totalCommission || 0);
+        return <span className="text-emerald-400 font-medium">${comm.toLocaleString()}</span>;
+      }
     },
     {
       header: "STATUS",
       render: (item: any) => {
-        const status = item.status?.toUpperCase();
+        const status = typeof item.status === 'string' ? item.status.toUpperCase() : 'UNKNOWN';
         let type: "success" | "warning" | "error" = "success";
         if (status === 'PENDING') type = 'warning';
         if (status === 'REJECTED') type = 'error';
@@ -70,32 +87,35 @@ export default function SalesPage() {
     },
     {
       header: "ACTIONS",
-      render: (item: any) => (
-        <div className="flex items-center gap-2">
-          <Link href={`/admin/dashboard/sales/${item._id}`}>
-            <button className="px-4 py-1.5 text-[11px] font-semibold text-gray-300 bg-[#334155]/50 hover:bg-[#334155] rounded transition-colors cursor-pointer">
-              View
-            </button>
-          </Link>
-        </div>
-      )
+      render: (item: any) => {
+        const id = typeof item._id === 'object' ? item._id?._id : item._id;
+        return (
+          <div className="flex items-center gap-2">
+            <Link href={`/admin/dashboard/sales/${id}`}>
+              <button className="px-3 py-1.5 text-[10px] font-medium text-primary bg-primary/10 border border-primary/20 rounded-md hover:bg-primary/20 transition-colors cursor-pointer">
+                View
+              </button>
+            </Link>
+          </div>
+        );
+      }
     }
   ];
 
   return (
-    <div className="space-y-6 animate-in fade-in zoom-in duration-500">
+    <div className="space-y-6 animate-in fade-in zoom-in duration-500 pb-8">
       <CreateSaleModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
       <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-xl font-bold tracking-tight text-foreground mb-1">
+          <h1 className="title mb-1">
             Sales & Revenue
           </h1>
-          <p className="text-[11px] text-muted-foreground font-medium uppercase tracking-wider">
+          <p className="text-[11px] text-muted-foreground font-medium ">
             All US Sales • Q1 2026
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <button className="px-4 py-1.5 text-xs font-semibold text-muted-foreground bg-[var(--card)] rounded dark:shadow-sm border border-[var(--border)] transition-colors hover:text-foreground">
+          <button className="px-4 py-1.5 text-xs font-medium text-muted-foreground bg-[var(--card)] rounded dark:shadow-sm border border-[var(--border)] transition-colors hover:text-foreground cursor-pointer">
             Export CSV
           </button>
         </div>
@@ -135,87 +155,47 @@ export default function SalesPage() {
         />
       </div>
 
-      <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] dark:shadow-sm transition-all overflow-hidden flex flex-col">
+      <div className="rounded-xl border border-[var(--border)] bg-bg-muted dark:shadow-sm transition-all overflow-hidden flex flex-col">
         <div className="flex items-center justify-between p-5 bg-muted/40">
           <h2 className="text-sm font-bold text-foreground">All Sales</h2>
-          <div className="flex gap-2">
-            <FilterPill
+          <div className="flex gap-2 bg-[var(--background)] rounded-lg border border-border w-full sm:w-auto overflow-x-auto p-1">
+            <CommonFilterPill
               text="All"
               active={filter === 'All'}
               onClick={() => handleFilterChange('All')}
             />
-            <FilterPill
+            <CommonFilterPill
               text="APPROVED"
               active={filter === 'APPROVED'}
-              color="bg-[#00E5FF]/20 text-[#00E5FF]"
-              activeColor="bg-[#00E5FF] text-[#0B101E]"
+              color="bg-primary/20 text-primary"
+              activeColor="bg-primary dark:text-black text-white"
               onClick={() => handleFilterChange('APPROVED')}
             />
-            <FilterPill
+            <CommonFilterPill
               text="Pending"
               active={filter === 'Pending'}
               color="bg-amber-500/20 text-amber-500"
-              activeColor="bg-amber-500 text-[#0B101E]"
+              activeColor="bg-amber-500 text-white dark:text-[#0B101E]"
               onClick={() => handleFilterChange('Pending')}
             />
           </div >
         </div >
-        <div className="flex-1 px-5 pb-5">
+        <div className="flex-1">
           <DataTable
             data={sales}
+            className='!border-none !rounded-none'
             columns={columns}
             loading={salesLoading}
+            onRowClick={() => { }}
+            pagination={meta ? {
+              currentPage: meta.currentPage,
+              totalPage: meta.totalPage,
+              totalResult: meta.totalResult,
+              onPageChange: (page) => setQuery(prev => ({ ...prev, page }))
+            } : undefined}
           />
         </div>
       </div >
     </div >
   );
 }
-
-function FilterPill({
-  text,
-  active,
-  onClick,
-  color,
-  activeColor
-}: {
-  text: string;
-  active: boolean;
-  onClick: () => void;
-  color?: string;
-  activeColor?: string
-}) {
-  const baseClasses = "px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded border border-[var(--border)] transition-all cursor-pointer";
-
-  if (active) {
-    return (
-      <button
-        onClick={onClick}
-        className={cn(
-          baseClasses,
-          activeColor || "bg-[var(--border)] text-foreground border-[var(--border)]"
-        )}>
-        {text}
-      </button>
-    );
-  }
-
-  if (color) {
-    return (
-      <button
-        onClick={onClick}
-        className={cn(baseClasses, color, "hover:opacity-80")}>
-        {text}
-      </button>
-    )
-  }
-
-  return (
-    <button
-      onClick={onClick}
-      className={cn(baseClasses, "text-muted-foreground  hover:text-foreground hover:bg-[var(--border)]/50")}>
-      {text}
-    </button>
-  )
-}
-

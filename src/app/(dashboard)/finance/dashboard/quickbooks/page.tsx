@@ -28,13 +28,13 @@ export default function QuickBooksPage() {
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in zoom-in duration-500 max-w-5xl">
+    <div className="space-y-6 animate-in fade-in zoom-in duration-500 pb-8 max-w-5xl">
       <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between border-b border-[var(--border)] pb-6">
         <div>
           <h1 className="text-xl font-bold tracking-tight text-foreground mb-1">
             QuickBooks Integration
           </h1>
-          <p className="text-[11px] text-muted-foreground font-medium uppercase tracking-wider">
+          <p className="text-xs text-muted-foreground font-medium">
             Manage your accounting synchronization with QuickBooks Online
           </p>
         </div>
@@ -42,12 +42,12 @@ export default function QuickBooksPage() {
           {statusLoading ? (
             <div className="h-6 w-24 bg-muted animate-pulse rounded-full" />
           ) : status?.isConnected ? (
-            <span className="inline-flex items-center rounded-full bg-emerald-500/10 px-3 py-1 text-[11px] font-bold text-emerald-400 border border-emerald-500/20 uppercase tracking-wider">
+            <span className="inline-flex items-center rounded-full bg-emerald-500/10 px-3 py-1 text-[11px] font-bold text-emerald-400 border border-emerald-500/20 ">
               <span className="mr-2 h-1.5 w-1.5 rounded-full bg-emerald-500 animate-[pulse_2s_cubic-bezier(0.4,0,0.6,1)_infinite]"></span>
               Connected
             </span>
           ) : (
-            <span className="inline-flex items-center rounded-full bg-rose-500/10 px-3 py-1 text-[11px] font-bold text-rose-400 border border-rose-500/20 uppercase tracking-wider">
+            <span className="inline-flex items-center rounded-full bg-rose-500/10 px-3 py-1 text-[11px] font-bold text-rose-400 border border-rose-500/20 ">
               <span className="mr-2 h-1.5 w-1.5 rounded-full bg-rose-500"></span>
               Disconnected
             </span>
@@ -56,38 +56,38 @@ export default function QuickBooksPage() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
-        <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] shadow-sm overflow-hidden flex flex-col">
+        <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] dark:shadow-sm overflow-hidden flex flex-col">
           <div className="p-5 pb-4 border-b border-[var(--border)]">
             <h2 className="text-sm font-bold text-foreground">Manual Sync Actions</h2>
           </div>
           <div className="p-5 space-y-3">
-            <SyncAction 
-              title="SYNC INVOICES" 
-              description="Push all newly generated invoices to QB" 
+            <SyncAction
+              title="SYNC INVOICES"
+              description="Push all newly generated invoices to QB"
               onSync={() => handleSync("invoices")}
               loading={syncing === "invoices"}
               disabled={syncing !== null}
             />
-            <SyncAction 
-              title="SYNC PAYMENTS" 
-              description="Update payment statuses from hospital" 
+            <SyncAction
+              title="SYNC PAYMENTS"
+              description="Update payment statuses from hospital"
               onSync={() => handleSync("payments")}
               loading={syncing === "payments"}
               disabled={syncing !== null}
             />
-            <SyncAction 
-              title="SYNC VENDOR BILLS" 
-              description="Record vendor charges as expenses" 
+            <SyncAction
+              title="SYNC VENDOR BILLS"
+              description="Record vendor charges as expenses"
               onSync={() => handleSync("vendor-bills")}
               loading={syncing === "vendor-bills"}
               disabled={syncing !== null}
             />
           </div>
           <div className="p-5 pt-0 mt-auto">
-            <button 
+            <button
               onClick={() => handleSync("all")}
               disabled={syncing !== null}
-              className="w-full mt-2 flex items-center justify-center gap-2 rounded bg-emerald-500 px-4 py-2.5 text-xs font-bold text-[var(--background)] shadow-sm transition-all hover:bg-emerald-400 uppercase tracking-widest disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+              className="w-full mt-2 flex items-center justify-center gap-2 rounded bg-emerald-500 px-4 py-2.5 text-xs font-medium text-[var(--background)] dark:shadow-sm transition-all hover:bg-emerald-400 uppercase tracking-widest disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
               {syncing === "all" ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -104,10 +104,10 @@ export default function QuickBooksPage() {
           </div>
         </div>
 
-        <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] shadow-sm overflow-hidden flex flex-col">
+        <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] dark:shadow-sm overflow-hidden flex flex-col">
           <div className="p-5 pb-4 border-b border-[var(--border)] flex justify-between items-center">
             <h2 className="text-sm font-bold text-foreground">Recent Sync Logs</h2>
-            <Link 
+            <Link
               href="/finance/dashboard/quickbooks/logs"
               className="text-[10px] uppercase font-bold text-primary hover:text-cyan-300 transition-colors cursor-pointer"
             >
@@ -127,11 +127,11 @@ export default function QuickBooksPage() {
               ))
             ) : logs.length > 0 ? (
               logs.map((log) => (
-                <LogItem 
+                <LogItem
                   key={log._id}
-                  status={log.status} 
-                  message={log.message} 
-                  time={dayjs(log.createdAt).fromNow()} 
+                  status={log.status}
+                  message={log.message}
+                  time={dayjs(log.createdAt).fromNow()}
                 />
               ))
             ) : (
@@ -151,13 +151,13 @@ function SyncAction({ title, description, onSync, loading, disabled }: { title: 
   return (
     <div className="flex items-center justify-between p-4 rounded-lg border border-[var(--border)] bg-[var(--background)]/50 hover:bg-[var(--border)]/50 transition-colors">
       <div>
-        <h3 className="text-[11px] font-bold text-foreground tracking-widest uppercase mb-1">{title}</h3>
+        <h3 className="text-[11px] font-medium text-foreground tracking-widest uppercase mb-1">{title}</h3>
         <p className="text-[11px] text-muted-foreground">{description}</p>
       </div>
-      <button 
+      <button
         onClick={onSync}
         disabled={disabled || loading}
-        className="text-[11px] font-bold text-primary hover:text-cyan-300 uppercase tracking-widest bg-primary/10 px-3 py-1.5 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer flex items-center gap-2"
+        className="text-[11px] font-medium text-primary/70 hover:text-primary uppercase tracking-widest bg-primary/10 px-3 py-1.5 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer flex items-center gap-2"
       >
         {loading && <Loader2 className="h-3 w-3 animate-spin" />}
         {loading ? 'Syncing...' : 'Sync'}

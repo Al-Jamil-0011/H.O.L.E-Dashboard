@@ -29,9 +29,9 @@ export default function CreateNewManagementPage() {
   const [activeTab, setActiveTab] = useState<'facilities' | 'vendors' | 'practices'>('facilities');
 
   // Data hooks
-  const { facilities, loading: isLoadingFacilities, refetch: refetchFacilities } = useFacilities();
-  const { vendors, loading: isLoadingVendors, refetch: refetchVendors } = useVendors();
-  const { practices, loading: isLoadingPractices, refetch: refetchPractices } = usePractices();
+  const { facilities, loading: isLoadingFacilities, refetch: refetchFacilities, meta: facilitiesMeta, setQuery: setFacilitiesQuery } = useFacilities();
+  const { vendors, loading: isLoadingVendors, refetch: refetchVendors, meta: vendorsMeta, setQuery: setVendorsQuery } = useVendors();
+  const { practices, loading: isLoadingPractices, refetch: refetchPractices, meta: practicesMeta, setQuery: setPracticesQuery } = usePractices();
 
   // Mutation hooks
   const { createFacility, loading: isCreatingFacility } = useCreateFacility();
@@ -339,15 +339,15 @@ export default function CreateNewManagementPage() {
 
   // console.log("practiceError", practiceError)
   return (
-    <div className="space-y-6 animate-in fade-in zoom-in duration-500 pb-10">
+    <div className="space-y-6 animate-in fade-in zoom-in duration-500 pb-8 pb-10">
 
       {/* header & top add buttons */}
       <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
         <div>
-          <h1 className="text-xl font-bold tracking-tight text-foreground mb-1">
+          <h1 className="title mb-1">
             Create New Management
           </h1>
-          <p className="text-[11px] text-muted-foreground font-medium uppercase tracking-wider">
+          <p className="text-[11px] text-muted-foreground font-medium ">
             Manage Facilities, Vendors, and Practices
           </p>
         </div>
@@ -355,19 +355,19 @@ export default function CreateNewManagementPage() {
         <div className="flex flex-wrap items-center gap-3">
           <button
             onClick={() => { setModalMode('add'); setIsFacilityModalOpen(true); }}
-            className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-[var(--background)] bg-primary rounded-lg shadow-sm transition-all hover:bg-primary/90 cursor-pointer"
+            className="flex items-center gap-2 px-4 py-2 text-xs font-medium text-[var(--background)] bg-primary rounded-lg shadow-sm transition-all hover:bg-primary/90 cursor-pointer"
           >
             <Building2 className="h-4 w-4" /> Add Facility
           </button>
           <button
             onClick={() => { setModalMode('add'); setIsVendorModalOpen(true); }}
-            className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-[var(--background)] bg-primary rounded-lg shadow-sm transition-all hover:bg-primary/90  cursor-pointer"
+            className="flex items-center gap-2 px-4 py-2 text-xs font-medium text-[var(--background)] bg-primary rounded-lg shadow-sm transition-all hover:bg-primary/90  cursor-pointer"
           >
             <Briefcase className="h-4 w-4" /> Add Vendor
           </button>
           <button
             onClick={() => { setModalMode('add'); setIsPracticeModalOpen(true); }}
-            className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-[var(--background)] bg-primary rounded-lg shadow-sm transition-all hover:bg-primary/90  cursor-pointer"
+            className="flex items-center gap-2 px-4 py-2 text-xs font-medium text-[var(--background)] bg-primary rounded-lg shadow-sm transition-all hover:bg-primary/90  cursor-pointer"
           >
             <Stethoscope className="h-4 w-4" /> Add Practice
           </button>
@@ -406,6 +406,12 @@ export default function CreateNewManagementPage() {
                 loading={isLoadingFacilities}
                 className="rounded-none border-0"
                 onRowClick={() => { }}
+                pagination={facilitiesMeta ? {
+                  currentPage: facilitiesMeta.currentPage,
+                  totalPage: facilitiesMeta.totalPage,
+                  totalResult: facilitiesMeta.totalResult,
+                  onPageChange: (page) => setFacilitiesQuery(prev => ({ ...prev, page }))
+                } : undefined}
               />
             </div>
           )}
@@ -417,6 +423,12 @@ export default function CreateNewManagementPage() {
                 loading={isLoadingVendors}
                 className="rounded-none border-0"
                 onRowClick={() => { }}
+                pagination={vendorsMeta ? {
+                  currentPage: vendorsMeta.currentPage,
+                  totalPage: vendorsMeta.totalPage,
+                  totalResult: vendorsMeta.totalResult,
+                  onPageChange: (page) => setVendorsQuery(prev => ({ ...prev, page }))
+                } : undefined}
               />
             </div>
           )}
@@ -428,6 +440,12 @@ export default function CreateNewManagementPage() {
                 loading={isLoadingPractices}
                 className="rounded-none border-0"
                 onRowClick={() => { }}
+                pagination={practicesMeta ? {
+                  currentPage: practicesMeta.currentPage,
+                  totalPage: practicesMeta.totalPage,
+                  totalResult: practicesMeta.totalResult,
+                  onPageChange: (page) => setPracticesQuery(prev => ({ ...prev, page }))
+                } : undefined}
               />
             </div>
           )}
@@ -491,11 +509,11 @@ export default function CreateNewManagementPage() {
             />
           </div>
           <div className="mt-4 flex gap-3">
-            <button onClick={closeAllModals} className="flex-1 py-2.5 text-sm font-bold hover:bg-[var(--border)]/70 hover:text-foreground text-muted-foreground bg-[var(--border)] rounded-xl transition-colors cursor-pointer">Cancel</button>
+            <button onClick={closeAllModals} className="flex-1 py-2.5 text-sm font-medium hover:bg-[var(--border)]/70 hover:text-foreground text-muted-foreground bg-[var(--border)] rounded-xl transition-colors cursor-pointer">Cancel</button>
             <button
               onClick={handleSubmitFacility(handleFacilitySubmit)}
               disabled={isCreatingFacility || isUpdatingFacility}
-              className="flex-1 py-2.5 text-sm font-bold text-[var(--background)] bg-primary rounded-xl shadow-sm hover:bg-primary/90 transition-all disabled:opacity-50 cursor-pointer"
+              className="flex-1 py-2.5 text-sm font-medium text-[var(--background)] bg-primary rounded-xl shadow-sm hover:bg-primary/90 transition-all disabled:opacity-50 cursor-pointer"
             >
               {isCreatingFacility || isUpdatingFacility ? 'Saving...' : 'Save'}
             </button>
@@ -560,11 +578,11 @@ export default function CreateNewManagementPage() {
             />
           </div>
           <div className="mt-4 flex gap-3">
-            <button onClick={closeAllModals} className="flex-1 py-2.5 text-sm font-bold hover:bg-[var(--border)]/70 hover:text-foreground text-muted-foreground bg-[var(--border)] rounded-xl transition-colors cursor-pointer">Cancel</button>
+            <button onClick={closeAllModals} className="flex-1 py-2.5 text-sm font-medium hover:bg-[var(--border)]/70 hover:text-foreground text-muted-foreground bg-[var(--border)] rounded-xl transition-colors cursor-pointer">Cancel</button>
             <button
               onClick={handleSubmitVendor(handleVendorSubmit)}
               disabled={isCreatingVendor || isUpdatingVendor}
-              className="flex-1 py-2.5 text-sm font-bold text-[var(--background)] bg-primary rounded-xl shadow-sm hover:bg-primary/90 transition-all disabled:opacity-50 cursor-pointer"
+              className="flex-1 py-2.5 text-sm font-medium text-[var(--background)] bg-primary rounded-xl shadow-sm hover:bg-primary/90 transition-all disabled:opacity-50 cursor-pointer"
             >
               {isCreatingVendor || isUpdatingVendor ? 'Saving...' : 'Save'}
             </button>
@@ -634,11 +652,11 @@ export default function CreateNewManagementPage() {
             </div>
           )}
           <div className="mt-4 flex gap-3">
-            <button onClick={closeAllModals} className="flex-1 py-2.5 text-sm font-bold hover:bg-[var(--border)]/70 hover:text-foreground text-muted-foreground bg-[var(--border)] rounded-xl transition-colors cursor-pointer">Cancel</button>
+            <button onClick={closeAllModals} className="flex-1 py-2.5 text-sm font-medium hover:bg-[var(--border)]/70 hover:text-foreground text-muted-foreground bg-[var(--border)] rounded-xl transition-colors cursor-pointer">Cancel</button>
             <button
               onClick={handleSubmitPractice(handlePracticeSubmit)}
               disabled={isCreatingPractice || isUpdatingPractice}
-              className="flex-1 py-2.5 text-sm font-bold text-[var(--background)] bg-primary rounded-xl shadow-sm hover:bg-primary/90 transition-all disabled:opacity-50 cursor-pointer"
+              className="flex-1 py-2.5 text-sm font-medium text-[var(--background)] bg-primary rounded-xl shadow-sm hover:bg-primary/90 transition-all disabled:opacity-50 cursor-pointer"
             >
               {isCreatingPractice || isUpdatingPractice ? 'Saving...' : 'Save'}
             </button>
@@ -663,14 +681,14 @@ export default function CreateNewManagementPage() {
             <div className="p-5 flex gap-3 bg-[var(--card)] border-t border-[var(--border)]">
               <button
                 onClick={closeAllModals}
-                className="flex-1 py-3 text-sm font-bold hover:bg-[var(--border)]/70 hover:text-foreground text-muted-foreground bg-[var(--border)] hover:bg-[var(--border)] rounded-xl transition-colors cursor-pointer"
+                className="flex-1 py-3 text-sm font-medium hover:bg-[var(--border)]/70 hover:text-foreground text-muted-foreground bg-[var(--border)] hover:bg-[var(--border)] rounded-xl transition-colors cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 onClick={handleConfirmDelete}
                 disabled={isDeletingFacility || isDeletingVendor || isDeletingPractice}
-                className="flex-1 py-3 text-sm font-bold text-white bg-rose-500 hover:bg-rose-600 rounded-xl shadow-sm transition-all disabled:opacity-50 cursor-pointer"
+                className="flex-1 py-3 text-sm font-medium text-white bg-rose-500 hover:bg-rose-600 rounded-xl shadow-sm transition-all disabled:opacity-50 cursor-pointer"
               >
                 {isDeletingFacility || isDeletingVendor || isDeletingPractice ? 'Deleting...' : 'Confirm Delete'}
               </button>
@@ -690,7 +708,7 @@ function TabButton({ active, onClick, label }: { active: boolean, onClick: () =>
     <button
       onClick={onClick}
       className={cn(
-        "px-6 py-3 text-sm font-bold transition-all relative outline-none  cursor-pointer",
+        "px-6 py-3 text-sm font-medium transition-all relative outline-none  cursor-pointer",
         active ? "text-primary" : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
       )}
     >

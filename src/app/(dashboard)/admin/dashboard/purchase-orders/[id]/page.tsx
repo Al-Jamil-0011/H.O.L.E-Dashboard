@@ -69,7 +69,7 @@ export default function PurchaseOrderDetailPage({ params }: { params: Promise<{ 
               type={purchaseOrder.status === 'complete' ? 'success' : purchaseOrder.status === 'open' ? 'warning' : 'error'}
             />
             <span className={cn(
-              "px-3 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider border",
+              "px-3 py-1 rounded-md text-[10px] font-bold  border",
               isBulkBio
                 ? "bg-purple-500/10 text-purple-400 border-purple-500/20"
                 : "bg-blue-500/10 text-blue-400 border-blue-500/20"
@@ -244,7 +244,7 @@ export default function PurchaseOrderDetailPage({ params }: { params: Promise<{ 
 
 function ToolButton({ icon, label }: { icon: React.ReactNode, label: string }) {
   return (
-    <button className="flex items-center gap-2 px-3 py-2 text-xs font-semibold text-muted-foreground bg-[var(--card)]  cursor-pointer rounded-lg border border-[var(--border)] hover:text-foreground transition-colors bg-emerald-500/10 border-emerald-500/20 text-emerald-500 hover:bg-emerald-500/20">
+    <button className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-muted-foreground bg-[var(--card)]  cursor-pointer rounded-lg border border-[var(--border)] hover:text-foreground transition-colors bg-emerald-500/10 border-emerald-500/20 text-emerald-500 hover:bg-emerald-500/20">
       {icon} <span className="hidden sm:inline">{label}</span>
     </button>
   );
@@ -287,7 +287,7 @@ function TimelineStep({ title, date, active, completed, isCurrent }: { title: st
 function ActionBtn({ icon, label, highlight }: { icon: React.ReactNode, label: string, highlight?: boolean }) {
   return (
     <button className={cn(
-      "w-full flex items-center gap-3 p-3 rounded-xl border transition-colors text-xs font-bold",
+      "w-full flex items-center gap-3 p-3 rounded-xl border transition-colors text-xs font-medium",
       highlight
         ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-500 hover:bg-emerald-500/20 cursor-pointer"
         : "bg-[var(--background)] border-[var(--border)] text-muted-foreground hover:text-foreground hover:border-[var(--border)]"

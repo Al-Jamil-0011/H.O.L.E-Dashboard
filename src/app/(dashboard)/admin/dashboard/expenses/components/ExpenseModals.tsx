@@ -33,13 +33,13 @@ export function ApproveExpenseModal({ isOpen, onClose, onConfirm }: ApproveExpen
                 onConfirm();
                 onClose();
               }}
-              className="w-full py-3.5 bg-[#00E5FF] hover:bg-cyan-400 text-[#0B101E] rounded-xl text-sm font-bold transition-colors shadow-[0_0_15px_rgba(0,229,255,0.3)] cursor-pointer"
+              className="w-full py-3.5 bg-[#00E5FF] hover:bg-cyan-400 text-[#0B101E] rounded-xl text-sm font-medium transition-colors shadow-[0_0_15px_rgba(0,229,255,0.3)] cursor-pointer"
             >
               Confirm & Sync
             </button>
             <button
               onClick={onClose}
-              className="w-full py-3.5 bg-transparent border border-[#27272A] hover:bg-[#27272A] text-white rounded-xl text-sm font-bold transition-colors cursor-pointer"
+              className="w-full py-3.5 bg-transparent border border-[#27272A] hover:bg-[#27272A] text-white rounded-xl text-sm font-medium transition-colors cursor-pointer"
             >
               Cancel
             </button>
@@ -85,7 +85,7 @@ export function RejectExpenseModal({ isOpen, onClose, onSubmit }: RejectExpenseM
           <div className="flex gap-3">
             <button
               onClick={onClose}
-              className="flex-1 py-3.5 bg-transparent border border-[#27272A] hover:bg-[#27272A] text-white rounded-xl text-sm font-bold transition-colors cursor-pointer"
+              className="flex-1 py-3.5 bg-transparent border border-[#27272A] hover:bg-[#27272A] text-white rounded-xl text-sm font-medium transition-colors cursor-pointer"
             >
               Cancel
             </button>
@@ -96,7 +96,7 @@ export function RejectExpenseModal({ isOpen, onClose, onSubmit }: RejectExpenseM
                 setReason("");
               }}
               disabled={!reason.trim()}
-              className="flex-1 py-3.5 bg-rose-500 hover:bg-rose-600 disabled:opacity-50 disabled:hover:bg-rose-500 text-white rounded-xl text-sm font-bold transition-colors shadow-[0_0_15px_rgba(244,63,94,0.3)] cursor-pointer"
+              className="flex-1 py-3.5 bg-rose-500 hover:bg-rose-600 disabled:opacity-50 disabled:hover:bg-rose-500 text-white rounded-xl text-sm font-medium transition-colors shadow-[0_0_15px_rgba(244,63,94,0.3)] cursor-pointer"
             >
               Submit
             </button>

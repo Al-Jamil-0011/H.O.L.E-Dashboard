@@ -48,7 +48,7 @@ export default function SurgeryDetailsPage() {
   }
 
   return (
-    <div className="space-y-6 animate-in fade-in zoom-in duration-500 pb-12">
+    <div className="space-y-6 animate-in fade-in zoom-in duration-500 pb-8 pb-12">
 
       {/* TOP NAV & ACTIONS */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -63,11 +63,11 @@ export default function SurgeryDetailsPage() {
         <div className="flex items-center gap-2 w-full sm:w-auto">
           <button
             onClick={() => setIsEditModalOpen(true)}
-            className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-bold text-white bg-primary rounded-lg hover:opacity-90 transition-all shadow-lg shadow-primary/20 cursor-pointer"
+            className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-medium text-white dark:text-black bg-primary rounded-lg hover:opacity-90 transition-all shadow-lg shadow-primary/20 cursor-pointer"
           >
             <PenSquare className="h-4 w-4" /> Edit Surgery
           </button>
-          <button className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-bold text-muted-foreground bg-card border border-border rounded-lg hover:text-foreground hover:bg-muted transition-colors cursor-pointer">
+          <button className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-medium text-muted-foreground bg-card border border-border rounded-lg hover:text-foreground hover:bg-muted transition-colors cursor-pointer">
             <Download className="h-4 w-4" /> Download PDF
           </button>
         </div>
@@ -82,8 +82,8 @@ export default function SurgeryDetailsPage() {
             <div className="h-20 w-20 rounded-full bg-muted border-4 border-card shadow-xl overflow-hidden relative">
               {surgery.info?.profileUrl ? (
                 <Image
-                  src={surgery.info?.profileUrl}
-                  alt={surgery.info?.fullName}
+                  src={surgery.info?.profileUrl || ""}
+                  alt={surgery.info?.fullName || ""}
                   fill
                   className="object-cover"
                 />
@@ -292,13 +292,12 @@ export default function SurgeryDetailsPage() {
 
             </div>
           </div>
-
         </div>
 
       </div>
 
       <div className="flex justify-end">
-        <button className="flex items-center gap-2 px-6 py-3 text-sm font-bold text-white bg-primary rounded-xl hover:opacity-90 transition-all shadow-lg shadow-primary/20 cursor-pointer">
+        <button className="flex items-center gap-2 px-6 py-3 text-sm font-medium text-white bg-primary rounded-xl hover:opacity-90 transition-all shadow-lg shadow-primary/20 cursor-pointer">
           Send to Doctor Email
         </button>
       </div>

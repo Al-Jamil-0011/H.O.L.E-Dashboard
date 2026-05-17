@@ -16,7 +16,7 @@ export interface IDetailRowProps {
 }
 
 
-export type StatInfoCardProps = {
+export type IStatInfoCardProps = {
     icon: ReactNode;
     label: string;
     value: string | number;
@@ -25,3 +25,14 @@ export type StatInfoCardProps = {
     iconClass?: string;
     loading?: boolean;
 };
+
+
+export interface IRepAccountsStatsCardProps {
+    title: string;
+    value?: number;
+    loading: boolean;
+    color: string;
+    isAlert?: boolean;
+    isNumber?: boolean;
+    borderColor?: string;
+}

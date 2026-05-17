@@ -20,15 +20,15 @@ export default function AboutUsPage() {
     return (
         <div className="bg-background text-foreground pb-10">
             <div className="space-y-5">
-                <div className="flex justify-between items-center">
-                    <div>
-                        <h1 className="text-2xl font-bold text-foreground">About Us</h1>
-                        <p className="text-sm text-muted-foreground mt-1">
+                <div className="flex items-center justify-between">
+                    <div className="space-y-1">
+                        <h1 className="title">About Us</h1>
+                        <p className="text-xs text-muted-foreground mt-1">
                             Update and maintain your company’s story, mission, and public information displayed on the About Us page.
                         </p>
                     </div>
                     <Link href="/admin/settings/about-us/edit">
-                        <button className="flex items-center gap-2 cursor-pointer bg-primary dark:text-black px-4 py-1.5 rounded-lg text-white hover:bg-primary/90 transition-all font-bold">
+                        <button className="flex items-center gap-2 cursor-pointer bg-primary text-background px-4 py-2 rounded-lg hover:opacity-90 transition-all disabled:opacity-50 dark:shadow-lg dark:shadow-primary/20 text-sm font-medium">
                             <FaRegEdit />
                             <p>Edit</p>
                         </button>

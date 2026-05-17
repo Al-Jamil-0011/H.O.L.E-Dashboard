@@ -39,18 +39,18 @@ export default function PaymentsPage() {
   ];
 
   return (
-    <div className="space-y-6 animate-in fade-in zoom-in duration-500">
+    <div className="space-y-6 animate-in fade-in zoom-in duration-500 pb-8">
       <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
         <div>
           <h1 className="text-xl font-bold tracking-tight text-foreground mb-1">
             Payments
           </h1>
-          <p className="text-[11px] text-muted-foreground font-medium uppercase tracking-wider">
+          <p className="text-[11px] text-muted-foreground font-medium ">
             Track incoming payments and statuses
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <button className="px-4 py-1.5 text-xs font-semibold text-muted-foreground bg-[var(--card)] rounded shadow-sm border border-[var(--border)] transition-colors hover:text-foreground">
+          <button className="px-4 py-1.5 text-xs font-medium text-muted-foreground bg-[var(--card)] rounded shadow-sm border border-[var(--border)] transition-colors hover:text-foreground">
             Export Record
           </button>
         </div>
@@ -66,14 +66,41 @@ export default function PaymentsPage() {
         <div className="flex items-center justify-between p-5 pb-5">
           <h2 className="text-sm font-bold text-foreground">All Payments</h2>
           <div className="flex gap-2">
-            <FilterPill text="All" active={filter === 'All'} activeColor="bg-black/80 text-[var(--background)]" onClick={() => setFilter('All')} />
-            <FilterPill text="Paid" active={filter === 'Paid'} color="bg-primary/20 text-primary" activeColor="bg-primary text-[var(--background)]" onClick={() => setFilter('Paid')} />
-            <FilterPill text="Pending" active={filter === 'Pending'} color="bg-amber-500/20 text-amber-500" activeColor="bg-amber-500 text-[var(--background)]" onClick={() => setFilter('Pending')} />
-            <FilterPill text="Overdue" active={filter === 'Overdue'} color="bg-rose-500/20 text-rose-500" activeColor="bg-rose-500 text-[var(--background)]" onClick={() => setFilter('Overdue')} />
+            <FilterPill
+              text="All"
+              active={filter === 'All'}
+              activeColor="bg-black/80 text-[var(--background)]"
+              onClick={() => setFilter('All')}
+            />
+            <FilterPill
+              text="Paid"
+              active={filter === 'Paid'}
+              color="bg-primary/20 text-primary"
+              activeColor="bg-primary text-[var(--background)]"
+              onClick={() => setFilter('Paid')}
+            />
+            <FilterPill
+              text="Pending"
+              active={filter === 'Pending'}
+              color="bg-amber-500/20 text-amber-500"
+              activeColor="bg-amber-500 text-[var(--background)]"
+              onClick={() => setFilter('Pending')}
+            />
+            <FilterPill
+              text="Overdue"
+              active={filter === 'Overdue'}
+              color="bg-rose-500/20 text-rose-500"
+              activeColor="bg-rose-500 text-[var(--background)]"
+              onClick={() => setFilter('Overdue')}
+            />
           </div>
         </div>
         <div className="flex-1 px-5 pb-5">
-          <DataTable data={filteredData} columns={columns} />
+          <DataTable
+            data={filteredData}
+            columns={columns}
+            onRowClick={() => { }}
+          />
         </div>
       </div>
     </div>
@@ -90,7 +117,7 @@ function StatCard({ title, amount, color }: { title: string, amount: string, col
 }
 
 function FilterPill({ text, active, onClick, color, activeColor }: { text: string, active: boolean, onClick: () => void, color?: string, activeColor?: string }) {
-  const baseClasses = "px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded border border-[var(--border)] transition-all cursor-pointer";
+  const baseClasses = "px-3 py-1.5 text-[10px] font-bold  rounded border border-[var(--border)] transition-all cursor-pointer";
 
   if (active) {
     return (

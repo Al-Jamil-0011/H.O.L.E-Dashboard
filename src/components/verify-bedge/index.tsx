@@ -21,7 +21,7 @@ export function VerifyBadge({
     return (
         <span
             className={cn(
-                "inline-flex items-center gap-1 rounded-md font-bold uppercase tracking-wider border",
+                "inline-flex items-center gap-1 rounded-md font-bold  border",
                 isSmall ? "px-2 py-0.5 text-[10px]" : "px-2.5 py-1 text-[11px]",
                 isVerified
                     ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20"

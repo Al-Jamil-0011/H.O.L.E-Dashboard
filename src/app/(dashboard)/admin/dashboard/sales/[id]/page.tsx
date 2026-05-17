@@ -99,7 +99,7 @@ export default function SaleDetailsPage() {
             <div className="flex items-center gap-3">
               <h1 className="text-xl font-bold text-foreground tracking-tight">Sale #{sale.saleId}</h1>
               <span className={cn(
-                "px-2 py-0.5 text-[10px] font-black rounded uppercase tracking-widest",
+                "px-2 py-0.5 text-[10px] font-medium rounded uppercase tracking-widest",
                 saleStatus === 'APPROVED' ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" :
                   saleStatus === 'PENDING' ? "bg-amber-500/10 text-amber-500 border border-amber-500/20" :
                     "bg-rose-500/10 text-rose-400 border border-rose-500/20"
@@ -136,7 +136,7 @@ export default function SaleDetailsPage() {
           {saleStatus !== 'APPROVED' && (
             <button
               onClick={() => setShowApproveModal(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-primary text-background hover:opacity-90 rounded-lg transition-all text-sm font-bold dark:shadow-[0_0_15px_rgba(var(--primary),0.3)] cursor-pointer disabled:opacity-50"
+              className="flex items-center gap-2 px-4 py-2 bg-primary text-background hover:opacity-90 rounded-lg transition-all text-sm font-medium dark:shadow-[0_0_15px_rgba(var(--primary),0.3)] cursor-pointer disabled:opacity-50"
               disabled={isUpdatingStatus}
             >
               <CheckCircle2 className="h-4 w-4" />
@@ -277,11 +277,11 @@ export default function SaleDetailsPage() {
               <div className="grid grid-cols-2 divide-x divide-border">
                 <div className="p-4">
                   <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest mb-1">Total Bill</p>
-                  <p className="text-xl font-black text-foreground">${sale.billing?.totalAmount?.toLocaleString(undefined, { minimumFractionDigits: 2 })}</p>
+                  <p className="text-xl font-medium text-foreground">${sale.billing?.totalAmount?.toLocaleString(undefined, { minimumFractionDigits: 2 })}</p>
                 </div>
                 <div className="p-4 bg-emerald-500/5">
                   <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest mb-1">Commission Pool</p>
-                  <p className="text-xl font-black text-emerald-500">${sale.representatives?.totalCommission?.toLocaleString(undefined, { minimumFractionDigits: 2 })}</p>
+                  <p className="text-xl font-medium text-emerald-500">${sale.representatives?.totalCommission?.toLocaleString(undefined, { minimumFractionDigits: 2 })}</p>
                   <p className="text-[10px] text-emerald-500/70 font-medium mt-1 uppercase">Total pool for all reps</p>
                 </div>
               </div>
@@ -304,7 +304,7 @@ export default function SaleDetailsPage() {
                     </div>
                     <div>
                       <p className="text-xs font-bold text-foreground">{item.productType}</p>
-                      <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-tighter">Product Ref: {item.product}</p>
+                      <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-tighter">Product Ref: {typeof item.product === 'object' ? (item.product?.systemType || item.product?.serialNumber || item.product?._id) : item.product}</p>
                     </div>
                   </div>
                   <div className="text-right">
@@ -323,7 +323,7 @@ export default function SaleDetailsPage() {
             {(sale.inventoryProducts?.length ?? 0) > 4 && (
               <button
                 onClick={() => setShowAllItems((prev) => !prev)}
-                className="w-full mt-4 py-2.5 bg-muted border border-border hover:bg-muted/80 rounded-lg text-xs font-bold text-primary transition-all cursor-pointer flex items-center justify-center gap-2"
+                className="w-full mt-4 py-2.5 bg-muted border border-border hover:bg-muted/80 rounded-lg text-xs font-medium text-primary transition-all cursor-pointer flex items-center justify-center gap-2"
               >
                 {showAllItems ? (
                   <>Show Less Items</>
@@ -343,7 +343,7 @@ export default function SaleDetailsPage() {
               </h2>
               {
                 sale?.feedbackNotes && (
-                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-black bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 uppercase tracking-widest">
+                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-medium bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 uppercase tracking-widest">
                     <CheckCircle2 className="h-3 w-3" />
                     Feedback Delivered
                   </div>
@@ -372,7 +372,7 @@ export default function SaleDetailsPage() {
                 <button
                   onClick={handleSubmitNote}
                   disabled={isSubmittingNote}
-                  className="px-6 py-2.5 rounded-lg text-xs font-bold transition-all cursor-pointer bg-primary text-background hover:opacity-90 dark:shadow-lg disabled:opacity-50 flex items-center gap-2"
+                  className="px-6 py-2.5 rounded-lg text-xs font-medium transition-all cursor-pointer bg-primary text-background hover:opacity-90 dark:shadow-lg disabled:opacity-50 flex items-center gap-2"
                 >
                   {isSubmittingNote && <div className="h-3 w-3 border-2 border-background border-t-transparent rounded-full animate-spin" />}
                   {sale?.feedbackNotes ? 'Update Feedback' : 'Send Feedback'}
@@ -410,7 +410,7 @@ export default function SaleDetailsPage() {
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-black text-foreground">{user.commissionRate}%</p>
+                    <p className="text-sm font-medium text-foreground">{user.commissionRate}%</p>
                     <p className="text-[9px] text-emerald-500 font-bold">${user.commission?.toLocaleString()}</p>
                   </div>
                 </div>
@@ -419,7 +419,7 @@ export default function SaleDetailsPage() {
               <div className="pt-4 mt-4 border-t border-border">
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-xs font-medium text-muted-foreground">Finance Allocation</span>
-                  <span className="text-lg font-black text-emerald-500">${sale.representatives?.myCommission?.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                  <span className="text-lg font-medium text-emerald-500">${sale.representatives?.myCommission?.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
                 </div>
                 <p className="text-[9px] text-muted-foreground/60 italic leading-tight">
                   Net profit share after vendor payouts and operational costs.
@@ -466,7 +466,7 @@ export default function SaleDetailsPage() {
 
           {/* 7. QUICK STATS */}
           <div className="bg-gradient-to-br from-primary/5 to-transparent rounded-xl border border-primary/20 p-5">
-            <h2 className="text-sm font-black text-foreground mb-4 flex items-center gap-2">
+            <h2 className="text-sm font-medium text-foreground mb-4 flex items-center gap-2">
               <Activity className="h-4 w-4 text-primary" />
               Settlement Stats
             </h2>
@@ -487,7 +487,7 @@ export default function SaleDetailsPage() {
               <div className="h-px bg-border/50 w-full" />
               <div className="flex items-center justify-between">
                 <span className="text-[11px] text-muted-foreground font-bold uppercase tracking-tight">Vendor Payout</span>
-                <span className="text-[13px] text-primary font-black tracking-tight">${sale.billing?.vendorPayment?.toLocaleString()}</span>
+                <span className="text-[13px] text-primary font-medium tracking-tight">${sale.billing?.vendorPayment?.toLocaleString()}</span>
               </div>
             </div>
           </div>
@@ -533,13 +533,13 @@ export default function SaleDetailsPage() {
           <div className="fixed bottom-0 left-0 right-0 md:left-64 bg-background/80 backdrop-blur-md border-t border-border p-4 flex items-center justify-end gap-4 z-40">
             <button
               onClick={() => router.back()}
-              className="px-6 py-2.5 text-sm font-bold text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+              className="px-6 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
             >
               Cancel
             </button>
             <button
               onClick={() => setShowApproveModal(true)}
-              className="px-8 py-2.5 text-sm font-bold text-background bg-primary hover:opacity-90 rounded-lg transition-all dark:shadow-[0_0_15px_rgba(var(--primary),0.3)] flex items-center gap-2 cursor-pointer disabled:opacity-50"
+              className="px-8 py-2.5 text-sm font-medium text-background bg-primary hover:opacity-90 rounded-lg transition-all dark:shadow-[0_0_15px_rgba(var(--primary),0.3)] flex items-center gap-2 cursor-pointer disabled:opacity-50"
               disabled={isUpdatingStatus}
             >
               <CheckCircle2 className="h-4 w-4" />
@@ -574,7 +574,7 @@ export default function SaleDetailsPage() {
                 </div>
                 <button
                   onClick={() => setShowRepNote(false)}
-                  className="w-full mt-6 py-3 bg-muted hover:bg-muted/80 text-foreground rounded-xl text-sm font-bold transition-colors cursor-pointer"
+                  className="w-full mt-6 py-3 bg-muted hover:bg-muted/80 text-foreground rounded-xl text-sm font-medium transition-colors cursor-pointer"
                 >
                   Close Note
                 </button>
@@ -601,14 +601,14 @@ export default function SaleDetailsPage() {
                 <div className="flex gap-3">
                   <button
                     onClick={() => setShowApproveModal(false)}
-                    className="flex-1 py-3 bg-muted hover:bg-muted/80 text-foreground rounded-xl text-sm font-bold transition-colors cursor-pointer"
+                    className="flex-1 py-3 bg-muted hover:bg-muted/80 text-foreground rounded-xl text-sm font-medium transition-colors cursor-pointer"
                   >
                     Cancel
                   </button>
                   <button
                     onClick={handleApprove}
                     disabled={isUpdatingStatus}
-                    className="flex-1 py-3 bg-primary hover:opacity-90 text-background rounded-xl text-sm font-bold transition-all dark:shadow-[0_0_15px_rgba(var(--primary),0.3)] cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2"
+                    className="flex-1 py-3 bg-primary hover:opacity-90 text-background rounded-xl text-sm font-medium transition-all dark:shadow-[0_0_15px_rgba(var(--primary),0.3)] cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2"
                   >
                     {isUpdatingStatus && <div className="h-4 w-4 border-2 border-background border-t-transparent rounded-full animate-spin" />}
                     Confirm Approval

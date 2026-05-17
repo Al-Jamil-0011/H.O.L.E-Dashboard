@@ -136,7 +136,7 @@ export default function ShipmentDetailsPage({ params }: { params: Promise<{ id: 
                     </div>
                 </div>
                 <div className="flex items-center gap-3">
-                    <button className="flex items-center justify-center gap-2 px-4 py-2 bg-card border border-border text-foreground font-bold rounded-xl hover:bg-muted transition-colors w-full sm:w-auto">
+                    <button className="flex items-center justify-center gap-2 px-4 py-2 bg-card border border-border text-foreground font-medium rounded-xl hover:bg-muted transition-colors w-full sm:w-auto">
                         <FileText className="h-4 w-4 text-primary" /> Invoice
                     </button>
                 </div>

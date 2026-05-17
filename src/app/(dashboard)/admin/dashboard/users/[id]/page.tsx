@@ -43,7 +43,7 @@ export default function UserDetailsPage() {
   }
 
   return (
-    <div className="space-y-6 animate-in fade-in zoom-in duration-500 pb-10">
+    <div className="space-y-6 animate-in fade-in zoom-in duration-500 pb-8 pb-10">
       {/* Top Header */}
       <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
         <div className="flex items-center gap-4 relative">
@@ -93,14 +93,14 @@ export default function UserDetailsPage() {
         </div>
 
         <div className="flex items-center gap-3">
-          {/* <button className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-white bg-[#1E293B] border border-[#334155] rounded-lg shadow-sm transition-colors hover:bg-[#334155]">
+          {/* <button className="flex items-center gap-2 px-4 py-2 text-xs font-medium text-white bg-[#1E293B] border border-[#334155] rounded-lg shadow-sm transition-colors hover:bg-[#334155]">
             <Edit className="h-4 w-4" />
             Edit Profile
           </button> */}
           <button
             onClick={() => setIsDeactivateModalOpen(true)}
             disabled={changingStatus}
-            className={cn(`flex items-center gap-2 px-4 py-2 text-xs font-bold text-rose-400 bg-rose-500/10 border border-rose-500/20 rounded-lg dark:shadow-sm transition-colors hover:bg-rose-500 hover:text-white cursor-pointer`,
+            className={cn(`flex items-center gap-2 px-4 py-2 text-xs font-medium text-rose-400 bg-rose-500/10 border border-rose-500/20 rounded-lg dark:shadow-sm transition-colors hover:bg-rose-500 hover:text-white cursor-pointer`,
               user?.status === 'inactive' && 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500 hover:text-white'
             )}
           >
@@ -210,13 +210,13 @@ export default function UserDetailsPage() {
             <div className="p-5 bg-card border-t border-border flex gap-3">
               <button
                 onClick={() => setIsDeactivateModalOpen(false)}
-                className="flex-1 py-3 text-sm font-bold text-muted-foreground bg-muted rounded-lg hover:bg-muted/80 transition-colors cursor-pointer"
+                className="flex-1 py-3 text-sm font-medium text-muted-foreground bg-muted rounded-lg hover:bg-muted/80 transition-colors cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 onClick={() => toggleStatus()}
-                className={cn("flex-1 py-3 text-sm font-bold text-white bg-rose-500 rounded-lg dark:shadow-sm transition-all hover:bg-rose-600 cursor-pointer", changingStatus && "opacity-50 cursor-not-allowed")}
+                className={cn("flex-1 py-3 text-sm font-medium text-white bg-rose-500 rounded-lg dark:shadow-sm transition-all hover:bg-rose-600 cursor-pointer", changingStatus && "opacity-50 cursor-not-allowed")}
               >
                 {changingStatus ? "Changing..." : "Confirm"}
               </button>

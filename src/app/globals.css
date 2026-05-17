@@ -130,3 +130,7 @@ select>option {
 .custom-pagination .page-item:last-child {
   display: none;
 }
+
+.title {
+  @apply text-xl font-bold tracking-tight text-foreground;
+}

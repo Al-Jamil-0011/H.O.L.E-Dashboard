@@ -165,7 +165,7 @@ const FormField: React.FC<FormFieldProps> = ({
                             <div className="flex-1 overflow-hidden">
                                 {selectedOption ? (
                                     <div className="flex flex-col">
-                                        <span className="font-bold text-gray-900 dark:text-white truncate">
+                                        <span className="font-semibold text-gray-900 dark:text-white truncate">
                                             {selectedOption.label}
                                         </span>
 

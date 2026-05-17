@@ -34,7 +34,7 @@ export default function InventoryDetailsPage() {
         <p className="text-lg font-medium text-muted-foreground">Inventory not found</p>
         <button
           onClick={() => router.push('/admin/dashboard/inventory')}
-          className="text-primary hover:underline font-bold"
+          className="text-primary hover:underline font-medium"
         >
           Back to Inventory
         </button>
@@ -383,11 +383,11 @@ export default function InventoryDetailsPage() {
 
           {/* ACTIONS */}
           <div className="space-y-3 pt-4">
-            <button className="w-full py-3.5 bg-muted border border-border rounded-xl text-xs font-bold text-foreground hover:bg-muted/80 transition-all flex items-center justify-center gap-2 cursor-pointer">
+            <button className="w-full py-3.5 bg-muted border border-border rounded-xl text-xs font-medium text-foreground hover:bg-muted/80 transition-all flex items-center justify-center gap-2 cursor-pointer">
               <History className="h-4 w-4" />
               Inventory History
             </button>
-            <button className="w-full py-3.5 bg-muted border border-border rounded-xl text-xs font-bold text-foreground hover:bg-muted/80 transition-all flex items-center justify-center gap-2 cursor-pointer">
+            <button className="w-full py-3.5 bg-muted border border-border rounded-xl text-xs font-medium text-foreground hover:bg-muted/80 transition-all flex items-center justify-center gap-2 cursor-pointer">
               <Truck className="h-4 w-4" />
               Related Shipments
             </button>

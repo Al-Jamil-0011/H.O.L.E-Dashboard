@@ -150,24 +150,24 @@ export default function Home() {
     ];
 
     return (
-        <div className="space-y-6 animate-in fade-in zoom-in duration-500 pb-8">
+        <div className="space-y-6 animate-in fade-in zoom-in duration-500 pb-8 pb-8">
             <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
                 <div>
                     <h1 className="text-xl font-bold tracking-tight text-foreground mb-1">
                         Finance Dashboard
                     </h1>
-                    <p className="text-[11px] text-muted-foreground font-medium uppercase tracking-wider">
+                    <p className="text-[11px] text-muted-foreground font-medium ">
                         InvictusOS • Medical Device Revenue Operations • March 2026
                     </p>
                 </div>
                 <div className="flex items-center gap-3">
                     <button
                         onClick={() => refetch()}
-                        className="px-4 py-1.5 text-xs font-semibold text-muted-foreground bg-card rounded dark:shadow-sm border border-border transition-colors hover:text-foreground cursor-pointer"
+                        className="px-4 py-1.5 text-xs font-medium text-muted-foreground bg-card rounded dark:shadow-sm border border-border transition-colors hover:text-foreground cursor-pointer"
                     >
                         Refresh
                     </button>
-                    <button className="px-4 py-1.5 text-xs font-bold text-background bg-primary rounded shadow-sm transition-all hover:opacity-90 cursor-pointer">
+                    <button className="px-4 py-1.5 text-xs font-medium text-background bg-primary rounded shadow-sm transition-all hover:opacity-90 cursor-pointer">
                         Generate Report
                     </button>
                 </div>

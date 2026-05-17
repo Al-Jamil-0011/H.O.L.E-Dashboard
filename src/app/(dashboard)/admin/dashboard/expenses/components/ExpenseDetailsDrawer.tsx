@@ -77,7 +77,7 @@ export function ExpenseDetailsDrawer({ isOpen, onClose, expense, onApprove, onRe
               <p className="text-3xl font-black tracking-tight text-white">{expense.amount}</p>
             </div>
             <span className={cn(
-              "px-3 py-1.5 text-[10px] font-bold rounded-full uppercase tracking-wider",
+              "px-3 py-1.5 text-[10px] font-bold rounded-full ",
               expense.status === 'APPROVED' ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" :
                 expense.status === 'PENDING' ? "bg-amber-500/10 text-amber-500 border border-amber-500/20" :
                   "bg-rose-500/10 text-rose-400 border border-rose-500/20"
@@ -135,7 +135,7 @@ export function ExpenseDetailsDrawer({ isOpen, onClose, expense, onApprove, onRe
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-bold text-white truncate group-hover:text-[#00E5FF] transition-colors cursor-pointer">{file.name}</p>
-                        <p className="text-[10px] text-gray-500 font-medium uppercase tracking-wider">{file.size}</p>
+                        <p className="text-[10px] text-gray-500 font-medium ">{file.size}</p>
                       </div>
                     </div>
                     <button className="h-8 w-8 rounded-full flex items-center justify-center text-[#00E5FF] hover:bg-[#00E5FF]/10 transition-colors cursor-pointer">
@@ -154,13 +154,13 @@ export function ExpenseDetailsDrawer({ isOpen, onClose, expense, onApprove, onRe
           <div className="p-5 border-t border-[#27272A] bg-[#18181B] shrink-0 flex gap-3">
             <button
               onClick={() => onReject(expense)}
-              className="flex-1 py-3.5 bg-transparent border border-[#27272A] hover:bg-rose-500/10 hover:text-rose-500 hover:border-rose-500/20 text-white rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-colors cursor-pointer"
+              className="flex-1 py-3.5 bg-transparent border border-[#27272A] hover:bg-rose-500/10 hover:text-rose-500 hover:border-rose-500/20 text-white rounded-xl text-sm font-medium flex items-center justify-center gap-2 transition-colors cursor-pointer"
             >
               <X className="h-4 w-4" /> Reject
             </button>
             <button
               onClick={() => onApprove(expense)}
-              className="flex-1 py-3.5 bg-[#00E5FF] hover:bg-cyan-400 text-[#0B101E] rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-colors shadow-[0_0_15px_rgba(0,229,255,0.3)] cursor-pointer"
+              className="flex-1 py-3.5 bg-[#00E5FF] hover:bg-cyan-400 text-[#0B101E] rounded-xl text-sm font-medium flex items-center justify-center gap-2 transition-colors shadow-[0_0_15px_rgba(0,229,255,0.3)] cursor-pointer"
             >
               <CheckCircle2 className="h-4 w-4" /> Approve
             </button>

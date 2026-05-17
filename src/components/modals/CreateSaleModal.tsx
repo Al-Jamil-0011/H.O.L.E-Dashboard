@@ -19,18 +19,18 @@ export function CreateSaleModal({ isOpen, onClose }: CreateSaleModalProps) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 sm:py-8 lg:p-12 animate-in fade-in duration-300">
       {/* Backdrop */}
-      <div 
+      <div
         className="absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity"
         onClick={onClose}
       />
-      
+
       {/* Modal Content */}
       <div className="relative w-full max-w-[900px] h-full sm:h-auto max-h-[90vh] bg-[#0F1423] rounded-2xl shadow-2xl flex flex-col border border-white/5 overflow-hidden animate-in slide-in-from-bottom-8 duration-500 ease-out">
-        
+
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-white/5 bg-[#0B101E] shrink-0 sticky top-0 z-10">
           <div className="flex items-center gap-3">
-            <button 
+            <button
               onClick={onClose}
               className="p-2 -ml-2 rounded-full text-gray-400 hover:text-white hover:bg-white/5 transition-colors group"
             >
@@ -43,7 +43,7 @@ export function CreateSaleModal({ isOpen, onClose }: CreateSaleModalProps) {
         {/* Scrollable Body - Web version: 2 columns for wider screens */}
         <div className="flex-1 overflow-y-auto custom-scrollbar bg-[#0F1423]">
           <div className="p-6 md:p-8">
-            
+
             {/* SALE TYPE SEGMENT CONTROL */}
             <div className="mb-8">
               <label className="text-[10px] font-bold tracking-widest text-gray-400 uppercase mb-3 block">
@@ -53,9 +53,9 @@ export function CreateSaleModal({ isOpen, onClose }: CreateSaleModalProps) {
                 <button
                   onClick={() => setSaleType('sold')}
                   className={cn(
-                    "flex-1 py-2 text-sm font-semibold rounded-md transition-all",
-                    saleType === 'sold' 
-                      ? "bg-[#00E5FF] text-[#0B101E] shadow-sm" 
+                    "flex-1 py-2 text-sm font-medium rounded-md transition-all",
+                    saleType === 'sold'
+                      ? "bg-[#00E5FF] text-[#0B101E] shadow-sm"
                       : "text-gray-400 hover:text-white hover:bg-white/5"
                   )}
                 >
@@ -64,9 +64,9 @@ export function CreateSaleModal({ isOpen, onClose }: CreateSaleModalProps) {
                 <button
                   onClick={() => setSaleType('consigned')}
                   className={cn(
-                    "flex-1 py-2 text-sm font-semibold rounded-md transition-all",
-                    saleType === 'consigned' 
-                      ? "bg-[#00E5FF] text-[#0B101E] shadow-sm" 
+                    "flex-1 py-2 text-sm font-medium rounded-md transition-all",
+                    saleType === 'consigned'
+                      ? "bg-[#00E5FF] text-[#0B101E] shadow-sm"
                       : "text-gray-400 hover:text-white hover:bg-white/5"
                   )}
                 >
@@ -76,10 +76,10 @@ export function CreateSaleModal({ isOpen, onClose }: CreateSaleModalProps) {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
-              
+
               {/* LEFT COLUMN */}
               <div className="space-y-8">
-                
+
                 {/* Shipment Information */}
                 <div>
                   <div className="flex items-center gap-2 mb-4">
@@ -88,18 +88,18 @@ export function CreateSaleModal({ isOpen, onClose }: CreateSaleModalProps) {
                     </div>
                     <h3 className="text-sm font-bold text-white">Shipment Information</h3>
                   </div>
-                  
+
                   <div className="space-y-4">
                     <div className="space-y-1.5">
                       <label className="text-[11px] font-medium text-gray-400">Doctor</label>
-                      <input 
-                        type="text" 
+                      <input
+                        type="text"
                         defaultValue="Dr. Jane Smith"
                         className="w-full bg-[#0B101E] border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-[#00E5FF] focus:ring-1 focus:ring-[#00E5FF]/20 transition-all placeholder-gray-600"
                         placeholder="Search Doctor"
                       />
                     </div>
-                    
+
                     <div className="space-y-1.5">
                       <label className="text-[11px] font-medium text-gray-400">Facility / Location</label>
                       <div className="relative">
@@ -116,12 +116,12 @@ export function CreateSaleModal({ isOpen, onClose }: CreateSaleModalProps) {
                         </div>
                       </div>
                     </div>
-                    
+
                     <div className="space-y-1.5">
                       <label className="text-[11px] font-medium text-gray-400">Procedure Date (DOS)</label>
                       <div className="relative">
-                        <input 
-                          type="date" 
+                        <input
+                          type="date"
                           className="w-full bg-[#0B101E] border border-white/10 rounded-lg pl-4 pr-10 py-2.5 text-sm text-white focus:outline-none focus:border-[#00E5FF] focus:ring-1 focus:ring-[#00E5FF]/20 transition-all [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:right-0 [&::-webkit-calendar-picker-indicator]:w-full [&::-webkit-calendar-picker-indicator]:h-full [&::-webkit-calendar-picker-indicator]:cursor-pointer"
                         />
                         <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none text-gray-400">
@@ -131,8 +131,8 @@ export function CreateSaleModal({ isOpen, onClose }: CreateSaleModalProps) {
                     </div>
 
                     <button className="w-full border border-dashed border-[#00E5FF]/30 bg-[#00E5FF]/5 hover:bg-[#00E5FF]/10 text-[#00E5FF] font-medium py-3 rounded-lg flex items-center justify-center gap-2 text-sm transition-all mt-2">
-                       <Plus className="w-4 h-4" />
-                       Add Products from Inventory
+                      <Plus className="w-4 h-4" />
+                      Add Products from Inventory
                     </button>
                   </div>
                 </div>
@@ -141,11 +141,11 @@ export function CreateSaleModal({ isOpen, onClose }: CreateSaleModalProps) {
                 <div>
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-sm font-bold text-white">Add Representatives</h3>
-                    <button className="text-[11px] text-[#00E5FF] hover:text-cyan-300 font-semibold flex items-center gap-1 transition-colors">
+                    <button className="text-[11px] text-[#00E5FF] hover:text-cyan-300 font-medium flex items-center gap-1 transition-colors">
                       <Plus className="w-3 h-3" /> Add
                     </button>
                   </div>
-                  
+
                   <div className="space-y-3">
                     {/* Rep 1 */}
                     <div className="bg-[#0B101E] border border-white/5 rounded-xl p-3 sm:p-4 flex items-center justify-between hover:border-white/10 transition-colors">
@@ -187,14 +187,14 @@ export function CreateSaleModal({ isOpen, onClose }: CreateSaleModalProps) {
                           </div>
                         </div>
                       </div>
-                      <button className="w-full text-center text-[10px] font-bold text-rose-500 tracking-wider uppercase mt-4 hover:text-rose-400 transition-colors">
-                        REMOVE REPRESENTATIVE
+                      <button className="w-full text-center text-[10px] font-medium text-rose-500 tracking-wider uppercase mt-4 hover:text-rose-400 transition-colors">
+                        remove representative
                       </button>
                     </div>
 
                     <div className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-medium py-2 px-3 rounded-lg flex items-center gap-2">
-                       <Check className="w-4 h-4" />
-                       Total must equal 100% — Currently 100%
+                      <Check className="w-4 h-4" />
+                      Total must equal 100% — Currently 100%
                     </div>
                   </div>
                 </div>
@@ -202,7 +202,7 @@ export function CreateSaleModal({ isOpen, onClose }: CreateSaleModalProps) {
 
               {/* RIGHT COLUMN */}
               <div className="space-y-8">
-                
+
                 {/* Billing */}
                 <div>
                   <div className="flex items-center gap-2 mb-4">
@@ -211,30 +211,30 @@ export function CreateSaleModal({ isOpen, onClose }: CreateSaleModalProps) {
                     </div>
                     <h3 className="text-sm font-bold text-white">Billing</h3>
                   </div>
-                  
+
                   <div className="space-y-4">
                     <div className="space-y-1.5">
                       <label className="text-[11px] font-medium text-gray-400">Vendor</label>
-                      <input 
-                        type="text" 
+                      <input
+                        type="text"
                         defaultValue="MedTech Solutions"
                         className="w-full bg-[#0B101E] border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-[#00E5FF] focus:ring-1 focus:ring-[#00E5FF]/20 transition-all"
                       />
                     </div>
-                    
+
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-1.5">
                         <label className="text-[11px] font-medium text-gray-400">PO Number</label>
-                        <input 
-                          type="text" 
+                        <input
+                          type="text"
                           defaultValue="PO-12345"
                           className="w-full bg-[#0B101E] border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-[#00E5FF] focus:ring-1 focus:ring-[#00E5FF]/20 transition-all"
                         />
                       </div>
                       <div className="space-y-1.5">
                         <label className="text-[11px] font-medium text-gray-400">Total Bill ($)</label>
-                        <input 
-                          type="text" 
+                        <input
+                          type="text"
                           defaultValue="0.00"
                           className="w-full bg-[#0B101E] border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-[#00E5FF] focus:ring-1 focus:ring-[#00E5FF]/20 transition-all"
                         />
@@ -243,8 +243,8 @@ export function CreateSaleModal({ isOpen, onClose }: CreateSaleModalProps) {
 
                     <div className="space-y-1.5">
                       <label className="text-[11px] font-medium text-gray-400">Vendor Payment</label>
-                      <input 
-                        type="text" 
+                      <input
+                        type="text"
                         defaultValue="500.0"
                         className="w-full bg-[#0B101E] border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-[#00E5FF] focus:ring-1 focus:ring-[#00E5FF]/20 transition-all"
                       />
@@ -256,11 +256,11 @@ export function CreateSaleModal({ isOpen, onClose }: CreateSaleModalProps) {
                 <div>
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-sm font-bold text-white">Attachments</h3>
-                    <button className="text-[11px] text-[#00E5FF] hover:text-cyan-300 font-semibold flex items-center gap-1 transition-colors">
+                    <button className="text-[11px] text-[#00E5FF] hover:text-cyan-300 font-medium flex items-center gap-1 transition-colors">
                       <UploadCloud className="w-3 h-3" /> Add
                     </button>
                   </div>
-                  
+
                   <div className="space-y-2">
                     {/* Big Attachment Card with fake preview */}
                     <div className="relative h-32 rounded-xl overflow-hidden group cursor-pointer border border-white/10 hover:border-[#00E5FF]/50 transition-all">
@@ -312,7 +312,7 @@ export function CreateSaleModal({ isOpen, onClose }: CreateSaleModalProps) {
                 {/* Additional Notes */}
                 <div>
                   <label className="text-sm font-bold text-white mb-2 block">Additional Notes</label>
-                  <textarea 
+                  <textarea
                     className="w-full h-24 bg-[#0B101E] border border-white/10 rounded-lg p-3 text-sm text-white focus:outline-none focus:border-[#00E5FF] focus:ring-1 focus:ring-[#00E5FF]/20 transition-all resize-none placeholder-gray-600 custom-scrollbar"
                     placeholder="Add any specific case details or instructions..."
                   ></textarea>
@@ -325,7 +325,7 @@ export function CreateSaleModal({ isOpen, onClose }: CreateSaleModalProps) {
                     <Printer className="w-4 h-4 text-cyan-400" />
                     <h3 className="text-sm font-bold text-white">Packing Slip</h3>
                   </div>
-                  <div 
+                  <div
                     className="bg-[#0B101E] border border-white/5 hover:border-white/10 rounded-xl p-4 flex items-center justify-between cursor-pointer transition-colors"
                     onClick={() => setGeneratePackingSlip(!generatePackingSlip)}
                   >
@@ -358,7 +358,7 @@ export function CreateSaleModal({ isOpen, onClose }: CreateSaleModalProps) {
 
         {/* Footer (Sticky Bottom) */}
         <div className="p-4 sm:p-6 border-t border-white/5 bg-[#0B101E] shrink-0 mt-auto shadow-[0_-10px_30px_-10px_rgba(0,0,0,0.5)]">
-          <button className="w-full bg-[#00E5FF] hover:bg-cyan-400 text-[#0B101E] font-bold py-3.5 sm:py-4 rounded-xl shadow-lg shadow-cyan-500/20 transition-all hover:scale-[1.01] active:scale-[0.99] text-sm sm:text-base">
+          <button className="w-full bg-[#00E5FF] hover:bg-cyan-400 text-[#0B101E] font-medium py-3.5 sm:py-4 rounded-xl shadow-lg shadow-cyan-500/20 transition-all hover:scale-[1.01] active:scale-[0.99] text-sm sm:text-base">
             Create Sale Record
           </button>
         </div>

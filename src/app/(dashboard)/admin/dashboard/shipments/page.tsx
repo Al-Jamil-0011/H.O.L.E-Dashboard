@@ -119,7 +119,7 @@ export default function ShipmentsPage() {
       render: (item: any) => (
         <Link href={`/admin/dashboard/shipments/${item._id}`}>
           <button
-            className="px-3 py-1.5 text-[10px] font-bold text-primary bg-primary/10 border border-primary/20 rounded-md hover:bg-primary/20 transition-colors cursor-pointer"
+            className="px-3 py-1.5 text-[10px] font-medium text-primary bg-primary/10 border border-primary/20 rounded-md hover:bg-primary/20 transition-colors cursor-pointer"
           >
             Details
           </button>
@@ -129,15 +129,15 @@ export default function ShipmentsPage() {
   ];
 
   return (
-    <div className="space-y-6 animate-in fade-in zoom-in duration-500 pb-10">
+    <div className="space-y-6 animate-in fade-in zoom-in duration-500 pb-8 pb-10">
 
       {/* HEADER SECTION */}
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-xl font-bold tracking-tight text-foreground mb-1">
+          <h1 className="title mb-1">
             Shipment Management
           </h1>
-          <p className="text-[11px] text-muted-foreground font-medium uppercase tracking-wider">
+          <p className="text-[11px] text-muted-foreground font-medium ">
             Monitor internal driver deliveries and external courier shipments
           </p>
         </div>
@@ -176,7 +176,7 @@ export default function ShipmentsPage() {
       </div>
 
       {/* MAIN CONTAINER */}
-      <div className="rounded-xl border border-border bg-card dark:shadow-sm flex flex-col overflow-hidden">
+      <div className="rounded-xl border border-border bg-muted dark:shadow-sm flex flex-col overflow-hidden">
 
         {/* CONTROL BAR */}
         <div className="p-4 border-b border-border bg-muted/50 flex flex-col md:flex-row gap-4 items-center justify-between">
@@ -185,7 +185,7 @@ export default function ShipmentsPage() {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="bg-background border border-border rounded-lg py-2 px-3 text-xs font-bold text-foreground focus:outline-none focus:border-primary transition-colors appearance-none"
+              className="bg-[var(--background)] border border-border rounded-lg py-2 px-3 text-xs font-medium text-foreground focus:outline-none focus:border-primary transition-colors appearance-none"
             >
               <option value="All">All Statuses</option>
               <option value="Pending">Pending</option>
@@ -196,7 +196,7 @@ export default function ShipmentsPage() {
             <select
               value={methodFilter}
               onChange={(e) => setMethodFilter(e.target.value)}
-              className="bg-background border border-border rounded-lg py-2 px-3 text-xs font-bold text-foreground focus:outline-none focus:border-primary transition-colors appearance-none"
+              className="bg-[var(--background)] border border-border rounded-lg py-2 px-3 text-xs font-medium text-foreground focus:outline-none focus:border-primary transition-colors appearance-none"
             >
               <option value="All">All Methods</option>
               <option value="courier">COURIER</option>
@@ -213,7 +213,7 @@ export default function ShipmentsPage() {
                   setStatusFilter('All');
                   setMethodFilter('All');
                 }}
-                className="text-[10px] font-bold text-muted-foreground hover:text-foreground uppercase tracking-widest transition-colors flex items-center gap-1 shrink-0 cursor-pointer"
+                className="text-[10px] font-medium text-muted-foreground hover:text-foreground uppercase tracking-widest transition-colors flex items-center gap-1 shrink-0 cursor-pointer"
               >
                 <X className="h-3 w-3" />
                 Clear Filters
@@ -221,14 +221,14 @@ export default function ShipmentsPage() {
             )}
           </div>
 
-          <div className="relative w-full md:w-80">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+          <div className="relative w-full md:w-80 group">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
             <input
               type="text"
               placeholder="Search by ID, Rep, or Facility..."
+              className="w-full bg-[var(--background)] border border-[var(--border)] rounded-md py-2 pl-9 pr-3 text-xs font-medium text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-[var(--primary)] transition-colors"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full bg-background border border-border rounded-lg py-2 pl-9 pr-10 text-xs font-bold text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:border-primary transition-colors"
             />
             {shipmentsLoading && (
               <div className="absolute right-3 top-1/2 -translate-y-1/2">
@@ -245,7 +245,7 @@ export default function ShipmentsPage() {
             columns={columns as any}
             loading={shipmentsLoading}
             onRowClick={() => { }}
-            className="rounded-none border-0 bg-transparent"
+            className="rounded-none border-none"
             pagination={meta ? {
               currentPage: meta.currentPage,
               totalPage: meta.totalPage,
@@ -257,7 +257,9 @@ export default function ShipmentsPage() {
       </div>
     </div>
   );
-}function StatCard({
+}
+
+function StatCard({
   title,
   value,
   icon,

@@ -175,7 +175,7 @@ export default function DriverEarningsControlPage() {
         <div className="flex items-center gap-2">
           <button
             onClick={() => { setSelectedRequest(item); setIsConfirmPayModalOpen(true); }}
-            className="px-4 py-1.5 text-xs font-bold text-background bg-primary hover:bg-primary/90 rounded-md shadow-sm transition-all cursor-pointer"
+            className="px-4 py-1.5 text-xs font-medium text-background bg-primary hover:bg-primary/90 rounded-md shadow-sm transition-all cursor-pointer"
           >
             Pay Now
           </button>
@@ -186,7 +186,7 @@ export default function DriverEarningsControlPage() {
               setIsDetailsModalOpen(true);
               setShowFullCardNumber(false);
             }}
-            className="px-3 flex items-center gap-2 py-1 font-bold text-primary dark:text-[#00E5FF]/80 dark:bg-[#00E5FF]/10 rounded dark:hover:bg-[#00E5FF]/20 hover:bg-primary/10 transition-colors cursor-pointer">
+            className="px-3 flex items-center gap-2 py-1 font-medium text-primary dark:text-[#00E5FF]/80 dark:bg-[#00E5FF]/10 rounded dark:hover:bg-[#00E5FF]/20 hover:bg-primary/10 transition-colors cursor-pointer">
             <FaEye /> Details
           </button>
         </div>
@@ -216,7 +216,7 @@ export default function DriverEarningsControlPage() {
       header: "STATUS",
       render: (item: any) => (
         <div className="flex items-center justify-between gap-4">
-          <span className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-emerald-500 bg-emerald-500/10 border border-emerald-500/20 rounded-md">
+          <span className="px-3 py-1 text-[10px] font-medium  text-emerald-500 bg-emerald-500/10 border border-emerald-500/20 rounded-md">
             Paid
           </span>
           <button
@@ -226,7 +226,7 @@ export default function DriverEarningsControlPage() {
               setIsDetailsModalOpen(true);
               setShowFullCardNumber(false);
             }}
-            className="px-3 flex items-center gap-2 py-1 font-bold text-primary dark:text-[#00E5FF]/80 dark:bg-[#00E5FF]/10 rounded dark:hover:bg-[#00E5FF]/20 hover:bg-primary/10 transition-colors cursor-pointer">
+            className="px-3 flex items-center gap-2 py-1 font-medium text-primary dark:text-[#00E5FF]/80 dark:bg-[#00E5FF]/10 rounded dark:hover:bg-[#00E5FF]/20 hover:bg-primary/10 transition-colors cursor-pointer">
             <FaEye /> Details
           </button>
         </div>
@@ -248,10 +248,10 @@ export default function DriverEarningsControlPage() {
 
       {/* PAGE HEADER */}
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-foreground mb-1">
+        <h1 className="title mb-1">
           Driver Earnings Control
         </h1>
-        <p className="text-[12px] text-muted-foreground font-medium uppercase tracking-wider">
+        <p className="text-[12px] text-muted-foreground font-medium ">
           Manage global logistic pricing and driver withdrawal payouts
         </p>
       </div>
@@ -296,48 +296,12 @@ export default function DriverEarningsControlPage() {
               />
 
             </div>
-            {/* <div className="flex flex-wrap items-center gap-3"> 
-              <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/[0.02] border border-white/[0.05] shadow-sm">
-                <div className="p-2 rounded-lg bg-[#00E5FF]/10 text-[#00E5FF]">
-                  <DollarSign className="h-5 w-5" />
-                </div>
-                <div>
-                  <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Base Rate (Per KM)</p>
-                  <p className="text-lg font-black text-white">${stats.baseRate.toFixed(2)}</p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/[0.02] border border-white/[0.05] shadow-sm">
-                <div className="p-2 rounded-lg bg-purple-500/10 text-purple-400">
-                  <AlertCircle className="h-5 w-5" />
-                </div>
-                <div>
-                  <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Urgency Fee</p>
-                  <p className="text-lg font-black text-white">
-                    +${stats.urgentFee.toFixed(2)}
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/[0.02] border border-white/[0.05] shadow-sm">
-                <div className="p-2 rounded-lg bg-amber-500/10 text-amber-500">
-                  <Zap className="h-5 w-5" />
-                </div>
-                <div>
-                  <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Express / Rush Fee</p>
-                  <p className="text-lg font-black text-white">
-                    +${stats.expressFee.toFixed(2)}
-                  </p>
-                </div>
-              </div>
-
-            </div> */}
           </div>
 
           <button
             onClick={() => setIsPricingModalOpen(true)}
             disabled={isSavingRate || shipmentRateLoading}
-            className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-[var(--background)] bg-primary rounded-lg dark:shadow-sm transition-all hover:bg-primary/90 cursor-pointer"
+            className="flex items-center gap-2 px-4 py-2 text-xs font-medium text-[var(--background)] bg-primary rounded-lg dark:shadow-sm transition-all hover:bg-primary/90 cursor-pointer"
           >
             <Plus className="h-5 w-5" />
             Add Pricing
@@ -346,17 +310,16 @@ export default function DriverEarningsControlPage() {
       </div>
 
       {/* MAIN SECTION - TABS & SEARCH */}
-      <div className="space-y-4">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-
+      <div className="flex flex-col gap4 bg-muted dark:bg-[#151B2B] rounded-xl ">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4">
           {/* Tab Switcher */}
-          <div className="inline-flex items-center bg-muted/50 p-1 rounded-xl border border-border">
+          <div className="inline-flex items-center bg-[var(--background)] p-1 rounded-xl border border-border">
             <button
               onClick={() => setActiveTab('requests')}
               className={cn(
-                "flex items-center gap-2 px-5 py-2.5 text-sm font-bold rounded-lg transition-all dark:shadow-sm cursor-pointer",
+                "flex items-center gap-2 px-5 py-2.5 text-sm font-medium rounded-lg transition-all dark:shadow-sm cursor-pointer",
                 activeTab === 'requests'
-                  ? "bg-card text-foreground"
+                  ? "bg-muted text-foreground"
                   : "text-muted-foreground hover:text-foreground"
               )}
             >
@@ -372,9 +335,9 @@ export default function DriverEarningsControlPage() {
             <button
               onClick={() => setActiveTab('history')}
               className={cn(
-                "flex items-center gap-2 px-5 py-2.5 text-sm font-bold rounded-lg transition-all dark:shadow-sm cursor-pointer",
+                "flex items-center gap-2 px-5 py-2.5 text-sm font-medium rounded-lg transition-all dark:shadow-sm cursor-pointer",
                 activeTab === 'history'
-                  ? "bg-card text-foreground"
+                  ? "bg-muted text-foreground"
                   : "text-muted-foreground hover:text-foreground"
               )}
             >
@@ -382,23 +345,21 @@ export default function DriverEarningsControlPage() {
               History
             </button>
           </div>
-
           {/* Search Bar */}
-          <div className="relative w-full md:w-72 flex items-center group">
-            <Search className="absolute left-3 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
+          <div className="relative w-full md:w-80 group">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
             <input
               type="text"
               placeholder="Search by ID or Name..."
+              className="w-full bg-[var(--background)] border border-[var(--border)] rounded-md py-2 pl-9 pr-3 text-xs font-medium text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-[var(--primary)] transition-colors"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full bg-background border border-border rounded-xl py-2.5 pl-10 pr-4 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all dark:shadow-sm"
             />
           </div>
-
         </div>
 
         {/* TABLE WRAPPER */}
-        <div className="rounded-2xl border border-border bg-card dark:shadow-xl overflow-hidden flex flex-col">
+        <div className="border border-border bg-card dark:shadow-xl overflow-hidden flex flex-col">
           <DataTable
             data={activeTab === 'requests' ? pendingRequests : historyData}
             columns={activeTab === 'requests' ? requestColumns : historyColumns}
@@ -434,7 +395,7 @@ export default function DriverEarningsControlPage() {
             <div className="p-6 space-y-6">
 
               <div className="space-y-4">
-                <h4 className="text-xs font-bold text-primary uppercase tracking-widest">Base Rate configuration</h4>
+                <h4 className="text-xs font-bold text-primary uppercase">Base Rate configuration</h4>
 
                 <div className="grid gap-4">
                   <div>
@@ -457,7 +418,7 @@ export default function DriverEarningsControlPage() {
               <div className="h-px bg-border" />
 
               <div className="space-y-4">
-                <h4 className="text-xs font-bold text-amber-500 uppercase tracking-widest">Priority Settings (Extra Fee)</h4>
+                <h4 className="text-xs font-bold text-amber-500 uppercase">Priority Settings (Extra Fee)</h4>
 
                 <div className="space-y-3">
 
@@ -520,14 +481,14 @@ export default function DriverEarningsControlPage() {
             <div className="p-5 bg-muted/40 border-t border-border flex justify-end gap-3">
               <button
                 onClick={() => setIsPricingModalOpen(false)}
-                className="px-5 py-2.5 text-sm font-bold text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                className="px-5 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 disabled={isSavingRate}
                 onClick={handleSavePricing}
-                className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-background bg-primary rounded-lg shadow-sm transition-all hover:bg-primary/90 text-sm font-bold cursor-pointer disabled:opacity-50"
+                className="flex items-center gap-2 px-4 py-2 text-xs font-medium text-background bg-primary rounded-lg shadow-sm transition-all hover:bg-primary/90 text-sm font-medium cursor-pointer disabled:opacity-50"
               >
                 {isSavingRate ? "Saving..." : "Save Price"}
               </button>
@@ -555,14 +516,14 @@ export default function DriverEarningsControlPage() {
             <div className="p-5 bg-muted/40 border-t border-border flex gap-3">
               <button
                 onClick={() => setIsConfirmPayModalOpen(false)}
-                className="flex-1 py-3 text-sm font-bold text-muted-foreground bg-muted rounded-xl hover:bg-muted/80 transition-colors cursor-pointer"
+                className="flex-1 py-3 text-sm font-medium text-muted-foreground bg-muted rounded-xl hover:bg-muted/80 transition-colors cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 disabled={isChangingStatus}
                 onClick={handlePayConfirm}
-                className="flex-1 py-3 text-sm font-bold text-background bg-primary rounded-xl shadow-sm transition-all hover:bg-primary/90 cursor-pointer disabled:opacity-50"
+                className="flex-1 py-3 text-sm font-medium text-background bg-primary rounded-xl shadow-sm transition-all hover:bg-primary/90 cursor-pointer disabled:opacity-50"
               >
                 {isChangingStatus ? "Processing..." : "Confirm"}
               </button>
@@ -705,7 +666,7 @@ export default function DriverEarningsControlPage() {
             <div className="p-5 bg-muted/20 border-t border-border flex justify-end">
               <button
                 onClick={() => setIsDetailsModalOpen(false)}
-                className="px-6 py-2.5 text-sm font-bold text-background bg-primary rounded-xl shadow-lg hover:bg-primary/90 transition-all cursor-pointer"
+                className="px-6 py-2.5 text-sm font-medium text-background bg-primary rounded-xl shadow-lg hover:bg-primary/90 transition-all cursor-pointer"
               >
                 Close Details
               </button>

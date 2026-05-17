@@ -108,13 +108,13 @@ export function AddPhysicianModal({ isOpen, onClose, initialData, refetch }: Add
 
   return (
     <>
-      <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm" onClick={onClose} />
+      <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm transition-opacity" onClick={onClose} />
       <div className="fixed inset-y-0 right-0 z-[60] w-full max-w-md bg-white dark:bg-[#0B101E] border-l border-gray-200 dark:border-[#1E293B] dark:shadow-2xl flex flex-col animate-in slide-in-from-right duration-300">
 
         {/* HEADER */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-[#1E293B]">
           <h2 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
-            <button onClick={onClose} className="p-1 rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-[#1E293B]">
+            <button onClick={onClose} className="p-1 rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-[#1E293B] cursor-pointer">
               <X className="h-5 w-5" />
             </button>
             {isEdit ? "Update Physician" : "Add Physician"}
@@ -152,7 +152,7 @@ export function AddPhysicianModal({ isOpen, onClose, initialData, refetch }: Add
                   />
 
                   <div>
-                    <label className="block text-xs font-bold text-gray-700 dark:text-gray-400 mb-1.5 uppercase tracking-wider">Specialty</label>
+                    <label className="block text-xs font-bold text-gray-700 dark:text-gray-400 mb-1.5 ">Specialty</label>
                     <div className="flex flex-wrap gap-2">
                       {availableSpecialties.map(spec => (
                         <button
@@ -160,7 +160,7 @@ export function AddPhysicianModal({ isOpen, onClose, initialData, refetch }: Add
                           type="button"
                           onClick={() => toggleSpecialty(spec.value)}
                           className={cn(
-                            "px-3 py-1.5 text-xs font-bold rounded-lg border transition-all cursor-pointer",
+                            "px-3 py-1.5 text-xs font-medium rounded-lg border transition-all cursor-pointer",
                             specialty === spec.value
                               ? "bg-[#309488]/10 dark:bg-[#00E5FF]/20 text-[#309488] dark:text-[#00E5FF] border-[#309488]/30 dark:border-[#00E5FF]/50 dark:shadow-[0_0_10px_rgba(48,148,136,0.1)] dark:shadow-[0_0_10px_rgba(0,229,255,0.1)]"
                               : "bg-gray-50 dark:bg-[#151B2B] text-gray-600 dark:text-gray-400 border-gray-200 dark:border-[#334155] hover:bg-gray-100 dark:hover:bg-[#1E293B]"
@@ -275,7 +275,7 @@ export function AddPhysicianModal({ isOpen, onClose, initialData, refetch }: Add
               <button
                 disabled={isCreating || isUpdating}
                 type="submit"
-                className="w-full py-3 text-sm font-bold text-white dark:text-[#0B101E] bg-[#309488] dark:bg-[#00E5FF] rounded-xl hover:bg-[#277a70] dark:hover:bg-cyan-400 transition-colors dark:shadow-[0_0_15px_rgba(48,148,136,0.3)] dark:shadow-[0_0_15px_rgba(0,229,255,0.3)] flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
+                className="w-full py-3 text-sm font-medium text-white dark:text-[#0B101E] bg-[#309488] dark:bg-[#00E5FF] rounded-xl hover:bg-[#277a70] dark:hover:bg-cyan-400 transition-colors dark:shadow-[0_0_15px_rgba(48,148,136,0.3)] dark:shadow-[0_0_15px_rgba(0,229,255,0.3)] flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
               >
                 {(isCreating || isUpdating) ?
                   <div className="flex items-center gap-2">
@@ -288,7 +288,7 @@ export function AddPhysicianModal({ isOpen, onClose, initialData, refetch }: Add
                 type="button"
                 disabled={isCreating || isUpdating}
                 onClick={onClose}
-                className="w-full py-3 text-sm font-bold text-gray-700 dark:text-gray-300 bg-transparent border border-gray-300 dark:border-[#334155] rounded-xl hover:bg-gray-100 dark:hover:bg-[#1E293B] transition-colors disabled:opacity-50 cursor-pointer"
+                className="w-full py-3 text-sm font-medium text-gray-700 dark:text-gray-300 bg-transparent border border-gray-300 dark:border-[#334155] rounded-xl hover:bg-gray-100 dark:hover:bg-[#1E293B] transition-colors disabled:opacity-50 cursor-pointer"
               >
                 Cancel
               </button>

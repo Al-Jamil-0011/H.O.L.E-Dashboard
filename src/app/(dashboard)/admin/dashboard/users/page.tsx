@@ -26,6 +26,7 @@ import { FaEye } from 'react-icons/fa';
 import { VerifyBadge } from '@/components/verify-bedge';
 import { UserStatCard } from '@/components/stats-card';
 import { IDetailRowProps } from '@/components/stats-card/interface';
+import toast from 'react-hot-toast';
 
 const getInitials = (name: string) => {
   if (!name) return 'NA';
@@ -40,7 +41,7 @@ export default function UsersManagementPage() {
   const [statusFilter, setStatusFilter] = useState('All');
   const [territoryFilter, setTerritoryFilter] = useState('All');
 
-  const { users: allUsers, loading: usersLoading, refetch, setQuery } = useUsers();
+  const { users: allUsers, loading: usersLoading, refetch, setQuery, meta } = useUsers();
   const { summary, loading: statLoading, refetch: summaryRefetch } = useUserSummary();
   const { changeUserStatus, loading: changingStatus } = useChangeUserStatus();
 
@@ -94,12 +95,16 @@ export default function UsersManagementPage() {
 
   const updateUserStatus = async (newStatus: "active" | "inactive" | "blocked", userId: string) => {
     const success = await changeUserStatus(userId, newStatus);
+    console.log("success", success);
     if (success) {
       refetch();
       summaryRefetch();
+      toast.success(status?.message || 'User status updated successfully');
       if (selectedUser?._id === userId) {
         setSelectedUser({ ...selectedUser, status: newStatus });
       }
+    } else {
+      toast.error('User status updated failed');
     }
     setIsDeactivateModalOpen(false);
   };
@@ -118,7 +123,7 @@ export default function UsersManagementPage() {
                 className="object-cover"
               />
             ) : (
-              <span className="text-primary font-bold text-xs uppercase tracking-wider">
+              <span className="text-primary font-bold text-xs ">
                 {getInitials(item.fullName)}
               </span>
             )}
@@ -130,7 +135,12 @@ export default function UsersManagementPage() {
         </div>
       )
     },
-    { header: "PHONE", accessorKey: "phoneNumber" as const },
+    {
+      header: "PHONE",
+      render: (item: IUser) => (
+        <span className="text-muted-foreground">{item.phoneNumber || 'N/A'}</span>
+      )
+    },
     {
       header: "ROLE",
       render: (item: IUser) => (
@@ -151,10 +161,7 @@ export default function UsersManagementPage() {
     {
       header: "TERRITORY",
       render: (item: IUser) => (
-        <span className={cn(
-          "font-medium",
-          !item.territory ? "text-amber-500" : "text-muted-foreground"
-        )}>
+        <span className="font-medium text-muted-foreground">
           {item.territory || 'N/A'}
         </span>
       )
@@ -190,7 +197,7 @@ export default function UsersManagementPage() {
           {
             item?.role === "driver" ? (
               <Link href={`/admin/dashboard/users/${item._id}`} onClick={(e) => e.stopPropagation()}>
-                <button className="px-3 flex items-center gap-2 py-1 font-bold text-primary dark:text-[#00E5FF]/80 dark:bg-[#00E5FF]/10 rounded dark:hover:bg-[#00E5FF]/20 hover:bg-primary/10 transition-colors cursor-pointer">
+                <button className="px-3 py-1.5 text-[10px] font-medium text-primary bg-primary/10 border border-primary/20 rounded-md hover:bg-primary/20 transition-colors cursor-pointer flex items-center gap-1">
                   <FaEye /> Details
                 </button>
               </Link>
@@ -200,7 +207,7 @@ export default function UsersManagementPage() {
                 setSelectedUser(item);
                 setIsDetailsDrawerOpen(true);
               }}
-              className="px-3 flex items-center gap-2 py-1 font-bold text-primary dark:text-[#00E5FF]/80 dark:bg-[#00E5FF]/10 rounded dark:hover:bg-[#00E5FF]/20 hover:bg-primary/10 transition-colors cursor-pointer">
+              className="px-3 py-1.5 text-[10px] font-medium text-primary bg-primary/10 border border-primary/20 rounded-md hover:bg-primary/20 transition-colors cursor-pointer flex items-center gap-1">
               <FaEye /> Details
             </button>
           }
@@ -210,14 +217,14 @@ export default function UsersManagementPage() {
   ];
 
   return (
-    <div className="space-y-6 animate-in fade-in zoom-in duration-500 pb-10">
+    <div className="space-y-6 animate-in fade-in zoom-in duration-500 pb-8 pb-10">
       {/* HEADER SECTION */}
       <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-xl font-bold tracking-tight text-foreground mb-1">
+          <h1 className="title mb-1">
             User & Role Management
           </h1>
-          <p className="text-[11px] text-muted-foreground font-medium uppercase tracking-wider">
+          <p className="text-[11px] text-muted-foreground font-medium ">
             Manage registered users, roles, territories, and account status
           </p>
         </div>
@@ -261,12 +268,12 @@ export default function UsersManagementPage() {
         <div className="flex flex-col gap-4 bg-muted/40">
 
           <div className="p-4 border-b border-[var(--border)] flex flex-col md:flex-row items-center justify-between gap-4 bg-muted/40">
-            <div className="relative w-full md:w-72">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <div className="relative w-full md:w-80 group">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary" />
               <input
                 type="text"
                 placeholder="Search users by name, email..."
-                className="w-full bg-[var(--background)] border border-[var(--border)] rounded-md py-2 pl-9 pr-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-[var(--primary)]  transition-colors"
+                className="w-full bg-[var(--background)] border border-[var(--border)] rounded-md py-2 pl-9 pr-3 text-xs font-medium text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-[var(--primary)]  transition-colors"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
@@ -275,7 +282,7 @@ export default function UsersManagementPage() {
             <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
               <div className="flex items-center gap-2 text-muted-foreground">
                 <Filter className="h-4 w-4" />
-                <span className="text-xs font-semibold uppercase tracking-wider">Filters</span>
+                <span className="text-xs font-semibold ">Filters</span>
               </div>
 
               <select
@@ -322,6 +329,12 @@ export default function UsersManagementPage() {
               loading={usersLoading}
               className='border-none dark:border dark:border-border'
               onRowClick={() => { }}
+              pagination={meta ? {
+                currentPage: meta.currentPage,
+                totalPage: meta.totalPage,
+                totalResult: meta.totalResult,
+                onPageChange: (page) => setQuery(prev => ({ ...prev, page }))
+              } : undefined}
             />
           </div>
         </div>
@@ -357,7 +370,7 @@ export default function UsersManagementPage() {
                   {selectedUser.profileUrl ? (
                     <Image src={selectedUser.profileUrl} alt="" fill className="object-cover" />
                   ) : (
-                    <span className="text-primary font-bold text-2xl uppercase tracking-wider">
+                    <span className="text-primary font-bold text-2xl ">
                       {getInitials(selectedUser.fullName)}
                     </span>
                   )}
@@ -457,7 +470,7 @@ export default function UsersManagementPage() {
             <div className="p-6 border-t border-border bg-card mt-auto">
               <button
                 onClick={() => { setSelectedUser(null); setIsDetailsDrawerOpen(false); }}
-                className="w-full cursor-pointer py-2.5 text-sm font-bold text-[var(--background)] bg-primary rounded-lg shadow-sm transition-all hover:bg-cyan-400"
+                className="w-full cursor-pointer py-2.5 text-sm font-medium text-[var(--background)] bg-primary rounded-lg shadow-sm transition-all hover:bg-cyan-400"
               >
                 Done
               </button>
@@ -479,7 +492,7 @@ export default function UsersManagementPage() {
             </div>
             <div className="p-5 space-y-4">
               <div>
-                <label className="block text-xs font-medium text-muted-foreground mb-1.5 uppercase tracking-wider">Territory / Region</label>
+                <label className="block text-xs font-medium text-muted-foreground mb-1.5 ">Territory / Region</label>
                 <select className="w-full bg-[var(--card)] border border-[var(--border)] rounded-lg p-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--primary)] cursor-pointer transition-colors">
                   <option className="cursor-pointer">Select Territory...</option>
                   <option className="cursor-pointer" value="Northeast">Northeast</option>
@@ -490,14 +503,14 @@ export default function UsersManagementPage() {
               </div>
             </div>
             <div className="p-4 bg-[var(--card)] border-t border-[var(--border)] flex justify-end gap-3">
-              <button onClick={() => setIsTerritoryModalOpen(false)} className="px-4 py-2 text-xs font-bold text-muted-foreground hover:text-foreground transition-colors">
+              <button onClick={() => setIsTerritoryModalOpen(false)} className="px-4 py-2 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors">
                 Cancel
               </button>
               <button
                 onClick={() => {
                   setIsTerritoryModalOpen(false);
                 }}
-                className="px-5 py-2 text-xs font-bold text-[var(--background)] bg-primary rounded-lg shadow-sm transition-all hover:bg-cyan-400"
+                className="px-5 py-2 text-xs font-medium text-[var(--background)] bg-primary rounded-lg shadow-sm transition-all hover:bg-cyan-400"
               >
                 Save Changes
               </button>
@@ -523,14 +536,14 @@ export default function UsersManagementPage() {
             <div className="p-4 bg-card border-t border-border flex gap-3">
               <button
                 onClick={() => setIsDeactivateModalOpen(false)}
-                className="flex-1 py-2 text-xs font-bold text-muted-foreground bg-muted rounded-lg hover:bg-muted/80 transition-colors cursor-pointer"
+                className="flex-1 py-2 text-xs font-medium text-muted-foreground bg-muted rounded-lg hover:bg-muted/80 transition-colors cursor-pointer"
                 disabled={changingStatus}
               >
                 Cancel
               </button>
               <button
                 onClick={() => selectedUser && updateUserStatus('inactive', selectedUser._id)}
-                className="flex-1 py-2 text-xs font-bold text-white bg-rose-500 rounded-lg shadow-sm transition-all hover:bg-rose-600 disabled:opacity-50 cursor-pointer"
+                className="flex-1 py-2 text-xs font-medium text-white bg-rose-500 rounded-lg shadow-sm transition-all hover:bg-rose-600 disabled:opacity-50 cursor-pointer"
                 disabled={changingStatus}
               >
                 {changingStatus ? 'Processing...' : 'Confirm'}
@@ -548,7 +561,7 @@ export default function UsersManagementPage() {
             <div className="p-5 border-b border-[var(--border)] flex justify-between items-center">
               <div>
                 <h3 className="font-bold text-foreground">Add Representative</h3>
-                <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold mt-0.5">
+                <p className="text-[10px] text-muted-foreground  font-semibold mt-0.5">
                   Assign representatives to {selectedUser?.fullName}
                 </p>
               </div>
@@ -599,7 +612,7 @@ export default function UsersManagementPage() {
                             {rep.profileUrl ? (
                               <Image src={rep.profileUrl} alt="" fill className="object-cover" />
                             ) : (
-                              <span className="text-primary font-bold text-xs uppercase tracking-wider">
+                              <span className="text-primary font-bold text-xs ">
                                 {getInitials(rep.fullName)}
                               </span>
                             )}
@@ -627,14 +640,14 @@ export default function UsersManagementPage() {
             </div>
 
             <div className="p-4 bg-[var(--card)] border-t border-[var(--border)] flex justify-end gap-3">
-              <button onClick={() => setIsRepModalOpen(false)} className="px-4 py-2 text-xs font-bold text-muted-foreground hover:text-foreground transition-colors">
+              <button onClick={() => setIsRepModalOpen(false)} className="px-4 py-2 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors">
                 Cancel
               </button>
               <button
                 onClick={() => {
                   setIsRepModalOpen(false);
                 }}
-                className="px-5 py-2 text-xs font-bold text-[var(--background)] bg-primary rounded-lg shadow-sm transition-all hover:bg-cyan-400 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-5 py-2 text-xs font-medium text-[var(--background)] bg-primary rounded-lg shadow-sm transition-all hover:bg-cyan-400 disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={selectedRepIds.length === 0}
               >
                 Confirm Assignment ({selectedRepIds.length})

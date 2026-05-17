@@ -20,7 +20,7 @@ const NotificationItem = ({ notification }: { notification: INotification }) => 
 
     return (
         <div
-            className={`flex items-start p-5 transition duration-200 hover:bg-muted/50 group relative animate-in fade-in slide-in-from-bottom-2 duration-300 ${!isActuallyRead ? "bg-primary/5 dark:bg-primary/10" : "bg-card"
+            className={`flex items-start px-5 py-3 transition duration-200 hover:bg-muted/50 group relative animate-in fade-in slide-in-from-bottom-2 duration-300 ${!isActuallyRead ? "bg-primary/5 dark:bg-primary/10" : "bg-card"
                 }`}
         >
             {!isActuallyRead && (
@@ -53,17 +53,17 @@ const NotificationItem = ({ notification }: { notification: INotification }) => 
             </div>
 
             <div className="grow pr-8">
-                <p className={`text-foreground leading-snug text-base ${!isActuallyRead ? "font-bold" : "font-medium"}`}>
+                <p className={`text-foreground leading-snug text-sm ${!isActuallyRead ? "font-bold" : "font-medium"}`}>
                     {title}
                 </p>
                 {description && (
-                    <p className="text-sm text-muted-foreground mt-1 line-clamp-2 leading-relaxed">
+                    <p className="text-xs text-muted-foreground mt-1 line-clamp-2 leading-relaxed">
                         {description}
                     </p>
                 )}
 
                 <div className="flex items-center gap-2 mt-2.5">
-                    <span className="text-xs font-bold text-muted-foreground uppercase tracking-widest">
+                    <span className="text-xs font-medium text-muted-foreground uppercase">
                         {sender?.name || "System"}
                     </span>
                     <span className="w-1 h-1 rounded-full bg-border" />
@@ -159,7 +159,7 @@ export default function Notifications() {
         <div className="bg-background pb-8">
             <div className="bg-card rounded-3xl border border-border overflow-hidden transition-all duration-300">
                 {/* Header Section */}
-                <header className="flex items-center p-6 md:p-8 border-b border-border bg-card/80 backdrop-blur-xl sticky top-0 z-20">
+                <header className="flex items-center p-6 md:p-8 border-b border-border bg-muted backdrop-blur-xl sticky top-0 z-20">
                     <button
                         onClick={() => router.back()}
                         className="p-2 rounded-full dark:bg-muted text-muted-foreground hover:text-foreground dark:hover:bg-muted/80 transition-all cursor-pointer hover:bg-primary/10 group"
@@ -169,10 +169,10 @@ export default function Notifications() {
                     </button>
 
                     <div className="ml-5">
-                        <h1 className="text-2xl font-bold text-foreground tracking-tight">
+                        <h1 className="title mb-1">
                             Notifications
                         </h1>
-                        <p className="text-sm text-muted-foreground font-medium mt-0.5">
+                        <p className="text-xs text-muted-foreground font-medium">
                             Stay updated with your latest alerts and account activities
                         </p>
                     </div>

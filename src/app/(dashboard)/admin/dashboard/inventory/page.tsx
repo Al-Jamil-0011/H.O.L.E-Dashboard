@@ -76,7 +76,7 @@ export default function InventoryPage() {
       header: "TYPE",
       render: (item: any) => (
         <span className={cn(
-          "px-2 py-1 text-[10px] font-bold uppercase tracking-wider rounded border",
+          "px-2 py-1 text-[10px] font-bold  rounded border",
           item.productType === 'Implant' ? "bg-purple-500/10 text-purple-400 border-purple-500/20" :
             item.productType === 'Tray' ? "bg-amber-500/10 text-amber-500 border-amber-500/20" :
               "bg-[#00E5FF]/10 text-[#00E5FF] border-[#00E5FF]/20"
@@ -174,7 +174,7 @@ export default function InventoryPage() {
       render: (item: any) => (
         <button
           onClick={(e) => { e.stopPropagation(); handleRowClick(item); }}
-          className="px-3 py-1.5 text-[10px] font-bold text-primary bg-primary/10 border border-primary/20 rounded-md hover:bg-primary/20 transition-colors cursor-pointer"
+          className="px-3 py-1.5 text-[10px] font-medium text-primary bg-primary/10 border border-primary/20 rounded-md hover:bg-primary/20 transition-colors cursor-pointer"
         >
           Details
         </button>
@@ -183,20 +183,20 @@ export default function InventoryPage() {
   ];
 
   return (
-    <div className="space-y-6 animate-in fade-in zoom-in duration-500 pb-10">
+    <div className="space-y-6 animate-in fade-in zoom-in duration-500 pb-8 pb-10">
 
       {/* HEADER SECTION */}
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-xl font-bold tracking-tight text-foreground mb-1">
+          <h1 className="title mb-1">
             Inventory Management
           </h1>
-          <p className="text-[11px] text-muted-foreground font-medium uppercase tracking-wider">
+          <p className="text-[11px] text-muted-foreground font-medium ">
             Monitor, track, and transfer medical inventory globally
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <button className="flex items-center gap-2 px-4 py-2 text-xs font-semibold text-muted-foreground bg-card rounded-lg dark:shadow-sm border border-border transition-colors hover:text-foreground hover:bg-muted cursor-pointer">
+          <button className="px-4 py-1.5 text-xs font-medium text-muted-foreground bg-[var(--card)] rounded dark:shadow-sm border border-[var(--border)] transition-colors hover:text-foreground cursor-pointer flex items-center gap-1">
             <Filter className="h-4 w-4" /> Export CSV
           </button>
         </div>
@@ -250,7 +250,7 @@ export default function InventoryPage() {
                   key={tab}
                   onClick={() => setActiveTab(tab as any)}
                   className={cn(
-                    "px-6 py-1.5 text-xs font-bold rounded-md transition-all whitespace-nowrap cursor-pointer",
+                    "px-6 py-1.5 text-xs font-medium rounded-md transition-all whitespace-nowrap cursor-pointer",
                     activeTab === tab
                       ? "bg-[var(--border)] text-foreground dark:shadow-sm"
                       : "text-muted-foreground dark:hover:text-gray-200 hover:bg-[var(--border)]/50"
@@ -266,7 +266,7 @@ export default function InventoryPage() {
             <select
               value={selectedFacility}
               onChange={(e) => setSelectedFacility(e.target.value)}
-              className="w-full sm:w-auto bg-muted border border-border rounded-lg py-2 px-3 text-xs font-bold text-foreground focus:outline-none focus:border-primary transition-colors appearance-none cursor-pointer"
+              className="w-full sm:w-auto bg-[var(--background)] border border-border rounded-lg py-2 px-3 text-xs font-medium text-foreground focus:outline-none focus:border-primary transition-colors appearance-none cursor-pointer"
             >
               <option value="all">All Facilities</option>
               {facilityOptions?.length > 0 && facilityOptions?.map((facility) => (
@@ -275,14 +275,15 @@ export default function InventoryPage() {
                 </option>
               ))}
             </select>
-            <div className="relative w-full sm:w-64">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+
+            <div className="relative w-full md:w-64 group">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary" />
               <input
                 type="text"
                 placeholder="Search inventory..."
+                className="w-full bg-[var(--background)] border border-[var(--border)] rounded-md py-2 pl-9 pr-3 text-xs font-medium text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-[var(--primary)]  transition-colors"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full bg-muted border border-border rounded-lg py-2 pl-9 pr-3 text-xs font-bold text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:border-primary transition-colors"
               />
             </div>
           </div>

@@ -96,7 +96,7 @@ export default function SupportPage() {
             e.stopPropagation();
             handleViewDetails(item);
           }}
-          className="flex items-center gap-2 px-3 py-1.5 text-[10px] font-bold text-primary bg-primary/10 border border-primary/20 rounded-lg hover:bg-primary/20 transition-all cursor-pointer group"
+          className="flex items-center gap-2 px-3 py-1.5 text-[10px] font-medium text-primary bg-primary/10 border border-primary/20 rounded-lg hover:bg-primary/20 transition-all cursor-pointer group"
         >
           View Details
         </button>
@@ -113,10 +113,10 @@ export default function SupportPage() {
     <div className="space-y-8 animate-in fade-in duration-700  pb-20">
 
       <div>
-        <h1 className="text-3xl font-medium text-foreground mb-1">
+        <h1 className="title mb-1">
           Support Center
         </h1>
-        <p className="text-sm text-muted-foreground font-medium">
+        <p className="text-xs text-muted-foreground font-medium">
           Manage and respond to user inquiries and feedback
         </p>
       </div>
@@ -145,7 +145,7 @@ export default function SupportPage() {
       </div>
 
       {/* TABLE SECTION */}
-      <div className="bg-card rounded-2xl border border-border overflow-hidden">
+      <div className="bg-muted rounded-2xl border border-border overflow-hidden">
         <div className="p-5 border-b border-border bg-muted/30 flex items-center justify-between">
           <div className="flex items-center gap-2 justify-between w-full">
             <div className="flex items-center gap-2">
@@ -157,15 +157,13 @@ export default function SupportPage() {
             </div>
 
             <div className="relative w-full md:w-80 group">
-              <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-                <Search className="h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
-              </div>
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
               <input
                 type="text"
-                placeholder="Search by subject or user..."
+                placeholder="Search users by name..."
+                className="w-full bg-[var(--background)] border border-[var(--border)] rounded-md py-2 pl-9 pr-3 text-xs font-medium text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-[var(--primary)] transition-colors"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full bg-card border border-border rounded-xl py-2.5 pl-10 pr-4 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all dark:shadow-sm"
               />
             </div>
           </div>

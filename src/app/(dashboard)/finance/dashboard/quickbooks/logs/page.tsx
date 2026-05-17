@@ -12,6 +12,7 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import Link from 'next/link';
 import { useState, useMemo } from 'react';
 import { DataTable, StatusBadge } from '@/components/ui/DataTable';
+import { CommonFilterPill } from '@/components/stats-card';
 
 dayjs.extend(relativeTime);
 
@@ -34,7 +35,7 @@ export default function QuickBooksLogsPage() {
     {
       header: "SYNC TYPE",
       render: (item: any) => (
-        <span className="font-bold text-foreground text-[11px] uppercase tracking-wider">
+        <span className="font-bold text-foreground text-[11px] ">
           {item.syncType}
         </span>
       )
@@ -75,7 +76,7 @@ export default function QuickBooksLogsPage() {
   ];
 
   return (
-    <div className="space-y-6 animate-in fade-in zoom-in duration-500">
+    <div className="space-y-6 animate-in fade-in zoom-in duration-500 pb-8">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between border-b border-[var(--border)] pb-6">
         <div className="flex items-center gap-4">
           <Link
@@ -85,13 +86,10 @@ export default function QuickBooksLogsPage() {
             <ArrowLeft className="w-4 h-4 text-muted-foreground hover:text-primary" />
           </Link>
           <div>
-            <div className="flex items-center gap-2 mb-1">
-              <History className="w-5 h-5 text-primary" />
-              <h1 className="text-xl font-bold tracking-tight text-foreground">
-                Synchronization History
-              </h1>
-            </div>
-            <p className="text-[11px] text-muted-foreground font-medium uppercase tracking-wider">
+            <h1 className="text-xl font-bold tracking-tight text-foreground">
+              Synchronization History
+            </h1>
+            <p className="text-[11px] text-muted-foreground font-medium ">
               Detailed audit trail of all QuickBooks synchronization events
             </p>
           </div>
@@ -99,31 +97,31 @@ export default function QuickBooksLogsPage() {
       </div>
 
       <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
-        <div className="relative w-full md:w-96 group">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground transition-colors group-focus-within:text-primary" />
+        <div className="relative w-full md:w-80 group">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
           <input
             type="text"
             placeholder="Search sync events..."
-            className="w-full pl-9 pr-4 py-2 text-sm bg-[var(--card)] border border-[var(--border)] rounded-lg focus:outline-none focus:ring-1 focus:ring-primary/30 transition-all placeholder:text-muted-foreground/50"
+            className="w-full bg-[var(--background)] border border-[var(--border)] rounded-md py-2 pl-9 pr-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-[var(--primary)] transition-colors"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
 
-        <div className="flex items-center gap-2 p-1 bg-muted/50 rounded-lg border border-[var(--border)] w-full md:w-auto">
-          <FilterPill
+        <div className="flex items-center gap-2 p-1">
+          <CommonFilterPill
             text="All"
             active={statusFilter === 'all'}
             onClick={() => setStatusFilter('all')}
           />
-          <FilterPill
+          <CommonFilterPill
             text="Success"
             active={statusFilter === 'success'}
             color="text-emerald-400 hover:bg-emerald-500/10"
             activeColor="bg-emerald-500 text-white"
             onClick={() => setStatusFilter('success')}
           />
-          <FilterPill
+          <CommonFilterPill
             text="Errors"
             active={statusFilter === 'error'}
             color="text-rose-400 hover:bg-rose-500/10"
@@ -133,7 +131,7 @@ export default function QuickBooksLogsPage() {
         </div>
       </div>
 
-      <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] shadow-xl overflow-hidden flex flex-col">
+      <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] dark:shadow-xl overflow-hidden flex flex-col">
         <div className="flex-1 p-2">
           <DataTable
             data={filteredLogs}
@@ -145,22 +143,4 @@ export default function QuickBooksLogsPage() {
       </div>
     </div>
   );
-}
-
-function FilterPill({ text, active, onClick, color, activeColor }: { text: string, active: boolean, onClick: () => void, color?: string, activeColor?: string }) {
-  const baseClasses = "px-4 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded transition-all duration-200 cursor-pointer border border-transparent flex-1 md:flex-none text-center";
-
-  if (active) {
-    return (
-      <button onClick={onClick} className={cn(baseClasses, activeColor || "bg-[var(--border)] text-foreground")}>
-        {text}
-      </button>
-    );
-  }
-
-  return (
-    <button onClick={onClick} className={cn(baseClasses, color || "text-muted-foreground hover:text-foreground hover:bg-[var(--border)]/30")}>
-      {text}
-    </button>
-  )
 }

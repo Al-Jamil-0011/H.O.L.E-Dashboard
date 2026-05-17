@@ -3,8 +3,7 @@
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import Loader from '@/components/loader';
-import { useAboutUs, useTerms, useUpdateAboutUs, useUpdateTermService } from '@/hooks/settings';
-import { useTheme } from 'next-themes';
+import { useTerms, useUpdateTermService } from '@/hooks/settings';
 import toast from 'react-hot-toast';
 
 // Import SunEditor CSS
@@ -63,7 +62,7 @@ export default function EditAboutUsPage() {
 
     return (
         <div className="bg-background text-foreground space-y-6 animate-in fade-in duration-500 pb-10">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-card p-5 rounded-xl border border-border shadow-sm gap-4">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-card p-5 rounded-xl border border-border dark:shadow-sm gap-4">
                 <div className="flex items-center gap-3">
                     <button
                         onClick={() => router.back()}
@@ -78,14 +77,14 @@ export default function EditAboutUsPage() {
                 <button
                     onClick={handleSave}
                     disabled={isSaving}
-                    className="bg-primary text-background px-8 py-2.5 rounded-lg font-bold hover:opacity-90 transition-all disabled:opacity-50 shadow-lg shadow-primary/20 flex items-center gap-2 cursor-pointer w-full sm:w-auto justify-center"
+                    className="bg-primary text-background px-8 py-2.5 rounded-lg font-medium hover:opacity-90 transition-all disabled:opacity-50 dark:shadow-lg dark:shadow-primary/20 flex items-center gap-2 cursor-pointer w-full sm:w-auto justify-center text-sm"
                 >
                     {isSaving && <div className="h-4 w-4 border-2 border-background border-t-transparent rounded-full animate-spin" />}
                     {isSaving ? 'Saving...' : 'Save Changes'}
                 </button>
             </div>
 
-            <div className="rounded-xl border border-border overflow-hidden bg-card shadow-md transition-all">
+            <div className="rounded-xl border border-border overflow-hidden bg-card dark:shadow-md transition-all">
                 <SunEditor
                     setContents={content}
                     onChange={setContent}

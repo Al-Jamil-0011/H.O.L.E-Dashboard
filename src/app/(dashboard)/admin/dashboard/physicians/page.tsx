@@ -134,91 +134,99 @@ export default function PhysiciansAndSurgeriesPage() {
   ];
 
   return (
-    <div className="space-y-6 animate-in fade-in zoom-in duration-500 pb-12">
+    <>
+      <div className="space-y-6 animate-in fade-in zoom-in duration-500 pb-8 pb-12">
 
-      {/* HEADER SECTION */}
-      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight text-foreground mb-1">
-            {activeTab === 'physicians' ? 'Physicians' : 'All Surgeries'}
-          </h1>
-          <p className="text-[11px] text-muted-foreground font-medium uppercase tracking-wider">
-            {activeTab === 'physicians' ? 'Manage doctors & surgeries' : 'Manage all scheduled and completed surgeries'}
-          </p>
+        {/* HEADER SECTION */}
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div>
+            <h1 className="title mb-1">
+              {activeTab === 'physicians' ? 'Physicians' : 'All Surgeries'}
+            </h1>
+            <p className="text-[11px] text-muted-foreground font-medium ">
+              {activeTab === 'physicians' ? 'Manage doctors & surgeries' : 'Manage all scheduled and completed surgeries'}
+            </p>
+          </div>
+          <button
+            onClick={() => activeTab === 'physicians' ? setIsAddPhysicianOpen(true) : setIsAddSurgeryOpen(true)}
+            className="w-full sm:w-auto flex items-center justify-center gap-2 px-3.5 py-2 text-sm font-medium text-white dark:text-black bg-primary rounded-xl shadow-lg shadow-primary/20 hover:opacity-90 transition-all cursor-pointer"
+          >
+            <Plus className="h-4 w-4" />
+            {activeTab === 'physicians' ? 'Add Physician' : 'Add Surgery'}
+          </button>
         </div>
-        <div className="flex items-center gap-3">
-          <div className="flex items-center bg-muted p-1 rounded-xl border border-border">
-            {['physicians', 'surgeries'].map(tab => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab as any)}
-                className={cn(
-                  "px-5 py-2 text-sm font-bold rounded-lg transition-all capitalize cursor-pointer",
-                  activeTab === tab ? "bg-card text-foreground dark:shadow-sm" : "text-muted-foreground hover:text-foreground"
-                )}
-              >
-                {tab}
-              </button>
-            ))}
+
+        <div className="rounded-xl border border-gray-200 dark:border-[#1E293B] dark:bg-[#151B2B] dark:shadow-lg flex flex-col overflow-hidden">
+          {/* FILTER BAR */}
+          <div className="flex flex-col gap-4 bg-muted">
+            <div className="flex md:items-center flex-col md:flex-row gap-2 justify-between p-4">
+              <div className="flex items-center gap-3">
+                <div className="flex items-center bg-[var(--background)] p-1 rounded-xl border border-border">
+                  {['physicians', 'surgeries'].map(tab => (
+                    <button
+                      key={tab}
+                      onClick={() => setActiveTab(tab as any)}
+                      className={cn(
+                        "px-5 py-1.5 text-sm font-medium rounded-lg transition-all capitalize cursor-pointer",
+                        activeTab === tab ? "bg-muted text-foreground dark:shadow-sm" : "text-muted-foreground hover:text-foreground"
+                      )}
+                    >
+                      {tab}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className="flex flex-col sm:flex-row items-center gap-4">
+                <div className="relative w-full md:w-80 group">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
+                  <input
+                    type="text"
+                    placeholder={activeTab === 'physicians' ? "Search by name, specialty, or practice..." : "Search by patient, facility or procedure..."}
+                    className="w-full bg-[var(--background)] border border-[var(--border)] rounded-md py-2 pl-9 pr-3 text-xs font-medium text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-[var(--primary)] transition-colors"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                  />
+                </div>
+              </div>
+            </div>
+            <div>
+              {activeTab === 'physicians' ? (
+                <DataTable
+                  data={physicians}
+                  columns={physicianColumns}
+                  loading={isPhysiciansLoading}
+                  className="rounded-none border-0"
+                  onRowClick={() => { }}
+                  pagination={{
+                    currentPage: physicianMeta?.currentPage || 1,
+                    totalPage: physicianMeta?.totalPage || 1,
+                    totalResult: physicianMeta?.totalResult || 0,
+                    onPageChange: (page) => setPhysicianQuery(prev => ({ ...prev, page }))
+                  }}
+                />
+              ) : (
+                <DataTable
+                  data={surgeries}
+                  columns={surgeryColumns}
+                  loading={isSurgeriesLoading}
+                  className="rounded-none border-0"
+                  onRowClick={() => { }}
+                  pagination={{
+                    currentPage: surgeryMeta?.currentPage || 1,
+                    totalPage: surgeryMeta?.totalPage || 1,
+                    totalResult: surgeryMeta?.totalResult || 0,
+                    onPageChange: (page) => setSurgeriesQuery(prev => ({ ...prev, page }))
+                  }}
+                />
+              )}
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* SEARCH AND ADD BUTTON */}
-      <div className="flex flex-col sm:flex-row items-center gap-4">
-        <div className="relative w-full sm:flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <input
-            type="text"
-            placeholder={activeTab === 'physicians' ? "Search by name, specialty, or practice..." : "Search by patient, facility or procedure..."}
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-card border border-border rounded-xl py-3 pl-10 pr-4 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:border-primary transition-all dark:shadow-sm"
-          />
-        </div>
-        <button className="hidden sm:flex items-center gap-2 px-4 py-3 text-sm font-bold text-muted-foreground bg-card border border-border rounded-xl hover:text-foreground hover:bg-muted transition-colors cursor-pointer">
-          <Filter className="h-4 w-4" /> Filter
-        </button>
-        <button
-          onClick={() => activeTab === 'physicians' ? setIsAddPhysicianOpen(true) : setIsAddSurgeryOpen(true)}
-          className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 text-sm font-bold text-white bg-primary rounded-xl shadow-lg shadow-primary/20 hover:opacity-90 transition-all cursor-pointer"
-        >
-          <Plus className="h-4 w-4" />
-          {activeTab === 'physicians' ? 'Add Physician' : 'Add Surgery'}
-        </button>
-      </div>
 
-      {/* DATA TABLE CONTAINER */}
-      <div className="rounded-2xl border border-border bg-card dark:shadow-sm overflow-hidden">
-        {activeTab === 'physicians' ? (
-          <DataTable
-            data={physicians}
-            columns={physicianColumns}
-            loading={isPhysiciansLoading}
-            className="rounded-none border-0"
-            onRowClick={() => { }}
-            pagination={{
-              currentPage: physicianMeta?.currentPage || 1,
-              totalPage: physicianMeta?.totalPage || 1,
-              totalResult: physicianMeta?.totalResult || 0,
-              onPageChange: (page) => setPhysicianQuery(prev => ({ ...prev, page }))
-            }}
-          />
-        ) : (
-          <DataTable
-            data={surgeries}
-            columns={surgeryColumns}
-            loading={isSurgeriesLoading}
-            className="rounded-none border-0"
-            onRowClick={() => { }}
-            pagination={{
-              currentPage: surgeryMeta?.currentPage || 1,
-              totalPage: surgeryMeta?.totalPage || 1,
-              totalResult: surgeryMeta?.totalResult || 0,
-              onPageChange: (page) => setSurgeriesQuery(prev => ({ ...prev, page }))
-            }}
-          />
-        )}
+        {/* DATA TABLE CONTAINER */}
+
+
       </div>
 
       {/* MODALS */}
@@ -229,7 +237,7 @@ export default function PhysiciansAndSurgeriesPage() {
         setIsAddSurgeryOpen(false);
       }} refetch={refetchSurgeries} />
 
-    </div>
+    </>
   );
 }
 

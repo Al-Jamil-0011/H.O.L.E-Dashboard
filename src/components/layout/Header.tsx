@@ -131,7 +131,7 @@ export function Header({ onMenuClick }: HeaderProps) {
                           <p className="text-xs text-muted-foreground mt-1 line-clamp-2 leading-relaxed">
                             {notif.description}
                           </p>
-                          <p className="text-[10px] text-muted-foreground mt-2 font-medium uppercase tracking-wider">
+                          <p className="text-[10px] text-muted-foreground mt-2 font-medium ">
                             {dayjs(notif.createdAt).fromNow()}
                           </p>
                         </div>
@@ -151,7 +151,7 @@ export function Header({ onMenuClick }: HeaderProps) {
               <Link
                 href={`/${profile?.role}/dashboard/notifications`}
                 onClick={() => setIsNotificationDropdownOpen(false)}
-                className="block p-4 text-center text-xs font-bold text-primary hover:bg-primary/5 transition-colors border-t border-border uppercase tracking-widest"
+                className="block p-4 text-center text-xs font-medium text-primary hover:bg-primary/5 transition-colors border-t border-border "
               >
                 View All Notifications
               </Link>

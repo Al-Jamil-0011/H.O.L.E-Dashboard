@@ -74,7 +74,7 @@ export default function CommissionDetailsPage() {
                         <div className="flex items-center gap-3">
                             <h1 className="text-xl font-bold text-foreground tracking-tight">Commission #{sale?.saleId}</h1>
                             <span className={cn(
-                                "px-2 py-0.5 text-[10px] font-black rounded uppercase tracking-widest",
+                                "px-2 py-0.5 text-[10px] font-medium rounded uppercase tracking-widest",
                                 status === 'PAID' ? "bg-emerald-500/10 text-emerald-500 border border-emerald-500/20" :
                                     "bg-amber-500/10 text-amber-500 border border-amber-500/20"
                             )}>
@@ -91,7 +91,7 @@ export default function CommissionDetailsPage() {
                     {status !== 'PAID' && (
                         <button
                             onClick={() => setShowPaidModal(true)}
-                            className="flex items-center gap-2 px-4 py-2 bg-emerald-500 text-[#0B101E] hover:bg-emerald-400 rounded-lg transition-all text-sm font-bold dark:shadow-[0_0_15px_rgba(16,185,129,0.3)] cursor-pointer"
+                            className="flex items-center gap-2 px-4 py-2 bg-emerald-500 text-white dark:text-[#0B101E] hover:bg-emerald-400 rounded-lg transition-all text-sm font-medium dark:shadow-md dark:shadow-[0_0_15px_rgba(16,185,129,0.3)] cursor-pointer"
                         >
                             <CheckCircle2 className="h-4 w-4" />
                             <span>Mark as Paid</span>
@@ -109,7 +109,7 @@ export default function CommissionDetailsPage() {
                         </div>
                         <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Total Sale</span>
                     </div>
-                    <p className="text-xl font-black text-foreground">${sale?.billing?.totalAmount?.toLocaleString() || '0.00'}</p>
+                    <p className="text-xl font-medium text-foreground">${sale?.billing?.totalAmount?.toLocaleString() || '0.00'}</p>
                 </div>
                 <div className="bg-card border border-border p-4 rounded-xl dark:shadow-sm">
                     <div className="flex items-center gap-3 mb-2">
@@ -118,7 +118,7 @@ export default function CommissionDetailsPage() {
                         </div>
                         <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Commission Pool</span>
                     </div>
-                    <p className="text-xl font-black text-emerald-500">${sale?.representatives?.totalCommission?.toLocaleString() || '0.00'}</p>
+                    <p className="text-xl font-medium text-emerald-500">${sale?.representatives?.totalCommission?.toLocaleString() || '0.00'}</p>
                 </div>
                 <div className="bg-card border border-border p-4 rounded-xl border-t-2 border-t-primary dark:shadow-sm">
                     <div className="flex items-center gap-3 mb-2">
@@ -127,7 +127,7 @@ export default function CommissionDetailsPage() {
                         </div>
                         <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Your Share</span>
                     </div>
-                    <p className="text-xl font-black text-foreground">${sale?.representatives?.myCommission?.toLocaleString() || '0.00'}</p>
+                    <p className="text-xl font-medium text-foreground">${sale?.representatives?.myCommission?.toLocaleString() || '0.00'}</p>
                 </div>
                 <div className="bg-card border border-border p-4 rounded-xl dark:shadow-sm">
                     <div className="flex items-center gap-3 mb-2">
@@ -136,7 +136,7 @@ export default function CommissionDetailsPage() {
                         </div>
                         <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Vendor Payout</span>
                     </div>
-                    <p className="text-xl font-black text-foreground">${sale?.billing?.vendorPayment?.toLocaleString() || '0.00'}</p>
+                    <p className="text-xl font-medium text-foreground">${sale?.billing?.vendorPayment?.toLocaleString() || '0.00'}</p>
                 </div>
             </div>
 
@@ -280,14 +280,14 @@ export default function CommissionDetailsPage() {
                                 <div key={idx} className="flex items-center justify-between p-3 bg-muted/30 border border-border rounded-xl hover:border-primary/30 transition-colors">
                                     <div className="flex items-center gap-3">
                                         <div className="h-10 w-10 rounded-lg bg-card flex items-center justify-center text-primary border border-border">
-                                            <span className="text-xs font-black">#{idx + 1}</span>
+                                            <span className="text-xs font-medium">#{idx + 1}</span>
                                         </div>
                                         <div>
                                             <p className="text-sm font-bold text-foreground">{item.productType}</p>
-                                            <p className="text-[10px] text-muted-foreground uppercase tracking-tight font-medium">Product ID: {item.product}</p>
+                                            <p className="text-[10px] text-muted-foreground uppercase tracking-tight font-medium">Product ID: {typeof item.product === 'object' ? (item.product?.systemType || item.product?.serialNumber || item.product?._id) : item.product}</p>
                                         </div>
                                     </div>
-                                    <span className="px-3 py-1 bg-emerald-500/5 text-emerald-500 text-[10px] font-black border border-emerald-500/10 rounded-lg">LINKED</span>
+                                    <span className="px-3 py-1 bg-emerald-500/5 text-emerald-500 text-[10px] font-medium border border-emerald-500/10 rounded-lg">LINKED</span>
                                 </div>
                             ))}
                             {(!sale?.inventoryProducts || sale.inventoryProducts.length === 0) && (
@@ -304,18 +304,18 @@ export default function CommissionDetailsPage() {
 
                     {/* QUICK BILLING */}
                     <div className="bg-gradient-to-br from-card to-background rounded-xl border border-border p-5 dark:shadow-lg">
-                        <h2 className="text-sm font-black text-foreground mb-6 uppercase tracking-widest flex items-center gap-2">
+                        <h2 className="text-sm font-medium text-foreground mb-6 uppercase tracking-widest flex items-center gap-2">
                             <Receipt className="h-4 w-4 text-primary" />
                             Billing Status
                         </h2>
                         <div className="space-y-4">
                             <div className="flex items-center justify-between">
                                 <span className="text-[10px] text-muted-foreground font-bold uppercase">PO Number</span>
-                                <span className="text-xs text-foreground font-black">{sale?.billing?.purchaseOrderNumber || 'N/A'}</span>
+                                <span className="text-xs text-foreground font-medium">{sale?.billing?.purchaseOrderNumber || 'N/A'}</span>
                             </div>
                             <div className="flex items-center justify-between">
                                 <span className="text-[10px] text-muted-foreground font-bold uppercase">Invoice No</span>
-                                <span className="text-xs text-primary font-black">{sale?.invoice?.invoiceNumber || 'PENDING'}</span>
+                                <span className="text-xs text-primary font-medium">{sale?.invoice?.invoiceNumber || 'PENDING'}</span>
                             </div>
                             <div className="flex items-center justify-between">
                                 <span className="text-[10px] text-muted-foreground font-bold uppercase">Invoice Date</span>
@@ -325,7 +325,7 @@ export default function CommissionDetailsPage() {
                             <div className="flex items-center justify-between">
                                 <span className="text-[10px] text-muted-foreground font-bold uppercase">Commission Status</span>
                                 <span className={cn(
-                                    "text-[10px] font-black px-2 py-0.5 rounded",
+                                    "text-[10px] font-medium px-2 py-0.5 rounded",
                                     status === 'PAID' ? "bg-emerald-500/20 text-emerald-500" : "bg-amber-500/20 text-amber-500"
                                 )}>
                                     {status}
@@ -411,9 +411,9 @@ export default function CommissionDetailsPage() {
             {/* CONFIRM PAID MODAL */}
             {showPaidModal && (
                 <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-                    <div className="bg-card border border-border rounded-2xl w-full max-w-md overflow-hidden animate-in zoom-in duration-300 dark:shadow-2xl">
+                    <div className="bg-card border border-border rounded-2xl w-full max-w-md overflow-hidden animate-in zoom-in duration-300 shadow-xl dark:shadow-2xl">
                         <div className="p-8 text-center">
-                            <div className="h-16 w-16 rounded-full bg-emerald-500/10 flex items-center justify-center mx-auto mb-4 border border-emerald-500/20 dark:shadow-[0_0_20px_rgba(16,185,129,0.1)]">
+                            <div className="h-16 w-16 rounded-full bg-emerald-500/10 flex items-center justify-center mx-auto mb-4 border border-emerald-500/20 shadow-sm dark:shadow-[0_0_20px_rgba(16,185,129,0.1)]">
                                 <CheckCircle2 className="h-8 w-8 text-emerald-500" />
                             </div>
                             <h3 className="text-lg font-bold text-foreground mb-2">Confirm Payout</h3>
@@ -423,14 +423,14 @@ export default function CommissionDetailsPage() {
                             <div className="flex gap-3 mt-8">
                                 <button
                                     onClick={() => setShowPaidModal(false)}
-                                    className="flex-1 py-2.5 bg-muted hover:bg-muted/80 text-foreground rounded-lg text-sm font-bold transition-colors cursor-pointer"
+                                    className="flex-1 py-2.5 bg-muted hover:bg-muted/80 text-foreground rounded-lg text-sm font-medium transition-all cursor-pointer"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     onClick={handleMarkAsPaid}
                                     disabled={isMarkingPaid}
-                                    className="flex-1 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-white dark:text-[#0B101E] rounded-lg text-sm font-bold transition-all dark:shadow-lg flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                                    className="flex-1 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-white dark:text-[#0B101E] rounded-lg text-sm font-medium transition-all shadow-md dark:shadow-lg flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
                                 >
                                     {isMarkingPaid ? (
                                         <div className="h-4 w-4 border-2 border-white dark:border-black border-t-transparent rounded-full animate-spin" />

@@ -42,7 +42,7 @@ export default function InvoicesPage() {
       render: (item: typeof invoiceData[0]) => (
         <div className="flex items-center gap-2">
           {item.status !== 'PAID' && (
-            <button className="px-3 py-1 text-[10px] font-bold text-[var(--background)] bg-emerald-500 rounded hover:bg-emerald-400 transition-colors">
+            <button className="px-3 py-1 text-[10px] font-medium text-[var(--background)] bg-emerald-500 rounded hover:bg-emerald-400 transition-colors">
               Mark Paid
             </button>
           )}
@@ -58,21 +58,21 @@ export default function InvoicesPage() {
   ];
 
   return (
-    <div className="space-y-6 animate-in fade-in zoom-in duration-500">
+    <div className="space-y-6 animate-in fade-in zoom-in duration-500 pb-8">
       <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
         <div>
           <h1 className="text-xl font-bold tracking-tight text-foreground mb-1">
             Invoice Management
           </h1>
-          <p className="text-[11px] text-muted-foreground font-medium uppercase tracking-wider">
+          <p className="text-[11px] text-muted-foreground font-medium ">
             Hospital invoice generation and tracking
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <button className="px-4 py-1.5 text-xs font-semibold text-muted-foreground bg-[var(--card)] rounded shadow-sm border border-[var(--border)] transition-colors hover:text-foreground">
+          <button className="px-4 py-1.5 text-xs font-medium text-muted-foreground bg-[var(--card)] rounded shadow-sm border border-[var(--border)] transition-colors hover:text-foreground">
             Export All
           </button>
-          <button className="px-4 py-1.5 text-xs font-bold text-[var(--background)] bg-primary rounded shadow-sm transition-all hover:bg-cyan-400">
+          <button className="px-4 py-1.5 text-xs font-medium text-[var(--background)] bg-primary rounded shadow-sm transition-all hover:bg-cyan-400">
             Generate Invoices
           </button>
         </div>
@@ -97,7 +97,7 @@ export default function InvoicesPage() {
 }
 
 function FilterPill({ text, active, onClick, color, activeColor }: { text: string, active: boolean, onClick: () => void, color?: string, activeColor?: string }) {
-  const baseClasses = "px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded border border-[var(--border)] transition-all cursor-pointer";
+  const baseClasses = "px-3 py-1.5 text-[10px] font-bold  rounded border border-[var(--border)] transition-all cursor-pointer";
 
   if (active) {
     return (

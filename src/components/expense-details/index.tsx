@@ -70,14 +70,14 @@ export const ExpenseDetails = ({ expenseId }: { expenseId: string }) => {
                         <button
                             onClick={() => handleReject()}
                             disabled={isUpdating}
-                            className="px-4 py-2 bg-transparent border border-border hover:bg-rose-500/10 hover:text-rose-500 hover:border-rose-500/20 text-foreground rounded-2xl text-sm font-bold flex items-center justify-center gap-2 transition-all cursor-pointer disabled:opacity-50"
+                            className="px-4 py-2 bg-transparent border border-border hover:bg-rose-500/10 hover:text-rose-500 hover:border-rose-500/20 text-foreground rounded-2xl text-sm font-medium flex items-center justify-center gap-2 transition-all cursor-pointer disabled:opacity-50"
                         >
                             <X className="h-4 w-4" /> Reject Expense
                         </button>
                         <button
                             onClick={() => handleApprove()}
                             disabled={isUpdating}
-                            className="px-4 py-2 bg-primary text-background rounded-2xl text-sm font-black flex items-center justify-center gap-2 transition-all dark:shadow-lg hover:bg-primary/90 cursor-pointer disabled:opacity-50"
+                            className="px-4 py-2 bg-primary text-background rounded-2xl text-sm font-medium flex items-center justify-center gap-2 transition-all dark:shadow-lg hover:bg-primary/90 cursor-pointer disabled:opacity-50"
                         >
                             <CheckCircle2 className="h-5 w-5" /> Approve & Confirm
                         </button>
@@ -104,8 +104,8 @@ export const ExpenseDetails = ({ expenseId }: { expenseId: string }) => {
                     </div>
                     <p className="text-sm text-primary font-medium mt-1">{representative?.territory || 'No Territory Assigned'}</p>
                     <div className="flex items-center gap-4 mt-3">
-                        <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider">Submitted: <span className="text-foreground/80 ml-1">{expense.createdAt ? new Date(expense.createdAt).toLocaleDateString() : 'N/A'}</span></p>
-                        <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider">Employee ID: <span className="text-foreground/80 ml-1">{representative?.employeeId || 'N/A'}</span></p>
+                        <p className="text-[10px] text-muted-foreground font-bold ">Submitted: <span className="text-foreground/80 ml-1">{expense.createdAt ? new Date(expense.createdAt).toLocaleDateString() : 'N/A'}</span></p>
+                        <p className="text-[10px] text-muted-foreground font-bold ">Employee ID: <span className="text-foreground/80 ml-1">{representative?.employeeId || 'N/A'}</span></p>
                     </div>
                 </div>
             </div>
@@ -118,7 +118,7 @@ export const ExpenseDetails = ({ expenseId }: { expenseId: string }) => {
                 <div className="text-right">
                     <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-2">CURRENT STATUS</p>
                     <span className={cn(
-                        "px-4 py-2 text-xs font-medium rounded-xl uppercase tracking-widest border dark:shadow-sm inline-block",
+                        "px-4 py-2 text-xs font-medium rounded-full uppercase tracking-widest border dark:shadow-sm inline-block",
                         status === 'APPROVED' ? "bg-emerald-500/10 text-emerald-500 border border-emerald-500/20" :
                             status === 'PENDING' ? "bg-amber-500/10 text-amber-500 border border-amber-500/20" :
                                 "bg-rose-500/10 text-rose-500 border border-rose-500/20"
@@ -197,7 +197,7 @@ export const ExpenseDetails = ({ expenseId }: { expenseId: string }) => {
                                             </div>
                                             <div className="min-w-0">
                                                 <p className="text-xs font-bold text-foreground pr-2 truncate group-hover:text-primary transition-colors">{fileName}</p>
-                                                <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">{!isImage ? 'PDF Document' : 'Image File'}</p>
+                                                <p className="text-[10px] text-muted-foreground font-medium ">{!isImage ? 'PDF Document' : 'Image File'}</p>
                                             </div>
                                         </div>
                                         <a

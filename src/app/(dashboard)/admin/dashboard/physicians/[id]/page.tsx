@@ -6,17 +6,12 @@ import { cn } from "@/lib/utils";
 import {
   ChevronLeft,
   Stethoscope,
-  MoreVertical,
-  MapPin,
   Phone,
   Mail,
   Calendar,
   FileText,
   Download,
   Building2,
-  Trash2,
-  Edit,
-  PenSquare,
   PenSquareIcon
 } from "lucide-react";
 import Image from "next/image";
@@ -32,9 +27,7 @@ export default function PhysicianProfilePage() {
 
   const { physician, loading: isLoading } = useSinglePhysician(id);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const { updatePhysician, loading: isUpdating, error: updateError } = useUpdatePhysician();
 
-  console.log("physician", physician);
 
   if (isLoading) {
     return (
@@ -45,7 +38,7 @@ export default function PhysicianProfilePage() {
   }
 
   return (
-    <div className="space-y-6 animate-in fade-in zoom-in duration-500 pb-12">
+    <div className="space-y-6 animate-in fade-in zoom-in duration-500 pb-8 pb-12">
 
       {/* TOP NAV & ACTIONS */}
       <div className="flex items-center justify-between">
@@ -61,11 +54,11 @@ export default function PhysicianProfilePage() {
           <div className="flex items-center gap-2 w-full sm:w-auto">
             <button
               onClick={() => setIsEditModalOpen(true)}
-              className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-bold text-white bg-primary rounded-lg hover:opacity-90 transition-all shadow-lg shadow-primary/20 cursor-pointer"
+              className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-medium dark:text-black text-white bg-primary rounded-lg hover:opacity-90 transition-all shadow-lg shadow-primary/20 cursor-pointer"
             >
               <PenSquareIcon className="h-4 w-4" /> Edit Physician
             </button>
-            <button className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-bold text-muted-foreground bg-card border border-border rounded-lg hover:text-foreground hover:bg-muted transition-colors cursor-pointer">
+            <button className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-medium text-muted-foreground bg-card border border-border rounded-lg hover:text-foreground hover:bg-muted transition-colors cursor-pointer">
               <Download className="h-4 w-4" /> Download PDF
             </button>
           </div>

@@ -37,7 +37,7 @@ export function ThemeSwitcher() {
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-all duration-200"
+        className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-all duration-200 cursor-pointer"
       >
         {!mounted ? (
           <>
@@ -61,7 +61,7 @@ export function ThemeSwitcher() {
             {themes.map((t) => {
               const Icon = t.icon;
               const isActive = theme === t.id;
-              
+
               return (
                 <button
                   key={t.id}
@@ -70,9 +70,9 @@ export function ThemeSwitcher() {
                     setIsOpen(false);
                   }}
                   className={cn(
-                    "flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors",
-                    isActive 
-                      ? "bg-primary/10 text-primary font-semibold" 
+                    "flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors cursor-pointer",
+                    isActive
+                      ? "bg-primary/10 text-primary font-medium"
                       : "text-muted-foreground hover:bg-muted hover:text-foreground"
                   )}
                 >

@@ -311,7 +311,7 @@ export function ShipmentDetailsDrawer({ isOpen, onClose, shipment }: ShipmentDet
                     </span>
                   </div>
                 ))}
-                <button className="w-full py-3 bg-[#18181B] border border-[#27272A] rounded-xl text-xs font-bold text-[#00E5FF] hover:bg-[#27272A] transition-colors mt-2">
+                <button className="w-full py-3 bg-[#18181B] border border-[#27272A] rounded-xl text-xs font-medium text-[#00E5FF] hover:bg-[#27272A] transition-colors mt-2">
                   View All {shipment.inventoryItems.length > 2 ? shipment.inventoryItems.length : 12} items
                 </button>
               </div>

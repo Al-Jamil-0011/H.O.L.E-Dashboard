@@ -53,11 +53,11 @@ export function InventoryDetailsDrawer({ isOpen, onClose, item }: InventoryDetai
             <div>
               <h2 className="text-lg font-bold text-white tracking-tight">{item.name}</h2>
               <div className="flex items-center gap-2 mt-1">
-                <span className="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-[#00E5FF]/10 text-[#00E5FF] rounded border border-[#00E5FF]/20">
+                <span className="px-2 py-0.5 text-[10px] font-bold  bg-[#00E5FF]/10 text-[#00E5FF] rounded border border-[#00E5FF]/20">
                   {item.type}
                 </span>
                 <span className={cn(
-                  "px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded border",
+                  "px-2 py-0.5 text-[10px] font-bold  rounded border",
                   item.status === 'Available' ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" :
                     item.status === 'Assigned' ? "bg-blue-500/10 text-blue-400 border-blue-500/20" :
                       "bg-gray-500/10 text-gray-400 border-gray-500/20"
@@ -220,16 +220,16 @@ export function InventoryDetailsDrawer({ isOpen, onClose, item }: InventoryDetai
 
         {/* ADMIN ACTIONS FOOTER */}
         <div className="p-6 border-t border-[#1E293B] bg-[#0B101E] grid grid-cols-2 gap-3">
-          <button className="flex items-center justify-center gap-2 w-full py-2.5 text-xs font-bold text-[#0B101E] bg-[#00E5FF] rounded-lg hover:bg-cyan-400 transition-colors shadow-[0_0_15px_rgba(0,229,255,0.2)]">
+          <button className="flex items-center justify-center gap-2 w-full py-2.5 text-xs font-medium text-[#0B101E] bg-[#00E5FF] rounded-lg hover:bg-cyan-400 transition-colors shadow-[0_0_15px_rgba(0,229,255,0.2)]">
             <ArrowRightLeft className="h-4 w-4" /> Transfer
           </button>
-          <button className="flex items-center justify-center gap-2 w-full py-2.5 text-xs font-bold text-rose-500 bg-rose-500/10 border border-rose-500/20 rounded-lg hover:bg-rose-500/20 transition-colors">
+          <button className="flex items-center justify-center gap-2 w-full py-2.5 text-xs font-medium text-rose-500 bg-rose-500/10 border border-rose-500/20 rounded-lg hover:bg-rose-500/20 transition-colors">
             <AlertTriangle className="h-4 w-4" /> Mark Damaged
           </button>
-          <button className="col-span-1 flex items-center justify-center gap-2 w-full py-2.5 text-xs font-bold text-gray-300 bg-[#151B2B] border border-[#334155] rounded-lg hover:text-white hover:bg-[#1E293B] transition-colors">
+          <button className="col-span-1 flex items-center justify-center gap-2 w-full py-2.5 text-xs font-medium text-gray-300 bg-[#151B2B] border border-[#334155] rounded-lg hover:text-white hover:bg-[#1E293B] transition-colors">
             <Truck className="h-4 w-4" /> View Shipment
           </button>
-          <button className="col-span-1 flex items-center justify-center gap-2 w-full py-2.5 text-xs font-bold text-gray-300 bg-[#151B2B] border border-[#334155] rounded-lg hover:text-white hover:bg-[#1E293B] transition-colors">
+          <button className="col-span-1 flex items-center justify-center gap-2 w-full py-2.5 text-xs font-medium text-gray-300 bg-[#151B2B] border border-[#334155] rounded-lg hover:text-white hover:bg-[#1E293B] transition-colors">
             <FileText className="h-4 w-4" /> View Sale
           </button>
         </div>

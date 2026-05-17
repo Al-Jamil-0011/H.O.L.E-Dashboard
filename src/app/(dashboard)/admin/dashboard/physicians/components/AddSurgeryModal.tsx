@@ -105,7 +105,7 @@ export function AddSurgeryModal({ isOpen, onClose, initialData, refetch }: AddSu
 
   return (
     <>
-      <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm" onClick={onClose} />
+      <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm transition-opacity" onClick={onClose} />
       <div className="fixed inset-y-0 right-0 z-[60] w-full max-w-md bg-white dark:bg-[#0B101E] border-l border-gray-200 dark:border-[#1E293B] dark:shadow-2xl flex flex-col animate-in slide-in-from-right duration-300">
 
         {/* HEADER */}
@@ -267,7 +267,7 @@ export function AddSurgeryModal({ isOpen, onClose, initialData, refetch }: AddSu
               <button
                 disabled={isCreating || isUpdating}
                 type="submit"
-                className="w-full py-3 text-sm font-bold text-white dark:text-[#0B101E] bg-[#309488] dark:bg-[#00E5FF] rounded-xl hover:bg-[#277a70] dark:hover:bg-cyan-400 transition-colors dark:shadow-[0_0_15px_rgba(48,148,136,0.3)] dark:shadow-[0_0_15px_rgba(0,229,255,0.3)] flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
+                className="w-full py-3 text-sm font-medium text-white dark:text-[#0B101E] bg-[#309488] dark:bg-[#00E5FF] rounded-xl hover:bg-[#277a70] dark:hover:bg-cyan-400 transition-colors dark:shadow-[0_0_15px_rgba(48,148,136,0.3)] dark:shadow-[0_0_15px_rgba(0,229,255,0.3)] flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
               >
                 {(isCreating || isUpdating) ?
                   <div className="flex items-center gap-2">
@@ -282,7 +282,7 @@ export function AddSurgeryModal({ isOpen, onClose, initialData, refetch }: AddSu
                 type="button"
                 disabled={isCreating || isUpdating}
                 onClick={onClose}
-                className="w-full py-3 text-sm font-bold text-gray-700 dark:text-gray-300 bg-transparent border border-gray-300 dark:border-[#334155] rounded-xl hover:bg-gray-100 dark:hover:bg-[#1E293B] transition-colors disabled:opacity-50 cursor-pointer"
+                className="w-full py-3 text-sm font-medium text-gray-700 dark:text-gray-300 bg-transparent border border-gray-300 dark:border-[#334155] rounded-xl hover:bg-gray-100 dark:hover:bg-[#1E293B] transition-colors disabled:opacity-50 cursor-pointer"
               >
                 Cancel
               </button>

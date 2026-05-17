@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { useMyProfile, useUpdateProfile } from "@/hooks/admin/users";
+import { useMyProfile } from "@/hooks/admin/users";
 import Image from "next/image";
 import { FaRegEdit } from "react-icons/fa";
 import { EditProfileModal } from "@/components/modals/EditProfileModal";
@@ -47,7 +47,7 @@ export default function ViewProfilePage() {
     if (loading) {
         return (
             <div className="space-y-4">
-                <h1 className="text-2xl font-bold text-foreground">View Profile</h1>
+                <h1 className="title">View Profile</h1>
                 <div className="rounded-2xl border border-border bg-card p-6 animate-pulse">
                     <div className="h-6 w-44 rounded bg-muted mb-6" />
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -63,7 +63,7 @@ export default function ViewProfilePage() {
     if (error) {
         return (
             <div className="space-y-4">
-                <h1 className="text-2xl font-bold text-foreground">View Profile</h1>
+                <h1 className="title">View Profile</h1>
                 <div className="rounded-xl border border-red-300 bg-red-50 p-4">
                     <p className="text-sm text-red-700">{error}</p>
                     <button
@@ -80,7 +80,7 @@ export default function ViewProfilePage() {
     if (!profile) {
         return (
             <div className="space-y-4">
-                <h1 className="text-2xl font-bold text-foreground">View Profile</h1>
+                <h1 className="title">View Profile</h1>
                 <div className="rounded-xl border border-border bg-card p-6">
                     <p className="text-sm text-muted-foreground">Profile data not found.</p>
                 </div>
@@ -90,9 +90,14 @@ export default function ViewProfilePage() {
 
     return (
         <div className="space-y-5">
-            <h1 className="text-2xl font-bold text-foreground">View Profile</h1>
+            <div className="flex items-center justify-between">
+                <div className="space-y-1">
+                    <h1 className="title">View Profile</h1>
+                    <p className="text-xs text-muted-foreground">Access and manage your personal information, account details, and activity overview from one place.</p>
+                </div>
+            </div>
 
-            <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
+            <div className="rounded-2xl border border-border bg-card p-6 dark:bg-muted/30">
                 <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between pb-6 border-b border-border">
                     <div className="flex items-center gap-4">
                         <div className="relative">
