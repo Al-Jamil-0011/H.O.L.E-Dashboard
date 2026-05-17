@@ -21,7 +21,8 @@ export default function ExpensesPage() {
     query,
     setQuery,
     refetch: refetchExpenses,
-    loading: expensesLoading
+    loading: expensesLoading,
+    meta
   } = useExpenses();
 
   const { updateExpenseStatus } = useUpdateExpenseStatus();
@@ -125,14 +126,8 @@ export default function ExpensesPage() {
     {
       header: "CATEGORY",
       render: (item: ExpenseItem) => {
-        let colorClass = "bg-gray-500/10 text-gray-400";
-        if (item.category === 'SHIPMENT') colorClass = "bg-[#00E5FF]/10 text-[#00E5FF]";
-        else if (item.category === 'TRAVEL') colorClass = "bg-purple-500/10 text-purple-400";
-        else if (item.category === 'OFFICE') colorClass = "bg-emerald-500/10 text-emerald-400";
-        else if (item.category === 'MARKETING') colorClass = "bg-amber-500/10 text-amber-400";
-
         return (
-          <span className={cn("px-2.5 py-1 text-[10px] font-bold  rounded border border-transparent dark:shadow-sm", colorClass)}>
+          <span className={cn("px-2.5 py-1 text-[10px] font-bold  rounded border border-transparent dark:shadow-sm bg-purple-500/10 text-purple-400")}>
             {item.category}
           </span>
         );
@@ -197,7 +192,7 @@ export default function ExpensesPage() {
             <Link href={`/finance/dashboard/expenses/${item.id}`}>
               <button
                 // onClick={(e) => { e.stopPropagation(); openDrawer(item); }}
-                className="px-4 py-1.5 text-[11px] font-medium text-gray-300 bg-[#334155]/50 hover:bg-[#334155] rounded transition-colors cursor-pointer"
+                className="px-3 py-1.5 text-[10px] font-medium text-primary bg-primary/10 border border-primary/20 rounded-md hover:bg-primary/20 transition-colors cursor-pointer"
               >
                 View
               </button>
@@ -212,7 +207,7 @@ export default function ExpensesPage() {
     <div className="space-y-6 animate-in fade-in zoom-in duration-500 pb-8 pb-10">
       <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-xl font-bold tracking-tight text-foreground mb-1">
+          <h1 className="title mb-1">
             Expenses
           </h1>
           <p className="text-[11px] text-muted-foreground font-medium ">
@@ -223,11 +218,11 @@ export default function ExpensesPage() {
           <button
             onClick={() => console.log('Export')}
             className="px-4 py-1.5 text-xs font-medium text-muted-foreground bg-[var(--card)] rounded dark:shadow-sm border border-[var(--border)] transition-colors hover:text-foreground cursor-pointer">
-            Export
+            Export CSV
           </button>
           {/* <button
             onClick={() => console.log('Add Expense')}
-            className="px-4 py-2 text-xs font-medium text-[var(--background)] bg-primary rounded-lg shadow-sm transition-all hover:bg-cyan-400"
+            className="px-4 py-2 text-xs font-bold text-[var(--background)] bg-primary rounded-lg shadow-sm transition-all hover:bg-cyan-400"
           >
             + Add Expense
           </button> */}
@@ -291,14 +286,13 @@ export default function ExpensesPage() {
         </div>
       </div>
 
-      <div className="rounded-xl border border-border bg-card dark:shadow-sm transition-all overflow-hidden flex flex-col">
+      <div className="rounded-xl border border-border bg-card dark:shadow-sm transition-all overflow-hidden flex flex-col bg-muted">
         <div className="flex items-center justify-between p-5 pb-5">
           <h2 className="text-sm font-bold text-foreground">All Expenses</h2>
-          <div className="flex gap-2">
+          <div className="flex gap-2 bg-[var(--background)] rounded-lg border border-border w-full sm:w-auto overflow-x-auto p-1">
             <CommonFilterPill
               text="All"
               active={filter === 'All'}
-              // activeColor="bg-foreground text-background"
               onClick={() => handleFilterChange('All')}
             />
             <CommonFilterPill
@@ -317,12 +311,19 @@ export default function ExpensesPage() {
             />
           </div>
         </div>
-        <div className="flex-1 px-5 pb-5">
+        <div className="flex-1">
           <DataTable
             data={expensesData}
+            className='!border-none !rounded-none'
             columns={columns}
             loading={expensesLoading}
             onRowClick={(item) => openDrawer(item as ExpenseItem)}
+            pagination={meta ? {
+              currentPage: meta.currentPage,
+              totalPage: meta.totalPage,
+              totalResult: meta.totalResult,
+              onPageChange: (page) => setQuery(prev => ({ ...prev, page }))
+            } : undefined}
           />
         </div>
       </div>

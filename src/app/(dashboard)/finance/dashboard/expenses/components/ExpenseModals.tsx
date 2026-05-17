@@ -85,7 +85,7 @@ export function RejectExpenseModal({ isOpen, onClose, onSubmit }: RejectExpenseM
           <div className="flex gap-3">
             <button
               onClick={onClose}
-              className="flex-1 py-3.5 bg-transparent border border-[#27272A] hover:bg-[#27272A] text-white rounded-xl text-sm font-bold transition-colors cursor-pointer"
+              className="flex-1 py-3.5 bg-transparent border border-[#27272A] hover:bg-[#27272A] text-white rounded-xl text-sm font-medium transition-colors cursor-pointer"
             >
               Cancel
             </button>

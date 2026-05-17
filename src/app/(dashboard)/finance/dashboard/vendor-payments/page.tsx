@@ -18,7 +18,7 @@ export default function VendorPaymentsPage() {
   } | null>(null);
 
   const { summary, loading: summaryLoading } = useVendorPaymentsSummary();
-  const { payments, loading, error, meta, query, setQuery, refetch } = useVendorPayments();
+  const { payments, loading, meta, setQuery } = useVendorPayments();
 
   const filteredData = useMemo(() => {
     return payments.filter(item => {
@@ -119,16 +119,16 @@ export default function VendorPaymentsPage() {
     <div className="space-y-8 animate-in fade-in zoom-in duration-700 pb-8">
       <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div>
-          <h1 className="text-2xl font-black tracking-tight text-foreground">
+          <h1 className="title mb-1">
             Vendor Payments
           </h1>
           <p className="text-xs text-muted-foreground font-medium max-w-md leading-relaxed">
             Manage implant costs, authorized supply payments, and track vendor disbursement statuses across all active sales.
           </p>
         </div>
-        <button className="px-4 py-1.5 text-xs font-medium text-muted-foreground bg-[var(--card)] rounded dark:shadow-sm border border-[var(--border)] transition-colors hover:text-foreground cursor-pointer flex items-center gap-2">
+        <button className="px-4 py-1.5 text-xs font-medium text-muted-foreground bg-[var(--card)] rounded dark:shadow-sm border border-[var(--border)] transition-colors hover:text-foreground cursor-pointer flex items-center gap-1">
           <Download className="w-3.5 h-3.5" />
-          EXPORT
+          Export
         </button>
       </div>
 
@@ -165,16 +165,15 @@ export default function VendorPaymentsPage() {
         />
       </div>
 
-      <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] dark:shadow-xl dark:shadow-black/5 transition-all overflow-hidden flex flex-col backdrop-blur-sm">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-6 gap-4 border-b border-[var(--border)] bg-white/[0.01]">
+      <div className="rounded-2xl border border-[var(--border)] bg-muted dark:shadow-xl dark:shadow-black/5 transition-all overflow-hidden flex flex-col backdrop-blur-sm">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4 p-4">
           <div className="flex items-center gap-3">
-            <div className="w-1.5 h-6 bg-amber-500 rounded-full" />
             <h2 className="text-base font-bold text-foreground">Payment Records</h2>
-            <span className="px-2 py-0.5 bg-muted rounded text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+            <span className="px-2 py-0.5 bg-primary/10 rounded text-[10px] font-bold text-primary uppercase tracking-widest">
               {meta?.totalResult || 0} TOTAL
             </span>
           </div>
-          <div className="flex items-center gap-2 p-1">
+          <div className="flex items-center gap-2 p-1 bg-[var(--background)] rounded-lg border border-border w-full sm:w-auto overflow-x-auto">
             <CommonFilterPill
               text="All"
               active={filter === 'All'}
@@ -183,34 +182,40 @@ export default function VendorPaymentsPage() {
             <CommonFilterPill
               text="Paid"
               active={filter === 'Paid'}
-              color="text-emerald-400 hover:bg-emerald-500/10"
+              color="text-emerald-400 bg-emerald-500/10"
               activeColor="bg-emerald-500 text-white dark:text-black"
               onClick={() => setFilter('Paid')}
             />
             <CommonFilterPill
               text="Pending"
               active={filter === 'Pending'}
-              color="text-amber-500 hover:bg-amber-500/10"
+              color="text-amber-500 bg-amber-500/10"
               activeColor="bg-amber-500 text-white dark:text-black"
               onClick={() => setFilter('Pending')}
             />
             <CommonFilterPill
               text="Overdue"
               active={filter === 'Overdue'}
-              color="text-rose-500 hover:bg-rose-500/10"
+              color="text-rose-500 bg-rose-500/10"
               activeColor="bg-rose-500 text-white dark:text-black"
               onClick={() => setFilter('Overdue')}
             />
           </div>
         </div>
-        <div className="flex-1 px-6 pb-6 pt-2">
-          <DataTable
-            data={filteredData}
-            columns={columns}
-            loading={loading}
-            onRowClick={() => { }}
-          />
-        </div>
+
+        <DataTable
+          data={filteredData}
+          className='border-none rounded-none'
+          columns={columns}
+          loading={loading}
+          onRowClick={() => { }}
+          pagination={meta ? {
+            currentPage: meta.currentPage,
+            totalPage: meta.totalPage,
+            totalResult: meta.totalResult,
+            onPageChange: (page) => setQuery(prev => ({ ...prev, page }))
+          } : undefined}
+        />
       </div>
 
       <ConfirmPaymentModal

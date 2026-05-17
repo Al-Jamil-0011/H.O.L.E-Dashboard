@@ -18,12 +18,10 @@ export default function AboutUsPage() {
     return (
         <div className="bg-background text-foreground pb-10">
             <div className="space-y-5">
-                <div>
-                    <h1 className="text-2xl font-bold text-foreground">About Us</h1>
-                    <p className="text-sm text-muted-foreground mt-1">
-                        Update and maintain your company’s story, mission, and public information displayed on the About Us page.
-                    </p>
-                </div>
+                <h1 className="title">About Us</h1>
+                <p className="text-xs text-muted-foreground mt-1">
+                    Update and maintain your company’s story, mission, and public information displayed on the About Us page.
+                </p>
                 <div className="relative overflow-hidden rounded-xl border border-border p-6 md:p-10 bg-card">
                     {/* The class 'sun-editor-editable' is mandatory for SunEditor HTML content to render its styles */}
                     <div
@@ -81,6 +79,6 @@ export default function AboutUsPage() {
                     padding: 0.5rem !important;
                 }
             `}} />
-        </div>
+        </div >
     );
 }

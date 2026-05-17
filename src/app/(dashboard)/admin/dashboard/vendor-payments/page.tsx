@@ -18,7 +18,7 @@ export default function VendorPaymentsPage() {
   } | null>(null);
 
   const { summary, loading: summaryLoading } = useVendorPaymentsSummary();
-  const { payments, loading, error, meta, query, setQuery, refetch } = useVendorPayments();
+  const { payments, loading, meta, setQuery } = useVendorPayments();
 
   const filteredData = useMemo(() => {
     return payments.filter(item => {

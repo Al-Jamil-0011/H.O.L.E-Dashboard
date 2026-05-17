@@ -4,7 +4,7 @@ import { useState, useMemo } from 'react';
 import { cn } from '@/lib/utils';
 import { DataTable } from '@/components/ui/DataTable';
 import { useRepAccounts, useRepAccountsSummary } from '@/hooks/finance/rep-accounts';
-import { Wallet, Download, Search } from 'lucide-react';
+import { Download } from 'lucide-react';
 import Image from 'next/image';
 import { CommonFilterPill, RepAccountsStatsCard } from '@/components/stats-card';
 
@@ -142,16 +142,15 @@ export default function RepAccountsPage() {
         />
       </div>
 
-      <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] dark:shadow-sm dark:shadow-black/5 transition-all overflow-hidden flex flex-col backdrop-blur-sm">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-6 gap-4 border-b border-[var(--border)] bg-white/[0.01]">
+      <div className="rounded-2xl border border-[var(--border)] bg-[var(--muted)] dark:shadow-sm dark:shadow-black/5 transition-all overflow-hidden flex flex-col backdrop-blur-sm">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 gap-4 border-b border-[var(--border)] bg-white/[0.01]">
           <div className="flex items-center gap-3">
-            <div className="w-1.5 h-6 bg-primary rounded-full" />
             <h2 className="text-base font-semibold text-foreground ">Representatives List</h2>
-            <span className="px-2 py-0.5 bg-muted rounded text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+            <span className="px-2 py-0.5 bg-primary/10 text-primary rounded text-[10px] font-bold  uppercase tracking-widest">
               {meta?.totalResult || 0} TOTAL
             </span>
           </div>
-          <div className="flex items-center gap-2 p-1">
+          <div className="flex items-center gap-2 bg-[var(--background)] rounded-lg border border-border w-full sm:w-auto overflow-x-auto p-1">
             <CommonFilterPill
               text="All"
               active={filter === 'All'}
@@ -173,14 +172,19 @@ export default function RepAccountsPage() {
             />
           </div>
         </div>
-        <div className="flex-1 px-6 pb-6 pt-2">
-          <DataTable
-            data={filteredData}
-            columns={columns}
-            loading={loading}
-            onRowClick={() => { }}
-          />
-        </div>
+        <DataTable
+          data={filteredData}
+          columns={columns}
+          loading={loading}
+          className='border-none rounded-none'
+          onRowClick={() => { }}
+          pagination={meta ? {
+            currentPage: meta.currentPage,
+            totalPage: meta.totalPage,
+            totalResult: meta.totalResult,
+            onPageChange: (page) => setQuery({ ...query, page })
+          } : undefined}
+        />
       </div>
     </div>
   );

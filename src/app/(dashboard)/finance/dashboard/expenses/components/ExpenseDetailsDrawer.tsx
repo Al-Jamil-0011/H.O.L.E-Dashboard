@@ -5,8 +5,8 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 
 export interface ExpenseItem {
-  id: number;
-  expense: string;
+  id: any;
+  physician: string;
   category: string;
   amount: string;
   date: string;
@@ -42,7 +42,7 @@ export function ExpenseDetailsDrawer({ isOpen, onClose, expense, onApprove, onRe
             <button onClick={onClose} className="p-1.5 rounded-md text-gray-400 hover:text-white hover:bg-[#27272A] transition-colors cursor-pointer">
               <ChevronLeft className="h-5 w-5" />
             </button>
-            <h2 className="text-sm font-bold dark:text-white text-black">Expense Details</h2>
+            <h2 className="text-sm font-bold text-white tracking-tight">Expense Details</h2>
           </div>
           <button onClick={onClose} className="p-1.5 rounded-md text-gray-400 hover:text-white hover:bg-[#27272A] transition-colors cursor-pointer">
             <X className="h-5 w-5" />

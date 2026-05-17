@@ -91,7 +91,7 @@ export default function CommissionDetailsPage() {
                     {status !== 'PAID' && (
                         <button
                             onClick={() => setShowPaidModal(true)}
-                            className="flex items-center gap-2 px-4 py-2 bg-emerald-500 text-white dark:text-[#0B101E] hover:bg-emerald-400 rounded-lg transition-all text-sm font-medium shadow-md dark:shadow-[0_0_15px_rgba(16,185,129,0.3)] cursor-pointer"
+                            className="flex items-center gap-2 px-4 py-2 bg-emerald-500 text-white dark:text-[#0B101E] hover:bg-emerald-400 rounded-lg transition-all text-sm font-medium dark:shadow-md dark:shadow-[0_0_15px_rgba(16,185,129,0.3)] cursor-pointer"
                         >
                             <CheckCircle2 className="h-4 w-4" />
                             <span>Mark as Paid</span>
@@ -423,7 +423,7 @@ export default function CommissionDetailsPage() {
                             <div className="flex gap-3 mt-8">
                                 <button
                                     onClick={() => setShowPaidModal(false)}
-                                    className="flex-1 py-2.5 bg-muted hover:bg-muted/80 text-foreground rounded-lg text-sm font-medium transition-colors cursor-pointer"
+                                    className="flex-1 py-2.5 bg-muted hover:bg-muted/80 text-foreground rounded-lg text-sm font-medium transition-all cursor-pointer"
                                 >
                                     Cancel
                                 </button>

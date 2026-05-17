@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils';
 import { DataTable, StatusBadge } from '@/components/ui/DataTable';
 import { CreateSaleModal } from '@/components/modals/CreateSaleModal';
 import { useSales, useSalesSummary } from '@/hooks/admin/sales';
-import { SalesStatCard } from '@/components/stats-card';
+import { CommonFilterPill, SalesStatCard } from '@/components/stats-card';
 
 
 export default function SalesPage() {
@@ -14,7 +14,7 @@ export default function SalesPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { summary, loading: isLoading } = useSalesSummary();
 
-  const { sales, loading: salesLoading, setQuery } = useSales();
+  const { sales, loading: salesLoading, setQuery, meta } = useSales();
 
   const handleFilterChange = (status: string) => {
     setFilter(status);
@@ -92,7 +92,7 @@ export default function SalesPage() {
         return (
           <div className="flex items-center gap-2">
             <Link href={`/finance/dashboard/sales/${id}`}>
-              <button className="px-4 py-1.5 text-[11px] font-medium text-gray-300 bg-[#334155]/50 hover:bg-[#334155] rounded transition-colors cursor-pointer">
+              <button className="px-3 py-1.5 text-[10px] font-medium text-primary bg-primary/10 border border-primary/20 rounded-md hover:bg-primary/20 transition-colors cursor-pointer">
                 View
               </button>
             </Link>
@@ -107,7 +107,7 @@ export default function SalesPage() {
       <CreateSaleModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
       <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-xl font-bold tracking-tight text-foreground mb-1">
+          <h1 className="title mb-1">
             Sales & Revenue
           </h1>
           <p className="text-[11px] text-muted-foreground font-medium ">
@@ -155,87 +155,47 @@ export default function SalesPage() {
         />
       </div>
 
-      <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] dark:shadow-sm transition-all overflow-hidden flex flex-col">
+      <div className="rounded-xl border border-[var(--border)] bg-bg-muted dark:shadow-sm transition-all overflow-hidden flex flex-col">
         <div className="flex items-center justify-between p-5 bg-muted/40">
           <h2 className="text-sm font-bold text-foreground">All Sales</h2>
-          <div className="flex gap-2">
-            <FilterPill
+          <div className="flex gap-2 bg-[var(--background)] rounded-lg border border-border w-full sm:w-auto overflow-x-auto p-1">
+            <CommonFilterPill
               text="All"
               active={filter === 'All'}
               onClick={() => handleFilterChange('All')}
             />
-            <FilterPill
+            <CommonFilterPill
               text="APPROVED"
               active={filter === 'APPROVED'}
-              color="bg-[#00E5FF]/20 text-[#00E5FF]"
-              activeColor="bg-[#00E5FF] text-[#0B101E]"
+              color="bg-primary/20 text-primary"
+              activeColor="bg-primary dark:text-black text-white"
               onClick={() => handleFilterChange('APPROVED')}
             />
-            <FilterPill
+            <CommonFilterPill
               text="Pending"
               active={filter === 'Pending'}
               color="bg-amber-500/20 text-amber-500"
-              activeColor="bg-amber-500 text-[#0B101E]"
+              activeColor="bg-amber-500 text-white dark:text-[#0B101E]"
               onClick={() => handleFilterChange('Pending')}
             />
           </div >
         </div >
-        <div className="flex-1 px-5 pb-5">
+        <div className="flex-1">
           <DataTable
             data={sales}
+            className='!border-none !rounded-none'
             columns={columns}
             loading={salesLoading}
+            onRowClick={() => { }}
+            pagination={meta ? {
+              currentPage: meta.currentPage,
+              totalPage: meta.totalPage,
+              totalResult: meta.totalResult,
+              onPageChange: (page) => setQuery(prev => ({ ...prev, page }))
+            } : undefined}
           />
         </div>
       </div >
     </div >
   );
 }
-
-function FilterPill({
-  text,
-  active,
-  onClick,
-  color,
-  activeColor
-}: {
-  text: string;
-  active: boolean;
-  onClick: () => void;
-  color?: string;
-  activeColor?: string
-}) {
-  const baseClasses = "px-3 py-1.5 text-[10px] font-bold  rounded border border-[var(--border)] transition-all cursor-pointer";
-
-  if (active) {
-    return (
-      <button
-        onClick={onClick}
-        className={cn(
-          baseClasses,
-          activeColor || "bg-[var(--border)] text-foreground border-[var(--border)]"
-        )}>
-        {text}
-      </button>
-    );
-  }
-
-  if (color) {
-    return (
-      <button
-        onClick={onClick}
-        className={cn(baseClasses, color, "hover:opacity-80")}>
-        {text}
-      </button>
-    )
-  }
-
-  return (
-    <button
-      onClick={onClick}
-      className={cn(baseClasses, "text-muted-foreground  hover:text-foreground hover:bg-[var(--border)]/50")}>
-      {text}
-    </button>
-  )
-}
-

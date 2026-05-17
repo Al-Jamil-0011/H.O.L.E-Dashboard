@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
+import { cn } from '@/lib/utils';
 import { DataTable, StatusBadge } from '@/components/ui/DataTable';
 import { Search, CheckCircle2 } from 'lucide-react';
 import { useCommissions, useCommissionSummary, useMarkCommissionPaid } from '@/hooks/admin/commissions';
@@ -86,7 +87,7 @@ export default function CommissionsPage() {
             <button
               onClick={() => handleMarkAsPaid(item._id)}
               disabled={isMarkingPaid && selectedId === item._id}
-              className="px-3 py-1 text-[10px] font-medium text-white dark:text-black bg-emerald-500 rounded hover:bg-emerald-400 transition-colors cursor-pointer disabled:opacity-50 flex items-center gap-1"
+              className="px-3 py-1.5 text-[10px] font-medium text-white dark:text-black bg-emerald-500 rounded hover:bg-emerald-400 transition-colors cursor-pointer disabled:opacity-50 flex items-center gap-1"
             >
               {isMarkingPaid && selectedId === item._id ? (
                 <div className="h-2 w-2 border-2 border-black border-t-transparent rounded-full animate-spin" />
@@ -95,7 +96,8 @@ export default function CommissionsPage() {
             </button>
           )}
           <Link href={`/finance/dashboard/commissions/${item._id}`}>
-            <button className="px-4 py-1.5 text-[11px] font-medium text-gray-300 bg-[#334155]/50 hover:bg-[#334155] rounded transition-colors cursor-pointer">
+            <button
+              className="px-3 py-1.5 text-[10px] font-medium text-primary bg-primary/10 border border-primary/20 rounded-md hover:bg-primary/20 transition-colors cursor-pointer">
               Details
             </button>
           </Link>
@@ -108,7 +110,7 @@ export default function CommissionsPage() {
     <div className="space-y-6 animate-in fade-in zoom-in duration-500 pb-8">
       <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-xl font-bold tracking-tight text-foreground mb-1">
+          <h1 className="title mb-1">
             Commission Management
           </h1>
           <p className="text-[11px] text-muted-foreground font-medium ">
@@ -117,7 +119,7 @@ export default function CommissionsPage() {
         </div>
         <div className="flex items-center gap-3">
           <button className="px-4 py-1.5 text-xs font-medium text-muted-foreground bg-[var(--card)] rounded dark:shadow-sm border border-[var(--border)] transition-colors hover:text-foreground cursor-pointer">
-            Export
+            Export CSV
           </button>
         </div>
       </div>

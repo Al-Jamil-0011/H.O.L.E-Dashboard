@@ -115,10 +115,10 @@ export default function AgingReportsPage() {
         />
       </div>
 
-      <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] dark:shadow-sm transition-all overflow-hidden flex flex-col">
-        <div className="flex items-center justify-between p-5 pb-5">
+      <div className="rounded-xl border border-[var(--border)] bg-[var(--muted)] dark:shadow-sm transition-all overflow-hidden flex flex-col">
+        <div className="flex items-center justify-between p-4">
           <h2 className="text-sm font-bold text-foreground">Aging Invoices</h2>
-          <div className="flex gap-2">
+          <div className="flex gap-2 bg-[var(--background)] rounded-lg border border-border w-full sm:w-auto overflow-x-auto p-1">
             <CommonFilterPill
               text="All" active={filter === 'All'}
               onClick={() => handleFilterChange('All')}
@@ -147,19 +147,18 @@ export default function AgingReportsPage() {
 
           </div>
         </div>
-        <div className="flex-1 px-5 pb-5">
-          <DataTable
-            data={agingReports}
-            columns={columns}
-            loading={isLoadingReports}
-            pagination={meta ? {
-              currentPage: meta.currentPage,
-              totalPage: meta.totalPage,
-              totalResult: meta.totalResult,
-              onPageChange: (page) => setQuery({ ...query, page })
-            } : undefined}
-          />
-        </div>
+        <DataTable
+          data={agingReports}
+          className='border-none rounded-none'
+          columns={columns}
+          loading={isLoadingReports}
+          pagination={meta ? {
+            currentPage: meta.currentPage,
+            totalPage: meta.totalPage,
+            totalResult: meta.totalResult,
+            onPageChange: (page) => setQuery({ ...query, page })
+          } : undefined}
+        />
       </div>
     </div>
   );
