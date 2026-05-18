@@ -72,6 +72,16 @@ export default function OtpVerificationPage() {
             const res = await verifyOtp({ otp: otpString });
             if (res?.statusCode === 200 || res?.statusCode === 201) {
                 toast.success(res?.message || "Verification successful!");
+                
+                const finalToken = res?.data?.token;
+                if (finalToken) {
+                    Cookies.set("token", finalToken, {
+                        expires: 1,
+                        secure: true,
+                        sameSite: "strict",
+                    });
+                }
+
                 router.push("/auth/reset-password");
             }
         } catch (error: any) {
@@ -129,7 +139,7 @@ export default function OtpVerificationPage() {
             <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-purple-500/20 blur-[120px] animate-pulse delay-700"></div>
 
             <div className="relative z-10 w-full max-w-md mx-auto p-4 md:p-0">
-                <div className="backdrop-blur-xl bg-card/70 border border-border rounded-3xl shadow-sm p-8 overflow-hidden">
+                <div className="backdrop-blur-xl bg-card/70 border border-border rounded-3xl dark:shadow-sm p-8 overflow-hidden">
                     <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 opacity-80"></div>
 
                     <div className="text-center mb-8">
@@ -159,7 +169,7 @@ export default function OtpVerificationPage() {
                                         maxLength={1}
                                         inputMode="numeric"
                                         value={otpValues[index] || ""}
-                                        className={`w-12 h-14 text-center border rounded-xl bg-white/10 dark:bg-white/5 transition-all duration-300 sm:text-lg font-bold text-foreground focus:outline-none focus:ring-2 ${displayError ? "border-red-500 focus:ring-red-500/20" : "border-gray-500 dark:border-white/10 focus:border-primary focus:ring-primary/20"}`}
+                                        className={`w-12 h-14 text-center border border-gray-200 rounded-xl bg-white/10 dark:bg-white/5 transition-all duration-300 sm:text-lg font-bold text-foreground focus:outline-none focus:ring-2 ${displayError ? "border-red-500 focus:ring-red-500/20" : "dark:border-gray-500 focus:border-primary focus:ring-primary/20"}`}
                                         onChange={(e) => handleOtpChange(e.target.value, index)}
                                         onKeyDown={(e) => handleKeyDown(e, index)}
                                     />
@@ -179,9 +189,9 @@ export default function OtpVerificationPage() {
                                 type="button"
                                 onClick={handleResendOtp}
                                 disabled={resending || loading}
-                                className="flex items-center cursor-pointer font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
+                                className="flex items-center cursor-pointer font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300 transition-colors text-sm!"
                             >
-                                {resending ? <VscLoading className="mr-2 h-4 w-4 animate-spin" /> : null}
+                                {resending ? <VscLoading className="mr-2 h-4 w-4 animate-spin text-primary" /> : null}
                                 {resending ? "Sending..." : "Resend Code"}
                             </button>
                         </div>
@@ -189,12 +199,17 @@ export default function OtpVerificationPage() {
                         <button
                             type="submit"
                             disabled={loading || resending}
-                            className="group relative w-full flex items-center justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-xl text-foreground bg-primary! hover:!bg-primary/80 dark:bg-white text-black! transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] shadow-md disabled:opacity-50 cursor-pointer"
+                            className="group relative w-full flex items-center justify-center py-3 px-4 text-sm font-medium rounded-xl text-foreground bg-primary! text-white dark:text-black! hover:!bg-primary/80 dark:bg-white dark:text-black dark:hover:bg-gray-100 focus:outline-none  duration-300 transform dark:shadow-md cursor-pointer"
                         >
                             {loading ? (
-                                <><VscLoading className="mr-2 h-5 w-5 animate-spin" /> Processing...</>
+                                <>
+                                    <VscLoading className="mr-2 h-5 w-5 animate-spin" /> Processing...
+                                </>
                             ) : (
-                                <><span className="mr-2">Verify Code</span><MoveRight className="h-4 w-4" /></>
+                                <>
+                                    <span className="mr-2">Verify Code</span>
+                                    <MoveRight className="h-4 w-4" />
+                                </>
                             )}
                         </button>
                     </form>

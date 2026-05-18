@@ -18,7 +18,7 @@ export function middleware(req: NextRequest) {
     }
 
     // Public Routes
-    const publicRoutes = ["/auth/login", "/auth/register", "/auth/forgot-password", "/auth/verify-otp", "/auth/reset-password"];
+    const publicRoutes = ["/auth/login", "/auth/register", "/auth/forgot-password", "/auth/otp-verification", "/auth/reset-password"];
 
     if (!token) {
         if (publicRoutes.includes(pathname)) {
@@ -43,7 +43,7 @@ export function middleware(req: NextRequest) {
 
         // Handle password reset
         if (isResetPassword) {
-            if (["/auth/reset-password", "/auth/verify-otp", "/auth/forgot-password"].includes(pathname)) {
+            if (["/auth/reset-password", "/auth/otp-verification", "/auth/forgot-password"].includes(pathname)) {
                 return NextResponse.next();
             }
             return NextResponse.redirect(new URL("/auth/reset-password", req.url));
@@ -52,6 +52,11 @@ export function middleware(req: NextRequest) {
         // Prevent access to public routes if logged in
         if (publicRoutes.includes(pathname)) {
             if (pathname === "/auth/login" && req.nextUrl.searchParams.has("callbackUrl")) {
+                return NextResponse.next();
+            }
+
+            // Allow accessing otp-verification and reset-password during reset flow
+            if (pathname === "/auth/otp-verification" || pathname === "/auth/reset-password") {
                 return NextResponse.next();
             }
 

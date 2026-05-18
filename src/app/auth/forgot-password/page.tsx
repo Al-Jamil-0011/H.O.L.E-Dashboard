@@ -1,6 +1,6 @@
 'use client'
 import Link from "next/link";
-import { MoveRight, Lock, Mail } from "lucide-react";
+import { MoveRight, Mail } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useAuthService } from "@/hooks/auth";
 import Cookies from "js-cookie";
@@ -54,7 +54,7 @@ export default function ForgetPasswordPage() {
             <div className="relative z-10 w-full max-w-md mx-auto p-4 md:p-0">
 
                 {/* Glassmorphic Card */}
-                <div className="backdrop-blur-xl bg-card/70 border border-border rounded-3xl shadow-sm p-8 overflow-hidden group">
+                <div className="backdrop-blur-xl bg-card/70 border border-border rounded-3xl dark:shadow-sm p-8 overflow-hidden group">
 
                     {/* Subtle gradient border line at top */}
                     <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 opacity-80"></div>
@@ -108,7 +108,7 @@ export default function ForgetPasswordPage() {
                         <div>
                             <button
                                 type="submit"
-                                className="group relative w-full flex items-center justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-xl text-foreground bg-primary! text-black! hover:!bg-primary/80 dark:bg-white dark:text-black dark:hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 dark:focus:ring-white transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] shadow-md hover:shadow-lg cursor-pointer"
+                                className="group relative w-full flex items-center justify-center py-3 px-4 text-sm font-medium rounded-xl text-foreground bg-primary! text-white dark:text-black! hover:!bg-primary/80 dark:bg-white dark:text-black dark:hover:bg-gray-100 focus:outline-none  duration-300 transform dark:shadow-md cursor-pointer"
                             >
                                 {loading ? (
                                     <>
@@ -126,9 +126,9 @@ export default function ForgetPasswordPage() {
                     </form>
 
                     <div className="mt-8 text-center">
-                        <span className="text-muted-foreground dark:text-muted-foreground">Back to </span>{" "}
+                        <span className="text-muted-foreground text-sm dark:text-muted-foreground">Back to </span>{" "}
                         <button
-                            className="cursor-pointer! text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
+                            className="cursor-pointer! text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300 text-sm"
                         >
                             <Link href="/auth/login">
                                 Login

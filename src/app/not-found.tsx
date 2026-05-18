@@ -1,4 +1,4 @@
-import { Home, Search, Compass, ShieldAlert } from "lucide-react";
+import { Home, ShieldAlert } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { GoBackButton } from "@/components/ui/GoBackButton";
@@ -20,7 +20,7 @@ export default function NotFound() {
             </div>
 
             <section className="relative z-10 mx-auto w-full max-w-2xl text-center">
-                <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card/40 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-primary backdrop-blur-md shadow-sm">
+                <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card/40 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-primary backdrop-blur-md dark:shadow-sm">
                     <ShieldAlert className="h-3.5 w-3.5" />
                     System Error 404
                 </div>
@@ -41,8 +41,8 @@ export default function NotFound() {
                 </p>
 
                 <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-                    <Button asChild size="lg" className="px-8">
-                        <Link href="/admin/dashboard">
+                    <Button asChild>
+                        <Link href="/admin/dashboard" className="cursor-pointer text-xs">
                             <Home className="mr-2 h-4 w-4" />
                             Return to Dashboard
                         </Link>

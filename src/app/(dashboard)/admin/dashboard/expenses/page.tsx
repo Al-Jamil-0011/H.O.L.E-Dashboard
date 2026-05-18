@@ -4,13 +4,12 @@ import { useState } from 'react';
 import dynamic from 'next/dynamic';
 import { cn } from '@/lib/utils';
 import { DataTable } from '@/components/ui/DataTable';
-import { ExpenseItem } from './components/ExpenseDetailsDrawer';
-import { ApproveExpenseModal, RejectExpenseModal } from './components/ExpenseModals';
 import { useExpenses, useExpenseSummary, useUpdateExpenseStatus } from '@/hooks/admin/expense';
 import toast from 'react-hot-toast';
 import Link from 'next/link';
 import { useTheme } from 'next-themes';
 import { CommonFilterPill, ExpensesStatCard } from '@/components/stats-card';
+import { ApproveExpenseModal, RejectExpenseModal } from '@/components/expense-modal/ExpenseModals';
 
 
 export default function ExpensesPage() {
@@ -170,7 +169,7 @@ export default function ExpensesPage() {
             <>
               <Link href={`/admin/dashboard/expenses/${item.id}`}>
                 <button
-                  className="px-4 py-1.5 text-[11px] font-medium text-gray-300 bg-[#334155]/50 hover:bg-[#334155] rounded transition-colors cursor-pointer"
+                  className="px-3 py-1.5 text-[10px] font-medium text-primary bg-primary/10 border border-primary/20 rounded-md hover:bg-primary/20 transition-colors cursor-pointer"
                 >
                   View
                 </button>

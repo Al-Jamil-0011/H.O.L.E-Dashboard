@@ -36,28 +36,28 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 );
 Button.displayName = "Button";
 
-function buttonVariants({ 
-  variant = "default", 
-  size = "default" 
-}: { 
-  variant?: ButtonProps["variant"]; 
-  size?: ButtonProps["size"] 
+function buttonVariants({
+  variant = "default",
+  size = "default"
+}: {
+  variant?: ButtonProps["variant"];
+  size?: ButtonProps["size"]
 }) {
-  const base = "inline-flex items-center justify-center whitespace-nowrap rounded-xl text-sm font-bold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98]";
-  
+  const base = "inline-flex items-center justify-center whitespace-nowrap rounded-xl text-sm font-bold transition-all duration-200 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 ";
+
   const variants = {
-    default: "bg-primary text-background shadow-[0_0_15px_rgba(0,229,255,0.2)] hover:bg-primary/90 hover:shadow-[0_0_20px_rgba(0,229,255,0.4)]",
-    primary: "bg-primary text-background shadow-[0_0_15px_rgba(0,229,255,0.2)] hover:bg-primary/90 hover:shadow-[0_0_20px_rgba(0,229,255,0.4)]",
+    default: "bg-primary text-background dark:shadow-[0_0_15px_rgba(0,229,255,0.2)] hover:bg-primary/90 dark:hover:shadow-[0_0_20px_rgba(0,229,255,0.4)]",
+    primary: "bg-primary text-background dark:shadow-[0_0_15px_rgba(0,229,255,0.2)] hover:bg-primary/90 dark:hover:shadow-[0_0_20px_rgba(0,229,255,0.4)]",
     outline: "border border-border bg-transparent hover:bg-muted hover:text-foreground",
     ghost: "hover:bg-muted hover:text-foreground",
     link: "text-primary underline-offset-4 hover:underline",
   };
 
   const sizes = {
-    default: "h-11 px-6 py-2",
-    sm: "h-9 px-4 text-xs",
-    lg: "h-14 px-10 text-base",
-    icon: "h-11 w-11",
+    default: "px-4 py-3 text-base font-medium",
+    sm: "px-4 py-2 text-sm font-medium",
+    lg: "px-6 py-4 text-base font-medium",
+    icon: "",
   };
 
   return cn(base, variants[variant as keyof typeof variants] || variants.default, sizes[size as keyof typeof sizes] || sizes.default);
