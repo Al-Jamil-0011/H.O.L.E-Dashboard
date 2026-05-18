@@ -4,9 +4,9 @@ import { useRouter } from "next/navigation";
 import { useAuthService } from "@/hooks/auth";
 import { useForm } from "react-hook-form";
 import { VscLoading } from "react-icons/vsc";
-import toast from "react-hot-toast";
 import { useRef, useState, useEffect } from "react";
 import Cookies from "js-cookie";
+import { customToast } from "@/lib/utils";
 
 export default function OtpVerificationPage() {
     const router = useRouter();
@@ -71,8 +71,8 @@ export default function OtpVerificationPage() {
         try {
             const res = await verifyOtp({ otp: otpString });
             if (res?.statusCode === 200 || res?.statusCode === 201) {
-                toast.success(res?.message || "Verification successful!");
-                
+                customToast.success(res?.message || "Verification successful!");
+
                 const finalToken = res?.data?.token;
                 if (finalToken) {
                     Cookies.set("token", finalToken, {
@@ -91,7 +91,7 @@ export default function OtpVerificationPage() {
 
     const handleResendOtp = async () => {
         if (!userMail) {
-            toast.error("Email not found");
+            customToast.error("Email not found");
             return;
         }
 
@@ -106,7 +106,7 @@ export default function OtpVerificationPage() {
             const res = await resendOtp({ email: userMail });
 
             if (res?.statusCode === 200 || res?.statusCode === 201) {
-                toast.success("Otp resend successfully!");
+                customToast.success("Otp resend successfully!");
 
                 // reset form inputs
                 reset({ otp: ["", "", "", "", "", ""] });

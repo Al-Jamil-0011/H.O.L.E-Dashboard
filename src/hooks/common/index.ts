@@ -158,3 +158,4 @@ export function useFacilities() {
         refetch: fetchFacilities,
     };
 }
+

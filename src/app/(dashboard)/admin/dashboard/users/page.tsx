@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { cn } from '@/lib/utils';
+import { cn, customToast } from '@/lib/utils';
 import { DataTable, StatusBadge } from '@/components/ui/DataTable';
 import {
   Search,
@@ -26,7 +26,6 @@ import { FaEye } from 'react-icons/fa';
 import { VerifyBadge } from '@/components/verify-bedge';
 import { UserStatCard } from '@/components/stats-card';
 import { IDetailRowProps } from '@/components/stats-card/interface';
-import toast from 'react-hot-toast';
 
 const getInitials = (name: string) => {
   if (!name) return 'NA';
@@ -99,12 +98,12 @@ export default function UsersManagementPage() {
     if (success) {
       refetch();
       summaryRefetch();
-      toast.success(success?.message || 'User status updated successfully');
+      customToast.success(success?.message || 'User status updated successfully');
       if (selectedUser?._id === userId) {
         setSelectedUser({ ...selectedUser, status: newStatus });
       }
     } else {
-      toast.error('User status updated failed');
+      customToast.error('User status updated failed');
     }
     setIsDeactivateModalOpen(false);
   };

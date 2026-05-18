@@ -1,14 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { X, Upload, CheckCircle2, AlertCircle } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, customToast } from "@/lib/utils";
 import { useCreatePhysician, useSinglePhysician, useUpdatePhysician } from "@/hooks/admin/physicians";
 import { useForm, FormProvider } from "react-hook-form";
 import FormField from "@/components/form";
 import Loader from "@/components/loader";
 import { usePractices } from "@/hooks/common";
-import toast from "react-hot-toast";
+import { X } from "lucide-react";
 
 interface AddPhysicianModalProps {
   isOpen: boolean;
@@ -80,27 +79,27 @@ export function AddPhysicianModal({ isOpen, onClose, initialData, refetch }: Add
       if (isEdit) {
         const result = await updatePhysician(initialData?._id, payload);
         if (result?.statusCode === 201) {
-          toast.success(result?.message || "Physician updated successfully");
+          customToast.success(result?.message || "Physician updated successfully");
           onClose();
           if (refetch) refetch();
           if (refetchSingle) refetchSingle();
         } else {
-          toast.error(result?.message || "Failed to update physician");
+          customToast.error(result?.message || "Failed to update physician");
         }
 
       } else {
         const result = await createPhysician(payload);
         if (result?.statusCode === 201) {
-          toast.success(result?.message || "Physician created successfully");
+          customToast.success(result?.message || "Physician created successfully");
           onClose();
           if (refetch) refetch();
         } else {
-          toast.error(result?.message || "Failed to create physician");
+          customToast.error(result?.message || "Failed to create physician");
         }
       }
     } catch (err: any) {
       console.error("Failed to save physician:", err);
-      toast.error(err?.message || "Something went wrong");
+      customToast.error(err?.message || "Something went wrong");
     }
   };
 

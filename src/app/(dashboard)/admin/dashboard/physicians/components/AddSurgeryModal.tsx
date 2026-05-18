@@ -7,7 +7,7 @@ import { useForm, FormProvider } from "react-hook-form";
 import FormField from "@/components/form";
 import Loader from "@/components/loader";
 import { useFacilities, usePhysicians } from "@/hooks/common";
-import toast from "react-hot-toast";
+import { customToast } from "@/lib/utils";
 
 interface AddSurgeryModalProps {
   isOpen: boolean;
@@ -76,23 +76,23 @@ export function AddSurgeryModal({ isOpen, onClose, initialData, refetch }: AddSu
           onClose();
           if (refetch) refetch();
           if (refetchSingle) refetchSingle();
-          toast.success(result?.message || "Surgery updated successfully");
+          customToast.success(result?.message || "Surgery updated successfully");
         } else {
-          toast.error(result?.message || "Failed to update surgery");
+          customToast.error(result?.message || "Failed to update surgery");
         }
       } else {
         const result = await createSurgery(payload);
         if (result?.statusCode === 201) {
           onClose();
           if (refetch) refetch();
-          toast.success(result?.message || "Surgery created successfully");
+          customToast.success(result?.message || "Surgery created successfully");
         } else {
-          toast.error(result?.message || "Failed to create surgery");
+          customToast.error(result?.message || "Failed to create surgery");
         }
       }
     } catch (err: any) {
       console.error(err);
-      toast.error(err?.message || "Failed to save surgery");
+      customToast.error(err?.message || "Failed to save surgery");
     }
   };
 

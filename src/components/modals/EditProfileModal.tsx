@@ -1,12 +1,12 @@
 "use client";
 
-import { X, Save, UploadCloud, Loader2 } from 'lucide-react';
+import { X, Save, Loader2 } from 'lucide-react';
 import { useForm, FormProvider } from "react-hook-form";
 import FormField from "@/components/form";
 import { IUser } from '@/hooks/admin/users/interface';
 import { useUpdateProfile } from '@/hooks/admin/users';
-import toast from 'react-hot-toast';
 import { useEffect } from 'react';
+import { customToast } from '@/lib/utils';
 
 interface EditProfileModalProps {
     isOpen: boolean;
@@ -69,11 +69,11 @@ export function EditProfileModal({ isOpen, onClose, profile, onSuccess }: EditPr
 
         const res = await updateProfile(formData);
         if (res) {
-            toast.success("Profile updated successfully");
+            customToast.success("Profile updated successfully");
             onSuccess();
             onClose();
         } else {
-            toast.error("Failed to update profile");
+            customToast.error("Failed to update profile");
         }
     };
 

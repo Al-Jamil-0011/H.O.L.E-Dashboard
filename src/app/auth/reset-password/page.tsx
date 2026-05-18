@@ -6,9 +6,9 @@ import { useAuthService } from "@/hooks/auth";
 import { useForm } from "react-hook-form";
 import FormField from "@/components/form";
 import { VscLoading } from "react-icons/vsc";
-import toast from "react-hot-toast";
 import { useState } from "react";
 import Cookies from "js-cookie";
+import { customToast } from "@/lib/utils";
 
 export default function ResetPasswordPage() {
     const router = useRouter();
@@ -33,9 +33,7 @@ export default function ResetPasswordPage() {
 
             if (res?.statusCode === 201) {
 
-                toast.success(res?.message || "Password reset successful!", {
-                    position: "top-center"
-                });
+                customToast.success(res?.message || "Password reset successfully!");
                 Cookies.remove("token");
                 return router.push("/");
             }

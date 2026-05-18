@@ -4,10 +4,10 @@ import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import Loader from '@/components/loader';
 import { useAboutUs, useUpdateAboutUs } from '@/hooks/settings';
-import toast from 'react-hot-toast';
 import 'suneditor/dist/css/suneditor.min.css';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
+import { customToast } from '@/lib/utils';
 
 const SunEditor = dynamic(() => import('suneditor-react'), {
     ssr: false,
@@ -39,19 +39,19 @@ export default function EditAboutUsPage() {
         if (!abouts || abouts.length === 0) return;
 
         setIsSaving(true);
-        const toastId = toast.loading('Saving changes...');
+        const toastId = customToast.loading('Saving changes...');
 
         try {
             const res = await updateAbout(abouts[0]._id!, { content });
             if (res) {
-                toast.success('About Us updated successfully', { id: toastId });
+                customToast.success('About Us updated successfully', toastId);
                 refetch();
                 router.push('/admin/settings/about-us');
             } else {
-                toast.error('Failed to update About Us', { id: toastId });
+                customToast.error('Failed to update About Us', toastId);
             }
-        } catch (err) {
-            toast.error('An error occurred while saving', { id: toastId });
+        } catch (err: any) {
+            customToast.error(err?.message || 'An error occurred while saving', toastId);
         } finally {
             setIsSaving(false);
         }

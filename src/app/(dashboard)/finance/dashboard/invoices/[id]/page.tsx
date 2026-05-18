@@ -15,10 +15,11 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import dayjs from "dayjs";
-import toast from "react-hot-toast";
+
 import { StatusBadge } from "@/components/ui/DataTable";
 import Loader from "@/components/loader";
-import { cn } from "@/lib/utils";
+import { cn, customToast } from "@/lib/utils";
+import Image from "next/image";
 
 export default function InvoiceDetailsPage() {
     const params = useParams();
@@ -26,20 +27,16 @@ export default function InvoiceDetailsPage() {
     const invoiceId = params.id as string;
     const { invoice, loading, error } = useSingleInvoice(invoiceId);
 
+
+
+
+
     const handlePrint = () => {
         window.print();
     };
 
     const handleDownloadInvoice = async () => {
-        const toastId = toast.loading("Generating high-fidelity PDF statement...", {
-            style: {
-                minWidth: '280px',
-                borderRadius: '12px',
-                background: 'var(--card)',
-                color: 'var(--foreground)',
-                border: '1px solid var(--border)',
-            }
-        });
+        const toastId = customToast.loading("Generating high-fidelity PDF statement...");
 
         try {
             // Dynamically import jsPDF for full SSR build safety
@@ -284,15 +281,10 @@ export default function InvoiceDetailsPage() {
             const fileName = `Invoice_${invoiceInfo.invoiceNumber || invoice?.saleId || 'Statement'}.pdf`;
             doc.save(fileName);
 
-            toast.success("Invoice PDF successfully downloaded to your local disk!", {
-                id: toastId,
-                icon: '🎉'
-            });
+            customToast.success("Invoice PDF successfully downloaded to your local disk!", toastId);
         } catch (err) {
             console.error("PDF generation failed:", err);
-            toast.error("Failed to generate PDF. Falling back to native print options...", {
-                id: toastId
-            });
+            customToast.error("Failed to generate PDF. Falling back to native print options...", toastId);
             window.print();
         }
     };
@@ -420,7 +412,7 @@ export default function InvoiceDetailsPage() {
 
             <div className="grid gap-6 md:grid-cols-3 print:grid-cols-1">
 
-                {/* LEFT/CENTER: Main Business Invoice Document */}
+                {/* Main Business Invoice Document */}
                 <div className="md:col-span-2 space-y-6">
                     <div id="invoice-card" className="print-area rounded-2xl border border-border bg-card/60 backdrop-blur-md dark:shadow-md overflow-hidden transition-all flex flex-col p-6 sm:p-8 space-y-8">
 
@@ -642,7 +634,13 @@ export default function InvoiceDetailsPage() {
                             <div className="flex items-center gap-3">
                                 <div className="h-10 w-10 rounded-full bg-muted border border-border overflow-hidden flex items-center justify-center text-primary font-bold">
                                     {physicianInfo.profileUrl ? (
-                                        <img src={physicianInfo.profileUrl} alt="physician" className="w-full h-full object-cover" />
+                                        <Image
+                                            src={physicianInfo.profileUrl}
+                                            alt="physician"
+                                            height={40}
+                                            width={40}
+                                            className="w-full h-full object-cover"
+                                        />
                                     ) : (
                                         physicianInfo.fullName?.charAt(0) || 'D'
                                     )}
@@ -671,9 +669,15 @@ export default function InvoiceDetailsPage() {
 
                             <div className="space-y-3 text-xs">
                                 <div className="flex items-center gap-3">
-                                    <div className="h-9 w-9 rounded-lg bg-muted border border-border overflow-hidden flex items-center justify-center text-primary font-bold">
+                                    <div className="h-10 w-10 rounded-lg bg-muted border border-border overflow-hidden flex items-center justify-center text-primary font-bold">
                                         {vendorInfo.profileUrl ? (
-                                            <img src={vendorInfo.profileUrl} alt="vendor" className="w-full h-full object-cover" />
+                                            <Image
+                                                src={vendorInfo.profileUrl}
+                                                alt="vendor"
+                                                height={40}
+                                                width={40}
+                                                className="w-full h-full object-cover"
+                                            />
                                         ) : (
                                             vendorInfo.companyName?.charAt(0) || 'V'
                                         )}

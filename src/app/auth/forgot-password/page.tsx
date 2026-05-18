@@ -7,7 +7,7 @@ import Cookies from "js-cookie";
 import { useForm } from "react-hook-form";
 import FormField from "@/components/form";
 import { VscLoading } from "react-icons/vsc";
-import toast from "react-hot-toast";
+import { customToast } from "@/lib/utils";
 
 export default function ForgetPasswordPage() {
     const router = useRouter();
@@ -22,9 +22,7 @@ export default function ForgetPasswordPage() {
             Cookies.remove("token");
             console.log("res", res?.message)
             if (res?.statusCode === 201) {
-                toast.success(res?.message, {
-                    position: "top-center"
-                });
+                customToast.success(res?.message || "Reset password successfully")
 
                 localStorage.setItem("email", data.email);
 

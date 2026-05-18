@@ -1,11 +1,10 @@
 "use client";
 
-import { X, CheckCircle2, ChevronLeft, FileText, Image as ImageIcon, ArrowLeft } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { X, CheckCircle2, FileText, Image as ImageIcon, ArrowLeft } from "lucide-react";
+import { cn, customToast } from "@/lib/utils";
 import Image from "next/image";
 import { useSingleExpense, useUpdateExpenseStatus } from "@/hooks/admin/expense";
 import Loader from "../loader";
-import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { StatusBadge } from "../ui/DataTable";
 
@@ -26,7 +25,7 @@ export const ExpenseDetails = ({ expenseId }: { expenseId: string }) => {
 
     const handleApprove = async () => {
         const promise = updateExpenseStatus(expense._id, 'approved');
-        toast.promise(promise, {
+        customToast.promise(promise, {
             loading: 'Approving expense...',
             success: () => {
                 refetch();
@@ -38,7 +37,7 @@ export const ExpenseDetails = ({ expenseId }: { expenseId: string }) => {
 
     const handleReject = async (reason: string = "No reason provided") => {
         const promise = updateExpenseStatus(expense._id, 'rejected', reason);
-        toast.promise(promise, {
+        customToast.promise(promise, {
             loading: 'Rejecting expense...',
             success: () => {
                 refetch();

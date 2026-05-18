@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from 'react';
-import { cn } from '@/lib/utils';
+import { cn, customToast } from '@/lib/utils';
 import { DataTable, StatusBadge } from '@/components/ui/DataTable';
 import { useForm } from 'react-hook-form';
 import FormField from '@/components/form';
@@ -22,7 +22,6 @@ import { useFacilities, useCreateFacility, useUpdateFacility, useDeleteFacility 
 import { useVendors, useCreateVendor, useUpdateVendor, useDeleteVendor } from '@/hooks/admin/vendor';
 import { usePractices, useCreatePractice, useUpdatePractice, useDeletePractice } from '@/hooks/admin/practice';
 import Image from 'next/image';
-import { toast } from 'react-hot-toast';
 
 
 export default function CreateNewManagementPage() {
@@ -149,7 +148,7 @@ export default function CreateNewManagementPage() {
       result = await updateFacility(selectedRecord._id, data);
     }
     if (result) {
-      toast.success(modalMode === 'add' ? 'Facility added' : 'Facility updated');
+      customToast.success(modalMode === 'add' ? 'Facility added' : 'Facility updated');
       refetchFacilities();
       closeAllModals();
     }
@@ -169,7 +168,7 @@ export default function CreateNewManagementPage() {
       });
     }
     if (result) {
-      toast.success(modalMode === 'add' ? 'Vendor added' : 'Vendor updated');
+      customToast.success(modalMode === 'add' ? 'Vendor added' : 'Vendor updated');
       refetchVendors();
       closeAllModals();
     }
@@ -188,7 +187,7 @@ export default function CreateNewManagementPage() {
       result = await updatePractice(selectedRecord._id, formData);
     }
     if (result) {
-      toast.success(modalMode === 'add' ? 'Practice added' : 'Practice updated');
+      customToast.success(modalMode === 'add' ? 'Practice added' : 'Practice updated');
       refetchPractices();
       closeAllModals();
     }
@@ -202,7 +201,7 @@ export default function CreateNewManagementPage() {
     if (deleteType === 'practice') result = await deletePractice(selectedRecord._id);
 
     if (result) {
-      toast.success('Record deleted successfully');
+      customToast.success('Record deleted successfully');
       if (deleteType === 'facility') refetchFacilities();
       if (deleteType === 'vendor') refetchVendors();
       if (deleteType === 'practice') refetchPractices();

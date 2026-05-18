@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import useApi from "@/hooks/use-api";
 import { IQuickBooksStatus, IQuickBooksSyncLog, QuickBooksSyncResponse } from "@/hooks/finance/quick-books/interface";
-import toast from "react-hot-toast";
+import { customToast } from "@/lib/utils";
 
 export const useQuickBooksStatus = () => {
     const [status, setStatus] = useState<IQuickBooksStatus | null>(null);
@@ -59,14 +59,14 @@ export const useQuickBooksSync = () => {
         try {
             const response = await useApi.post<QuickBooksSyncResponse>(endpoint);
             if (response.data.success) {
-                toast.success(response.data.message);
+                customToast.success(response.data.message);
             } else {
-                toast.error(response.data.message);
+                customToast.error(response.data.message);
             }
             return response.data;
         } catch (error: any) {
             const message = error.response?.data?.message || `Failed to sync ${type}`;
-            toast.error(message);
+            customToast.error(message);
             return { success: false, message };
         } finally {
             setSyncing(null);

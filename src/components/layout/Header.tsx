@@ -1,12 +1,10 @@
 "use client";
 
-import { Bell, Search, User, Menu, LogOut, FileText, BarChart4, Settings, UserCircle, MessageSquare, Banknote, Percent, Package } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { Bell, Search, User, Menu, LogOut, FileText, BarChart4, UserCircle, Percent } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { ThemeSwitcher } from '@/components/ui/ThemeSwitcher';
 import Link from 'next/link';
 import { useAuthService } from '@/hooks/auth';
-import toast from 'react-hot-toast';
 import Cookies from "js-cookie";
 import jwt from "jsonwebtoken";
 import { useNotificationService } from '@/hooks/notifications';
@@ -14,6 +12,7 @@ import { useMyProfile } from '@/hooks/admin/users';
 import dayjs from 'dayjs';
 import relativeTime from "dayjs/plugin/relativeTime";
 import Image from "next/image";
+import { customToast } from '@/lib/utils';
 
 dayjs.extend(relativeTime);
 
@@ -38,7 +37,7 @@ export function Header({ onMenuClick }: HeaderProps) {
 
   const handleLogout = async () => {
     await logoutUser()
-    toast.success("Logout Successfully");
+    customToast.success("Logout Successfully");
   };
 
   const { notifications, unreadCount, fetchAllNotifications, fetchUnreadCount } = useNotificationService();

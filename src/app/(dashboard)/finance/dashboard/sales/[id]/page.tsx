@@ -9,10 +9,9 @@ import {
   AlertCircle, UploadCloud, Clock,
   X
 } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn, customToast } from '@/lib/utils';
 import { useSingleSale, useUpdateSale, useUpdateSaleStatus } from '@/hooks/admin/sales';
 import Loader from '@/components/loader';
-import toast from 'react-hot-toast';
 import Image from "next/image";
 
 
@@ -58,7 +57,7 @@ export default function SaleDetailsPage() {
 
   const handleApprove = async () => {
     const promise = updateSaleStatus(sale._id, { status: 'approved' });
-    toast.promise(promise, {
+    customToast.promise(promise, {
       loading: 'Approving sale...',
       success: () => {
         setShowApproveModal(false);
@@ -78,7 +77,7 @@ export default function SaleDetailsPage() {
 
     if (res?.statusCode === 200) {
       refetch();
-      toast.success("Feedback sent successfully!");
+      customToast.success("Feedback sent successfully!");
     }
     setIsSubmittingNote(false);
   };

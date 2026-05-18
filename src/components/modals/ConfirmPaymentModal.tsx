@@ -1,9 +1,7 @@
 "use client";
 
-import { X, CheckCircle2, AlertCircle, DollarSign, Calendar, Landmark } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { toast } from 'react-hot-toast';
-import { useTheme } from "next-themes";
+import { customToast } from '@/lib/utils';
+import { X, CheckCircle2, AlertCircle, Landmark } from 'lucide-react';
 
 
 interface ConfirmPaymentModalProps {
@@ -19,25 +17,13 @@ interface ConfirmPaymentModalProps {
 }
 
 export function ConfirmPaymentModal({ isOpen, onClose, paymentData, onConfirm }: ConfirmPaymentModalProps) {
-  const { resolvedTheme } = useTheme();
 
   if (!isOpen || !paymentData) return null;
 
 
   const handleConfirm = () => {
     // Simulating API call
-    toast.success(`Payment for ${paymentData.invoiceNumber} processed successfully!`, {
-      style: {
-        borderRadius: '10px',
-        background: resolvedTheme === 'dark' ? '#0F172A' : '#fff',
-        color: resolvedTheme === 'dark' ? '#fff' : '#0F172A',
-        border: resolvedTheme === 'dark' ? '1px solid rgba(255,255,255,0.1)' : '1px solid rgba(0,0,0,0.1)'
-      },
-      iconTheme: {
-        primary: '#10B981',
-        secondary: '#fff',
-      },
-    });
+    customToast.success(`Payment for ${paymentData.invoiceNumber} processed successfully!`);
     onConfirm();
     onClose();
   };

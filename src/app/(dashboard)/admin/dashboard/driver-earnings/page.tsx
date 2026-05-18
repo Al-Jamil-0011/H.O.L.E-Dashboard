@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, ReactNode } from 'react';
-import { cn } from '@/lib/utils';
+import { useState } from 'react';
+import { cn, customToast } from '@/lib/utils';
 import { DataTable } from '@/components/ui/DataTable';
 import {
   Search,
@@ -15,7 +15,6 @@ import {
   CreditCard,
   History,
   TrendingUp,
-  Mail,
   User,
   Calendar,
   Hash,
@@ -24,7 +23,7 @@ import {
   EyeOff
 } from 'lucide-react';
 import { useChangeWithdrawalStatus, useCreateOrUpdateShipmentRate, useDriverWithdrawals, useShipmentRate } from '@/hooks/admin/driver-payment';
-import toast from 'react-hot-toast';
+
 import { useEffect, useMemo } from 'react';
 import { StatInfoCard } from '@/components/stats-card';
 import { FaEye } from 'react-icons/fa';
@@ -105,7 +104,7 @@ export default function DriverEarningsControlPage() {
 
   const handleSavePricing = async () => {
     if (!shipmentRate) {
-      toast.error("No shipment rate found to update");
+      customToast.error("No shipment rate found to update");
       return;
     }
 
@@ -127,11 +126,11 @@ export default function DriverEarningsControlPage() {
 
     const result = await createOrUpdateShipmentRate(payload as any);
     if (result?.success) {
-      toast.success(result?.message || "Shipment rate updated successfully");
+      customToast.success(result?.message || "Shipment rate updated successfully");
       refetchShipmentRate();
       setIsPricingModalOpen(false);
     } else {
-      toast.error(result?.message || "Failed to update shipment rate");
+      customToast.error(result?.message || "Failed to update shipment rate");
     }
   };
 
@@ -146,7 +145,7 @@ export default function DriverEarningsControlPage() {
       refetchHistory();
       setTimeout(() => setIsSuccessModalOpen(false), 3000);
     } else {
-      toast.error(result?.message || "Failed to process payment");
+      customToast.error(result?.message || "Failed to process payment");
     }
   };
 

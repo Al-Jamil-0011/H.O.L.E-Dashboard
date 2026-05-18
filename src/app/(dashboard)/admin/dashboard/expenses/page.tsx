@@ -2,10 +2,9 @@
 
 import { useState } from 'react';
 import dynamic from 'next/dynamic';
-import { cn } from '@/lib/utils';
+import { cn, customToast } from '@/lib/utils';
 import { DataTable } from '@/components/ui/DataTable';
 import { useExpenses, useExpenseSummary, useUpdateExpenseStatus } from '@/hooks/admin/expense';
-import toast from 'react-hot-toast';
 import Link from 'next/link';
 import { useTheme } from 'next-themes';
 import { CommonFilterPill, ExpensesStatCard } from '@/components/stats-card';
@@ -72,7 +71,7 @@ export default function ExpensesPage() {
 
     const promise = updateExpenseStatus(actionExpense.id as string, 'approved');
 
-    toast.promise(promise, {
+    customToast.promise(promise, {
       loading: 'Approving expense...',
       success: (data) => {
         if (!data) throw new Error('Failed to approve');
@@ -93,7 +92,7 @@ export default function ExpensesPage() {
 
     const promise = updateExpenseStatus(actionExpense.id as string, 'rejected', reason);
 
-    toast.promise(promise, {
+    customToast.promise(promise, {
       loading: 'Rejecting expense...',
       success: (data) => {
         if (!data) throw new Error('Failed to reject');

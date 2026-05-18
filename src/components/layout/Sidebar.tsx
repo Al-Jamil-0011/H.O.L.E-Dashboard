@@ -3,7 +3,7 @@ import { MdOutlineLogout } from "react-icons/md";
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { cn } from '@/lib/utils';
+import { cn, customToast } from '@/lib/utils';
 import { useState } from 'react';
 import {
   LayoutDashboard,
@@ -26,7 +26,6 @@ import {
   FolderPlus,
   ChevronDown,
 } from 'lucide-react';
-import toast from "react-hot-toast";
 import { useAuthService } from "@/hooks/auth";
 
 
@@ -194,8 +193,9 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
 
   const handleLogout = async () => {
     await logoutUser()
-    toast.success("Logout Successfully");
+    customToast.success("Logout Successfully");
   };
+
   const systemAdminNavItems = [
     {
       name: 'Settings',

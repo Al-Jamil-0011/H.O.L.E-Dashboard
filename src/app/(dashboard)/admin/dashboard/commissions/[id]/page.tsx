@@ -7,10 +7,9 @@ import {
     Activity, DollarSign, Stethoscope, Briefcase,
     Clock, ShieldCheck, Wallet, Receipt
 } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn, customToast } from '@/lib/utils';
 import { useSingleCommission, useMarkCommissionPaid } from '@/hooks/admin/commissions';
 import Loader from '@/components/loader';
-import toast from 'react-hot-toast';
 import { useState } from 'react';
 
 export default function CommissionDetailsPage() {
@@ -50,11 +49,11 @@ export default function CommissionDetailsPage() {
     const handleMarkAsPaid = async () => {
         const res = await markCommissionPaid(id);
         if (res?.success) {
-            toast.success('Commission marked as paid successfully');
+            customToast.success('Commission marked as paid successfully');
             setShowPaidModal(false);
             refetch();
         } else {
-            toast.error('Failed to update status');
+            customToast.error('Failed to update status');
         }
     };
 

@@ -3,12 +3,11 @@
 import { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { ArrowLeft, AlertTriangle, Mail, Phone, MapPin, Calendar, User, FileText, CreditCard, Car, Download, Eye, File, Image as ImageIcon } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn, customToast } from '@/lib/utils';
 import Image from 'next/image';
 import { useChangeUserStatus, useSingleUser } from '@/hooks/admin/users';
 import { VerifyBadge } from '@/components/verify-bedge';
 import { StatusBadge } from '@/components/ui/DataTable';
-import toast from 'react-hot-toast';
 import Loader from '@/components/loader';
 import { IUser } from '@/hooks/admin/users/interface';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
@@ -29,9 +28,9 @@ export default function UserDetailsPage() {
     const success = await changeUserStatus(user?._id, user?.status === 'active' ? 'inactive' : 'active');
     if (success) {
       refetch();
-      toast.success(`User ${user?.status === 'active' ? 'deactivated' : 'activated'} successfully`);
+      customToast.success(`User ${user?.status === 'active' ? 'deactivated' : 'activated'} successfully`);
     } else {
-      toast.error(`Failed to ${user?.status === 'active' ? 'deactivate' : 'activate'} user`);
+      customToast.error(`Failed to ${user?.status === 'active' ? 'deactivate' : 'activate'} user`);
     }
     setIsDeactivateModalOpen(false);
   };

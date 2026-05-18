@@ -8,8 +8,8 @@ import Cookies from "js-cookie";
 import { useForm } from "react-hook-form";
 import FormField from "@/components/form";
 import { VscLoading } from "react-icons/vsc";
-import toast from "react-hot-toast";
 import Loader from "@/components/loader";
+import { customToast } from "@/lib/utils";
 
 function LoginContent() {
     const router = useRouter();
@@ -34,9 +34,7 @@ function LoginContent() {
                     });
                 }
 
-                toast.success(res?.message, {
-                    position: "top-center"
-                });
+                customToast.success(res?.message || "Login successful")
 
                 // Redirect by role or callbackUrl
                 if (callbackUrl) {

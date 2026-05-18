@@ -1,13 +1,12 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import toast from 'react-hot-toast';
-import { cn } from '@/lib/utils';
 import { DataTable, StatusBadge } from '@/components/ui/DataTable';
 import { Search, CheckCircle2 } from 'lucide-react';
 import { useCommissions, useCommissionSummary, useMarkCommissionPaid } from '@/hooks/admin/commissions';
 import Link from 'next/link';
 import { CommissionStatCard } from '@/components/stats-card';
+import { customToast } from '@/lib/utils';
 
 export default function CommissionsPage() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -34,12 +33,12 @@ export default function CommissionsPage() {
     if (!selectedId) return;
     const res = await markCommissionPaid(selectedId);
     if (res?.success) {
-      toast.success('Commission marked as paid');
+      customToast.success('Commission marked as paid');
       setShowPaidModal(false);
       setSelectedId(null);
       refetch();
     } else {
-      toast.error('Failed to update status');
+      customToast.error('Failed to update status');
     }
   };
 
