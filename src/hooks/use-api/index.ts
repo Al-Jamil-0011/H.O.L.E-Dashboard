@@ -47,6 +47,12 @@ useApi.interceptors.response.use(
             console.log('🚀 ~ API Error ~ 401/403:', messageText);
             customToast.error(messageText || 'You are not authorized to access this page.');
             window.location.href = redirectUrl;
+        } else if (error.message === 'Network Error' || error.code === 'ERR_NETWORK') {
+            console.error('🚀 ~ API Network Error:', error);
+            customToast.error('Network Connection Error: Server is unreachable. Please check your network and try again.');
+        } else if (status && status >= 500) {
+            console.error(`🚀 ~ API Server Error ${status}:`, messageText || error.message);
+            customToast.error(messageText || 'Server Error: Something went wrong on our end. Please try again later.');
         }
 
         return Promise.reject(error);

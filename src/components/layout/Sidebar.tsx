@@ -203,6 +203,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
   const handleLogout = async () => {
     await logoutUser()
     customToast.success("Logout Successfully");
+    onClose();
   };
 
   const systemAdminNavItems = [
@@ -300,26 +301,26 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
 
 
           {pathname.startsWith('/admin') ? (
-            <NavSection title="MAIN" items={mainAdminNavItems} pathname={pathname} />
+            <NavSection title="MAIN" items={mainAdminNavItems} pathname={pathname} onClose={onClose} />
           ) : (
-            <NavSection title="MAIN" items={mainFinanceNavItems} pathname={pathname} />
+            <NavSection title="MAIN" items={mainFinanceNavItems} pathname={pathname} onClose={onClose} />
           )}
 
           {pathname.startsWith('/admin') ? (
-            <NavSection title="ADMIN" items={adminNavItems} pathname={pathname} />
+            <NavSection title="ADMIN" items={adminNavItems} pathname={pathname} onClose={onClose} />
           ) : (
             <>
-              <NavSection title="FINANCE" items={financeNavItems} pathname={pathname} />
-              <NavSection title="ANALYTICS" items={analyticsNavItems} pathname={pathname} />
-              <NavSection title="INTEGRATIONS" items={integrationsNavItems} pathname={pathname} />
+              <NavSection title="FINANCE" items={financeNavItems} pathname={pathname} onClose={onClose} />
+              <NavSection title="ANALYTICS" items={analyticsNavItems} pathname={pathname} onClose={onClose} />
+              <NavSection title="INTEGRATIONS" items={integrationsNavItems} pathname={pathname} onClose={onClose} />
             </>
           )}
 
           <div className="mt-auto pt-6">
             {pathname.startsWith('/admin') ? (
-              <NavSection title="SYSTEM" items={systemAdminNavItems} pathname={pathname} />
+              <NavSection title="SYSTEM" items={systemAdminNavItems} pathname={pathname} onClose={onClose} />
             ) : (
-              <NavSection title="SYSTEM" items={systemFinanceNavItems} pathname={pathname} />
+              <NavSection title="SYSTEM" items={systemFinanceNavItems} pathname={pathname} onClose={onClose} />
             )}
 
             <button
@@ -336,7 +337,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
   );
 }
 
-function NavItem({ item, pathname }: { item: any; pathname: string }) {
+function NavItem({ item, pathname, onClose }: { item: any; pathname: string; onClose: () => void }) {
   const [isOpen, setIsOpen] = useState(false);
   const isActive = item.href ? pathname === item.href : (item.subItems && item.subItems.some((sub: any) => pathname === sub.href));
   const hasSubItems = !!item.subItems;
@@ -370,6 +371,7 @@ function NavItem({ item, pathname }: { item: any; pathname: string }) {
               <Link
                 key={sub.name}
                 href={sub.href}
+                onClick={onClose}
                 className={cn(
                   "block rounded-md px-2 py-1.5 text-xs font-medium transition-colors",
                   pathname === sub.href
@@ -389,6 +391,7 @@ function NavItem({ item, pathname }: { item: any; pathname: string }) {
   return (
     <Link
       href={item.href}
+      onClick={onClose}
       className={cn(
         "group flex items-center justify-between rounded-md px-2 py-2 text-sm font-medium transition-colors",
         pathname === item.href
@@ -417,11 +420,13 @@ function NavItem({ item, pathname }: { item: any; pathname: string }) {
 function NavSection({
   title,
   items,
-  pathname
+  pathname,
+  onClose
 }: {
   title: string,
   items: any[],
-  pathname: string
+  pathname: string,
+  onClose: () => void
 }) {
   return (
     <div>
@@ -430,7 +435,7 @@ function NavSection({
       </h3>
       <nav className="flex flex-col gap-0.5">
         {items.map((item) => (
-          <NavItem key={item.name} item={item} pathname={pathname} />
+          <NavItem key={item.name} item={item} pathname={pathname} onClose={onClose} />
         ))}
       </nav>
     </div>
