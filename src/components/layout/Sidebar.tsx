@@ -4,7 +4,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn, customToast } from '@/lib/utils';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useTheme } from 'next-themes';
 import {
   LayoutDashboard,
   BarChart4,
@@ -27,6 +28,8 @@ import {
   ChevronDown,
 } from 'lucide-react';
 import { useAuthService } from "@/hooks/auth";
+import light_logo from "../../../src/assets/logo-light.svg";
+import dark_logo from "../../../src/assets/logo-dark.svg";
 
 
 
@@ -190,6 +193,12 @@ interface SidebarProps {
 export function Sidebar({ isOpen, onClose }: SidebarProps) {
   const pathname = usePathname();
   const { logoutUser } = useAuthService();
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleLogout = async () => {
     await logoutUser()
@@ -259,23 +268,24 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
       <aside
         className={cn(
           "fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-card border-r border-border transition-transform duration-300 ease-in-out lg:static lg:translate-x-0 h-screen",
-          isOpen ? "translate-x-0 shadow-2xl" : "-translate-x-full"
+          isOpen ? "translate-x-0 dark:shadow-2xl" : "-translate-x-full"
         )}
       >
         <div className="flex h-16 shrink-0 items-center justify-between px-6">
-          <Link href="/" className="flex items-center gap-3">
-            <div className="relative flex h-8 w-8 items-center justify-center">
+          <Link href="/" className="flex items-center gap-1">
+            <div className="relative flex h-12 w-12 items-center justify-center">
               <Image
-                src="/logo.png"
+                src={mounted && resolvedTheme === 'dark' ? light_logo : dark_logo}
                 alt="H.O.L.E APP Logo"
-                fill
+                width={48}
+                height={48}
                 className="object-contain"
                 priority
               />
             </div>
-            <div>
-              <span className="text-base font-bold text-foreground tracking-wide">H.O.L.E APP</span>
-            </div>
+            <h1 className="text-2xl font-bold text-primary ">
+              H.O.L.E APP
+            </h1>
           </Link>
           <button
             onClick={onClose}

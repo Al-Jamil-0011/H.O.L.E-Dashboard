@@ -382,7 +382,7 @@ export default function InvoiceDetailsPage() {
                         <ArrowLeft className="h-4 w-4 text-primary" />
                     </button>
                     <div>
-                        <h1 className="text-xl font-bold tracking-tight text-foreground flex items-center gap-2">
+                        <h1 className="text-xl font-bold text-foreground flex items-center gap-2">
                             Invoice Statement
                             <span className="text-xs font-mono text-muted-foreground">#{invoiceInfo.invoiceNumber || invoice.saleId}</span>
                         </h1>
@@ -437,7 +437,7 @@ export default function InvoiceDetailsPage() {
                         {/* Billed To / Billed By Billing Parties Details */}
                         <div className="grid gap-6 sm:grid-cols-2 text-xs">
                             <div className="space-y-2 p-4 bg-muted/20 border border-border rounded-xl print-border">
-                                <p className="text-[9px] font-black tracking-widest text-primary uppercase flex items-center gap-1.5">
+                                <p className="text-xs font-semibold text-primary uppercase flex items-center gap-1.5">
                                     <Building2 className="h-3.5 w-3.5" />
                                     BILLED TO (FACILITY)
                                 </p>
@@ -451,7 +451,7 @@ export default function InvoiceDetailsPage() {
                             </div>
 
                             <div className="space-y-2 p-4 bg-muted/20 border border-border rounded-xl print-border">
-                                <p className="text-[9px] font-black tracking-widest text-emerald-500 uppercase flex items-center gap-1.5">
+                                <p className="text-xs font-semibold text-emerald-500 uppercase flex items-center gap-1.5">
                                     <User className="h-3.5 w-3.5" />
                                     PREPARED BY (REPRESENTATIVE)
                                 </p>
@@ -467,7 +467,7 @@ export default function InvoiceDetailsPage() {
 
                         {/* Product Summary Table */}
                         <div className="space-y-3">
-                            <h3 className="text-xs font-bold text-foreground print-text-dark uppercase tracking-wider">Inventory Products Involved</h3>
+                            <h3 className="text-xs font-bold text-foreground print-text-dark uppercase">Inventory Products Involved</h3>
                             <div className="border border-border rounded-xl overflow-hidden print-border">
                                 <table className="w-full text-left text-xs border-collapse">
                                     <thead>
