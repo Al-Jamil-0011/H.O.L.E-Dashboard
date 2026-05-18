@@ -9,6 +9,7 @@ import { IRecentSale } from '@/hooks/overview/interface';
 import { DashboardStatCard } from '@/components/stats-card';
 import Link from 'next/link';
 import { useMyProfile } from '@/hooks/admin/users';
+import { RefreshCw } from 'lucide-react';
 
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
@@ -163,13 +164,14 @@ export default function Home() {
                 <div className="flex items-center gap-3">
                     <button
                         onClick={() => refetch()}
-                        className="px-4 py-1.5 text-xs font-medium text-muted-foreground bg-card rounded dark:shadow-sm border border-border transition-colors hover:text-foreground cursor-pointer"
+                        className="px-4 py-1.5 text-xs font-medium text-muted-foreground bg-[var(--card)] rounded dark:shadow-sm border border-[var(--border)] transition-colors hover:text-foreground cursor-pointer group flex items-center gap-1.5"
                     >
+                        <RefreshCw className="h-3.5 w-3.5 group-hover:rotate-180 duration-500" />
                         Refresh
                     </button>
-                    <button className="px-4 py-1.5 text-xs font-medium text-background bg-primary rounded shadow-sm transition-all hover:opacity-90 cursor-pointer">
+                    {/* <button className="px-4 py-1.5 text-xs font-medium text-background bg-primary rounded shadow-sm transition-all hover:opacity-90 cursor-pointer">
                         Generate Report
-                    </button>
+                    </button> */}
                 </div>
             </div>
 

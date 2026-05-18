@@ -1,3 +1,12 @@
+export interface IPaginationMeta {
+    currentPage: number;
+    totalPage: number;
+    limit: number;
+    totalResult: number;
+}
+
+
+
 export interface IPractice {
     _id: string;
     practiceName: string;

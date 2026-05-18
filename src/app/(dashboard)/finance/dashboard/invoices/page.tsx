@@ -1,124 +1,328 @@
 "use client";
 
 import { useState } from 'react';
-import { cn } from '@/lib/utils';
 import { DataTable, StatusBadge } from '@/components/ui/DataTable';
-
-const invoiceData = [
-  { id: 'INV-2234', saleId: '#1002', hospital: 'City Hospital', amount: '$14,000', due: 'Mar 01', status: 'PENDING' },
-  { id: 'INV-2235', saleId: '#1003', hospital: 'Mercy Gen', amount: '$8,500', due: 'Mar 03', status: 'PENDING' },
-  { id: 'INV-2236', saleId: '#0998', hospital: 'St Judes', amount: '$22,400', due: 'Feb 15', status: 'PAID' },
-  { id: 'INV-2237', saleId: '#1005', hospital: 'Unity Medical', amount: '$11,500', due: 'Jan 28', status: 'OVERDUE' },
-];
+import { useInvoices, useInvoiceSummary } from '@/hooks/finance/invoice-management';
+import { CommonFilterPill, DashboardStatCard } from '@/components/stats-card';
+import {
+  Search,
+  RefreshCw,
+  FileSpreadsheet,
+  Receipt,
+} from 'lucide-react';
+import dayjs from 'dayjs';
+import Link from 'next/link';
 
 export default function InvoicesPage() {
   const [filter, setFilter] = useState('All');
+  const [searchTerm, setSearchTerm] = useState('');
 
-  const filteredData = invoiceData.filter(item => {
-    if (filter === 'All') return true;
-    if (filter === 'Paid') return item.status === 'PAID';
-    if (filter === 'Pending') return item.status === 'PENDING';
-    if (filter === 'Overdue') return item.status === 'OVERDUE';
-    return true;
-  });
+  const { summary: invoiceSummary, loading: invoiceLoading, refetch: refetchInvoiceSummary } = useInvoiceSummary();
+
+  const { invoices, loading: salesLoading, setQuery, meta, refetch } = useInvoices();
+
+  const handleFilterChange = (status: string) => {
+    setFilter(status);
+    setQuery(prev => ({
+      ...prev,
+      page: 1,
+      status: status === 'All' ? undefined : status.toLowerCase() as any
+    }));
+  };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+    setQuery(prev => ({
+      ...prev,
+      page: 1,
+      searchTerm: value
+    }));
+  };
+
+  // Dynamic calculations based on loaded list
+  const totalVolume = invoices.reduce((sum, item) => {
+    const amt = typeof item.billing?.totalAmount === 'object' ? 0 : Number(item.billing?.totalAmount || 0);
+    return sum + amt;
+  }, 0);
+
+  const totalCommissions = invoices.reduce((sum, item) => {
+    const comm = typeof item.representatives?.totalCommission === 'object' ? 0 : Number(item.representatives?.totalCommission || 0);
+    return sum + comm;
+  }, 0);
+
+  const pendingCount = invoices.filter(item => {
+    const status = (item.invoice?.status || item.status || '').toLowerCase();
+    return status === 'pending' || status === 'unpaid';
+  }).length;
+
+  const paidCount = invoices.filter(item => {
+    const status = (item.invoice?.status || item.status || '').toLowerCase();
+    return status === 'paid';
+  }).length;
 
   const columns = [
-    { header: "INVOICE ID", accessorKey: "id" as const, className: "font-medium text-foreground" },
-    { header: "SALE ID", accessorKey: "saleId" as const, className: "text-primary" },
-    { header: "HOSPITAL", accessorKey: "hospital" as const },
-    { header: "AMOUNT", accessorKey: "amount" as const, className: "text-primary font-medium" },
-    { header: "DUE DATE", accessorKey: "due" as const },
+    {
+      header: "INVOICE ID",
+      className: "font-semibold text-primary",
+      render: (item: any) => {
+        const val = item.invoice?.invoiceNumber;
+        return <span className="font-semibold text-primary tracking-wide">{val || 'N/A'}</span>;
+      }
+    },
+    {
+      header: "SALE ID",
+      className: "font-medium text-foreground",
+      render: (item: any) => {
+        const val = typeof item.saleId === 'object' ? (item.saleId?.saleId || item.saleId?._id || '') : item.saleId;
+        return <span className="font-mono text-foreground">#{String(val || '')}</span>;
+      }
+    },
+    {
+      header: "HOSPITAL",
+      render: (item: any) => {
+        const facility = item.facility;
+        const name = facility?.name || 'N/A';
+        const address = facility?.address || 'N/A';
+        return (
+          <div className="flex flex-col">
+            <span className="font-medium text-foreground truncate max-w-[160px]" title={name}>
+              {name}
+            </span>
+            <span className="text-[10px] text-muted-foreground truncate max-w-[160px]" title={address}>
+              {address}
+            </span>
+          </div>
+        );
+      }
+    },
+    {
+      header: "DUE DATE",
+      render: (item: any) => {
+        const dateVal = item.dueDate || item.invoice?.invoiceDate || item.procedureDate || item.createdAt;
+        return (
+          <span className="font-medium text-foreground">
+            {dateVal ? dayjs(dateVal).format("MMM DD, YYYY") : 'N/A'}
+          </span>
+        );
+      }
+    },
+    {
+      header: "REP",
+      render: (item: any) => {
+        const primaryRep = item.representatives?.users?.find((u: any) => u.assignRole === 'primary')?.representative;
+        const name = typeof primaryRep === 'object' ? primaryRep?.fullName : (item.createdBy?.fullName || 'N/A');
+        const email = typeof primaryRep === 'object' ? primaryRep?.email : (item.createdBy?.email || '');
+        return (
+          <div className="flex flex-col">
+            <span className="font-medium text-foreground truncate max-w-[120px]">{name}</span>
+            {email && <span className="text-[10px] text-muted-foreground truncate max-w-[120px]">{email}</span>}
+          </div>
+        );
+      }
+    },
+    {
+      header: "DOCTOR",
+      render: (item: any) => {
+        const doc = item.physician;
+        const name = typeof doc?.fullName === 'string' ? doc.fullName : 'N/A';
+        const specialty = typeof doc?.specialty === 'string' ? doc.specialty : '';
+        return (
+          <div className="flex flex-col">
+            <span className="font-medium text-foreground truncate max-w-[120px]">{name}</span>
+            {specialty && <span className="text-[10px] text-muted-foreground capitalize truncate max-w-[120px]">{specialty}</span>}
+          </div>
+        );
+      }
+    },
+    {
+      header: "AMOUNT",
+      render: (item: any) => {
+        const amount = typeof item.billing?.totalAmount === 'object' ? 0 : Number(item.billing?.totalAmount || 0);
+        return <span className="text-primary font-bold">${amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>;
+      }
+    },
+    {
+      header: "COMMISSION",
+      render: (item: any) => {
+        const comm = typeof item.representatives?.totalCommission === 'object' ? 0 : Number(item.representatives?.totalCommission || 0);
+        return <span className="text-emerald-500 font-bold">${comm.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>;
+      }
+    },
     {
       header: "STATUS",
-      render: (item: typeof invoiceData[0]) => {
+      render: (item: any) => {
+        const status = (item.invoice?.status || item.status || 'UNKNOWN').toUpperCase();
         let type: "success" | "warning" | "error" = "success";
-        if (item.status === 'PENDING') type = 'warning';
-        if (item.status === 'OVERDUE') type = 'error';
-        return <StatusBadge status={item.status} type={type} />;
+        if (status === 'PENDING' || status === 'UNPAID') type = 'warning';
+        if (status === 'REJECTED' || status === 'OVERDUE') type = 'error';
+        return <StatusBadge status={status} type={type} />;
       }
     },
     {
       header: "ACTIONS",
-      render: (item: typeof invoiceData[0]) => (
-        <div className="flex items-center gap-2">
-          {item.status !== 'PAID' && (
-            <button className="px-3 py-1 text-[10px] font-medium text-[var(--background)] bg-emerald-500 rounded hover:bg-emerald-400 transition-colors">
-              Mark Paid
+      render: (item: any) => {
+        return (
+          <Link href={`/finance/dashboard/invoices/${item._id}`}>
+            <button
+              className="px-3 py-1.5 text-[10px] font-medium text-primary bg-primary/10 border border-primary/20 rounded-md hover:bg-primary/20 transition-colors cursor-pointer">
+              Details
             </button>
-          )}
-          <button className="px-3 py-1 text-[10px] font-medium text-muted-foreground border border-[var(--border)] rounded hover:text-foreground transition-colors">
-            PDF
-          </button>
-          <button className="px-3 py-1 text-[10px] font-medium text-muted-foreground border border-[var(--border)] rounded hover:text-foreground transition-colors">
-            Email
-          </button>
-        </div>
-      )
+          </Link>
+        );
+      }
     }
   ];
 
   return (
     <div className="space-y-6 animate-in fade-in zoom-in duration-500 pb-8">
-      <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+      {/* Header Panel */}
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-xl font-bold tracking-tight text-foreground mb-1">
+          <h1 className="text-2xl font-black tracking-tight text-foreground flex items-center gap-2">
+            <Receipt className="h-6 w-6 text-primary" />
             Invoice Management
           </h1>
-          <p className="text-[11px] text-muted-foreground font-medium ">
-            Hospital invoice generation and tracking
+          <p className="text-xs text-muted-foreground font-medium mt-0.5">
+            Real-time hospital invoice generation, status tracking, and facility communications.
           </p>
         </div>
-        <div className="flex items-center gap-3">
-          <button className="px-4 py-1.5 text-xs font-medium text-muted-foreground bg-[var(--card)] rounded shadow-sm border border-[var(--border)] transition-colors hover:text-foreground">
-            Export All
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => {
+              refetch();
+              refetchInvoiceSummary();
+            }}
+            className="px-4 py-1.5 text-xs font-medium text-muted-foreground bg-[var(--card)] rounded dark:shadow-sm border border-[var(--border)] transition-colors hover:text-foreground cursor-pointer group flex items-center gap-1.5"
+          >
+            <RefreshCw className="h-3.5 w-3.5 group-hover:rotate-180 duration-500" />
+            Refresh
           </button>
-          <button className="px-4 py-1.5 text-xs font-medium text-[var(--background)] bg-primary rounded shadow-sm transition-all hover:bg-cyan-400">
-            Generate Invoices
+          <button className="px-4 py-1.5 text-xs font-medium text-muted-foreground bg-[var(--card)] rounded dark:shadow-sm border border-[var(--border)] transition-colors hover:text-foreground cursor-pointer group flex items-center gap-1.5">
+            <FileSpreadsheet className="h-3.5 w-3.5" />
+            Export CSV
           </button>
         </div>
       </div>
 
-      <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] shadow-sm transition-all overflow-hidden flex flex-col">
-        <div className="flex items-center justify-between p-5 pb-5">
-          <h2 className="text-sm font-bold text-foreground">All Invoices</h2>
-          <div className="flex gap-2">
-            <FilterPill text="All" active={filter === 'All'} activeColor="bg-black/80 text-[var(--background)]" onClick={() => setFilter('All')} />
-            <FilterPill text="Paid" active={filter === 'Paid'} color="bg-primary/20 text-primary" activeColor="bg-primary text-[var(--background)]" onClick={() => setFilter('Paid')} />
-            <FilterPill text="Pending" active={filter === 'Pending'} color="bg-amber-500/20 text-amber-500" activeColor="bg-amber-500 text-[var(--background)]" onClick={() => setFilter('Pending')} />
-            <FilterPill text="Overdue" active={filter === 'Overdue'} color="bg-rose-500/20 text-rose-500" activeColor="bg-rose-500 text-[var(--background)]" onClick={() => setFilter('Overdue')} />
+      {/* Dynamic Statistics Panel */}
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <DashboardStatCard
+          title="TOTAL INVOICED VOLUME"
+          value={`$${(invoiceSummary?.totalVolume || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+          trend="Total amount"
+          trendType="neutral"
+          topBorderColor="border-t-primary"
+          loading={invoiceLoading}
+        />
+
+        <DashboardStatCard
+          title="REP COMMISSIONS"
+          value={`$${(invoiceSummary?.totalCommissions || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+          trend="Total payout accrued"
+          trendType="neutral"
+          topBorderColor="border-t-emerald-500"
+          loading={invoiceLoading}
+        />
+
+        <DashboardStatCard
+          title="PENDING INVOICES"
+          value={String(invoiceSummary?.pendingCount || 0)}
+          trend={(invoiceSummary?.pendingCount || 0) > 0 ? "Requires attention" : "No pending items"}
+          trendType={(invoiceSummary?.pendingCount || 0) > 0 ? "down" : "up"}
+          topBorderColor="border-t-amber-500"
+          loading={invoiceLoading}
+        />
+
+        <DashboardStatCard
+          title="SETTLED INVOICES"
+          value={String(invoiceSummary?.paidCount || 0)}
+          trend="Paid transactions"
+          trendType="up"
+          topBorderColor="border-t-cyan-400"
+          loading={invoiceLoading}
+        />
+      </div>
+
+      {/* Glassmorphic Data Table Card */}
+      <div className="rounded-2xl border border-border bg-card/60 backdrop-blur-md dark:shadow-md transition-all overflow-hidden flex flex-col">
+        {/* Table Filter and Action Header */}
+        <div className="flex flex-col gap-4 p-5 pb-5 border-b border-border sm:flex-row sm:items-center sm:justify-between bg-muted/20">
+          <div>
+            <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
+              Invoice Records
+              <span className="px-2 py-0.5 text-[10px] font-semibold rounded-full bg-primary/10 text-primary">
+                {meta ? meta.totalResult : invoices.length} overall
+              </span>
+            </h2>
+            <p className="text-[10px] text-muted-foreground mt-0.5">
+              Browse invoices, download statement PDFs, or dispatch confirmation emails.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-3">
+            {/* Search Input */}
+            <div className="relative min-w-[200px] w-full sm:w-auto">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={handleSearchChange}
+                placeholder="Search invoices..."
+                className="w-full pl-9 pr-4 py-1.5 text-xs text-foreground bg-background rounded-lg border border-border focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all placeholder:text-muted-foreground"
+              />
+            </div>
+
+            {/* Filter Pills */}
+            <div className="flex gap-1.5 p-1 bg-background rounded-lg border border-border overflow-x-auto">
+              <CommonFilterPill
+                text="All"
+                active={filter === 'All'}
+                activeColor="bg-primary text-background border-primary"
+                onClick={() => handleFilterChange('All')}
+              />
+              <CommonFilterPill
+                text="Paid"
+                active={filter === 'Paid'}
+                color="bg-emerald-500/10 text-emerald-500 border-emerald-500/20"
+                activeColor="bg-emerald-500 text-background border-emerald-500"
+                onClick={() => handleFilterChange('Paid')}
+              />
+              <CommonFilterPill
+                text="Pending"
+                active={filter === 'Pending'}
+                color="bg-amber-500/10 text-amber-500 border-amber-500/20"
+                activeColor="bg-amber-500 text-background border-amber-500"
+                onClick={() => handleFilterChange('Pending')}
+              />
+              <CommonFilterPill
+                text="Overdue"
+                active={filter === 'Overdue'}
+                color="bg-rose-500/10 text-rose-500 border-rose-500/20"
+                activeColor="bg-rose-500 text-background border-rose-500"
+                onClick={() => handleFilterChange('Overdue')}
+              />
+            </div>
           </div>
         </div>
+
+        {/* Data Table */}
         <div className="flex-1 px-5 pb-5">
-          <DataTable data={filteredData} columns={columns} />
+          <DataTable
+            data={invoices}
+            className="!border-none !rounded-none"
+            columns={columns}
+            loading={salesLoading}
+            onRowClick={() => { }}
+            pagination={meta ? {
+              currentPage: meta.currentPage,
+              totalPage: meta.totalPage,
+              totalResult: meta.totalResult,
+              onPageChange: (page) => setQuery(prev => ({ ...prev, page }))
+            } : undefined}
+          />
         </div>
       </div>
     </div>
   );
 }
-
-function FilterPill({ text, active, onClick, color, activeColor }: { text: string, active: boolean, onClick: () => void, color?: string, activeColor?: string }) {
-  const baseClasses = "px-3 py-1.5 text-[10px] font-bold  rounded border border-[var(--border)] transition-all cursor-pointer";
-
-  if (active) {
-    return (
-      <button onClick={onClick} className={cn(baseClasses, activeColor || "bg-[#334155] text-foreground border-[#334155]")}>
-        {text}
-      </button>
-    );
-  }
-
-  if (color) {
-    return (
-      <button onClick={onClick} className={cn(baseClasses, color, "hover:opacity-80")}>
-        {text}
-      </button>
-    )
-  }
-
-  return (
-    <button onClick={onClick} className={cn(baseClasses, "text-muted-foreground hover:text-foreground hover:bg-[var(--border)]/50")}>
-      {text}
-    </button>
-  )
-}
-

@@ -180,21 +180,19 @@ export default function SalesPage() {
             />
           </div >
         </div >
-        <div className="flex-1">
-          <DataTable
-            data={sales}
-            className='!border-none !rounded-none'
-            columns={columns}
-            loading={salesLoading}
-            onRowClick={() => { }}
-            pagination={meta ? {
-              currentPage: meta.currentPage,
-              totalPage: meta.totalPage,
-              totalResult: meta.totalResult,
-              onPageChange: (page) => setQuery(prev => ({ ...prev, page }))
-            } : undefined}
-          />
-        </div>
+        <DataTable
+          data={sales}
+          className='!border-none !rounded-none'
+          columns={columns}
+          loading={salesLoading}
+          onRowClick={() => { }}
+          pagination={meta ? {
+            currentPage: meta.currentPage,
+            totalPage: meta.totalPage,
+            totalResult: meta.totalResult,
+            onPageChange: (page) => setQuery(prev => ({ ...prev, page }))
+          } : undefined}
+        />
       </div >
     </div >
   );

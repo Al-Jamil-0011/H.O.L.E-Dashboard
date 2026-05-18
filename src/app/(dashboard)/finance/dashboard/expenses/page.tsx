@@ -10,6 +10,7 @@ import Link from 'next/link';
 import { useTheme } from 'next-themes';
 import { CommonFilterPill, ExpensesStatCard } from '@/components/stats-card';
 import { ApproveExpenseModal, RejectExpenseModal } from '@/components/expense-modal/ExpenseModals';
+import { ExpenseItem } from '@/components/expense-modal/ExpenseDetailsDrawer';
 
 
 export default function ExpensesPage() {

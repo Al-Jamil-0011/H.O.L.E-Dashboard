@@ -159,14 +159,14 @@ export default function Home() {
                     </p>
                 </div>
                 <div className="flex items-center gap-3">
-                    <button
-                        onClick={() => refetch()}
+                    {/* <button
+
                         className="px-4 py-1.5 text-xs font-medium text-muted-foreground bg-card rounded dark:shadow-sm border border-border transition-colors hover:text-foreground cursor-pointer"
                     >
                         Refresh
-                    </button>
-                    <button className="px-4 py-1.5 text-xs font-medium text-background bg-primary rounded shadow-sm transition-all hover:opacity-90 cursor-pointer">
-                        Generate Report
+                    </button> */}
+                    <button onClick={() => refetch()} className="px-4 py-1.5 text-xs font-medium text-background bg-primary rounded dark:shadow-sm transition-all hover:opacity-90 cursor-pointer">
+                        Refresh
                     </button>
                 </div>
             </div>

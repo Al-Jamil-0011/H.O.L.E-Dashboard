@@ -350,13 +350,13 @@ export default function UsersManagementPage() {
           />
 
           {/* Drawer Content */}
-          <div className="fixed inset-y-0 right-0 w-full max-w-md bg-[var(--background)] border-l border-[var(--border)] shadow-2xl flex flex-col animate-in slide-in-from-right duration-300">
+          <div className="fixed inset-y-0 right-0 w-full max-w-md bg-[var(--background)] border-l border-[var(--border)] dark:shadow-2xl flex flex-col animate-in slide-in-from-right duration-300">
             {/* Drawer Header */}
             <div className="flex items-center justify-between p-6 border-b border-border">
               <h2 className="text-lg font-bold text-foreground">User Profile Details</h2>
               <button
                 onClick={() => { setSelectedUser(null); setIsDetailsDrawerOpen(false); }}
-                className="p-1.5 rounded-md hover:bg-[var(--border)] text-muted-foreground hover:text-foreground transition-colors"
+                className="p-1.5 rounded-md hover:bg-[var(--border)] text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -486,7 +486,7 @@ export default function UsersManagementPage() {
           <div className="relative bg-[var(--background)] w-full max-w-sm rounded-xl border border-[var(--border)] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
             <div className="p-5 border-b border-[var(--border)] flex justify-between items-center">
               <h3 className="font-bold text-foreground">Assign Territory</h3>
-              <button onClick={() => setIsTerritoryModalOpen(false)} className="text-muted-foreground hover:text-foreground">
+              <button onClick={() => setIsTerritoryModalOpen(false)} className="text-muted-foreground hover:text-foreground cursor-pointer">
                 <X size={18} />
               </button>
             </div>
@@ -503,14 +503,14 @@ export default function UsersManagementPage() {
               </div>
             </div>
             <div className="p-4 bg-[var(--card)] border-t border-[var(--border)] flex justify-end gap-3">
-              <button onClick={() => setIsTerritoryModalOpen(false)} className="px-4 py-2 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors">
+              <button onClick={() => setIsTerritoryModalOpen(false)} className="px-4 py-2 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
                 Cancel
               </button>
               <button
                 onClick={() => {
                   setIsTerritoryModalOpen(false);
                 }}
-                className="px-5 py-2 text-xs font-medium text-[var(--background)] bg-primary rounded-lg shadow-sm transition-all hover:bg-cyan-400"
+                className="px-5 py-2 text-xs font-medium text-[var(--background)] bg-primary rounded-lg shadow-sm transition-all hover:bg-cyan-400 cursor-pointer"
               >
                 Save Changes
               </button>

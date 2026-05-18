@@ -9,13 +9,11 @@ import {
   LayoutDashboard,
   BarChart4,
   FileText,
-  CreditCard,
   Wallet,
   Percent,
   Receipt,
   Truck,
   Clock,
-  PieChart,
   Users,
   RefreshCcw,
   Settings,
@@ -59,6 +57,11 @@ const financeNavItems = [
     icon: BarChart4
   },
   {
+    name: 'Commission',
+    href: '/finance/dashboard/commissions',
+    icon: Percent
+  },
+  {
     name: 'Invoices',
     href: '/finance/dashboard/invoices',
     icon: FileText
@@ -73,11 +76,7 @@ const financeNavItems = [
     href: '/finance/dashboard/vendor-payments',
     icon: Wallet
   },
-  {
-    name: 'Commission',
-    href: '/finance/dashboard/commissions',
-    icon: Percent
-  },
+
   {
     name: 'Expenses',
     href: '/finance/dashboard/expenses',
