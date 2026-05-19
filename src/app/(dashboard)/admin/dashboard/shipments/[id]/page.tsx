@@ -4,7 +4,8 @@ import { useSingleShipment } from '@/hooks/admin/shipment';
 import {
     ChevronLeft, Download, FileText,
     MapPin, Stethoscope, Briefcase, CheckCircle2, Clock,
-    ExternalLink, Building2, Activity, Package, AlertTriangle, Phone, UserCircle2, Truck, Calendar
+    ExternalLink, Building2, Activity, Package, AlertTriangle, Phone, UserCircle2, Truck, Calendar,
+    Maximize2, Minimize2
 } from 'lucide-react';
 import Link from 'next/link';
 import React from 'react';
@@ -32,6 +33,24 @@ function deg2rad(deg: number): number {
 export default function ShipmentDetailsPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = React.use(params);
     const { shipment, loading: isLoading } = useSingleShipment(id);
+
+    const [isMapFullscreen, setIsMapFullscreen] = React.useState(false);
+
+    React.useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') {
+                setIsMapFullscreen(false);
+            }
+        };
+        if (isMapFullscreen) {
+            window.addEventListener('keydown', handleKeyDown);
+            document.body.style.overflow = 'hidden';
+        }
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+            document.body.style.overflow = '';
+        };
+    }, [isMapFullscreen]);
 
     const { isLoaded } = useJsApiLoader({
         id: 'google-map-script',
@@ -259,38 +278,80 @@ export default function ShipmentDetailsPage({ params }: { params: Promise<{ id: 
 
                     {/* Route Details */}
                     <div className="bg-card border border-border rounded-2xl overflow-hidden dark:shadow-sm flex flex-col">
-                        <div className="h-64 relative bg-muted flex items-center justify-center border-b border-border overflow-hidden">
+                        <div className={cn(
+                            "relative bg-muted flex items-center justify-center border-b border-border overflow-hidden transition-all duration-300",
+                            isMapFullscreen ? "fixed inset-0 z-50 h-screen w-screen" : "h-64"
+                        )}>
                             {isLoaded && pickupLocation && driverLocation ? (
-                                <GoogleMap
-                                    mapContainerStyle={{ width: '100%', height: '100%' }}
-                                    center={mapCenter}
-                                    zoom={12}
-                                    options={{ disableDefaultUI: true, mapTypeControl: false, streetViewControl: false }}
-                                >
-                                    {/* Red Line for Distance */}
-                                    <Polyline
-                                        path={[pickupLocation, driverLocation]}
-                                        options={{
-                                            strokeColor: '#ef4444',
-                                            strokeOpacity: 0.8,
-                                            strokeWeight: 4,
-                                        }}
-                                    />
-                                    {/* Pickup Marker showing total distance */}
-                                    <Marker
-                                        position={pickupLocation}
-                                        label={{
-                                            text: `${liveDistance || shipment.totalDistance || '0 km'}`,
-                                            color: '#000000',
-                                            fontWeight: 'bold',
-                                            className: 'bg-white px-2 py-1 rounded-md shadow-md text-xs border border-gray-200 mt-8'
-                                        }}
-                                    />
-                                    {/* Driver Marker */}
-                                    <Marker
-                                        position={driverLocation}
-                                    />
-                                </GoogleMap>
+                                <>
+                                    <GoogleMap
+                                        mapContainerStyle={{ width: '100%', height: '100%' }}
+                                        center={mapCenter}
+                                        zoom={12}
+                                        options={{ disableDefaultUI: true, mapTypeControl: false, streetViewControl: false }}
+                                    >
+                                        {/* Red Line for Distance */}
+                                        <Polyline
+                                            path={[pickupLocation, driverLocation]}
+                                            options={{
+                                                strokeColor: '#ef4444',
+                                                strokeOpacity: 0.8,
+                                                strokeWeight: 4,
+                                            }}
+                                        />
+                                        {/* Pickup Marker showing total distance */}
+                                        <Marker
+                                            position={pickupLocation}
+                                            label={{
+                                                text: `${liveDistance || shipment.totalDistance || '0 km'}`,
+                                                color: '#000000',
+                                                fontWeight: 'bold',
+                                                className: 'bg-white px-2 py-1 rounded-md shadow-md text-xs border border-gray-200 mt-8'
+                                            }}
+                                        />
+                                        {/* Driver Marker */}
+                                        <Marker
+                                            position={driverLocation}
+                                            icon={{
+                                                url: `data:image/svg+xml;utf8,${encodeURIComponent(`
+                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44 44" width="44" height="44">
+                                                        <defs>
+                                                            <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                                                                <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#10B981" flood-opacity="0.4" />
+                                                            </filter>
+                                                        </defs>
+                                                        <circle cx="22" cy="22" r="18" fill="#10B981" filter="url(#glow)" />
+                                                        <circle cx="22" cy="22" r="14" fill="#FFFFFF" />
+                                                        <circle cx="22" cy="22" r="11" fill="#10B981" />
+                                                        <g transform="translate(14, 14) scale(0.65)" stroke="#FFFFFF" stroke-width="2.5" fill="none" stroke-linejoin="round" stroke-linecap="round">
+                                                            <path d="M14 18H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8" />
+                                                            <path d="M14 18h6a2 2 0 0 0 2-2V8l-4-4h-4" />
+                                                            <path d="M14 2v16" />
+                                                            <circle cx="7.5" cy="18.5" r="2.5" fill="#10B981" stroke="#FFFFFF" />
+                                                            <circle cx="18.5" cy="18.5" r="2.5" fill="#10B981" stroke="#FFFFFF" />
+                                                        </g>
+                                                    </svg>
+                                                `)}`,
+                                                scaledSize: typeof window !== 'undefined' && window.google ? new window.google.maps.Size(44, 44) : undefined,
+                                                anchor: typeof window !== 'undefined' && window.google ? new window.google.maps.Point(22, 22) : undefined
+                                            }}
+                                        />
+                                    </GoogleMap>
+
+                                    {/* Floating Fullscreen Toggle Button */}
+                                    <button
+                                        type="button"
+                                        onClick={() => setIsMapFullscreen(prev => !prev)}
+                                        className="absolute top-4 right-4 z-20 p-2.5 bg-card/90 backdrop-blur-sm border border-border rounded-xl text-foreground hover:bg-muted/90 transition-all shadow-lg hover:scale-105 active:scale-95 flex items-center justify-center cursor-pointer"
+                                        title={isMapFullscreen ? "Exit Fullscreen" : "View Fullscreen"}
+                                    >
+                                        {isMapFullscreen ? (
+                                            <Minimize2 className="h-4 w-4 text-primary" />
+                                        ) : (
+                                            <Maximize2 className="h-4 w-4 text-primary" />
+                                        )}
+                                    </button>
+                                </>
                             ) : (
                                 <>
                                     {/* Abstract Map Background Placeholder */}
@@ -428,7 +489,6 @@ export default function ShipmentDetailsPage({ params }: { params: Promise<{ id: 
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
