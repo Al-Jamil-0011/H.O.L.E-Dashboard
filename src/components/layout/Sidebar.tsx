@@ -284,13 +284,13 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                 priority
               />
             </div>
-            <h1 className="text-2xl font-bold text-primary ">
+            <h1 className="lg:text-2xl font-bold text-primary ">
               H.O.L.E APP
             </h1>
           </Link>
           <button
             onClick={onClose}
-            className="rounded-md p-1 text-muted-foreground hover:text-foreground lg:hidden transition-colors"
+            className="rounded-md p-1 text-muted-foreground hover:text-foreground lg:hidden transition-colors cursor-pointer"
           >
             <X className="h-5 w-5" />
           </button>

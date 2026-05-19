@@ -38,9 +38,8 @@ export default function SalesPage() {
     {
       header: "REP",
       render: (item: any) => {
-        const primaryRep = item.representatives?.users?.find((u: any) => u.assignRole === 'primary')?.representative;
-        const name = typeof primaryRep?.fullName === 'object' ? '' : primaryRep?.fullName;
-        return <span>{name || 'N/A'}</span>;
+        const primaryRep = item?.createdBy;
+        return <span>{primaryRep?.fullName || 'N/A'}</span>;
       }
     },
     {

@@ -67,7 +67,7 @@ export function Header({ onMenuClick }: HeaderProps) {
       <div className="flex items-center gap-4">
         <button
           onClick={onMenuClick}
-          className="rounded-md p-2 text-muted-foreground hover:bg-muted hover:text-foreground lg:hidden transition-colors"
+          className="rounded-md p-2 text-muted-foreground hover:bg-muted hover:text-foreground lg:hidden transition-colors cursor-pointer"
         >
           <Menu className="h-5 w-5" />
           <span className="sr-only">Toggle menu</span>

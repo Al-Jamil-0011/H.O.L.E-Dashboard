@@ -17,7 +17,8 @@ import {
   Edit2,
   AlertTriangle,
   Users,
-  Check
+  Check,
+  UserX
 } from 'lucide-react';
 import { useUsers, useUserSummary, useChangeUserStatus } from '@/hooks/admin/users';
 import { IUser } from '@/hooks/admin/users/interface';
@@ -26,6 +27,7 @@ import { FaEye } from 'react-icons/fa';
 import { VerifyBadge } from '@/components/verify-bedge';
 import { UserStatCard } from '@/components/stats-card';
 import { IDetailRowProps } from '@/components/stats-card/interface';
+import { useAssignRepresentative, useManagerRepresentatives, useRemoveRepresentative, useRepresentativeUsers } from '@/hooks/admin/add-representative';
 
 const getInitials = (name: string) => {
   if (!name) return 'NA';
@@ -44,6 +46,7 @@ export default function UsersManagementPage() {
   const { summary, loading: statLoading, refetch: summaryRefetch } = useUserSummary();
   const { changeUserStatus, loading: changingStatus } = useChangeUserStatus();
 
+
   const [selectedUser, setSelectedUser] = useState<IUser | null>(null);
   const [isDetailsDrawerOpen, setIsDetailsDrawerOpen] = useState(false);
   const [isTerritoryModalOpen, setIsTerritoryModalOpen] = useState(false);
@@ -51,6 +54,15 @@ export default function UsersManagementPage() {
   const [isRepModalOpen, setIsRepModalOpen] = useState(false);
   const [selectedRepIds, setSelectedRepIds] = useState<string[]>([]);
   const [repSearch, setRepSearch] = useState('');
+  const [repModalMode, setRepModalMode] = useState<'add' | 'remove'>('add');
+
+  const { representativeUsers, loading: repLoading, refetch: refetchRepUsers } = useRepresentativeUsers();
+  const { representatives, refetch: refetchReps } = useManagerRepresentatives(selectedUser?._id || "");
+  const { assignRepresentative, loading: assignLoading } = useAssignRepresentative();
+  const { removeRepresentative, loading: removeLoading } = useRemoveRepresentative();
+
+
+
 
   // Sync local search and role to the useUsers query hook
   useEffect(() => {
@@ -106,6 +118,38 @@ export default function UsersManagementPage() {
       customToast.error('User status updated failed');
     }
     setIsDeactivateModalOpen(false);
+  };
+
+  const handleConfirmRepAssignment = async () => {
+    if (!selectedUser?._id) return;
+
+    try {
+      if (repModalMode === 'add') {
+        const res = await assignRepresentative({
+          manager: selectedUser._id,
+          repsId: selectedRepIds,
+        });
+        if (res) {
+          customToast.success((res as any)?.message || 'Representative(s) assigned successfully');
+          refetchReps();
+          refetchRepUsers();
+        }
+      } else {
+        const res = await removeRepresentative({
+          manager: selectedUser._id,
+          repsId: selectedRepIds,
+        });
+        if (res) {
+          customToast.success((res as any)?.message || 'Representative(s) removed successfully');
+          refetchReps();
+          refetchRepUsers();
+        }
+      }
+      setIsRepModalOpen(false);
+    } catch (err: any) {
+      const msg = err?.response?.data?.message || 'Failed to update representative assignment';
+      customToast.error(msg);
+    }
   };
 
   const columns = [
@@ -179,7 +223,7 @@ export default function UsersManagementPage() {
             disabled={changingStatus}
           >
             <span className={cn(
-              "pointer-events-none block h-4 w-4 rounded-full bg-white shadow-sm ring-0 transition-transform",
+              "pointer-events-none block h-4 w-4 rounded-full bg-white dark:shadow-sm ring-0 transition-transform",
               item.status === 'active' ? "translate-x-2" : "-translate-x-2"
             )} />
           </button>
@@ -431,15 +475,34 @@ export default function UsersManagementPage() {
                     onClick={() => {
                       setRepSearch('');
                       setSelectedRepIds([]);
+                      setRepModalMode('add');
                       setIsRepModalOpen(true);
                     }}
-                    className="w-full flex items-center justify-between p-3 rounded-lg border border-border bg-card hover:bg-muted/50 transition-colors group"
+                    className="w-full flex items-center justify-between p-3 rounded-lg border border-border bg-card hover:bg-muted/50 transition-colors group cursor-pointer"
                   >
                     <div className="flex items-center gap-3 text-muted-foreground group-hover:text-foreground">
                       <Users className="h-4 w-4" />
                       <span className="text-sm font-medium">Add Representative</span>
                     </div>
                     <UserPlus className="h-3 w-3 text-muted-foreground" />
+                  </button>
+                )}
+
+                {selectedUser.role === 'manager' && (
+                  <button
+                    onClick={() => {
+                      setRepSearch('');
+                      setSelectedRepIds([]);
+                      setRepModalMode('remove');
+                      setIsRepModalOpen(true);
+                    }}
+                    className="w-full flex items-center justify-between p-3 rounded-lg border border-border bg-card hover:bg-muted/50 transition-colors group cursor-pointer"
+                  >
+                    <div className="flex items-center gap-3 text-muted-foreground group-hover:text-foreground">
+                      <Users className="h-4 w-4" />
+                      <span className="text-sm font-medium">Remove Representative</span>
+                    </div>
+                    <UserX className="h-3 w-3 text-muted-foreground" />
                   </button>
                 )}
 
@@ -457,7 +520,7 @@ export default function UsersManagementPage() {
                     disabled={changingStatus}
                   >
                     <span className={cn(
-                      "pointer-events-none block h-4 w-4 rounded-full bg-white shadow-sm ring-0 transition-transform",
+                      "pointer-events-none block h-4 w-4 rounded-full bg-white dark:shadow-sm ring-0 transition-transform",
                       selectedUser.status === 'active' ? "translate-x-2" : "-translate-x-2"
                     )} />
                   </button>
@@ -469,7 +532,7 @@ export default function UsersManagementPage() {
             <div className="p-6 border-t border-border bg-card mt-auto">
               <button
                 onClick={() => { setSelectedUser(null); setIsDetailsDrawerOpen(false); }}
-                className="w-full cursor-pointer py-2.5 text-sm font-medium text-[var(--background)] bg-primary rounded-lg shadow-sm transition-all hover:bg-cyan-400"
+                className="w-full cursor-pointer py-2.5 text-sm font-medium text-[var(--background)] bg-primary rounded-lg dark:shadow-sm transition-all hover:bg-cyan-400"
               >
                 Done
               </button>
@@ -482,7 +545,7 @@ export default function UsersManagementPage() {
       {isTerritoryModalOpen && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsTerritoryModalOpen(false)} />
-          <div className="relative bg-[var(--background)] w-full max-w-sm rounded-xl border border-[var(--border)] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+          <div className="relative bg-[var(--background)] w-full max-w-sm rounded-xl border border-[var(--border)] dark:shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
             <div className="p-5 border-b border-[var(--border)] flex justify-between items-center">
               <h3 className="font-bold text-foreground">Assign Territory</h3>
               <button onClick={() => setIsTerritoryModalOpen(false)} className="text-muted-foreground hover:text-foreground cursor-pointer">
@@ -509,7 +572,7 @@ export default function UsersManagementPage() {
                 onClick={() => {
                   setIsTerritoryModalOpen(false);
                 }}
-                className="px-5 py-2 text-xs font-medium text-[var(--background)] bg-primary rounded-lg shadow-sm transition-all hover:bg-cyan-400 cursor-pointer"
+                className="px-5 py-2 text-xs font-medium text-[var(--background)] bg-primary rounded-lg dark:shadow-sm transition-all hover:bg-cyan-400 cursor-pointer"
               >
                 Save Changes
               </button>
@@ -556,15 +619,19 @@ export default function UsersManagementPage() {
       {isRepModalOpen && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsRepModalOpen(false)} />
-          <div className="relative bg-[var(--background)] w-full max-w-md rounded-xl border border-[var(--border)] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+          <div className="relative bg-[var(--background)] w-full max-w-md rounded-xl border border-[var(--border)] dark:shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
             <div className="p-5 border-b border-[var(--border)] flex justify-between items-center">
               <div>
-                <h3 className="font-bold text-foreground">Add Representative</h3>
+                <h3 className="font-bold text-foreground">
+                  {repModalMode === 'add' ? 'Add Representative' : 'Remove Representative'}
+                </h3>
                 <p className="text-[10px] text-muted-foreground  font-semibold mt-0.5">
-                  Assign representatives to {selectedUser?.fullName}
+                  {repModalMode === 'add'
+                    ? `Assign representatives to ${selectedUser?.fullName}`
+                    : `Remove representatives from ${selectedUser?.fullName}`}
                 </p>
               </div>
-              <button onClick={() => setIsRepModalOpen(false)} className="text-muted-foreground hover:text-foreground transition-colors">
+              <button onClick={() => setIsRepModalOpen(false)} className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
                 <X size={18} />
               </button>
             </div>
@@ -584,72 +651,105 @@ export default function UsersManagementPage() {
 
               {/* Rep List */}
               <div className="max-h-[300px] overflow-y-auto space-y-2 pr-1 scrollbar-thin scrollbar-thumb-[var(--border)]">
-                {allUsers
-                  .filter(u =>
-                    u.role === 'representative' &&
-                    (u.fullName.toLowerCase().includes(repSearch.toLowerCase()) || u.email.toLowerCase().includes(repSearch.toLowerCase()))
-                  )
-                  .map(rep => {
-                    const isSelected = selectedRepIds.includes(rep._id);
-                    return (
-                      <div
-                        key={rep._id}
-                        onClick={() => {
-                          setSelectedRepIds(prev =>
-                            prev.includes(rep._id) ? prev.filter(id => id !== rep._id) : [...prev, rep._id]
-                          );
-                        }}
-                        className={cn(
-                          "flex items-center justify-between p-3 rounded-lg border cursor-pointer transition-all",
-                          isSelected
-                            ? "bg-primary/10 border-primary"
-                            : "bg-[var(--card)] border-[var(--border)] hover:border-gray-500"
-                        )}
-                      >
-                        <div className="flex items-center gap-3">
-                          <div className='h-8 w-8 relative rounded-full overflow-hidden border border-[var(--border)] bg-primary/10 flex items-center justify-center'>
-                            {rep.profileUrl ? (
-                              <Image src={rep.profileUrl} alt="" fill className="object-cover" />
-                            ) : (
-                              <span className="text-primary font-bold text-xs ">
-                                {getInitials(rep.fullName)}
-                              </span>
-                            )}
-                          </div>
-                          <div>
-                            <div className="text-sm font-bold text-foreground">{rep.fullName}</div>
-                            <div className="text-[10px] text-muted-foreground">{rep.email}</div>
-                          </div>
+                {(repModalMode === 'remove'
+                  ? representatives
+                    .map(mr => mr.representative)
+                    .filter(Boolean)
+                    .filter(rep =>
+                      rep.fullName.toLowerCase().includes(repSearch.toLowerCase()) ||
+                      rep.email.toLowerCase().includes(repSearch.toLowerCase())
+                    )
+                  : representativeUsers
+                    .filter(rep => {
+                      const isAlreadyAssigned = representatives.some(mr => mr.representative?._id === rep._id);
+                      return !isAlreadyAssigned;
+                    })
+                    .filter(rep =>
+                      rep.fullName.toLowerCase().includes(repSearch.toLowerCase()) ||
+                      rep.email.toLowerCase().includes(repSearch.toLowerCase())
+                    )
+                ).map(rep => {
+                  const isSelected = selectedRepIds.includes(rep._id);
+                  return (
+                    <div
+                      key={rep._id}
+                      onClick={() => {
+                        setSelectedRepIds(prev =>
+                          prev.includes(rep._id) ? prev.filter(id => id !== rep._id) : [...prev, rep._id]
+                        );
+                      }}
+                      className={cn(
+                        "flex items-center justify-between p-3 rounded-lg border cursor-pointer transition-all",
+                        isSelected
+                          ? "bg-primary/10 border-primary"
+                          : "bg-[var(--card)] border-[var(--border)] hover:border-primary"
+                      )}
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className='h-8 w-8 relative rounded-full overflow-hidden border border-[var(--border)] bg-primary/10 flex items-center justify-center'>
+                          {rep.profileUrl ? (
+                            <Image src={rep.profileUrl} alt="" fill className="object-cover" />
+                          ) : (
+                            <span className="text-primary font-bold text-xs ">
+                              {getInitials(rep.fullName)}
+                            </span>
+                          )}
                         </div>
-                        <div className={cn(
-                          "h-5 w-5 rounded-full border flex items-center justify-center transition-colors",
-                          isSelected ? "bg-primary border-primary" : "border-[var(--border)]"
-                        )}>
-                          {isSelected && <Check className="h-3 w-3 text-background" />}
+                        <div>
+                          <div className="text-sm font-bold text-foreground">{rep.fullName}</div>
+                          <div className="text-[10px] text-muted-foreground">{rep.email}</div>
                         </div>
                       </div>
-                    );
-                  })}
-                {allUsers.filter(u => u.role === 'representative' && (u.fullName.toLowerCase().includes(repSearch.toLowerCase()) || u.email.toLowerCase().includes(repSearch.toLowerCase()))).length === 0 && (
-                  <div className="py-8 text-center text-muted-foreground text-sm">
-                    No representatives found matching your search.
-                  </div>
-                )}
+                      <div className={cn(
+                        "h-5 w-5 rounded-full border flex items-center justify-center transition-colors",
+                        isSelected ? "bg-primary border-primary" : "border-[var(--border)]"
+                      )}>
+                        {isSelected && <Check className="h-3 w-3 text-background" />}
+                      </div>
+                    </div>
+                  );
+                })}
+                {(repModalMode === 'remove'
+                  ? representatives
+                    .map(mr => mr.representative)
+                    .filter(Boolean)
+                    .filter(rep =>
+                      rep.fullName.toLowerCase().includes(repSearch.toLowerCase()) ||
+                      rep.email.toLowerCase().includes(repSearch.toLowerCase())
+                    )
+                  : representativeUsers
+                    .filter(rep => {
+                      const isAlreadyAssigned = representatives.some(mr => mr.representative?._id === rep._id);
+                      return !isAlreadyAssigned;
+                    })
+                    .filter(rep =>
+                      rep.fullName.toLowerCase().includes(repSearch.toLowerCase()) ||
+                      rep.email.toLowerCase().includes(repSearch.toLowerCase())
+                    )
+                ).length === 0 && (
+                    <div className="py-8 text-center text-muted-foreground text-sm">
+                      {repModalMode === 'remove'
+                        ? "No representatives currently assigned to this manager matching your search."
+                        : "No new representatives found matching your search."}
+                    </div>
+                  )}
               </div>
             </div>
 
             <div className="p-4 bg-[var(--card)] border-t border-[var(--border)] flex justify-end gap-3">
-              <button onClick={() => setIsRepModalOpen(false)} className="px-4 py-2 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors">
+              <button onClick={() => setIsRepModalOpen(false)} className="px-4 py-2 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors  cursor-pointer" disabled={assignLoading || removeLoading}>
                 Cancel
               </button>
               <button
-                onClick={() => {
-                  setIsRepModalOpen(false);
-                }}
-                className="px-5 py-2 text-xs font-medium text-[var(--background)] bg-primary rounded-lg shadow-sm transition-all hover:bg-cyan-400 disabled:opacity-50 disabled:cursor-not-allowed"
-                disabled={selectedRepIds.length === 0}
+                onClick={handleConfirmRepAssignment}
+                className="px-5 py-2 text-xs font-medium text-[var(--background)] bg-primary rounded-lg dark:shadow-sm transition-all hover:bg-cyan-400 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                disabled={selectedRepIds.length === 0 || assignLoading || removeLoading}
               >
-                Confirm Assignment ({selectedRepIds.length})
+                {assignLoading || removeLoading
+                  ? 'Processing...'
+                  : repModalMode === 'add'
+                    ? `Confirm Assignment (${selectedRepIds.length})`
+                    : `Confirm Removal (${selectedRepIds.length})`}
               </button>
             </div>
           </div>
