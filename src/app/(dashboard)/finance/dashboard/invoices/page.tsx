@@ -256,8 +256,7 @@ export default function InvoicesPage() {
             <div className="flex gap-1.5 p-1 bg-background rounded-lg border border-border overflow-x-auto">
               <CommonFilterPill
                 text="All"
-                active={filter === 'All'}
-                activeColor="bg-primary text-background border-primary"
+                active={filter === 'All'} 
                 onClick={() => handleFilterChange('All')}
               />
               <CommonFilterPill
