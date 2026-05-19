@@ -48,7 +48,6 @@ export default function DriverEarningsControlPage() {
     refetch: refetchPending
   } = useDriverWithdrawals("pending");
 
-  console.log("pendingRequests", pendingRequests)
 
   const {
     withdrawals: historyData,
@@ -134,19 +133,29 @@ export default function DriverEarningsControlPage() {
     }
   };
 
-  const handlePayConfirm = async () => {
-    if (!selectedRequest) return;
+  const handleUpdateStatus = async (request: any, status: 'approved' | 'rejected') => {
+    if (!request) return;
 
-    const result = await changeWithdrawalStatus(selectedRequest._id, { status: 'paid' });
+    const result = await changeWithdrawalStatus(request._id, { status });
     if (result?.success) {
       setIsConfirmPayModalOpen(false);
-      setIsSuccessModalOpen(true);
+      setIsDetailsModalOpen(false);
+      if (status === 'approved') {
+        setIsSuccessModalOpen(true);
+        setTimeout(() => setIsSuccessModalOpen(false), 3000);
+      } else {
+        customToast.success(result?.message || "Request rejected successfully");
+      }
       refetchPending();
       refetchHistory();
-      setTimeout(() => setIsSuccessModalOpen(false), 3000);
     } else {
-      customToast.error(result?.message || "Failed to process payment");
+      customToast.error(result?.message || `Failed to update request status`);
     }
+  };
+
+  const handlePayConfirm = async () => {
+    if (!selectedRequest) return;
+    await handleUpdateStatus(selectedRequest, 'approved');
   };
 
   // Table Columns
@@ -215,8 +224,15 @@ export default function DriverEarningsControlPage() {
       header: "STATUS",
       render: (item: any) => (
         <div className="flex items-center justify-between gap-4">
-          <span className="px-3 py-1 text-[10px] font-medium  text-emerald-500 bg-emerald-500/10 border border-emerald-500/20 rounded-md">
-            Paid
+          <span className={cn(
+            "px-3 py-1 text-[10px] font-bold rounded-md uppercase",
+            item.status === 'paid' || item.status === 'approved'
+              ? "text-emerald-500 bg-emerald-500/10 border border-emerald-500/20"
+              : item.status === 'rejected'
+                ? "text-rose-500 bg-rose-500/10 border border-rose-500/20"
+                : "text-amber-500 bg-amber-500/10 border border-amber-500/20"
+          )}>
+            {item.status}
           </span>
           <button
             onClick={(e) => {
@@ -383,7 +399,7 @@ export default function DriverEarningsControlPage() {
       {isPricingModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsPricingModalOpen(false)} />
-          <div className="relative w-full max-w-lg bg-card border border-border rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+          <div className="relative w-full max-w-lg bg-card border border-border rounded-2xl dark:shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
             <div className="p-6 border-b border-border flex items-center justify-between">
               <h3 className="text-lg font-bold text-foreground">Create New Pricing</h3>
               <button onClick={() => setIsPricingModalOpen(false)} className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
@@ -487,7 +503,7 @@ export default function DriverEarningsControlPage() {
               <button
                 disabled={isSavingRate}
                 onClick={handleSavePricing}
-                className="flex items-center gap-2 px-4 py-2 text-xs font-medium text-background bg-primary rounded-lg shadow-sm transition-all hover:bg-primary/90 text-sm font-medium cursor-pointer disabled:opacity-50"
+                className="flex items-center gap-2 px-4 py-2 text-xs font-medium text-background bg-primary rounded-lg dark:shadow-sm transition-all hover:bg-primary/90 text-sm font-medium cursor-pointer disabled:opacity-50"
               >
                 {isSavingRate ? "Saving..." : "Save Price"}
               </button>
@@ -500,7 +516,7 @@ export default function DriverEarningsControlPage() {
       {isConfirmPayModalOpen && selectedRequest && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsConfirmPayModalOpen(false)} />
-          <div className="relative w-full max-w-sm bg-card border border-border rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+          <div className="relative w-full max-w-sm bg-card border border-border rounded-2xl dark:shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
             <div className="p-8 text-center space-y-4">
               <div className="w-16 h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto">
                 <CreditCard size={32} />
@@ -522,7 +538,7 @@ export default function DriverEarningsControlPage() {
               <button
                 disabled={isChangingStatus}
                 onClick={handlePayConfirm}
-                className="flex-1 py-3 text-sm font-medium text-background bg-primary rounded-xl shadow-sm transition-all hover:bg-primary/90 cursor-pointer disabled:opacity-50"
+                className="flex-1 py-3 text-sm font-medium text-background bg-primary rounded-xl dark:shadow-sm transition-all hover:bg-primary/90 cursor-pointer disabled:opacity-50"
               >
                 {isChangingStatus ? "Processing..." : "Confirm"}
               </button>
@@ -535,7 +551,7 @@ export default function DriverEarningsControlPage() {
       {isDetailsModalOpen && selectedRequestDetails && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsDetailsModalOpen(false)} />
-          <div className="relative w-full max-w-lg bg-card border border-border rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+          <div className="relative w-full max-w-lg bg-card border border-border rounded-2xl dark:shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
             {/* Header */}
             <div className="p-6 border-b border-border flex items-center justify-between bg-muted/20">
               <div className="flex items-center gap-3">
@@ -649,9 +665,11 @@ export default function DriverEarningsControlPage() {
                     </div>
                     <span className={cn(
                       "px-3 py-1 text-[10px] font-bold uppercase rounded-md",
-                      selectedRequestDetails.status === 'paid'
+                      selectedRequestDetails.status === 'paid' || selectedRequestDetails.status === 'approved'
                         ? "bg-emerald-500/10 text-emerald-500 border border-emerald-500/20"
-                        : "bg-amber-500/10 text-amber-500 border border-amber-500/20"
+                        : selectedRequestDetails.status === 'rejected'
+                          ? "bg-rose-500/10 text-rose-500 border border-rose-500/20"
+                          : "bg-amber-500/10 text-amber-500 border border-amber-500/20"
                     )}>
                       {selectedRequestDetails.status}
                     </span>
@@ -662,13 +680,32 @@ export default function DriverEarningsControlPage() {
             </div>
 
             {/* Footer */}
-            <div className="p-5 bg-muted/20 border-t border-border flex justify-end">
-              <button
-                onClick={() => setIsDetailsModalOpen(false)}
-                className="px-6 py-2.5 text-sm font-medium text-background bg-primary rounded-xl shadow-lg hover:bg-primary/90 transition-all cursor-pointer"
-              >
-                Close Details
-              </button>
+            <div className="p-5 bg-muted/20 border-t border-border flex gap-2 justify-end">
+              {selectedRequestDetails.status === 'pending' ? (
+                <>
+                  <button
+                    disabled={isChangingStatus}
+                    onClick={() => handleUpdateStatus(selectedRequestDetails, 'rejected')}
+                    className="px-6 py-2.5 text-sm font-medium text-foreground border border-red-500/70 rounded-xl dark:shadow-lg text-red-500/70 hover:border-red-500 hover:text-red-500 transition-all cursor-pointer disabled:opacity-50"
+                  >
+                    {isChangingStatus ? "Processing..." : "Reject"}
+                  </button>
+                  <button
+                    disabled={isChangingStatus}
+                    onClick={() => handleUpdateStatus(selectedRequestDetails, 'approved')}
+                    className="px-6 py-2.5 text-sm font-medium text-background bg-primary rounded-xl dark:shadow-lg hover:bg-primary/90 transition-all cursor-pointer disabled:opacity-50"
+                  >
+                    {isChangingStatus ? "Processing..." : "Pay Now"}
+                  </button>
+                </>
+              ) : (
+                <button
+                  onClick={() => setIsDetailsModalOpen(false)}
+                  className="px-6 py-2.5 text-sm font-medium text-background bg-primary rounded-xl dark:shadow-lg hover:bg-primary/90 transition-all cursor-pointer"
+                >
+                  Close Details
+                </button>
+              )}
             </div>
           </div>
         </div>

@@ -69,6 +69,8 @@ export function AddSurgeryModal({ isOpen, onClose, initialData, refetch }: AddSu
       notes: data.notes ? Array.from(data.notes as FileList) : []
     };
 
+    console.log("payload", payload)
+
     try {
       if (isEdit) {
         const result = await updateSurgery(initialData?._id, payload);

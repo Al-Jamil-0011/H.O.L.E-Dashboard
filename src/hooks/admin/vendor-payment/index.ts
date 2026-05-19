@@ -126,3 +126,54 @@ export function useVendorPayments() {
         refetch: fetchVendorPayments,
     };
 }
+
+
+export function useApproveVendorPayment() {
+    const [loading, setLoading] =
+        useState<boolean>(false);
+
+    const [error, setError] =
+        useState<string | null>(null);
+
+    const [success, setSuccess] =
+        useState<boolean>(false);
+
+    const approveVendorPayment = async (
+        paymentId: string
+    ) => {
+        setLoading(true);
+        setError(null);
+        setSuccess(false);
+
+        try {
+            const response =
+                await useApi.patch<
+                    IApiResponse<IVendorPayment>
+                >(
+                    `/sales/approved/vendor-payment/${paymentId}`
+                );
+
+            setSuccess(true);
+
+            return response?.data;
+        } catch (err: any) {
+            const message =
+                err?.response?.data?.message ||
+                "Failed to approve vendor payment";
+
+            setError(message);
+
+            throw err;
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return {
+        approveVendorPayment,
+
+        loading,
+        error,
+        success,
+    };
+}

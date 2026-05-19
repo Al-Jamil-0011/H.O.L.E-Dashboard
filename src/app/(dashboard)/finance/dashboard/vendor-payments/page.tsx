@@ -2,10 +2,11 @@
 
 import { useState, useMemo } from 'react';
 import { DataTable, StatusBadge } from '@/components/ui/DataTable';
-import { useVendorPayments, useVendorPaymentsSummary } from '@/hooks/admin/vendor-payment';
+import { useApproveVendorPayment, useVendorPayments, useVendorPaymentsSummary } from '@/hooks/admin/vendor-payment';
 import { Download, FileText } from 'lucide-react';
 import { ConfirmPaymentModal } from '@/components/modals/ConfirmPaymentModal';
 import { CommonFilterPill, VendorPaymentStatCard } from '@/components/stats-card';
+import { customToast } from '@/lib/utils';
 
 export default function VendorPaymentsPage() {
   const [filter, setFilter] = useState('All');
@@ -18,7 +19,9 @@ export default function VendorPaymentsPage() {
   } | null>(null);
 
   const { summary, loading: summaryLoading } = useVendorPaymentsSummary();
-  const { payments, loading, meta, setQuery } = useVendorPayments();
+  const { payments, loading, meta, setQuery, refetch } = useVendorPayments();
+
+  const { approveVendorPayment, loading: approveLoading } = useApproveVendorPayment();
 
   const filteredData = useMemo(() => {
     return payments.filter(item => {
@@ -30,7 +33,7 @@ export default function VendorPaymentsPage() {
     });
   }, [payments, filter]);
 
-  const handlePayNow = (item: any) => {
+  const handlePayNow = async (item: any) => {
     setSelectedPayment({
       _id: item._id,
       vendorName: item.vendor.name,
@@ -38,6 +41,20 @@ export default function VendorPaymentsPage() {
       amount: item.vendorPayment
     });
     setIsModalOpen(true);
+  };
+
+  const handleConfirmPayment = async () => {
+    if (!selectedPayment?._id) return;
+    const res = await approveVendorPayment(selectedPayment._id);
+
+    if (res?.success) {
+      setIsModalOpen(false);
+      setSelectedPayment(null);
+      customToast.success("Payment approved successfully");
+      await refetch();
+    } else {
+      customToast.error("Failed to approve payment");
+    }
   };
 
   const columns = [
@@ -223,9 +240,9 @@ export default function VendorPaymentsPage() {
         onClose={() => setIsModalOpen(false)}
         paymentData={selectedPayment}
         onConfirm={() => {
-          // In a real app, we would refetch here
-          // refetch();
+          handleConfirmPayment();
         }}
+        loading={approveLoading}
       />
     </div>
   );

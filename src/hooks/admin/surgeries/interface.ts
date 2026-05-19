@@ -167,6 +167,8 @@ export interface ISurgeryPayload {
 
     implants?: string;
 
+    biologics?: string;
+
     caseNotes?: string;
 
     /**
@@ -207,6 +209,8 @@ export interface IUpdateSurgeryPayload {
     rodsOrconnectors?: string;
 
     implants?: string;
+
+    biologics?: string;
 
     caseNotes?: string;
 

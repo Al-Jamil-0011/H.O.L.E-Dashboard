@@ -14,18 +14,23 @@ interface ConfirmPaymentModalProps {
     amount: number;
   } | null;
   onConfirm: () => void;
+  loading?: boolean;
 }
 
-export function ConfirmPaymentModal({ isOpen, onClose, paymentData, onConfirm }: ConfirmPaymentModalProps) {
+export function ConfirmPaymentModal({ isOpen, onClose, paymentData, onConfirm, loading }: ConfirmPaymentModalProps) {
 
   if (!isOpen || !paymentData) return null;
 
 
   const handleConfirm = () => {
-    // Simulating API call
-    customToast.success(`Payment for ${paymentData.invoiceNumber} processed successfully!`);
-    onConfirm();
-    onClose();
+    if (loading !== undefined) {
+      onConfirm();
+    } else {
+      // Simulating API call (fallback for pages without integrated loading hook)
+      customToast.success(`Payment for ${paymentData.invoiceNumber} processed successfully!`);
+      onConfirm();
+      onClose();
+    }
   };
 
   return (
@@ -33,7 +38,7 @@ export function ConfirmPaymentModal({ isOpen, onClose, paymentData, onConfirm }:
       {/* Backdrop */}
       <div
         className="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity"
-        onClick={onClose}
+        onClick={() => { if (!loading) onClose(); }}
       />
 
       {/* Modal Content */}
@@ -56,7 +61,8 @@ export function ConfirmPaymentModal({ isOpen, onClose, paymentData, onConfirm }:
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-full text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5 transition-all"
+            disabled={loading}
+            className="p-1.5 rounded-full text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <X className="w-5 h-5" />
           </button>
@@ -93,19 +99,32 @@ export function ConfirmPaymentModal({ isOpen, onClose, paymentData, onConfirm }:
         <div className="p-6 pt-0 flex gap-3">
           <button
             onClick={onClose}
-            className="flex-1 px-4 py-3 text-xs font-medium text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 rounded-xl border border-gray-200 dark:border-white/5 transition-all cursor-pointer "
+            disabled={loading}
+            className="flex-1 px-4 py-3 text-xs font-medium text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 rounded-xl border border-gray-200 dark:border-white/5 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           >
             CANCEL
           </button>
           <button
             onClick={handleConfirm}
-            className="flex-[2] px-4 py-3 text-xs font-medium text-white dark:text-[#0B101E] bg-primary hover:bg-primary/90 rounded-xl flex items-center justify-center gap-2 cursor-pointer "
+            disabled={loading}
+            className="flex-[2] px-4 py-3 text-xs font-medium text-white dark:text-[#0B101E] bg-primary hover:bg-primary/90 rounded-xl flex items-center justify-center gap-2 cursor-pointer disabled:opacity-80 disabled:cursor-not-allowed"
           >
-            <CheckCircle2 className="w-4 h-4" />
-            CONFIRM PAYMENT
+            {loading ? (
+              <span className="flex items-center gap-2">
+                <svg className="animate-spin h-4 w-4 text-current" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                </svg>
+                Processing...
+              </span>
+            ) : (
+              <>
+                <CheckCircle2 className="w-4 h-4" />
+                Confirm Payment
+              </>
+            )}
           </button>
         </div>
-
       </div>
     </div>
   );

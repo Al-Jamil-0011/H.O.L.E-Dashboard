@@ -215,6 +215,13 @@ export function useCreateSurgery() {
                 );
             }
 
+            if (payload.biologics) {
+                formData.append(
+                    "biologics",
+                    payload.biologics
+                );
+            }
+
             if (
                 payload.rodsOrconnectors
             ) {
