@@ -103,7 +103,7 @@ export default function RepAccountsPage() {
             Monitor representative performance, track commissions earned, and manage pending balances with real-time financial data.
           </p>
         </div>
-        <button className="px-4 py-1.5 text-xs font-medium text-muted-foreground bg-[var(--card)] rounded dark:shadow-sm border border-[var(--border)] transition-colors hover:text-foreground cursor-pointer flex items-center gap-2">
+        <button className="px-4 py-1.5 text-xs font-medium text-muted-foreground bg-[var(--card)] rounded dark:shadow-sm border border-[var(--border)] transition-colors hover:text-foreground cursor-pointer flex items-center gap-2 w-max">
           <Download className="w-3.5 h-3.5 transition-transform group-hover:-translate-y-0.5" />
           EXPORT
         </button>

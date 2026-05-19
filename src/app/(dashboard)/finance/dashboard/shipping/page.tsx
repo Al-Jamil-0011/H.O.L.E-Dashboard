@@ -90,7 +90,7 @@ export default function ShippingPage() {
 
   return (
     <div className="space-y-6 animate-in fade-in zoom-in duration-500 pb-8">
-      <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
           <h1 className="text-xl font-bold tracking-tight text-foreground mb-1">
             Shipping Costs
@@ -141,7 +141,7 @@ export default function ShippingPage() {
       </div>
 
       <div className="rounded-xl border border-[var(--border)] bg-[var(--muted)] dark:shadow-sm transition-all overflow-hidden flex flex-col">
-        <div className="flex items-center justify-between p-4">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-4">
           <h2 className="text-sm font-bold text-foreground">All Shipments</h2>
           <div className="flex gap-2 bg-[var(--background)] rounded-lg border border-border w-full sm:w-auto overflow-x-auto p-1">
             <CommonFilterPill

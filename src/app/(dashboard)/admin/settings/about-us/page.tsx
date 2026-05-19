@@ -20,7 +20,7 @@ export default function AboutUsPage() {
     return (
         <div className="bg-background text-foreground pb-10">
             <div className="space-y-5">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col md:flex-row lg:items-center gap-4 justify-between">
                     <div className="space-y-1">
                         <h1 className="title">About Us</h1>
                         <p className="text-xs text-muted-foreground mt-1">

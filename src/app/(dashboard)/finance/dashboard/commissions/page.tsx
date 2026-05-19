@@ -107,7 +107,7 @@ export default function CommissionsPage() {
 
   return (
     <div className="space-y-6 animate-in fade-in zoom-in duration-500 pb-8">
-      <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
           <h1 className="title mb-1">
             Commission Management

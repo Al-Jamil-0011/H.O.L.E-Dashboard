@@ -159,15 +159,7 @@ export default function Notifications() {
         <div className="bg-background pb-8">
             <div className="bg-card rounded-3xl border border-border overflow-hidden transition-all duration-300">
                 {/* Header Section */}
-                <header className="flex items-center p-6 md:p-8 border-b border-border bg-muted backdrop-blur-xl sticky top-0 z-20">
-                    <button
-                        onClick={() => router.back()}
-                        className="p-2 rounded-full dark:bg-muted text-muted-foreground hover:text-foreground dark:hover:bg-muted/80 transition-all cursor-pointer hover:bg-primary/10 group"
-                        aria-label="Go back"
-                    >
-                        <ArrowLeft className="h-5 w-5 text-primary" />
-                    </button>
-
+                <header className="py-6 border-b border-border bg-muted backdrop-blur-xl sticky top-0 z-20">
                     <div className="ml-5">
                         <h1 className="title mb-1">
                             Notifications

@@ -20,7 +20,7 @@ export default function TermsOfServicePage() {
     return (
         <div className="bg-background text-foreground pb-10">
             <div className="space-y-5">
-                <div className="flex justify-between items-center">
+                <div className="flex flex-col md:flex-row lg:items-center gap-4 justify-between">
                     <div className="space-y-1">
                         <h1 className="title">Terms of Service</h1>
                         <p className="text-xs text-muted-foreground mt-1">

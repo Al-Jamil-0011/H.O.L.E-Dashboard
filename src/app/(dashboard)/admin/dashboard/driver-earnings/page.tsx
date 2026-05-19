@@ -350,7 +350,7 @@ export default function DriverEarningsControlPage() {
             <button
               onClick={() => setActiveTab('history')}
               className={cn(
-                "flex items-center gap-2 px-5 py-2.5 text-sm font-medium rounded-lg transition-all dark:shadow-sm cursor-pointer",
+                "flex flex-1 items-center gap-2 px-5 py-2.5 text-sm font-medium rounded-lg transition-all dark:shadow-sm cursor-pointer",
                 activeTab === 'history'
                   ? "bg-muted text-foreground"
                   : "text-muted-foreground hover:text-foreground"

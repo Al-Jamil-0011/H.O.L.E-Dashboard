@@ -2,9 +2,9 @@
 import Loader from '@/components/loader';
 import { useSingleShipment } from '@/hooks/admin/shipment';
 import {
-    ChevronLeft, Download, FileText,
-    MapPin, Stethoscope, Briefcase, CheckCircle2, Clock,
-    ExternalLink, Building2, Activity, Package, AlertTriangle, Phone, UserCircle2, Truck, Calendar,
+    ChevronLeft, FileText,
+    MapPin, Stethoscope, Briefcase,
+    Building2, Activity, Package, AlertTriangle, Phone, UserCircle2, Truck, Calendar,
     Maximize2, Minimize2
 } from 'lucide-react';
 import Link from 'next/link';
@@ -132,32 +132,25 @@ export default function ShipmentDetailsPage({ params }: { params: Promise<{ id: 
     return (
         <div className="space-y-6 pb-20 animate-in fade-in duration-500">
             {/* Header Area */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div className="flex items-center gap-4">
-                    <Link href="/admin/dashboard/shipments" className="p-2 bg-card border border-border rounded-full text-muted-foreground hover:text-foreground hover:bg-muted transition-colors">
-                        <ChevronLeft className="h-5 w-5 text-primary" />
-                    </Link>
-                    <div>
-                        <div className="flex flex-wrap items-center gap-3 mb-1">
-                            <h1 className="text-2xl font-bold text-foreground tracking-tight">Shipment {shipment.shipmentId}</h1>
-                            <span className={cn("px-2.5 py-0.5 text-xs font-bold rounded-full border capitalize", getStatusColor(shipment.status))}>
-                                {shipment.status}
+            <div className="flex items-center gap-4">
+                <Link href="/admin/dashboard/shipments" className="p-2 bg-card border border-border rounded-full text-muted-foreground hover:text-foreground hover:bg-muted transition-colors">
+                    <ChevronLeft className="h-5 w-5 text-primary" />
+                </Link>
+                <div>
+                    <div className="flex flex-wrap items-center gap-3 mb-1">
+                        <h1 className="text-2xl font-bold text-foreground tracking-tight">Shipment {shipment.shipmentId}</h1>
+                        <span className={cn("px-2.5 py-0.5 text-xs font-bold rounded-full border capitalize", getStatusColor(shipment.status))}>
+                            {shipment.status}
+                        </span>
+                        {shipment.shipmentInfo?.priority === 'urgent' && (
+                            <span className="px-2.5 py-0.5 text-xs font-bold rounded-full border bg-rose-500/10 text-rose-500 border-rose-500/20 capitalize flex items-center gap-1">
+                                <AlertTriangle className="h-3 w-3" /> Urgent
                             </span>
-                            {shipment.shipmentInfo?.priority === 'urgent' && (
-                                <span className="px-2.5 py-0.5 text-xs font-bold rounded-full border bg-rose-500/10 text-rose-500 border-rose-500/20 capitalize flex items-center gap-1">
-                                    <AlertTriangle className="h-3 w-3" /> Urgent
-                                </span>
-                            )}
-                        </div>
-                        <p className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                            <Calendar className="h-4 w-4" /> Created on {dayjs(shipment.createdAt).format('MMMM DD, YYYY [at] hh:mm A')}
-                        </p>
+                        )}
                     </div>
-                </div>
-                <div className="flex items-center gap-3">
-                    <button className="flex items-center justify-center gap-2 px-4 py-2 bg-card border border-border text-foreground font-medium rounded-xl hover:bg-muted transition-colors w-full sm:w-auto">
-                        <FileText className="h-4 w-4 text-primary" /> Invoice
-                    </button>
+                    <p className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                        <Calendar className="h-4 w-4" /> Created on {dayjs(shipment.createdAt).format('MMMM DD, YYYY [at] hh:mm A')}
+                    </p>
                 </div>
             </div>
 

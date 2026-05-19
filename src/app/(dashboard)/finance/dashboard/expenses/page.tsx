@@ -204,7 +204,7 @@ export default function ExpensesPage() {
 
   return (
     <div className="space-y-6 animate-in fade-in zoom-in duration-500 pb-8 pb-10">
-      <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
           <h1 className="title mb-1">
             Expenses
@@ -286,7 +286,7 @@ export default function ExpensesPage() {
       </div>
 
       <div className="rounded-xl border border-border bg-card dark:shadow-sm transition-all overflow-hidden flex flex-col bg-muted">
-        <div className="flex items-center justify-between p-5 pb-5">
+        <div className="flex flex-col md:flex-row gap-4 lg:items-center justify-between p-5 pb-5">
           <h2 className="text-sm font-bold text-foreground">All Expenses</h2>
           <div className="flex gap-2 bg-[var(--background)] rounded-lg border border-border w-full sm:w-auto overflow-x-auto p-1">
             <CommonFilterPill

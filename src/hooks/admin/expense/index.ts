@@ -141,10 +141,9 @@ export function useExpenses() {
 
             setError(message);
         } finally {
-            setLoading(false);
-            // setTimeout(() => {
-            //     setLoading(false);
-            // }, 400);
+            setTimeout(() => {
+                setLoading(false);
+            }, 400);
         }
     }, [query]);
 

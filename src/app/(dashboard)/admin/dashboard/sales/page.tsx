@@ -155,7 +155,7 @@ export default function SalesPage() {
       </div>
 
       <div className="rounded-xl border border-[var(--border)] bg-bg-muted dark:shadow-sm transition-all overflow-hidden flex flex-col">
-        <div className="flex items-center justify-between p-5 bg-muted/40">
+        <div className="flex flex-col md:flex-row lg:items-center justify-between gap-5 p-5 bg-muted/40">
           <h2 className="text-sm font-bold text-foreground">All Sales</h2>
           <div className="flex gap-2 bg-[var(--background)] rounded-lg border border-border w-full sm:w-auto overflow-x-auto p-1">
             <CommonFilterPill

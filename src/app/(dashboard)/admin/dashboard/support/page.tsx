@@ -8,7 +8,6 @@ import {
   MessageSquare,
   Users,
   Clock,
-  Eye,
   X,
   Mail,
   Calendar,
@@ -16,7 +15,6 @@ import {
   Tag
 } from "lucide-react";
 import Image from "next/image";
-import { cn } from "@/lib/utils";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { ISupport } from "@/hooks/admin/support/interface";
@@ -25,7 +23,7 @@ import { SupportStatCard } from '@/components/stats-card';
 dayjs.extend(relativeTime);
 
 export default function SupportPage() {
-  const { supports, meta, loading, query, setQuery } = useSupports();
+  const { supports, meta, loading, setQuery } = useSupports();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedSupport, setSelectedSupport] = useState<ISupport | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -147,11 +145,11 @@ export default function SupportPage() {
       {/* TABLE SECTION */}
       <div className="bg-muted rounded-2xl border border-border overflow-hidden">
         <div className="p-5 border-b border-border bg-muted/30 flex items-center justify-between">
-          <div className="flex items-center gap-2 justify-between w-full">
+          <div className="flex flex-col md:flex-row lg:items-center gap-2 justify-between w-full">
             <div className="flex items-center gap-2">
               <div className="h-2 w-2 rounded-full bg-primary animate-pulse" />
               <h2 className="text-xs font-medium text-foreground">Active Inquiries</h2>
-              <span className="text-[10px] font-bold text-muted-foreground bg-muted px-2 py-1 rounded-md border border-border">
+              <span className="text-[10px] font-bold bg-primary/10 text-muted-foreground bg-muted px-2 py-1 rounded-md border border-border">
                 {meta?.totalResult || 0} TOTAL
               </span>
             </div>

@@ -179,13 +179,13 @@ export default function ShipmentsPage() {
       <div className="rounded-xl border border-border bg-muted dark:shadow-sm flex flex-col overflow-hidden">
 
         {/* CONTROL BAR */}
-        <div className="p-4 border-b border-border bg-muted/50 flex flex-col md:flex-row gap-4 items-center justify-between">
+        <div className="p-4 border-b border-border bg-muted/50 flex flex-col md:flex-row gap-4 lg:items-center justify-between">
 
           <div className="flex flex-wrap items-center gap-3">
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="bg-[var(--background)] border border-border rounded-lg py-2 px-3 text-xs font-medium text-foreground focus:outline-none focus:border-primary transition-colors appearance-none"
+              className="bg-[var(--background)] border border-border rounded-lg py-2 px-3 text-xs font-medium text-foreground focus:outline-none focus:border-primary transition-colors appearance-none cursor-pointer"
             >
               <option value="All">All Statuses</option>
               <option value="Pending">Pending</option>
@@ -196,7 +196,7 @@ export default function ShipmentsPage() {
             <select
               value={methodFilter}
               onChange={(e) => setMethodFilter(e.target.value)}
-              className="bg-[var(--background)] border border-border rounded-lg py-2 px-3 text-xs font-medium text-foreground focus:outline-none focus:border-primary transition-colors appearance-none"
+              className="bg-[var(--background)] border border-border rounded-lg py-2 px-3 text-xs font-medium text-foreground focus:outline-none focus:border-primary transition-colors appearance-none cursor-pointer"
             >
               <option value="All">All Methods</option>
               <option value="courier">COURIER</option>

@@ -231,7 +231,7 @@ const FormField: React.FC<FormFieldProps> = ({
                                             >
                                                 <div className="flex flex-col">
                                                     <span className={cn(
-                                                        "text-sm font-bold transition-colors",
+                                                        "text-sm transition-colors",
                                                         opt.value?.toString() === commonProps.value?.toString()
                                                             ? "text-[#00E5FF]"
                                                             : "text-gray-900 dark:text-white"
@@ -240,7 +240,7 @@ const FormField: React.FC<FormFieldProps> = ({
                                                     </span>
 
                                                     {opt.extraText && (
-                                                        <span className="text-[10px] text-gray-500 dark:text-gray-500 font-bold mt-0.5">
+                                                        <span className="text-[10px] text-gray-500 dark:text-gray-500 mt-0.5">
                                                             {opt.extraText}
                                                         </span>
                                                     )}

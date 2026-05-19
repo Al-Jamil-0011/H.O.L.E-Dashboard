@@ -104,7 +104,7 @@ export default function SalesPage() {
   return (
     <div className="space-y-6 animate-in fade-in zoom-in duration-500 pb-8">
       <CreateSaleModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
-      <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
           <h1 className="title mb-1">
             Sales & Revenue
@@ -155,7 +155,7 @@ export default function SalesPage() {
       </div>
 
       <div className="rounded-xl border border-[var(--border)] bg-bg-muted dark:shadow-sm transition-all overflow-hidden flex flex-col">
-        <div className="flex items-center justify-between p-5 bg-muted/40">
+        <div className="flex flex-col md:flex-row lg:items-center gap-4 justify-between p-5 bg-muted/40">
           <h2 className="text-sm font-bold text-foreground">All Sales</h2>
           <div className="flex gap-2 bg-[var(--background)] rounded-lg border border-border w-full sm:w-auto overflow-x-auto p-1">
             <CommonFilterPill

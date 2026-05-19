@@ -286,7 +286,7 @@ export default function ExpensesPage() {
       </div>
 
       <div className="rounded-xl border border-border bg-card dark:shadow-sm transition-all overflow-hidden flex flex-col bg-muted">
-        <div className="flex items-center justify-between p-5 pb-5">
+        <div className="flex flex-col md:flex-row lg:items-center justify-between gap-5 p-5 pb-5">
           <h2 className="text-sm font-bold text-foreground">All Expenses</h2>
           <div className="flex gap-2 bg-[var(--background)] rounded-lg border border-border w-full sm:w-auto overflow-x-auto p-1">
             <CommonFilterPill

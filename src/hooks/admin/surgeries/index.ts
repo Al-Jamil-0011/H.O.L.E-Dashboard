@@ -141,10 +141,9 @@ export function useSingleSurgery(
 
                 setError(message);
             } finally {
-                setLoading(false);
-                // setTimeout(() => {
-                //     setLoading(false);
-                // }, 400);
+                setTimeout(() => {
+                    setLoading(false);
+                }, 400);
             }
         }, [id]);
 

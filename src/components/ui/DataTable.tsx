@@ -40,90 +40,92 @@ export function DataTable<T>({
   return (
     <div
       className={cn(
-        "w-full overflow-x-auto rounded-lg border border-border bg-card",
+        "w-full rounded-lg border border-border bg-card overflow-hidden",
         className
       )}
     >
-      <table className="w-full text-left text-sm whitespace-nowrap">
+      <div className="w-full overflow-x-auto">
+        <table className="w-full text-left text-sm whitespace-nowrap">
 
-        {/* HEADER */}
-        <thead className="bg-muted/50">
-          <tr>
-            {columns.map((col, i) => (
-              <th
-                key={i}
-                className={cn(
-                  "px-4 py-3 text-[10px] uppercase tracking-widest text-muted-foreground font-semibold border-b border-border",
-                  col.className
-                )}
-              >
-                {col.header}
-              </th>
-            ))}
-          </tr>
-        </thead>
-
-        {/* BODY */}
-        <tbody className="divide-y divide-border">
-
-          {/* LOADING */}
-          {loading &&
-            Array.from({ length: 8 }).map((_, rowIndex) => (
-              <tr key={`skeleton-${rowIndex}`} className="animate-pulse border-b border-border">
-                {columns.map((_, colIndex) => (
-                  <td key={`skeleton-col-${colIndex}`} className="px-4 py-4">
-                    <div className={cn("h-4 bg-muted rounded", colIndex === 0 ? "w-3/4 max-w-[200px]" : "w-1/2 max-w-[100px]")}></div>
-                  </td>
-                ))}
-              </tr>
-            ))}
-
-          {/* DATA */}
-          {!loading &&
-            data?.map((item, rowIndex) => (
-              <tr
-                key={rowIndex}
-                onClick={() => onRowClick?.(item)}
-                className={cn(
-                  "transition-colors",
-                  onRowClick && "cursor-pointer hover:bg-muted/50"
-                )}
-              >
-                {columns.map((col, colIndex) => (
-                  <td
-                    key={colIndex}
-                    className={cn(
-                      "px-4 py-3 text-foreground text-xs font-medium",
-                      col.className
-                    )}
-                  >
-                    {col.render
-                      ? col.render(item)
-                      : col.accessorKey
-                        ? String(item[col.accessorKey] ?? "-")
-                        : "-"}
-                  </td>
-                ))}
-              </tr>
-            ))}
-
-          {/* EMPTY STATE */}
-          {!loading && data?.length === 0 && (
+          {/* HEADER */}
+          <thead className="bg-muted/50">
             <tr>
-              <td
-                colSpan={columns.length}
-                className="px-4 py-10 text-center text-muted-foreground text-sm"
-              >
-                {emptyText}
-              </td>
+              {columns.map((col, i) => (
+                <th
+                  key={i}
+                  className={cn(
+                    "px-4 py-3 text-[10px] uppercase tracking-widest text-muted-foreground font-semibold border-b border-border",
+                    col.className
+                  )}
+                >
+                  {col.header}
+                </th>
+              ))}
             </tr>
-          )}
-        </tbody>
-      </table>
+          </thead>
+
+          {/* BODY */}
+          <tbody className="divide-y divide-border">
+
+            {/* LOADING */}
+            {loading &&
+              Array.from({ length: 8 }).map((_, rowIndex) => (
+                <tr key={`skeleton-${rowIndex}`} className="animate-pulse border-b border-border">
+                  {columns.map((_, colIndex) => (
+                    <td key={`skeleton-col-${colIndex}`} className="px-4 py-4">
+                      <div className={cn("h-4 bg-muted rounded", colIndex === 0 ? "w-3/4 max-w-[200px]" : "w-1/2 max-w-[100px]")}></div>
+                    </td>
+                  ))}
+                </tr>
+              ))}
+
+            {/* DATA */}
+            {!loading &&
+              data?.map((item, rowIndex) => (
+                <tr
+                  key={rowIndex}
+                  onClick={() => onRowClick?.(item)}
+                  className={cn(
+                    "transition-colors",
+                    onRowClick && "cursor-pointer hover:bg-muted/50"
+                  )}
+                >
+                  {columns.map((col, colIndex) => (
+                    <td
+                      key={colIndex}
+                      className={cn(
+                        "px-4 py-3 text-foreground text-xs font-medium",
+                        col.className
+                      )}
+                    >
+                      {col.render
+                        ? col.render(item)
+                        : col.accessorKey
+                          ? String(item[col.accessorKey] ?? "-")
+                          : "-"}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+
+            {/* EMPTY STATE */}
+            {!loading && data?.length === 0 && (
+              <tr>
+                <td
+                  colSpan={columns.length}
+                  className="px-4 py-10 text-center text-muted-foreground text-sm"
+                >
+                  {emptyText}
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
 
       {/* PAGINATION SECTION */}
       {pagination && pagination.totalPage > 1 && (
-        <div className="flex items-center justify-between px-6 py-4 bg-muted/30 border-t border-border">
+        <div className="flex flex-col md:flex-row gap-4 items-center justify-between px-6 py-4 bg-muted/30 border-t border-border">
           <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest">
             Showing <span className="text-foreground font-black">{data?.length || 0}</span> of <span className="text-foreground font-black">{pagination.totalResult}</span> Results
           </p>

@@ -40,27 +40,6 @@ export default function InvoicesPage() {
     }));
   };
 
-  // Dynamic calculations based on loaded list
-  const totalVolume = invoices.reduce((sum, item) => {
-    const amt = typeof item.billing?.totalAmount === 'object' ? 0 : Number(item.billing?.totalAmount || 0);
-    return sum + amt;
-  }, 0);
-
-  const totalCommissions = invoices.reduce((sum, item) => {
-    const comm = typeof item.representatives?.totalCommission === 'object' ? 0 : Number(item.representatives?.totalCommission || 0);
-    return sum + comm;
-  }, 0);
-
-  const pendingCount = invoices.filter(item => {
-    const status = (item.invoice?.status || item.status || '').toLowerCase();
-    return status === 'pending' || status === 'unpaid';
-  }).length;
-
-  const paidCount = invoices.filter(item => {
-    const status = (item.invoice?.status || item.status || '').toLowerCase();
-    return status === 'paid';
-  }).length;
-
   const columns = [
     {
       header: "INVOICE ID",
@@ -247,7 +226,7 @@ export default function InvoicesPage() {
       {/* Glassmorphic Data Table Card */}
       <div className="rounded-2xl border border-border bg-card/60 backdrop-blur-md dark:shadow-md transition-all overflow-hidden flex flex-col">
         {/* Table Filter and Action Header */}
-        <div className="flex flex-col gap-4 p-5 pb-5 border-b border-border sm:flex-row sm:items-center sm:justify-between bg-muted/20">
+        <div className="flex flex-col md:flex-row gap-4 p-5 pb-5 border-b border-border sm:flex-row sm:items-center sm:justify-between bg-muted/20">
           <div>
             <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
               Invoice Records
@@ -262,14 +241,14 @@ export default function InvoicesPage() {
 
           <div className="flex flex-wrap items-center gap-3">
             {/* Search Input */}
-            <div className="relative min-w-[200px] w-full sm:w-auto">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+            <div className="relative w-full md:w-80 group">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
               <input
                 type="text"
+                placeholder="Search invoices..."
+                className="w-full bg-[var(--background)] border border-[var(--border)] rounded-md py-2 pl-9 pr-3 text-xs font-medium text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-[var(--primary)] transition-colors"
                 value={searchTerm}
                 onChange={handleSearchChange}
-                placeholder="Search invoices..."
-                className="w-full pl-9 pr-4 py-1.5 text-xs text-foreground bg-background rounded-lg border border-border focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all placeholder:text-muted-foreground"
               />
             </div>
 
@@ -305,23 +284,19 @@ export default function InvoicesPage() {
             </div>
           </div>
         </div>
-
-        {/* Data Table */}
-        <div className="flex-1 px-5 pb-5">
-          <DataTable
-            data={invoices}
-            className="!border-none !rounded-none"
-            columns={columns}
-            loading={salesLoading}
-            onRowClick={() => { }}
-            pagination={meta ? {
-              currentPage: meta.currentPage,
-              totalPage: meta.totalPage,
-              totalResult: meta.totalResult,
-              onPageChange: (page) => setQuery(prev => ({ ...prev, page }))
-            } : undefined}
-          />
-        </div>
+        <DataTable
+          data={invoices}
+          className="!border-none !rounded-none"
+          columns={columns}
+          loading={salesLoading}
+          onRowClick={() => { }}
+          pagination={meta ? {
+            currentPage: meta.currentPage,
+            totalPage: meta.totalPage,
+            totalResult: meta.totalResult,
+            onPageChange: (page) => setQuery(prev => ({ ...prev, page }))
+          } : undefined}
+        />
       </div>
     </div>
   );

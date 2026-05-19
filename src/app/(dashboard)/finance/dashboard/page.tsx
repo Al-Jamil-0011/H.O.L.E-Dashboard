@@ -1,5 +1,4 @@
 "use client";
-import { cn } from '@/lib/utils';
 import { DataTable, StatusBadge } from '@/components/ui/DataTable';
 import dynamic from 'next/dynamic';
 import { useTheme } from 'next-themes';
@@ -94,7 +93,7 @@ export default function Home() {
         },
         colors: ['#00E5FF'],
         xaxis: {
-            categories: repPerformance.map(r => r.repName),
+            categories: repPerformance.map(r => r.repName && r.repName.length > 12 ? r.repName.slice(0, 12) + "..." : r.repName || ""),
             labels: { style: { colors: isDark ? '#a1a1aa' : '#71717a' } },
             axisBorder: { show: false },
             axisTicks: { show: false }
@@ -113,7 +112,14 @@ export default function Home() {
             yaxis: { lines: { show: true } }
         },
         legend: { show: false },
-        tooltip: { theme: isDark ? 'dark' : 'light' }
+        tooltip: {
+            theme: isDark ? 'dark' : 'light',
+            x: {
+                formatter: (val, { dataPointIndex }: any): string => {
+                    return String(repPerformance[dataPointIndex]?.repName || val);
+                }
+            }
+        }
     };
 
     const barChartSeries = [
@@ -226,9 +232,9 @@ export default function Home() {
                 />
             </div>
 
-            <div className="grid gap-4 lg:grid-cols-2">
-                <div className="rounded-xl border border-border bg-card dark:shadow-sm lg:col-span-1 transition-all h-[320px] flex flex-col">
-                    <div className="flex items-center justify-between p-5 pb-0 z-10 relative">
+            <div className="grid gap-4 grid-cols-1 lg:grid-cols-2">
+                <div className="rounded-xl border border-border bg-card dark:shadow-sm lg:col-span-1 transition-all h-[300px] sm:h-[320px] flex flex-col">
+                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center justify-between p-5 pb-0 z-10 relative">
                         <div>
                             <h2 className="text-sm font-bold text-foreground">Monthly Revenue</h2>
                             <p className="text-[10px] text-muted-foreground mt-1">Jan-Jun 2026</p>
@@ -249,8 +255,8 @@ export default function Home() {
                     </div>
                 </div>
 
-                <div className="rounded-xl border border-border bg-card dark:shadow-sm lg:col-span-1 transition-all h-[320px] flex flex-col">
-                    <div className="flex items-center justify-between p-5 pb-0 z-10 relative">
+                <div className="rounded-xl border border-border bg-card dark:shadow-sm lg:col-span-1 transition-all h-[300px] sm:h-[320px] flex flex-col">
+                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center justify-between p-5 pb-0 z-10 relative">
                         <div>
                             <h2 className="text-sm font-bold text-foreground">Rep Performance</h2>
                             <p className="text-[10px] text-muted-foreground mt-1">Sales $ vs Rep (YTD 2026)</p>

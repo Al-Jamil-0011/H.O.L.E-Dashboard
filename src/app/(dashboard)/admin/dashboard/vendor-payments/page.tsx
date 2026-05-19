@@ -183,7 +183,7 @@ export default function VendorPaymentsPage() {
       </div>
 
       <div className="rounded-2xl border border-[var(--border)] bg-muted dark:shadow-xl dark:shadow-black/5 transition-all overflow-hidden flex flex-col backdrop-blur-sm">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4 p-4">
+        <div className="flex flex-col md:flex-row lg:items-center justify-between gap-4 p-4">
           <div className="flex items-center gap-3">
             <h2 className="text-base font-bold text-foreground">Payment Records</h2>
             <span className="px-2 py-0.5 bg-primary/10 rounded text-[10px] font-bold text-primary uppercase tracking-widest">
