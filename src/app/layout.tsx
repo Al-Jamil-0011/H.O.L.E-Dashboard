@@ -3,12 +3,12 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 
 const poppins = Poppins({
-  weight: ['300', '400', '500', '600', '700', '800', '900'],
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
   subsets: ["latin"],
   variable: "--font-poppins",
 });
 
-export const metadata:Metadata = {
+export const metadata: Metadata = {
   title: "H.O.L.E App | Finance & Sales Management Dashboard",
   description:
     "H.O.L.E App is a modern finance and sales management dashboard for tracking sales, commissions, vendor payments, and financial reports with seamless QuickBooks integration.",
@@ -38,7 +38,7 @@ export const metadata:Metadata = {
     siteName: "H.O.L.E App",
     images: [
       {
-        url: "/og-image.png", // put your image in public folder
+        url: "/logo.svg", // put your image in public folder
         width: 1200,
         height: 630,
         alt: "H.O.L.E App Dashboard",
@@ -53,7 +53,7 @@ export const metadata:Metadata = {
     title: "H.O.L.E App | Finance Dashboard",
     description:
       "All-in-one finance dashboard for sales, commissions, and vendor tracking.",
-    images: ["/og-image.png"],
+    images: ["/logo.svg"],
   },
 
   robots: {
@@ -69,8 +69,8 @@ export const metadata:Metadata = {
   },
 
   icons: {
-    icon: "/logo.svg",
-    shortcut: "/logo.svg",
+    icon: "/logo.ico",
+    shortcut: "/logo.ico",
     apple: "/logo.svg",
   },
 };
@@ -85,9 +85,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${poppins.variable} font-sans antialiased`}
-      >
+      <body className={`${poppins.variable} font-sans antialiased`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -95,10 +93,10 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           {children}
-          <Toaster 
-            position="top-right" 
+          <Toaster
+            position="top-right"
             toastOptions={{
-              className: 'dark:bg-gray-800 dark:text-white',
+              className: "dark:bg-gray-800 dark:text-white",
               duration: 4000,
             }}
           />

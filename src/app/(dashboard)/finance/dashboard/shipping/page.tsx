@@ -1,16 +1,19 @@
 "use client";
 
-import { useState } from 'react';
-import { cn } from '@/lib/utils';
-import { DataTable, StatusBadge } from '@/components/ui/DataTable';
-import { useShippingCosts, useShippingCostSummary } from '@/hooks/finance/shipping-cost';
+import { useState } from "react";
+import { cn } from "@/lib/utils";
+import { DataTable, StatusBadge } from "@/components/ui/DataTable";
+import {
+  useShippingCosts,
+  useShippingCostSummary,
+} from "@/hooks/finance/shipping-cost";
 
-import { IShippingCost } from '@/hooks/finance/shipping-cost/interface';
-import { Package, Truck } from 'lucide-react';
-import { CommonFilterPill, ShippingStatCard } from '@/components/stats-card';
+import { IShippingCost } from "@/hooks/finance/shipping-cost/interface";
+import { Package, Truck } from "lucide-react";
+import { CommonFilterPill, ShippingStatCard } from "@/components/stats-card";
 
 export default function ShippingPage() {
-  const [filter, setFilter] = useState('all');
+  const [filter, setFilter] = useState("all");
 
   const { summary, loading: isLoading } = useShippingCostSummary();
 
@@ -20,8 +23,8 @@ export default function ShippingPage() {
     setFilter(type);
     setQuery({
       ...query,
-      type: type === 'all' ? "" : type,
-      page: 1
+      type: type === "all" ? "" : type,
+      page: 1,
     });
   };
 
@@ -32,7 +35,7 @@ export default function ShippingPage() {
         <span className="font-medium text-foreground">
           {item.shipmentId || "N/A"}
         </span>
-      )
+      ),
     },
     // {
     //   header: "CARRIER",
@@ -44,30 +47,34 @@ export default function ShippingPage() {
       header: "CARRIER",
       render: (item: IShippingCost) => (
         <div className="flex items-center gap-2">
-          {item.shippingCost?.type === 'courier' ? (
+          {item.shippingCost?.type === "courier" ? (
             <Truck className="h-4 w-4 text-blue-400" />
           ) : (
             <Package className="h-4 w-4 text-amber-500" />
           )}
-          <span className={cn(
-            "text-xs font-bold capitalize",
-            item.shippingCost?.type === 'courier' ? "text-blue-400" : "text-amber-500"
-          )}>
+          <span
+            className={cn(
+              "text-xs font-bold capitalize",
+              item.shippingCost?.type === "courier"
+                ? "text-blue-400"
+                : "text-amber-500",
+            )}
+          >
             {item.shippingCost?.type || "Courier"}
           </span>
         </div>
-      )
+      ),
     },
     {
       header: "REP",
       render: (item: IShippingCost) => (
-        <div className='flex flex-col gap-1'>
+        <div className="flex flex-col gap-1">
           {item.createdBy?.fullName || "N/A"}
           <p className="text-[11px] text-muted-foreground font-medium">
             {item.createdBy?.email || "N/A"}
           </p>
         </div>
-      )
+      ),
     },
     {
       header: "COST",
@@ -75,17 +82,17 @@ export default function ShippingPage() {
         <span className="text-primary font-medium">
           ${item.shippingCost?.totalCost?.toLocaleString() || "0"}
         </span>
-      )
+      ),
     },
     {
       header: "STATUS",
       render: (item: IShippingCost) => {
         const status = item.shippingCost?.status || "PENDING";
         let type: "success" | "warning" | "error" = "warning";
-        if (status === 'PAID') type = 'success';
+        if (status === "PAID") type = "success";
         return <StatusBadge status={status} type={type} />;
-      }
-    }
+      },
+    },
   ];
 
   return (
@@ -111,7 +118,7 @@ export default function ShippingPage() {
           title="TOTAL SHIPPING COSTS"
           amount={`$${summary?.totalShippingCost ?? 0}`}
           color="text-rose-500"
-          topBorderColor='border-t-[3px] border-t-rose-500'
+          topBorderColor="border-t-[3px] border-t-rose-500"
           loading={isLoading}
         />
 
@@ -119,7 +126,7 @@ export default function ShippingPage() {
           title="PENDING PAYMENTS"
           amount={`$${summary?.totalPendingPayments ?? 0}`}
           color="text-amber-500"
-          topBorderColor='border-t-[3px] border-t-amber-500'
+          topBorderColor="border-t-[3px] border-t-amber-500"
           loading={isLoading}
         />
 
@@ -127,7 +134,7 @@ export default function ShippingPage() {
           title="PAID PAYMENTS"
           amount={`$${summary?.totalPaidPayments ?? 0}`}
           color="text-emerald-500"
-          topBorderColor='border-t-[3px] border-t-emerald-500'
+          topBorderColor="border-t-[3px] border-t-emerald-500"
           loading={isLoading}
         />
 
@@ -135,7 +142,7 @@ export default function ShippingPage() {
           title="SHIPMENTS WITH COST"
           amount={`${summary?.totalShipmentsWithCost ?? 0}`}
           color="text-sky-500"
-          topBorderColor='border-t-[3px] border-t-sky-500'
+          topBorderColor="border-t-[3px] border-t-sky-500"
           loading={isLoading}
         />
       </div>
@@ -146,55 +153,58 @@ export default function ShippingPage() {
           <div className="flex gap-2 bg-[var(--background)] rounded-lg border border-border w-full sm:w-auto overflow-x-auto p-1">
             <CommonFilterPill
               text="All"
-              active={filter === 'all'}
-              onClick={() => handleFilterChange('all')}
+              active={filter === "all"}
+              onClick={() => handleFilterChange("all")}
             />
 
             <CommonFilterPill
               text="FedEx"
-              active={filter === 'fedex'}
+              active={filter === "fedex"}
               color="bg-purple-500/20 text-purple-400"
               activeColor="bg-purple-500 text-[var(--background)]"
-              onClick={() => handleFilterChange('fedex')}
+              onClick={() => handleFilterChange("fedex")}
             />
 
             <CommonFilterPill
               text="UPS"
-              active={filter === 'ups'}
+              active={filter === "ups"}
               color="bg-amber-500/20 text-amber-500"
               activeColor="bg-amber-500 text-[var(--background)]"
-              onClick={() => handleFilterChange('ups')}
+              onClick={() => handleFilterChange("ups")}
             />
             <CommonFilterPill
               text="usps"
-              active={filter === 'usps'}
+              active={filter === "usps"}
               color="bg-indigo-500/20 text-indigo-400"
               activeColor="bg-indigo-500 text-[var(--background)]"
-              onClick={() => handleFilterChange('usps')}
+              onClick={() => handleFilterChange("usps")}
             />
             <CommonFilterPill
               text="COURIER"
-              active={filter === 'courier'}
+              active={filter === "courier"}
               color="bg-indigo-500/20 text-indigo-400"
               activeColor="bg-indigo-500 text-[var(--background)]"
-              onClick={() => handleFilterChange('courier')}
+              onClick={() => handleFilterChange("courier")}
             />
           </div>
         </div>
         <DataTable
           data={shippingCosts}
-          className='border-none rounded-none'
+          className="border-none rounded-none"
           columns={columns}
           loading={loading}
-          pagination={meta ? {
-            currentPage: meta.currentPage,
-            totalPage: meta.totalPage,
-            totalResult: meta.totalResult,
-            onPageChange: (page) => setQuery({ ...query, page })
-          } : undefined}
+          pagination={
+            meta
+              ? {
+                  currentPage: meta.currentPage,
+                  totalPage: meta.totalPage,
+                  totalResult: meta.totalResult,
+                  onPageChange: (page) => setQuery({ ...query, page }),
+                }
+              : undefined
+          }
         />
       </div>
     </div>
   );
 }
-
