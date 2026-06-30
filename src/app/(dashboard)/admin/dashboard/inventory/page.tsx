@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
 import { DataTable, StatusBadge } from '@/components/ui/DataTable';
 import { Search, Filter, AlertTriangle, Box, Activity, Warehouse } from 'lucide-react';
@@ -16,7 +16,7 @@ export default function InventoryPage() {
   const [selectedFacility, setSelectedFacility] = useState('all');
 
   const router = useRouter();
-
+  const isMounted = useRef(false);
   const { summary, loading: summaryLoading } = useInventorySummary();
   const { facilityOptions } = useFacilities();
 
@@ -24,6 +24,10 @@ export default function InventoryPage() {
   const { inventory: allInventory, loading: allInventoryLoading, meta, setQuery } = useAllInventory();
 
   useEffect(() => {
+    if (!isMounted.current) {
+      isMounted.current = true;
+      return;
+    }
     const handler = setTimeout(() => {
       setQuery(prev => ({
         ...prev,

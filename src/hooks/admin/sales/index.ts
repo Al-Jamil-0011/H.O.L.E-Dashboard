@@ -147,9 +147,7 @@ export function useSales() {
 
                 setError(message);
             } finally {
-                setTimeout(() => {
-                    setLoading(false);
-                }, 400);
+                setLoading(false);
             }
         }, [query]);
 
@@ -206,9 +204,7 @@ export function useSingleSale(
 
                 setError(message);
             } finally {
-                setTimeout(() => {
-                    setLoading(false);
-                }, 400);
+                setLoading(false);
             }
         }, [id]);
 

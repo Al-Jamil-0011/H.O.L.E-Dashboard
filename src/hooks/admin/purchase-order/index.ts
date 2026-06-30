@@ -155,9 +155,7 @@ export function usePurchaseOrders() {
 
                 setError(message);
             } finally {
-                setTimeout(() => {
-                    setLoading(false);
-                }, 400);
+                setLoading(false);
             }
         }, [query]);
 
@@ -219,9 +217,7 @@ export function useSinglePurchaseOrder(
 
                 setError(message);
             } finally {
-                setTimeout(() => {
-                    setLoading(false);
-                }, 400);
+                setLoading(false);
             }
         }, [id]);
 

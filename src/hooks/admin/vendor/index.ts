@@ -74,9 +74,7 @@ export function useVendors() {
 
                 setError(message);
             } finally {
-                setTimeout(() => {
-                    setLoading(false);
-                }, 400);
+                setLoading(false);
             }
         }, [query]);
 
@@ -134,9 +132,7 @@ export function useSingleVendor(
 
                 setError(message);
             } finally {
-                setTimeout(() => {
-                    setLoading(false);
-                }, 400);
+                setLoading(false);
             }
         }, [id]);
 

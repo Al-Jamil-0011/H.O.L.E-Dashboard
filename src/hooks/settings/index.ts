@@ -26,7 +26,8 @@ export function useTerms() {
     } catch (error) {
       // console.error("Error fetching terms and conditions:", error);
     } finally {
-      setTimeout(() => setLoading(false), 500);
+      setLoading(false);
+      // setTimeout(() => setLoading(false), 500);
     }
   }, []);
 
@@ -93,7 +94,8 @@ export function usePrivacyPolicy() {
     } catch (error) {
       // console.error("Error fetching privacy policies:", error);
     } finally {
-      setTimeout(() => setLoading(false), 500);
+      setLoading(false)
+      // setTimeout(() => setLoading(false), 500);
     }
   }, []);
 
@@ -160,7 +162,8 @@ export function useAboutUs() {
     } catch (error) {
       // console.error("Error fetching about us:", error);
     } finally {
-      setTimeout(() => setLoading(false), 500);
+      setLoading(false)
+      // setTimeout(() => setLoading(false), 500);
     }
   }, []);
 
@@ -234,7 +237,8 @@ export function useSupport() {
     } catch (error) {
       // console.error("Error fetching support:", error);
     } finally {
-      setTimeout(() => setLoading(false), 500);
+      setLoading(false)
+      // setTimeout(() => setLoading(false), 500);
     }
   }, []);
 

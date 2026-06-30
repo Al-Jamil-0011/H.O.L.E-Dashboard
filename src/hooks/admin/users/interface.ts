@@ -55,9 +55,9 @@ export interface IUser {
   driverAndCarInfo?: IDriverAndCarInfo;
 }
 
-export interface IGetMyProfile {
+export interface IUserProfile {
   user: IUser;
-  userStats: any;
+  userStats?: any;
 }
 
 export interface IPaginationMeta {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
 import { DataTable, StatusBadge } from '@/components/ui/DataTable';
 import { Search, Filter, Truck, Package, X, AlertCircle, Navigation, CheckCircle2 } from 'lucide-react';
@@ -18,9 +18,14 @@ export default function ShipmentsPage() {
 
   const { shipments, loading: shipmentsLoading, meta, setQuery } = useShipments();
 
+  const isMounted = useRef(false);
 
   // SYNC SEARCH & FILTERS
   useEffect(() => {
+    if (!isMounted.current) {
+      isMounted.current = true;
+      return;
+    }
     const handler = setTimeout(() => {
       setQuery(prev => ({
         ...prev,

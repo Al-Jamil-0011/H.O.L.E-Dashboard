@@ -90,7 +90,7 @@ export default function ViewProfilePage() {
   }
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-5 pb-8">
       <div className="flex items-center justify-between">
         <div className="space-y-1">
           <h1 className="title">View Profile</h1>

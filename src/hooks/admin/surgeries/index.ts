@@ -82,9 +82,7 @@ export function useSurgeries() {
 
                 setError(message);
             } finally {
-                setTimeout(() => {
-                    setLoading(false);
-                }, 400);
+                setLoading(false);
             }
         }, [query]);
 
@@ -141,9 +139,7 @@ export function useSingleSurgery(
 
                 setError(message);
             } finally {
-                setTimeout(() => {
-                    setLoading(false);
-                }, 400);
+                setLoading(false);
             }
         }, [id]);
 

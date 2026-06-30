@@ -9,9 +9,9 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "H.O.L.E App | Finance & Sales Management Dashboard",
+  title: "H.O.L.E App | Admin & Finance Management Dashboard",
   description:
-    "H.O.L.E App is a modern finance and sales management dashboard for tracking sales, commissions, vendor payments, and financial reports with seamless QuickBooks integration.",
+    "H.O.L.E App is a modern admin and finance management dashboard for tracking sales, commissions, vendor payments, inventory, and financial reports with seamless QuickBooks integration.",
 
   keywords: [
     "finance dashboard",
@@ -31,9 +31,9 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://yourdomain.com"),
 
   openGraph: {
-    title: "H.O.L.E App | Smart Finance Dashboard",
+    title: "H.O.L.E App | Admin & Finance Dashboard",
     description:
-      "Track sales, commissions, vendor payments, and sync with QuickBooks in one powerful dashboard.",
+      "Track sales, commissions, vendor payments, inventory, and sync with QuickBooks in one powerful admin and finance dashboard.",
     url: "https://yourdomain.com",
     siteName: "H.O.L.E App",
     images: [
@@ -50,10 +50,10 @@ export const metadata: Metadata = {
 
   twitter: {
     card: "summary_large_image",
-    title: "H.O.L.E App | Finance Dashboard",
+    title: "H.O.L.E App | Admin & Finance Dashboard",
     description:
-      "All-in-one finance dashboard for sales, commissions, and vendor tracking.",
-    images: ["/logo.svg"],
+      "All-in-one admin and finance dashboard for tracking sales, commissions, vendor payments, and inventory.",
+    images: ["/logo.png"],
   },
 
   robots: {
@@ -66,12 +66,6 @@ export const metadata: Metadata = {
       "max-image-preview": "large",
       "max-snippet": -1,
     },
-  },
-
-  icons: {
-    icon: "/logo.ico",
-    shortcut: "/logo.ico",
-    apple: "/logo.svg",
   },
 };
 

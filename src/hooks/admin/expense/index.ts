@@ -1,272 +1,219 @@
+"use client";
 /* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { useCallback, useEffect, useState } from "react";
 import useApi from "@/hooks/use-api";
-import { IApiResponse, IExpense, IExpenseQuery, IExpenseResponse, IExpenseSummary, IPaginationMeta, IUpdateExpenseStatusPayload } from "./interface";
-
+import {
+  IApiResponse,
+  IExpense,
+  IExpenseQuery,
+  IExpenseResponse,
+  IExpenseSummary,
+  IPaginationMeta,
+  IUpdateExpenseStatusPayload,
+} from "./interface";
 
 export function useExpenseSummary() {
-    const [summary, setSummary] =
-        useState<IExpenseSummary | null>(null);
+  const [summary, setSummary] = useState<IExpenseSummary | null>(null);
 
-    const [loading, setLoading] =
-        useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(true);
 
-    const [error, setError] =
-        useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-    const fetchSummary = useCallback(async () => {
-        setLoading(true);
-        setError(null);
+  const fetchSummary = useCallback(async () => {
+    setLoading(true);
+    setError(null);
 
-        try {
-            const response =
-                await useApi.get<
-                    IApiResponse<IExpenseSummary>
-                >("/expense/meta");
+    try {
+      const response =
+        await useApi.get<IApiResponse<IExpenseSummary>>("/expense/meta");
 
-            setSummary(response?.data?.data || null);
-        } catch (err: any) {
-            const message =
-                err?.response?.data?.message ||
-                "Failed to fetch expense summary";
+      setSummary(response?.data?.data || null);
+    } catch (err: any) {
+      const message =
+        err?.response?.data?.message || "Failed to fetch expense summary";
 
-            setError(message);
-        } finally {
-            setLoading(false);
-            // setTimeout(() => {
-            //     setLoading(false);
-            // }, 400);
-        }
-    }, []);
+      setError(message);
+    } finally {
+      setLoading(false);
+      // setTimeout(() => {
+      //     setLoading(false);
+      // }, 400);
+    }
+  }, []);
 
-    useEffect(() => {
-        fetchSummary();
-    }, [fetchSummary]);
+  useEffect(() => {
+    fetchSummary();
+  }, [fetchSummary]);
 
-    return {
-        summary,
-        loading,
-        error,
-        refetch: fetchSummary,
-    };
+  return {
+    summary,
+    loading,
+    error,
+    refetch: fetchSummary,
+  };
 }
 
 export function useExpenses() {
-    const [expenses, setExpenses] = useState<
-        IExpense[]
-    >([]);
+  const [expenses, setExpenses] = useState<IExpense[]>([]);
 
-    const [meta, setMeta] =
-        useState<IPaginationMeta | null>(null);
+  const [meta, setMeta] = useState<IPaginationMeta | null>(null);
 
-    const [loading, setLoading] =
-        useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(true);
 
-    const [error, setError] =
-        useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-    const [query, setQuery] =
-        useState<IExpenseQuery>({
-            page: 1,
-            limit: 10,
-            searchTerm: "",
-            status: "",
-            category: "",
-            representative: "",
-        });
+  const [query, setQuery] = useState<IExpenseQuery>({
+    page: 1,
+    limit: 10,
+    searchTerm: "",
+    status: "",
+    category: "",
+    representative: "",
+  });
 
-    const fetchExpenses = useCallback(async () => {
-        setLoading(true);
-        setError(null);
+  const fetchExpenses = useCallback(async () => {
+    setLoading(true);
+    setError(null);
 
-        try {
-            const params = new URLSearchParams();
+    try {
+      const params = new URLSearchParams();
 
-            params.append(
-                "page",
-                String(query.page)
-            );
+      params.append("page", String(query.page));
 
-            params.append(
-                "limit",
-                String(query.limit)
-            );
+      params.append("limit", String(query.limit));
 
-            if (query.searchTerm) {
-                params.append(
-                    "searchTerm",
-                    query.searchTerm
-                );
-            }
+      if (query.searchTerm) {
+        params.append("searchTerm", query.searchTerm);
+      }
 
-            if (query.status) {
-                params.append(
-                    "status",
-                    query.status
-                );
-            }
+      if (query.status) {
+        params.append("status", query.status);
+      }
 
-            if (query.category) {
-                params.append(
-                    "category",
-                    query.category
-                );
-            }
+      if (query.category) {
+        params.append("category", query.category);
+      }
 
-            if (query.representative) {
-                params.append(
-                    "representative",
-                    query.representative
-                );
-            }
+      if (query.representative) {
+        params.append("representative", query.representative);
+      }
 
-            const response =
-                await useApi.get<
-                    IApiResponse<IExpenseResponse>
-                >(
-                    `/expense/get-all?${params.toString()}`
-                );
+      const response = await useApi.get<IApiResponse<IExpenseResponse>>(
+        `/expense/admin/get-all?${params.toString()}`,
+      );
 
-            setExpenses(
-                response?.data?.data?.results || []
-            );
+      setExpenses(response?.data?.data?.results || []);
 
-            setMeta(
-                response?.data?.data?.meta || null
-            );
-        } catch (err: any) {
-            const message =
-                err?.response?.data?.message ||
-                "Failed to fetch expenses";
+      setMeta(response?.data?.data?.meta || null);
+    } catch (err: any) {
+      const message =
+        err?.response?.data?.message || "Failed to fetch expenses";
 
-            setError(message);
-        } finally {
-            setTimeout(() => {
-                setLoading(false);
-            }, 400);
-        }
-    }, [query]);
+      setError(message);
+    } finally {
+      setLoading(false);
+    }
+  }, [query]);
 
-    useEffect(() => {
-        fetchExpenses();
-    }, [fetchExpenses]);
+  useEffect(() => {
+    fetchExpenses();
+  }, [fetchExpenses]);
 
-    return {
-        expenses,
-        meta,
+  return {
+    expenses,
+    meta,
 
-        loading,
-        error,
+    loading,
+    error,
 
-        query,
-        setQuery,
+    query,
+    setQuery,
 
-        refetch: fetchExpenses,
-    };
+    refetch: fetchExpenses,
+  };
 }
 
-export function useSingleExpense(
-    id?: string
-) {
-    const [expense, setExpense] =
-        useState<IExpense | null>(null);
+export function useSingleExpense(id?: string) {
+  const [expense, setExpense] = useState<IExpense | null>(null);
 
-    const [loading, setLoading] =
-        useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(true);
 
-    const [error, setError] =
-        useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-    const fetchExpense =
-        useCallback(async () => {
-            if (!id) return;
+  const fetchExpense = useCallback(async () => {
+    if (!id) return;
 
-            setLoading(true);
-            setError(null);
+    setLoading(true);
+    setError(null);
 
-            try {
-                const response =
-                    await useApi.get<
-                        IApiResponse<IExpense>
-                    >(`/expense/find/${id}`);
+    try {
+      const response = await useApi.get<IApiResponse<IExpense>>(
+        `/expense/find/${id}`,
+      );
 
-                setExpense(
-                    response?.data?.data || null
-                );
-            } catch (err: any) {
-                const message =
-                    err?.response?.data?.message ||
-                    "Failed to fetch expense";
+      setExpense(response?.data?.data || null);
+    } catch (err: any) {
+      const message = err?.response?.data?.message || "Failed to fetch expense";
 
-                setError(message);
-            } finally {
-                setTimeout(() => {
-                    setLoading(false);
-                }, 400);
-            }
-        }, [id]);
+      setError(message);
+    } finally {
+      setLoading(false);
+    }
+  }, [id]);
 
-    useEffect(() => {
-        fetchExpense();
-    }, [fetchExpense]);
+  useEffect(() => {
+    fetchExpense();
+  }, [fetchExpense]);
 
-    return {
-        expense,
-        loading,
-        error,
-        refetch: fetchExpense,
-    };
+  return {
+    expense,
+    loading,
+    error,
+    refetch: fetchExpense,
+  };
 }
-
 
 export function useUpdateExpenseStatus() {
-    const [loading, setLoading] =
-        useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
-    const [error, setError] =
-        useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-    const updateExpenseStatus =
-        async (
-            id: string,
-            status: "approved" | "rejected",
-            rejectionNote?: string
-        ) => {
-            setLoading(true);
-            setError(null);
+  const updateExpenseStatus = async (
+    id: string,
+    status: "approved" | "rejected",
+    rejectionNote?: string,
+  ) => {
+    setLoading(true);
+    setError(null);
 
-            try {
-                const payload: IUpdateExpenseStatusPayload =
-                {
-                    status,
-                    rejectionNote,
-                };
+    try {
+      const payload: IUpdateExpenseStatusPayload = {
+        status,
+        rejectionNote,
+      };
 
-                const response =
-                    await useApi.patch<
-                        IApiResponse<IExpense>
-                    >(
-                        `/expense/status-update/${id}`,
-                        payload
-                    );
+      const response = await useApi.patch<IApiResponse<IExpense>>(
+        `/expense/status-update/${id}`,
+        payload,
+      );
 
-                return response?.data;
-            } catch (err: any) {
-                const message =
-                    err?.response?.data?.message ||
-                    "Failed to update expense status";
+      return response?.data;
+    } catch (err: any) {
+      const message =
+        err?.response?.data?.message || "Failed to update expense status";
 
-                setError(message);
+      setError(message);
 
-                return null;
-            } finally {
-                setLoading(false);
-            }
-        };
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    return {
-        updateExpenseStatus,
-        loading,
-        error,
-    };
+  return {
+    updateExpenseStatus,
+    loading,
+    error,
+  };
 }

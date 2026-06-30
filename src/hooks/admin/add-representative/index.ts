@@ -71,9 +71,10 @@ export function useRepresentativeUsers() {
 
                 setError(message);
             } finally {
-                setTimeout(() => {
-                    setLoading(false);
-                }, 400);
+                setLoading(false);
+                //  setTimeout(() => {
+                //     setLoading(false);
+                // }, 400);
             }
         }, [query]);
 

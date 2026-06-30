@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { DataTable, StatusBadge } from '@/components/ui/DataTable';
-import { Search, Plus, Filter, Download } from 'lucide-react';
+import { Search, Download } from 'lucide-react';
 import Link from 'next/link';
 import { usePurchaseOrders, usePurchaseOrderSummary } from '@/hooks/admin/purchase-order';
 import { PurchaseOrderStatCard } from '@/components/stats-card';
@@ -11,6 +11,7 @@ import { PurchaseOrderStatCard } from '@/components/stats-card';
 export default function PurchaseOrdersPage() {
   const [activeTab, setActiveTab] = useState('All');
   const [search, setSearch] = useState('');
+  const isMounted = useRef(false);
 
   const { summary, loading: isLoading } = usePurchaseOrderSummary();
   const {
@@ -22,6 +23,10 @@ export default function PurchaseOrdersPage() {
 
   // DEBOUNCED SEARCH
   useEffect(() => {
+    if (!isMounted.current) {
+      isMounted.current = true;
+      return;
+    }
     const handler = setTimeout(() => {
       setQuery(prev => ({ ...prev, searchTerm: search, page: 1 }));
     }, 500);

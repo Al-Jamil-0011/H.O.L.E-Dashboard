@@ -35,7 +35,7 @@ export function useShipmentSummary() {
 
             setError(message);
         } finally {
-            setTimeout(() => setLoading(false), 300);
+            setLoading(false);
         }
     }, []);
 
@@ -115,7 +115,7 @@ export function useShipments() {
 
             setError(message);
         } finally {
-            setTimeout(() => setLoading(false), 300);
+            setLoading(false);
         }
     }, [query]);
 
@@ -165,7 +165,7 @@ export function useSingleShipment(id?: string) {
 
             setError(message);
         } finally {
-            setTimeout(() => setLoading(false), 300);
+            setLoading(false);
         }
     }, [id]);
 

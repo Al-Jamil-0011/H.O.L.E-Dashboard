@@ -13,49 +13,51 @@
   --color-primary: var(--primary);
 
   /* Fonts */
-  --font-sans: var(--font-poppins), ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-sans:
+    var(--font-poppins), ui-sans-serif, system-ui, sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 
   /* Other colors */
-  --color-accent-blue: #3B82F6;
-  --color-accent-green: #10B981;
-  --color-accent-orange: #F59E0B;
-  --color-accent-red: #EF4444;
-  --color-accent-purple: #8B5CF6;
+  --color-accent-blue: #3b82f6;
+  --color-accent-green: #10b981;
+  --color-accent-orange: #f59e0b;
+  --color-accent-red: #ef4444;
+  --color-accent-purple: #8b5cf6;
 }
 
 :root {
-  --background: #F8FAFC;
-  --foreground: #0F172A;
-  --card: #FFFFFF;
-  --card-foreground: #0F172A;
-  --border: #E2E8F0;
-  --muted: #F1F5F9;
-  --muted-foreground: #64748B;
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+  --border: #e2e8f0;
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
   --primary: #309488;
 }
 
 .dark {
-  --background: #0B101E;
-  --foreground: #F8FAFC;
-  --card: #151B2B;
-  --card-foreground: #F8FAFC;
-  --border: #1E293B;
-  --muted: #1E293B;
-  --muted-foreground: #94A3B8;
-  --primary: #00E5FF;
+  --background: #0b101e;
+  --foreground: #f8fafc;
+  --card: #151b2b;
+  --card-foreground: #f8fafc;
+  --border: #1e293b;
+  --muted: #1e293b;
+  --muted-foreground: #94a3b8;
+  --primary: #00e5ff;
 }
 
 /* Fallback for system preference if no class is set */
 @media (prefers-color-scheme: dark) {
   :root:not(.light) {
-    --background: #0B101E;
-    --foreground: #F8FAFC;
-    --card: #151B2B;
-    --card-foreground: #F8FAFC;
-    --border: #1E293B;
-    --muted: #1E293B;
-    --muted-foreground: #94A3B8;
-    --primary: #00E5FF;
+    --background: #0b101e;
+    --foreground: #f8fafc;
+    --card: #151b2b;
+    --card-foreground: #f8fafc;
+    --border: #1e293b;
+    --muted: #1e293b;
+    --muted-foreground: #94a3b8;
+    --primary: #00e5ff;
   }
 }
 
@@ -69,7 +71,7 @@
   }
 }
 
-select>option {
+select > option {
   cursor: pointer !important;
 }
 
@@ -108,16 +110,15 @@ select>option {
   border-color: var(--border);
 }
 
-
 .custom-pagination .active .page-link {
   background: var(--primary) !important;
-  color: #FFFFFF !important;
+  color: #ffffff !important;
   box-shadow: 0 0 10px rgba(0, 229, 255, 0.3);
   border-color: var(--primary);
 }
 
 .dark .custom-pagination .active .page-link {
-  color: #0B101E !important;
+  color: #0b101e !important;
 }
 
 .custom-pagination .disabled .page-link {

@@ -1,8 +1,12 @@
 "use client";
 
 import { useEffect } from "react";
-import { X, } from "lucide-react";
-import { useCreateSurgery, useSingleSurgery, useUpdateSurgery } from "@/hooks/admin/surgeries";
+import { X } from "lucide-react";
+import {
+  useCreateSurgery,
+  useSingleSurgery,
+  useUpdateSurgery,
+} from "@/hooks/admin/surgeries";
 import { useForm, FormProvider } from "react-hook-form";
 import FormField from "@/components/form";
 import Loader from "@/components/loader";
@@ -16,7 +20,12 @@ interface AddSurgeryModalProps {
   refetch?: () => void;
 }
 
-export function AddSurgeryModal({ isOpen, onClose, initialData, refetch }: AddSurgeryModalProps) {
+export function AddSurgeryModal({
+  isOpen,
+  onClose,
+  initialData,
+  refetch,
+}: AddSurgeryModalProps) {
   const isEdit = !!initialData;
   const { createSurgery, loading: isCreating } = useCreateSurgery();
   const { updateSurgery, loading: isUpdating } = useUpdateSurgery();
@@ -37,10 +46,20 @@ export function AddSurgeryModal({ isOpen, onClose, initialData, refetch }: AddSu
       if (initialData) {
         // Map initial data to form
         reset({
-          physician: typeof initialData.info?.physician === 'object' ? initialData.info.physician._id : initialData.info?.physician,
+          physician:
+            typeof initialData.info?.physician === "object"
+              ? initialData.info.physician._id
+              : initialData.info?.physician,
           patientId: initialData.info?.patientId,
-          facility: typeof initialData.info?.facility === 'object' ? initialData.info.facility._id : initialData.info?.facility,
-          dateOfSurgery: initialData.info?.dateOfSurgery ? new Date(initialData.info.dateOfSurgery).toISOString().split('T')[0] : "",
+          facility:
+            typeof initialData.info?.facility === "object"
+              ? initialData.info.facility._id
+              : initialData.info?.facility,
+          dateOfSurgery: initialData.info?.dateOfSurgery
+            ? new Date(initialData.info.dateOfSurgery)
+                .toISOString()
+                .split("T")[0]
+            : "",
           surgeryType: initialData.info?.surgeryType,
           screws: initialData.surgeryMaterial?.screws,
           plates: initialData.surgeryMaterial?.plates,
@@ -66,10 +85,10 @@ export function AddSurgeryModal({ isOpen, onClose, initialData, refetch }: AddSu
       appost: data.appost?.[0] || null,
       lateralpre: data.lateralpre?.[0] || null,
       lateralpost: data.lateralpost?.[0] || null,
-      notes: data.notes ? Array.from(data.notes as FileList) : []
+      notes: data.notes ? Array.from(data.notes as FileList) : [],
     };
 
-    console.log("payload", payload)
+    console.log("payload", payload);
 
     try {
       if (isEdit) {
@@ -78,7 +97,9 @@ export function AddSurgeryModal({ isOpen, onClose, initialData, refetch }: AddSu
           onClose();
           if (refetch) refetch();
           if (refetchSingle) refetchSingle();
-          customToast.success(result?.message || "Surgery updated successfully");
+          customToast.success(
+            result?.message || "Surgery updated successfully",
+          );
         } else {
           customToast.error(result?.message || "Failed to update surgery");
         }
@@ -87,7 +108,9 @@ export function AddSurgeryModal({ isOpen, onClose, initialData, refetch }: AddSu
         if (result?.statusCode === 201) {
           onClose();
           if (refetch) refetch();
-          customToast.success(result?.message || "Surgery created successfully");
+          customToast.success(
+            result?.message || "Surgery created successfully",
+          );
         } else {
           customToast.error(result?.message || "Failed to create surgery");
         }
@@ -107,13 +130,18 @@ export function AddSurgeryModal({ isOpen, onClose, initialData, refetch }: AddSu
 
   return (
     <>
-      <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm transition-opacity" onClick={onClose} />
+      <div
+        className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm transition-opacity"
+        onClick={onClose}
+      />
       <div className="fixed inset-y-0 right-0 z-[60] w-full max-w-md bg-white dark:bg-[#0B101E] border-l border-gray-200 dark:border-[#1E293B] dark:shadow-2xl flex flex-col animate-in slide-in-from-right duration-300">
-
         {/* HEADER */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-[#1E293B]">
+        <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-200 dark:border-[#1E293B]">
           <h2 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
-            <button onClick={onClose} className="p-1 rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-[#1E293B] cursor-pointer">
+            <button
+              onClick={onClose}
+              className="p-1 rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-[#1E293B] cursor-pointer"
+            >
               <X className="h-5 w-5" />
             </button>
             {isEdit ? "Update Surgery" : "Add Surgery"}
@@ -122,12 +150,16 @@ export function AddSurgeryModal({ isOpen, onClose, initialData, refetch }: AddSu
 
         {/* BODY */}
         <FormProvider {...methods}>
-          <form onSubmit={handleSubmit(onSubmit)} className="flex-1 overflow-y-auto flex flex-col">
-            <div className="flex-1 p-6 space-y-8 scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-[#1E293B]">
-
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="flex-1 overflow-y-auto flex flex-col"
+          >
+            <div className="flex-1 p-4 sm:p-6 space-y-8 scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-[#1E293B]">
               {/* Surgery Info */}
               <section className="space-y-4">
-                <h3 className="text-xs font-bold text-gray-600 dark:text-gray-500 uppercase tracking-widest">Surgery Info</h3>
+                <h3 className="text-xs font-bold text-gray-600 dark:text-gray-500 uppercase tracking-widest">
+                  Surgery Info
+                </h3>
                 <div className="space-y-4">
                   <FormField
                     name="physician"
@@ -179,7 +211,9 @@ export function AddSurgeryModal({ isOpen, onClose, initialData, refetch }: AddSu
 
               {/* Surgery Materials */}
               <section className="space-y-4">
-                <h3 className="text-xs font-bold text-gray-600 dark:text-gray-500 uppercase tracking-widest">Surgery Materials</h3>
+                <h3 className="text-xs font-bold text-gray-600 dark:text-gray-500 uppercase tracking-widest">
+                  Surgery Materials
+                </h3>
                 <div className="space-y-4">
                   <FormField
                     name="screws"
@@ -226,21 +260,55 @@ export function AddSurgeryModal({ isOpen, onClose, initialData, refetch }: AddSu
 
               {/* Radiology & Clinical Images */}
               <section className="space-y-4">
-                <h3 className="text-xs font-bold text-gray-600 dark:text-gray-500 uppercase tracking-widest">Radiology & Clinical Images</h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <FormField name="appre" label="AP PRE" type="file" register={register} errors={errors} />
-                  <FormField name="appost" label="AP POST" type="file" register={register} errors={errors} />
-                  <FormField name="lateralpre" label="LATERAL PRE" type="file" register={register} errors={errors} />
-                  <FormField name="lateralpost" label="LATERAL POST" type="file" register={register} errors={errors} />
-                  <div className="col-span-2">
-                    <FormField name="sticker" label="PATIENT STICKER" type="file" register={register} errors={errors} />
+                <h3 className="text-xs font-bold text-gray-600 dark:text-gray-500 uppercase tracking-widest">
+                  Radiology & Clinical Images
+                </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <FormField
+                    name="appre"
+                    label="AP PRE"
+                    type="file"
+                    register={register}
+                    errors={errors}
+                  />
+                  <FormField
+                    name="appost"
+                    label="AP POST"
+                    type="file"
+                    register={register}
+                    errors={errors}
+                  />
+                  <FormField
+                    name="lateralpre"
+                    label="LATERAL PRE"
+                    type="file"
+                    register={register}
+                    errors={errors}
+                  />
+                  <FormField
+                    name="lateralpost"
+                    label="LATERAL POST"
+                    type="file"
+                    register={register}
+                    errors={errors}
+                  />
+                  <div className="sm:col-span-2">
+                    <FormField
+                      name="sticker"
+                      label="PATIENT STICKER"
+                      type="file"
+                      register={register}
+                      errors={errors}
+                    />
                   </div>
                 </div>
               </section>
 
               {/* Documents & Notes */}
               <section className="space-y-4">
-                <h3 className="text-xs font-bold text-gray-600 dark:text-gray-500 uppercase tracking-widest">Documents & Notes</h3>
+                <h3 className="text-xs font-bold text-gray-600 dark:text-gray-500 uppercase tracking-widest">
+                  Documents & Notes
+                </h3>
                 <div className="space-y-4">
                   <FormField
                     name="notes"
@@ -261,24 +329,25 @@ export function AddSurgeryModal({ isOpen, onClose, initialData, refetch }: AddSu
                   />
                 </div>
               </section>
-
             </div>
 
             {/* FOOTER */}
-            <div className="p-6 border-t border-gray-200 dark:border-[#1E293B] bg-gray-50 dark:bg-[#0B101E] space-y-3 mt-auto">
+            <div className="p-4 sm:p-6 border-t border-gray-200 dark:border-[#1E293B] bg-gray-50 dark:bg-[#0B101E] space-y-3 mt-auto">
               <button
                 disabled={isCreating || isUpdating}
                 type="submit"
                 className="w-full py-3 text-sm font-medium text-white dark:text-[#0B101E] bg-[#309488] dark:bg-[#00E5FF] rounded-xl hover:bg-[#277a70] dark:hover:bg-cyan-400 transition-colors dark:shadow-[0_0_15px_rgba(48,148,136,0.3)] dark:shadow-[0_0_15px_rgba(0,229,255,0.3)] flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
               >
-                {(isCreating || isUpdating) ?
+                {isCreating || isUpdating ? (
                   <div className="flex items-center gap-2">
                     <Loader color="currentColor" size={16} />
                     <span>Loading...</span>
                   </div>
-                  :
-                  (isEdit ? "Update Surgery" : "Save Surgery")
-                }
+                ) : isEdit ? (
+                  "Update Surgery"
+                ) : (
+                  "Save Surgery"
+                )}
               </button>
               <button
                 type="button"
@@ -291,7 +360,6 @@ export function AddSurgeryModal({ isOpen, onClose, initialData, refetch }: AddSu
             </div>
           </form>
         </FormProvider>
-
       </div>
     </>
   );

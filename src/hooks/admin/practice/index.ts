@@ -73,9 +73,7 @@ export function usePractices() {
 
                 setError(message);
             } finally {
-                setTimeout(() => {
-                    setLoading(false);
-                }, 400);
+                setLoading(false);
             }
         }, [query]);
 
@@ -132,9 +130,7 @@ export function useSinglePractice(
 
                 setError(message);
             } finally {
-                setTimeout(() => {
-                    setLoading(false);
-                }, 400);
+                setLoading(false);
             }
         }, [id]);
 

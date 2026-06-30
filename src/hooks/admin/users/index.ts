@@ -9,7 +9,7 @@ import {
   UserStatus,
   IChangeStatusPayload,
   IUserSummary,
-  IGetMyProfile,
+  IUserProfile,
 } from "./interface";
 
 export function useUsers() {
@@ -185,8 +185,9 @@ export function useMyProfile() {
     setError(null);
 
     try {
-      const response =
-        await useApi.get<IApiResponse<IGetMyProfile>>(`/user/get-my-profile`);
+      const response = await useApi.get<IApiResponse<IUserProfile>>(
+        "/user/get-my-profile",
+      );
 
       setProfile(response?.data?.data?.user || null);
     } catch (err: any) {
@@ -214,6 +215,7 @@ export function useMyProfile() {
     refetch: fetchProfile,
   };
 }
+// hellow
 
 export function useUpdateProfile() {
   const [loading, setLoading] = useState<boolean>(false);

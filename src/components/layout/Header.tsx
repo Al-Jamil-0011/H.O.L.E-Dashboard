@@ -1,21 +1,30 @@
 "use client";
 
-import { Bell, Search, User, Menu, LogOut, FileText, BarChart4, UserCircle, Percent } from 'lucide-react';
-import { useState, useRef, useEffect } from 'react';
-import { ThemeSwitcher } from '@/components/ui/ThemeSwitcher';
-import Link from 'next/link';
-import { useAuthService } from '@/hooks/auth';
+import {
+  Bell,
+  Search,
+  User,
+  Menu,
+  LogOut,
+  FileText,
+  BarChart4,
+  UserCircle,
+  Percent,
+} from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { ThemeSwitcher } from "@/components/ui/ThemeSwitcher";
+import Link from "next/link";
+import { useAuthService } from "@/hooks/auth";
 import Cookies from "js-cookie";
 import jwt from "jsonwebtoken";
-import { useNotificationService } from '@/hooks/notifications';
-import { useMyProfile } from '@/hooks/admin/users';
-import dayjs from 'dayjs';
+import { useNotificationService } from "@/hooks/notifications";
+import { useMyProfile } from "@/hooks/admin/users";
+import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import Image from "next/image";
-import { customToast } from '@/lib/utils';
+import { customToast } from "@/lib/utils";
 
 dayjs.extend(relativeTime);
-
 
 interface HeaderProps {
   onMenuClick: () => void;
@@ -23,10 +32,10 @@ interface HeaderProps {
 
 export function Header({ onMenuClick }: HeaderProps) {
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
-  const [isNotificationDropdownOpen, setIsNotificationDropdownOpen] = useState(false);
+  const [isNotificationDropdownOpen, setIsNotificationDropdownOpen] =
+    useState(false);
   const userDropdownRef = useRef<HTMLDivElement>(null);
   const notificationDropdownRef = useRef<HTMLDivElement>(null);
-
 
   const { logoutUser } = useAuthService();
   const token = Cookies.get("token");
@@ -36,31 +45,40 @@ export function Header({ onMenuClick }: HeaderProps) {
   const { profile, loading: profileLoading } = useMyProfile();
 
   const handleLogout = async () => {
-    await logoutUser()
+    await logoutUser();
     customToast.success("Logout Successfully");
   };
 
-  const { notifications, unreadCount, fetchAllNotifications, fetchUnreadCount } = useNotificationService();
+  const {
+    notifications,
+    unreadCount,
+    fetchAllNotifications,
+    fetchUnreadCount,
+  } = useNotificationService();
 
   useEffect(() => {
     fetchUnreadCount();
     fetchAllNotifications(1, 5);
   }, [fetchUnreadCount, fetchAllNotifications]);
 
-
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (userDropdownRef.current && !userDropdownRef.current.contains(event.target as Node)) {
+      if (
+        userDropdownRef.current &&
+        !userDropdownRef.current.contains(event.target as Node)
+      ) {
         setIsUserDropdownOpen(false);
       }
-      if (notificationDropdownRef.current && !notificationDropdownRef.current.contains(event.target as Node)) {
+      if (
+        notificationDropdownRef.current &&
+        !notificationDropdownRef.current.contains(event.target as Node)
+      ) {
         setIsNotificationDropdownOpen(false);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
 
   return (
     <header className="sticky top-0 z-30 flex h-16 w-full items-center justify-between border-b border-border bg-background px-4 transition-all duration-300">
@@ -94,7 +112,9 @@ export function Header({ onMenuClick }: HeaderProps) {
 
         <div className="relative" ref={notificationDropdownRef}>
           <button
-            onClick={() => setIsNotificationDropdownOpen(!isNotificationDropdownOpen)}
+            onClick={() =>
+              setIsNotificationDropdownOpen(!isNotificationDropdownOpen)
+            }
             className="relative rounded-full p-2 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors cursor-pointer"
           >
             <Bell className="h-[18px] w-[18px]" />
@@ -105,9 +125,11 @@ export function Header({ onMenuClick }: HeaderProps) {
 
           {/* Notification Dropdown */}
           {isNotificationDropdownOpen && (
-            <div className="absolute right-0 top-full mt-2 w-80 md:w-96 rounded-2xl border border-border bg-card shadow-2xl z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            <div className="absolute -right-14 md:right-0 top-full mt-2 w-80 md:w-96 rounded-2xl border border-border bg-card shadow-2xl z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
               <div className="p-4 border-b border-border bg-muted/30 flex items-center justify-between">
-                <h3 className="text-sm font-bold text-foreground">Notifications</h3>
+                <h3 className="text-sm font-bold text-foreground">
+                  Notifications
+                </h3>
                 {unreadCount > 0 && (
                   <span className="text-[10px] font-bold bg-primary/10 text-primary px-2 py-0.5 rounded-full border border-primary/20">
                     {unreadCount} NEW
@@ -118,7 +140,10 @@ export function Header({ onMenuClick }: HeaderProps) {
               <div className="max-h-[400px] overflow-y-auto">
                 {notifications?.length > 0 ? (
                   notifications.slice(0, 5).map((notif: any) => (
-                    <div key={notif._id} className="p-4 border-b border-border last:border-0 hover:bg-muted/50 transition-colors cursor-pointer group">
+                    <div
+                      key={notif._id}
+                      className="p-4 border-b border-border last:border-0 hover:bg-muted/50 transition-colors cursor-pointer group"
+                    >
                       <div className="flex gap-3">
                         <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center shrink-0 border border-primary/20">
                           <Bell className="h-4 w-4 text-primary" />
@@ -142,7 +167,9 @@ export function Header({ onMenuClick }: HeaderProps) {
                     <div className="h-12 w-12 rounded-full bg-muted flex items-center justify-center mx-auto mb-3">
                       <Bell className="h-6 w-6 text-muted-foreground/30" />
                     </div>
-                    <p className="text-sm font-medium text-muted-foreground">No new notifications</p>
+                    <p className="text-sm font-medium text-muted-foreground">
+                      No new notifications
+                    </p>
                   </div>
                 )}
               </div>
@@ -173,13 +200,21 @@ export function Header({ onMenuClick }: HeaderProps) {
                 />
               ) : (
                 <div className="flex h-full w-full items-center justify-center bg-primary/10 text-primary uppercase font-bold text-xs">
-                  {profile?.fullName ? profile.fullName.charAt(0) : <User className="h-4 w-4" />}
+                  {profile?.fullName ? (
+                    profile.fullName.charAt(0)
+                  ) : (
+                    <User className="h-4 w-4" />
+                  )}
                 </div>
               )}
             </div>
             <div className="hidden md:block">
               <p className="text-xs font-bold text-foreground leading-tight">
-                {profileLoading ? "Loading..." : profile?.fullName ? profile?.fullName.slice(0, 10) + "..." : "User"}
+                {profileLoading
+                  ? "Loading..."
+                  : profile?.fullName
+                    ? profile?.fullName.slice(0, 10) + "..."
+                    : "User"}
               </p>
             </div>
           </div>
@@ -188,44 +223,73 @@ export function Header({ onMenuClick }: HeaderProps) {
           {isUserDropdownOpen && (
             <div className="absolute right-0 top-full mt-2 w-64 rounded-xl border border-border bg-card p-2 shadow-lg z-50">
               <div className="mb-2 border-b border-border p-2">
-                <p className="text-sm font-semibold text-foreground">{profile?.fullName ? profile?.fullName.slice(0, 10) : "User"}</p>
-                <p className="text-xs text-muted-foreground">{profile?.email || "email@example.com"}</p>
+                <p className="text-sm font-semibold text-foreground">
+                  {profile?.fullName ? profile?.fullName.slice(0, 10) : "User"}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  {profile?.email || "email@example.com"}
+                </p>
               </div>
 
-              <div className="flex flex-col gap-1" onClick={() => setIsUserDropdownOpen(false)}>
-                <Link href={`/${profile?.role}/settings/view-profile`} className="flex items-center gap-2 rounded-md px-2 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors">
+              <div
+                className="flex flex-col gap-1"
+                onClick={() => setIsUserDropdownOpen(false)}
+              >
+                <Link
+                  href={`/${profile?.role}/settings/view-profile`}
+                  className="flex items-center gap-2 rounded-md px-2 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                >
                   <UserCircle className="h-4 w-4" /> View Profile
                 </Link>
-                {
-                  profile?.role !== 'admin' ? (
-                    <>
-                      <Link href={`/${profile?.role}/dashboard/sales`} className="flex items-center gap-2 rounded-md px-2 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors">
-                        <BarChart4 className="h-4 w-4" /> Sales
-                      </Link>
-                      <Link href={`/${profile?.role}/dashboard/invoices`} className="flex items-center gap-2 rounded-md px-2 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors">
-                        <FileText className="h-4 w-4" /> Invoice
-                      </Link>
-                    </>
-                  ) : (
-                    <>
-                      <Link href={`/${profile?.role}/dashboard/users`} className="flex items-center gap-2 rounded-md px-2 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors">
-                        <User className="h-4 w-4" /> Users
-                      </Link>
-                      <Link href={`/${profile?.role}/dashboard/sales`} className="flex items-center gap-2 rounded-md px-2 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors">
-                        <BarChart4 className="h-4 w-4" /> Sales
-                      </Link>
-                      <Link href={`/${profile?.role}/dashboard/commissions`} className="flex items-center gap-2 rounded-md px-2 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors">
-                        <Percent className="h-4 w-4" /> Commissions
-                      </Link>
-                    </>
-                  )
-                }
+                {profile?.role !== "admin" ? (
+                  <>
+                    <Link
+                      href={`/${profile?.role}/dashboard/sales`}
+                      className="flex items-center gap-2 rounded-md px-2 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                    >
+                      <BarChart4 className="h-4 w-4" /> Sales
+                    </Link>
+                    <Link
+                      href={`/${profile?.role}/dashboard/invoices`}
+                      className="flex items-center gap-2 rounded-md px-2 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                    >
+                      <FileText className="h-4 w-4" /> Invoice
+                    </Link>
+                  </>
+                ) : (
+                  <>
+                    <Link
+                      href={`/${profile?.role}/dashboard/users`}
+                      className="flex items-center gap-2 rounded-md px-2 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                    >
+                      <User className="h-4 w-4" /> Users
+                    </Link>
+                    <Link
+                      href={`/${profile?.role}/dashboard/sales`}
+                      className="flex items-center gap-2 rounded-md px-2 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                    >
+                      <BarChart4 className="h-4 w-4" /> Sales
+                    </Link>
+                    <Link
+                      href={`/${profile?.role}/dashboard/commissions`}
+                      className="flex items-center gap-2 rounded-md px-2 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                    >
+                      <Percent className="h-4 w-4" /> Commissions
+                    </Link>
+                  </>
+                )}
 
-                <Link href={`/${profile?.role}/dashboard/notifications`} className="flex items-center gap-2 rounded-md px-2 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors">
+                <Link
+                  href={`/${profile?.role}/dashboard/notifications`}
+                  className="flex items-center gap-2 rounded-md px-2 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                >
                   <Bell className="h-4 w-4" /> Notifications
                 </Link>
                 <div className="my-1 border-t border-border"></div>
-                <button onClick={handleLogout} className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm text-rose-500 hover:bg-rose-500/10 transition-colors cursor-pointer">
+                <button
+                  onClick={handleLogout}
+                  className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm text-rose-500 hover:bg-rose-500/10 transition-colors cursor-pointer"
+                >
                   <LogOut className="h-4 w-4" /> Logout
                 </button>
               </div>

@@ -1,25 +1,36 @@
 "use client";
 
-import { useState, useEffect } from 'react';
-import { DataTable, StatusBadge } from '@/components/ui/DataTable';
-import { Search, CheckCircle2 } from 'lucide-react';
-import { useCommissions, useCommissionSummary, useMarkCommissionPaid } from '@/hooks/admin/commissions';
-import Link from 'next/link';
-import { CommissionStatCard } from '@/components/stats-card';
-import { customToast } from '@/lib/utils';
+import { useState, useEffect } from "react";
+import { DataTable, StatusBadge } from "@/components/ui/DataTable";
+import { Search, CheckCircle2 } from "lucide-react";
+import {
+  useCommissions,
+  useCommissionSummary,
+  useMarkCommissionPaid,
+} from "@/hooks/admin/commissions";
+import Link from "next/link";
+import { CommissionStatCard } from "@/components/stats-card";
+import { customToast } from "@/lib/utils";
 
 export default function CommissionsPage() {
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [showPaidModal, setShowPaidModal] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const { summary, loading: isLoading } = useCommissionSummary();
-  const { commissions, loading: commissionLoading, setQuery, refetch, meta } = useCommissions();
-  const { markCommissionPaid, loading: isMarkingPaid } = useMarkCommissionPaid();
+  const {
+    commissions,
+    loading: commissionLoading,
+    setQuery,
+    refetch,
+    meta,
+  } = useCommissions();
+  const { markCommissionPaid, loading: isMarkingPaid } =
+    useMarkCommissionPaid();
 
   useEffect(() => {
     const handler = setTimeout(() => {
-      setQuery(prev => ({ ...prev, searchTerm: searchQuery, page: 1 }));
+      setQuery((prev) => ({ ...prev, searchTerm: searchQuery, page: 1 }));
     }, 500);
     return () => clearTimeout(handler);
   }, [searchQuery, setQuery]);
@@ -33,12 +44,12 @@ export default function CommissionsPage() {
     if (!selectedId) return;
     const res = await markCommissionPaid(selectedId);
     if (res?.success) {
-      customToast.success('Commission marked as paid');
+      customToast.success("Commission marked as paid");
       setShowPaidModal(false);
       setSelectedId(null);
       refetch();
     } else {
-      customToast.error('Failed to update status');
+      customToast.error("Failed to update status");
     }
   };
 
@@ -47,42 +58,61 @@ export default function CommissionsPage() {
       header: "REP NAME",
       render: (item: any) => {
         const primaryRep = item.sale?.createdBy;
-        return <span className="font-medium text-foreground">{primaryRep?.fullName || 'N/A'}</span>;
-      }
+        return (
+          <span className="font-medium text-foreground">
+            {primaryRep?.fullName || "N/A"}
+          </span>
+        );
+      },
     },
     {
       header: "TOTAL SALES",
-      render: (item: any) => <span>${item.sale?.billing?.totalAmount?.toLocaleString() || '0'}</span>
+      render: (item: any) => (
+        <span>${item.sale?.billing?.totalAmount?.toLocaleString() || "0"}</span>
+      ),
     },
     {
       header: "RATE",
-      render: (item: any) => <span>{item.sale?.representatives?.users?.[0]?.commissionRate || 0}%</span>
+      render: (item: any) => (
+        <span>
+          {item.sale?.representatives?.users?.[0]?.commissionRate || 0}%
+        </span>
+      ),
     },
     {
       header: "COMMISSION AMT",
-      render: (item: any) => <span className="text-emerald-400 font-bold">${item.sale?.representatives?.users?.[0]?.commission?.toLocaleString() || '0'}</span>
+      render: (item: any) => (
+        <span className="text-emerald-400 font-bold">
+          $
+          {item.sale?.representatives?.users?.[0]?.commission?.toLocaleString() ||
+            "0"}
+        </span>
+      ),
     },
     {
       header: "PAID",
       render: (item: any) => (
         <span className="text-primary font-medium">
-          ${item.status === 'paid' ? item.sale?.representatives?.users?.[0]?.commission?.toLocaleString() : '0'}
+          $
+          {item.status === "paid"
+            ? item.sale?.representatives?.users?.[0]?.commission?.toLocaleString()
+            : "0"}
         </span>
-      )
+      ),
     },
     {
       header: "STATUS",
       render: (item: any) => {
-        const status = item.status === 'paid' ? 'PAID' : 'PENDING';
-        const type = status === 'PAID' ? 'success' : 'warning';
+        const status = item.status === "paid" ? "PAID" : "PENDING";
+        const type = status === "PAID" ? "success" : "warning";
         return <StatusBadge status={status} type={type} />;
-      }
+      },
     },
     {
       header: "ACTIONS",
       render: (item: any) => (
         <div className="flex items-center gap-2">
-          {item.status === 'unpaid' && (
+          {item.status === "unpaid" && (
             <button
               onClick={() => handleMarkAsPaid(item._id)}
               disabled={isMarkingPaid && selectedId === item._id}
@@ -95,23 +125,20 @@ export default function CommissionsPage() {
             </button>
           )}
           <Link href={`/finance/dashboard/commissions/${item._id}`}>
-            <button
-              className="px-3 py-1.5 text-[10px] font-medium text-primary bg-primary/10 border border-primary/20 rounded-md hover:bg-primary/20 transition-colors cursor-pointer">
+            <button className="px-3 py-1.5 text-[10px] font-medium text-primary bg-primary/10 border border-primary/20 rounded-md hover:bg-primary/20 transition-colors cursor-pointer">
               Details
             </button>
           </Link>
         </div>
-      )
-    }
+      ),
+    },
   ];
 
   return (
     <div className="space-y-6 animate-in fade-in zoom-in duration-500 pb-8">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="title mb-1">
-            Commission Management
-          </h1>
+          <h1 className="title mb-1">Commission Management</h1>
           <p className="text-[11px] text-muted-foreground font-medium ">
             Rep commission tracking and approvals
           </p>
@@ -126,14 +153,22 @@ export default function CommissionsPage() {
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <CommissionStatCard
           title="TOTAL COMMISSION"
-          value={summary?.totalCommission?.amount ? `$${summary.totalCommission.amount.toLocaleString()}` : '$0.00'}
+          value={
+            summary?.totalCommission?.amount
+              ? `$${summary.totalCommission.amount.toLocaleString()}`
+              : "$0.00"
+          }
           trend="All reps YTD"
           topBorderColor="border-t-[#00E5FF]"
           loading={isLoading}
         />
         <CommissionStatCard
           title="PAID OUT"
-          value={summary?.paidOut?.amount ? `$${summary.paidOut.amount.toLocaleString()}` : '$0.00'}
+          value={
+            summary?.paidOut?.amount
+              ? `$${summary.paidOut.amount.toLocaleString()}`
+              : "$0.00"
+          }
           trend={`${summary?.paidOut?.repsPaid || 0} reps paid`}
           trendColor="text-emerald-500"
           topBorderColor="border-t-emerald-500"
@@ -141,7 +176,11 @@ export default function CommissionsPage() {
         />
         <CommissionStatCard
           title="PENDING APPROVAL"
-          value={summary?.pendingApproval?.amount ? `$${summary.pendingApproval.amount.toLocaleString()}` : '$0.00'}
+          value={
+            summary?.pendingApproval?.amount
+              ? `$${summary.pendingApproval.amount.toLocaleString()}`
+              : "$0.00"
+          }
           trend={`${summary?.pendingApproval?.count || 0} pending`}
           trendColor="text-amber-500"
           topBorderColor="border-t-amber-500"
@@ -149,7 +188,11 @@ export default function CommissionsPage() {
         />
         <CommissionStatCard
           title="Paid Commission"
-          value={summary?.paidCommission?.amount ? `$${summary.paidCommission.amount.toLocaleString()}` : '$0.00'}
+          value={
+            summary?.paidCommission?.amount
+              ? `$${summary.paidCommission.amount.toLocaleString()}`
+              : "$0.00"
+          }
           trend={`${summary?.paidCommission?.count || 0} this month`}
           trendColor="text-violet-500"
           topBorderColor="border-t-violet-500"
@@ -173,28 +216,37 @@ export default function CommissionsPage() {
         </div>
         <DataTable
           data={commissions}
-          className='border-none rounded-none'
+          className="border-none rounded-none"
           columns={columns}
           loading={commissionLoading}
-          onRowClick={() => { }}
-          pagination={meta ? {
-            currentPage: meta.currentPage,
-            totalPage: meta.totalPage,
-            totalResult: meta.totalResult,
-            onPageChange: (page) => setQuery(prev => ({ ...prev, page }))
-          } : undefined}
+          onRowClick={() => {}}
+          pagination={
+            meta
+              ? {
+                  currentPage: meta.currentPage,
+                  totalPage: meta.totalPage,
+                  totalResult: meta.totalResult,
+                  onPageChange: (page) =>
+                    setQuery((prev) => ({ ...prev, page })),
+                }
+              : undefined
+          }
         />
         {/* CONFIRM PAID MODAL */}
         {showPaidModal && (
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
             <div className="bg-card border border-border rounded-2xl w-full max-w-md overflow-hidden animate-in zoom-in duration-300 shadow-xl dark:shadow-2xl">
-              <div className="p-8 text-center">
+              <div className="p-6 sm:p-8 text-center">
                 <div className="h-16 w-16 rounded-full bg-emerald-500/10 flex items-center justify-center mx-auto mb-4 border border-emerald-500/20 shadow-sm dark:shadow-[0_0_20px_rgba(16,185,129,0.1)]">
                   <CheckCircle2 className="h-8 w-8 text-emerald-500" />
                 </div>
-                <h3 className="text-lg font-bold text-foreground mb-2">Confirm Payout</h3>
+                <h3 className="text-lg font-bold text-foreground mb-2">
+                  Confirm Payout
+                </h3>
                 <p className="text-sm text-muted-foreground mb-6 font-medium">
-                  Are you sure you want to mark this commission as paid? This action will update the representative&apos;s balance and finalize the transaction record.
+                  Are you sure you want to mark this commission as paid? This
+                  action will update the representative&apos;s balance and
+                  finalize the transaction record.
                 </p>
                 <div className="flex gap-3 mt-8">
                   <button
@@ -210,7 +262,9 @@ export default function CommissionsPage() {
                   >
                     {isMarkingPaid ? (
                       <div className="h-4 w-4 border-2 border-white dark:border-black border-t-transparent rounded-full animate-spin" />
-                    ) : <CheckCircle2 className="h-4 w-4" />}
+                    ) : (
+                      <CheckCircle2 className="h-4 w-4" />
+                    )}
                     Confirm Payment
                   </button>
                 </div>

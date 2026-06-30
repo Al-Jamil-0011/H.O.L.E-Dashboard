@@ -42,9 +42,7 @@ export function useShippingCostSummary() {
 
                 setError(message);
             } finally {
-                setTimeout(() => {
-                    setLoading(false);
-                }, 300);
+                setLoading(false);
             }
         }, []);
 
@@ -141,9 +139,7 @@ export function useShippingCosts() {
 
                 setError(message);
             } finally {
-                setTimeout(() => {
-                    setLoading(false);
-                }, 300);
+                setLoading(false);
             }
         }, [query]);
 
