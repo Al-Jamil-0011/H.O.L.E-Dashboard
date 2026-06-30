@@ -1,9 +1,59 @@
+'use client'
+import { Suspense } from "react";
 import Link from "next/link";
 import { MoveRight, Lock, Mail } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useAuthService } from "@/hooks/auth";
+import Cookies from "js-cookie";
+import { useForm } from "react-hook-form";
+import FormField from "@/components/form";
+import { VscLoading } from "react-icons/vsc";
+import Loader from "@/components/loader";
+import { customToast } from "@/lib/utils";
 
-export default function LoginPage() {
+function LoginContent() {
+    const router = useRouter();
+    const { login, loading, error: authError } = useAuthService();
+    const searchParams = useSearchParams();
+    const callbackUrl = searchParams.get("callbackUrl");
+    const { register, handleSubmit, formState: { errors } } = useForm();
+
+    // console.log("authError : ", authError);
+
+    const handleLogin = async (data: any) => {
+        try {
+            const res = await login({ email: data.email, password: data.password });
+            const userData = res?.data?.results;
+            if (res?.statusCode === 200) {
+                const token = res?.data?.accessToken;
+                if (token) {
+                    Cookies.set("token", token, {
+                        expires: data.remember ? 7 : undefined,
+                        secure: true,
+                        sameSite: "strict",
+                    });
+                }
+
+                customToast.success(res?.message || "Login successful")
+
+                // Redirect by role or callbackUrl
+                if (callbackUrl) {
+                    router.push(callbackUrl);
+                } else if (userData?.role === "admin") {
+                    router.push("/admin/dashboard");
+                } else if (userData?.role === "finance") {
+                    router.push("/finance/dashboard");
+                } else {
+                    router.push("/dashboard");
+                }
+            }
+        } catch (error: any) {
+            console.log(error)
+        }
+    }
+
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-[#0a0a0a] relative overflow-hidden font-sans w-full">
+        <div className="min-h-screen flex items-center justify-center bg-background relative overflow-hidden font-sans w-full">
             {/* Dynamic Background Elements */}
             <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-blue-500/20 dark:bg-blue-500/10 blur-[100px] animate-pulse"></div>
             <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-purple-500/20 dark:bg-purple-500/10 blur-[120px] animate-pulse delay-700"></div>
@@ -12,64 +62,80 @@ export default function LoginPage() {
             <div className="relative z-10 w-full max-w-md mx-auto p-4 md:p-0">
 
                 {/* Glassmorphic Card */}
-                <div className="backdrop-blur-xl bg-white/70 dark:bg-black/40 border border-white/20 dark:border-white/10 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)] p-8 overflow-hidden group">
+                <div className="backdrop-blur-xl bg-card/70 border border-border rounded-3xl dark:shadow-sm p-8 overflow-hidden group">
 
                     {/* Subtle gradient border line at top */}
                     <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 opacity-80"></div>
 
                     <div className="text-center mb-8">
-                        <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-400 mb-2 tracking-tight">
+                        <h1 className="text-3xl text-muted-foreground dark:text-muted-foreground font-bold mb-2 tracking-tight">
                             Welcome Back
                         </h1>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                        <p className="text-sm text-muted-foreground dark:text-muted-foreground w-2/3 mx-auto">
                             Enter your credentials to access your H.O.L.E account.
                         </p>
                     </div>
 
-                    <form className="space-y-6">
-                        <div className="space-y-4">
-                            {/* Email Input */}
-                            <div className="relative group/input">
-                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400 group-focus-within/input:text-blue-500 transition-colors">
-                                    <Mail className="h-5 w-5" />
-                                </div>
-                                <input
-                                    type="email"
-                                    className="block w-full pl-10 pr-3 py-3 border border-gray-200 dark:border-white/10 rounded-xl leading-5 bg-white/50 dark:bg-white/5 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-300 sm:text-sm text-gray-900 dark:text-gray-100"
-                                    placeholder="Email Address"
-                                    required
-                                />
+                    {authError && (
+                        <div className="p-3 mb-2 rounded-xl bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 flex items-start animate-in fade-in slide-in-from-top-2">
+                            <div className="flex-shrink-0 mt-0.5">
+                                <svg className="w-5 h-5 text-red-600 dark:text-red-400" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                                </svg>
                             </div>
+                            <div className="ml-3">
+                                <h3 className="text-sm font-medium text-red-800 dark:text-red-300">
+                                    Authentication Failed
+                                </h3>
+                                <p className="mt-1 text-sm text-red-600 dark:text-red-400 opacity-90">
+                                    {authError}
+                                </p>
+                            </div>
+                        </div>
+                    )}
+
+
+                    <form className="space-y-6 mt-2" onSubmit={handleSubmit(handleLogin)}>
+                        <div>
+                            {/* Email Input */}
+                            <FormField
+                                type="email"
+                                name="email"
+                                placeholder="Email Address"
+                                icon={<Mail className="h-5 w-5" />}
+                                register={register}
+                                errors={errors}
+                                validation={{
+                                    required: "Email is required",
+                                    pattern: { value: /\S+@\S+\.\S+/, message: "Invalid email format" }
+                                }}
+                            />
 
                             {/* Password Input */}
-                            <div className="relative group/input">
-                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400 group-focus-within/input:text-blue-500 transition-colors">
-                                    <Lock className="h-5 w-5" />
-                                </div>
-                                <input
-                                    type="password"
-                                    className="block w-full pl-10 pr-3 py-3 border border-gray-200 dark:border-white/10 rounded-xl leading-5 bg-white/50 dark:bg-white/5 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-300 sm:text-sm text-gray-900 dark:text-gray-100"
-                                    placeholder="Password"
-                                    required
-                                />
-                            </div>
+                            <FormField
+                                type="password"
+                                name="password"
+                                placeholder="Password"
+                                icon={<Lock className="h-5 w-5" />}
+                                register={register}
+                                errors={errors}
+                                validation={{ required: "Password is required" }}
+                            />
                         </div>
 
                         <div className="flex items-center justify-between">
                             <div className="flex items-center">
-                                <input
-                                    id="remember-me"
-                                    name="remember-me"
+                                <FormField
                                     type="checkbox"
-                                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded cursor-pointer transition-colors"
+                                    name="remember"
+                                    placeholder="Remember me"
+                                    register={register}
+                                    errors={errors}
                                 />
-                                <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-600 dark:text-gray-400 cursor-pointer">
-                                    Remember me
-                                </label>
                             </div>
 
-                            <div className="text-sm">
-                                <Link href="#" className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300 transition-colors">
+                            <div className="text-sm pb-5">
+                                <Link href="/auth/forgot-password" className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300 transition-colors">
                                     Forgot password?
                                 </Link>
                             </div>
@@ -78,22 +144,46 @@ export default function LoginPage() {
                         <div>
                             <button
                                 type="submit"
-                                className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-semibold rounded-xl text-white bg-gray-900 hover:bg-black dark:bg-white dark:text-black dark:hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 dark:focus:ring-white transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] shadow-md hover:shadow-lg"
+                                className="group relative w-full flex items-center justify-center py-3 px-4 text-sm font-medium rounded-xl text-foreground bg-primary! text-white dark:text-black! hover:!bg-primary/80 dark:bg-white dark:text-black dark:hover:bg-gray-100 focus:outline-none  duration-300 transform dark:shadow-md cursor-pointer"
+                                disabled={loading}
+                            //  className="group relative w-full flex items-center justify-center py-3 px-4 border border-transparent text-sm font-semibold rounded-xl text-foreground bg-primary text-black! hover:bg-primary/80 dark:bg-white dark:text-black dark:hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 dark:focus:ring-white transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] shadow-md hover:shadow-lg cursor-pointer"
                             >
-                                Sign In
-                                <MoveRight className="ml-2 h-4 w-4 opacity-70 group-hover:translate-x-1 group-hover:opacity-100 transition-all" />
+                                {loading ? (
+                                    <>
+                                        <VscLoading className="mr-2 h-5 w-5 animate-spin" />
+                                        Please wait...
+                                    </>
+                                ) : (
+                                    <>
+                                        Sign In
+                                        <MoveRight className="ml-2 h-4 w-4 opacity-70 group-hover:translate-x-1 group-hover:opacity-100 transition-all" />
+                                    </>
+                                )}
                             </button>
                         </div>
                     </form>
 
-                    <div className="mt-8 text-center text-sm text-gray-500 dark:text-gray-400">
-                        Don't have an account?{" "}
-                        <Link href="#" className="font-semibold text-gray-900 dark:text-white hover:underline transition-all">
-                            Contact Admin
-                        </Link>
+                    <div className="mt-8 text-center">
+                        <span className="text-muted-foreground text-sm dark:text-muted-foreground">Don&apos;t have an account?</span>{" "}
+                        <button className="cursor-pointer! text-blue-600 text-sm hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300">
+                            Signup
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
     );
 }
+
+export default function LoginPage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen flex items-center justify-center bg-background font-sans w-full">
+                <Loader size={40} text="Please wait..." />
+            </div>
+        }>
+            <LoginContent />
+        </Suspense>
+    );
+}
+

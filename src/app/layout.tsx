@@ -3,17 +3,73 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 
 const poppins = Poppins({
-  weight: ['300', '400', '500', '600', '700', '800', '900'],
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
   subsets: ["latin"],
   variable: "--font-poppins",
 });
 
 export const metadata: Metadata = {
-  title: "H.O.L.E APP",
-  description: "Next-Generation Finance Dashboard",
+  title: "H.O.L.E App | Admin & Finance Management Dashboard",
+  description:
+    "H.O.L.E App is a modern admin and finance management dashboard for tracking sales, commissions, vendor payments, inventory, and financial reports with seamless QuickBooks integration.",
+
+  keywords: [
+    "finance dashboard",
+    "sales management",
+    "commission tracking",
+    "vendor payments",
+    "financial reports",
+    "QuickBooks integration",
+    "business analytics",
+    "expense tracking",
+    "rep accounts",
+  ],
+
+  authors: [{ name: "H.O.L.E Team" }],
+  creator: "H.O.L.E App",
+
+  metadataBase: new URL("https://yourdomain.com"),
+
+  openGraph: {
+    title: "H.O.L.E App | Admin & Finance Dashboard",
+    description:
+      "Track sales, commissions, vendor payments, inventory, and sync with QuickBooks in one powerful admin and finance dashboard.",
+    url: "https://yourdomain.com",
+    siteName: "H.O.L.E App",
+    images: [
+      {
+        url: "/logo.svg", // put your image in public folder
+        width: 1200,
+        height: 630,
+        alt: "H.O.L.E App Dashboard",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+
+  twitter: {
+    card: "summary_large_image",
+    title: "H.O.L.E App | Admin & Finance Dashboard",
+    description:
+      "All-in-one admin and finance dashboard for tracking sales, commissions, vendor payments, and inventory.",
+    images: ["/logo.png"],
+  },
+
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
 };
 
-import { RootLayoutWrapper } from "@/components/layout/RootLayoutWrapper";
+import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "react-hot-toast";
 
 export default function RootLayout({
@@ -22,14 +78,23 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${poppins.variable} font-sans antialiased`}
-      >
-        <RootLayoutWrapper>
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${poppins.variable} font-sans antialiased`}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
           {children}
-        </RootLayoutWrapper>
-        <Toaster position="top-right" />
+          <Toaster
+            position="top-right"
+            toastOptions={{
+              className: "dark:bg-gray-800 dark:text-white",
+              duration: 4000,
+            }}
+          />
+        </ThemeProvider>
       </body>
     </html>
   );
