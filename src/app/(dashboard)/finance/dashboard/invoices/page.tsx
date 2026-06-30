@@ -1,42 +1,50 @@
 "use client";
 
-import { useState } from 'react';
-import { DataTable, StatusBadge } from '@/components/ui/DataTable';
-import { useInvoices, useInvoiceSummary } from '@/hooks/finance/invoice-management';
-import { CommonFilterPill, DashboardStatCard } from '@/components/stats-card';
+import { useState } from "react";
+import { DataTable, StatusBadge } from "@/components/ui/DataTable";
 import {
-  Search,
-  RefreshCw,
-  FileSpreadsheet,
-  Receipt,
-} from 'lucide-react';
-import dayjs from 'dayjs';
-import Link from 'next/link';
+  useInvoices,
+  useInvoiceSummary,
+} from "@/hooks/finance/invoice-management";
+import { CommonFilterPill, DashboardStatCard } from "@/components/stats-card";
+import { Search, RefreshCw, FileSpreadsheet, Receipt } from "lucide-react";
+import dayjs from "dayjs";
+import Link from "next/link";
 
 export default function InvoicesPage() {
-  const [filter, setFilter] = useState('All');
-  const [searchTerm, setSearchTerm] = useState('');
+  const [filter, setFilter] = useState("All");
+  const [searchTerm, setSearchTerm] = useState("");
 
-  const { summary: invoiceSummary, loading: invoiceLoading, refetch: refetchInvoiceSummary } = useInvoiceSummary();
+  const {
+    summary: invoiceSummary,
+    loading: invoiceLoading,
+    refetch: refetchInvoiceSummary,
+  } = useInvoiceSummary();
 
-  const { invoices, loading: salesLoading, setQuery, meta, refetch } = useInvoices();
+  const {
+    invoices,
+    loading: salesLoading,
+    setQuery,
+    meta,
+    refetch,
+  } = useInvoices();
 
   const handleFilterChange = (status: string) => {
     setFilter(status);
-    setQuery(prev => ({
+    setQuery((prev) => ({
       ...prev,
       page: 1,
-      status: status === 'All' ? undefined : status.toLowerCase() as any
+      status: status === "All" ? undefined : (status.toLowerCase() as any),
     }));
   };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchTerm(value);
-    setQuery(prev => ({
+    setQuery((prev) => ({
       ...prev,
       page: 1,
-      searchTerm: value
+      searchTerm: value,
     }));
   };
 
@@ -46,111 +54,178 @@ export default function InvoicesPage() {
       className: "font-semibold text-primary",
       render: (item: any) => {
         const val = item.invoice?.invoiceNumber;
-        return <span className="font-semibold text-primary tracking-wide">{val || 'N/A'}</span>;
-      }
+        return (
+          <span className="font-semibold text-primary tracking-wide">
+            {val || "N/A"}
+          </span>
+        );
+      },
     },
     {
       header: "SALE ID",
       className: "font-medium text-foreground",
       render: (item: any) => {
-        const val = typeof item.saleId === 'object' ? (item.saleId?.saleId || item.saleId?._id || '') : item.saleId;
-        return <span className="font-mono text-foreground">#{String(val || '')}</span>;
-      }
+        const val =
+          typeof item.saleId === "object"
+            ? item.saleId?.saleId || item.saleId?._id || ""
+            : item.saleId;
+        return (
+          <span className="font-mono text-foreground">
+            #{String(val || "")}
+          </span>
+        );
+      },
     },
     {
       header: "HOSPITAL",
       render: (item: any) => {
         const facility = item.facility;
-        const name = facility?.name || 'N/A';
-        const address = facility?.address || 'N/A';
+        const name = facility?.name || "N/A";
+        const address = facility?.address || "N/A";
         return (
           <div className="flex flex-col">
-            <span className="font-medium text-foreground truncate max-w-[160px]" title={name}>
+            <span
+              className="font-medium text-foreground truncate max-w-[160px]"
+              title={name}
+            >
               {name}
             </span>
-            <span className="text-[10px] text-muted-foreground truncate max-w-[160px]" title={address}>
+            <span
+              className="text-[10px] text-muted-foreground truncate max-w-[160px]"
+              title={address}
+            >
               {address}
             </span>
           </div>
         );
-      }
+      },
     },
     {
       header: "DUE DATE",
       render: (item: any) => {
-        const dateVal = item.dueDate || item.invoice?.invoiceDate || item.procedureDate || item.createdAt;
+        const dateVal =
+          item.dueDate ||
+          item.invoice?.invoiceDate ||
+          item.procedureDate ||
+          item.createdAt;
         return (
           <span className="font-medium text-foreground">
-            {dateVal ? dayjs(dateVal).format("MMM DD, YYYY") : 'N/A'}
+            {dateVal ? dayjs(dateVal).format("MMM DD, YYYY") : "N/A"}
           </span>
         );
-      }
+      },
     },
     {
       header: "REP",
       render: (item: any) => {
-        const primaryRep = item.representatives?.users?.find((u: any) => u.assignRole === 'primary')?.representative;
-        const name = typeof primaryRep === 'object' ? primaryRep?.fullName : (item.createdBy?.fullName || 'N/A');
-        const email = typeof primaryRep === 'object' ? primaryRep?.email : (item.createdBy?.email || '');
+        const primaryRep = item.representatives?.users?.find(
+          (u: any) => u.assignRole === "primary",
+        )?.representative;
+        const name =
+          typeof primaryRep === "object"
+            ? primaryRep?.fullName
+            : item.createdBy?.fullName || "N/A";
+        const email =
+          typeof primaryRep === "object"
+            ? primaryRep?.email
+            : item.createdBy?.email || "";
         return (
           <div className="flex flex-col">
-            <span className="font-medium text-foreground truncate max-w-[120px]">{name}</span>
-            {email && <span className="text-[10px] text-muted-foreground truncate max-w-[120px]">{email}</span>}
+            <span className="font-medium text-foreground truncate max-w-[120px]">
+              {name}
+            </span>
+            {email && (
+              <span className="text-[10px] text-muted-foreground truncate max-w-[120px]">
+                {email}
+              </span>
+            )}
           </div>
         );
-      }
+      },
     },
     {
       header: "DOCTOR",
       render: (item: any) => {
         const doc = item.physician;
-        const name = typeof doc?.fullName === 'string' ? doc.fullName : 'N/A';
-        const specialty = typeof doc?.specialty === 'string' ? doc.specialty : '';
+        const name = typeof doc?.fullName === "string" ? doc.fullName : "N/A";
+        const specialty =
+          typeof doc?.specialty === "string" ? doc.specialty : "";
         return (
           <div className="flex flex-col">
-            <span className="font-medium text-foreground truncate max-w-[120px]">{name}</span>
-            {specialty && <span className="text-[10px] text-muted-foreground capitalize truncate max-w-[120px]">{specialty}</span>}
+            <span className="font-medium text-foreground truncate max-w-[120px]">
+              {name}
+            </span>
+            {specialty && (
+              <span className="text-[10px] text-muted-foreground capitalize truncate max-w-[120px]">
+                {specialty}
+              </span>
+            )}
           </div>
         );
-      }
+      },
     },
     {
       header: "AMOUNT",
       render: (item: any) => {
-        const amount = typeof item.billing?.totalAmount === 'object' ? 0 : Number(item.billing?.totalAmount || 0);
-        return <span className="text-primary font-bold">${amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>;
-      }
+        const amount =
+          typeof item.billing?.totalAmount === "object"
+            ? 0
+            : Number(item.billing?.totalAmount || 0);
+        return (
+          <span className="text-primary font-bold">
+            $
+            {amount.toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}
+          </span>
+        );
+      },
     },
     {
       header: "COMMISSION",
       render: (item: any) => {
-        const comm = typeof item.representatives?.totalCommission === 'object' ? 0 : Number(item.representatives?.totalCommission || 0);
-        return <span className="text-emerald-500 font-bold">${comm.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>;
-      }
+        const comm =
+          typeof item.representatives?.totalCommission === "object"
+            ? 0
+            : Number(item.representatives?.totalCommission || 0);
+        return (
+          <span className="text-emerald-500 font-bold">
+            $
+            {comm.toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}
+          </span>
+        );
+      },
     },
     {
       header: "STATUS",
       render: (item: any) => {
-        const status = (item.invoice?.status || item.status || 'UNKNOWN').toUpperCase();
+        const status = (
+          item.invoice?.status ||
+          item.status ||
+          "UNKNOWN"
+        ).toUpperCase();
         let type: "success" | "warning" | "error" = "success";
-        if (status === 'PENDING' || status === 'UNPAID') type = 'warning';
-        if (status === 'REJECTED' || status === 'OVERDUE') type = 'error';
+        if (status === "PENDING" || status === "UNPAID") type = "warning";
+        if (status === "REJECTED" || status === "OVERDUE") type = "error";
         return <StatusBadge status={status} type={type} />;
-      }
+      },
     },
     {
       header: "ACTIONS",
       render: (item: any) => {
         return (
           <Link href={`/finance/dashboard/invoices/${item._id}`}>
-            <button
-              className="px-3 py-1.5 text-[10px] font-medium text-primary bg-primary/10 border border-primary/20 rounded-md hover:bg-primary/20 transition-colors cursor-pointer">
+            <button className="px-3 py-1.5 text-[10px] font-medium text-primary bg-primary/10 border border-primary/20 rounded-md hover:bg-primary/20 transition-colors cursor-pointer">
               Details
             </button>
           </Link>
         );
-      }
-    }
+      },
+    },
   ];
 
   return (
@@ -163,7 +238,8 @@ export default function InvoicesPage() {
             Invoice Management
           </h1>
           <p className="text-xs text-muted-foreground font-medium mt-0.5">
-            Real-time hospital invoice generation, status tracking, and facility communications.
+            Real-time hospital invoice generation, status tracking, and facility
+            communications.
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -207,7 +283,11 @@ export default function InvoicesPage() {
         <DashboardStatCard
           title="PENDING INVOICES"
           value={String(invoiceSummary?.pendingCount || 0)}
-          trend={(invoiceSummary?.pendingCount || 0) > 0 ? "Requires attention" : "No pending items"}
+          trend={
+            (invoiceSummary?.pendingCount || 0) > 0
+              ? "Requires attention"
+              : "No pending items"
+          }
           trendType={(invoiceSummary?.pendingCount || 0) > 0 ? "down" : "up"}
           topBorderColor="border-t-amber-500"
           loading={invoiceLoading}
@@ -235,7 +315,8 @@ export default function InvoicesPage() {
               </span>
             </h2>
             <p className="text-[10px] text-muted-foreground mt-0.5">
-              Browse invoices, download statement PDFs, or dispatch confirmation emails.
+              Browse invoices, download statement PDFs, or dispatch confirmation
+              emails.
             </p>
           </div>
 
@@ -256,29 +337,29 @@ export default function InvoicesPage() {
             <div className="flex gap-1.5 p-1 bg-background rounded-lg border border-border overflow-x-auto">
               <CommonFilterPill
                 text="All"
-                active={filter === 'All'} 
-                onClick={() => handleFilterChange('All')}
+                active={filter === "All"}
+                onClick={() => handleFilterChange("All")}
               />
               <CommonFilterPill
                 text="Paid"
-                active={filter === 'Paid'}
+                active={filter === "Paid"}
                 color="bg-emerald-500/10 text-emerald-500 border-emerald-500/20"
                 activeColor="bg-emerald-500 text-background border-emerald-500"
-                onClick={() => handleFilterChange('Paid')}
+                onClick={() => handleFilterChange("Paid")}
               />
               <CommonFilterPill
                 text="Pending"
-                active={filter === 'Pending'}
+                active={filter === "Pending"}
                 color="bg-amber-500/10 text-amber-500 border-amber-500/20"
                 activeColor="bg-amber-500 text-background border-amber-500"
-                onClick={() => handleFilterChange('Pending')}
+                onClick={() => handleFilterChange("Pending")}
               />
               <CommonFilterPill
                 text="Overdue"
-                active={filter === 'Overdue'}
+                active={filter === "Overdue"}
                 color="bg-rose-500/10 text-rose-500 border-rose-500/20"
                 activeColor="bg-rose-500 text-background border-rose-500"
-                onClick={() => handleFilterChange('Overdue')}
+                onClick={() => handleFilterChange("Overdue")}
               />
             </div>
           </div>
@@ -288,13 +369,18 @@ export default function InvoicesPage() {
           className="!border-none !rounded-none"
           columns={columns}
           loading={salesLoading}
-          onRowClick={() => { }}
-          pagination={meta ? {
-            currentPage: meta.currentPage,
-            totalPage: meta.totalPage,
-            totalResult: meta.totalResult,
-            onPageChange: (page) => setQuery(prev => ({ ...prev, page }))
-          } : undefined}
+          onRowClick={() => {}}
+          pagination={
+            meta
+              ? {
+                  currentPage: meta.currentPage,
+                  totalPage: meta.totalPage,
+                  totalResult: meta.totalResult,
+                  onPageChange: (page) =>
+                    setQuery((prev) => ({ ...prev, page })),
+                }
+              : undefined
+          }
         />
       </div>
     </div>
